@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">RideShare</string>
+    <string name="title_activity_splash">SplashActivity</string>
+
+    <string name="facebook_app_id">258005881343253</string>
+    <string name="fb_login_protocol_scheme">fb258005881343253</string>
+
+    <string name="phone_or_email">PHONE NUMBER OR EMAIL</string>
+    <string name="password">PASSWORD</string>
+
+    <string name="forgotpassword">Forgot your login details?</string>
+    <string name="account">Don\'t have an account? Sign Up</string>
+
+
+    <string name="first_name">FIRST NAME</string>
+    <string name="last_name">LAST NAME</string>
+    <string name="email">EMAIL</string>
+    <string name="confirm_password">CONFIRM PASSWORD</string>
+    <string name="mobile">MOBILE NUMBER</string>
+    <string name="signup">Sign Up</string>
+
+    <string name="authentication_sent">An authentication code will sent your mobile</string>
+</resources>
