@@ -12,7 +12,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
+import com.app.rideshare.api.ApiServiceModule;
+import com.app.rideshare.api.RestApiInterface;
+import com.app.rideshare.api.response.SignupResponse;
+import com.app.rideshare.utils.PrefUtils;
+import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.utils.TypefaceUtils;
+import com.app.rideshare.view.CustomProgressDialog;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -31,6 +37,10 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private CardView mFacebookCv;
@@ -39,7 +49,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     LoginButton loginButton;
     CallbackManager callbackManager;
 
-    private static  final int RC_SIGN_IN=101;
+    private static final int RC_SIGN_IN = 101;
     private GoogleApiClient mGoogleApiClient;
 
     private Typeface mRobotoMediam;
@@ -52,18 +62,24 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private TextView mSignUpTv;
 
 
+    CustomProgressDialog mProgressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mRobotoMediam= TypefaceUtils.getTypefaceRobotoMediam(this);
+        PrefUtils.initPreference(this);
 
-        mEmailEt=(EditText)findViewById(R.id.username_et);
-        mPasswordEt=(EditText)findViewById(R.id.password_et);
-        mLoginTv=(TextView)findViewById(R.id.login_tv);
-        mForgotPasswordTv=(TextView)findViewById(R.id.forgot_password_tv);
-        mSignUpTv=(TextView)findViewById(R.id.signup_tv);
+        mProgressDialog = new CustomProgressDialog(this);
+
+        mRobotoMediam = TypefaceUtils.getTypefaceRobotoMediam(this);
+
+        mEmailEt = (EditText) findViewById(R.id.username_et);
+        mPasswordEt = (EditText) findViewById(R.id.password_et);
+        mLoginTv = (TextView) findViewById(R.id.login_tv);
+        mForgotPasswordTv = (TextView) findViewById(R.id.forgot_password_tv);
+        mSignUpTv = (TextView) findViewById(R.id.signup_tv);
 
         mEmailEt.setTypeface(mRobotoMediam);
         mPasswordEt.setTypeface(mRobotoMediam);
@@ -74,7 +90,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mSignUpTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(LoginActivity.this,RegistrationActivity.class);
+                Intent i = new Intent(LoginActivity.this, RegistrationActivity.class);
                 startActivity(i);
             }
         });
@@ -144,6 +160,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
+        mLoginTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mEmailEt.getText().toString().isEmpty())
+                {
+                    ToastUtils.showShort(LoginActivity.this,"Please enter mobile number or email");
+                }else if (mPasswordEt.getText().toString().isEmpty()){
+                    ToastUtils.showShort(LoginActivity.this,"Please enter password.");
+                }else{
+                loginuser(mEmailEt.getText().toString(),mPasswordEt.getText().toString());
+                }
+            }
+        });
 
     }
 
@@ -157,26 +186,58 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             handleSignInResult(result);
         }
     }
+
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
             GoogleSignInAccount acct = result.getSignInAccount();
 
-            Log.d("email",acct.getEmail());
-            Log.d("id",acct.getId());
-            Log.d("name",acct.getDisplayName());
-            Log.d("name",acct.getGivenName());
+            Log.d("email", acct.getEmail());
+            Log.d("id", acct.getId());
+            Log.d("name", acct.getDisplayName());
+            Log.d("name", acct.getGivenName());
         } else {
-            Log.d("faile","faile");
+            Log.d("faile", "faile");
         }
     }
+
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
-    {
-            Log.d("connection failed",connectionResult.getErrorMessage());
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d("connection failed", connectionResult.getErrorMessage());
+    }
+
+
+    private void loginuser(String mEmail, String password) {
+        mProgressDialog.show();
+        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password).enqueue(new Callback<SignupResponse>() {
+            @Override
+            public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (!response.body().getmStatus().equals("error")) {
+                        PrefUtils.addUserInfo(response.body().getMlist().get(0));
+                        PrefUtils.putBoolean("islogin",true);
+                        Intent i = new Intent(LoginActivity.this, RideTypeActivity.class);
+                        startActivity(i);
+                        finish();
+                    } else {
+                        ToastUtils.showShort(LoginActivity.this, response.body().getmMessage());
+                    }
+                } else {
+
+                }
+                mProgressDialog.cancel();
+            }
+
+            @Override
+            public void onFailure(Call<SignupResponse> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("error", t.toString());
+                mProgressDialog.cancel();
+            }
+        });
     }
 }

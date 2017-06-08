@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.app.rideshare.R;
+import com.app.rideshare.utils.PrefUtils;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -18,13 +19,22 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
 
+        PrefUtils.initPreference(this);
+
         new Handler().postDelayed(new Runnable() {
 
             @Override
             public void run() {
-                Intent i = new Intent(getBaseContext(), LoginActivity.class);
-                startActivity(i);
-                finish();
+
+                if (PrefUtils.getBoolean("islogin")) {
+                    Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+                    startActivity(i);
+                    finish();
+                } else {
+                    Intent i = new Intent(getBaseContext(), LoginActivity.class);
+                    startActivity(i);
+                    finish();
+                }
             }
         }, 3000);
     }
