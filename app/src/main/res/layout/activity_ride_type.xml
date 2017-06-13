@@ -41,7 +41,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Need a Ride"
+                android:button="@drawable/radio_button_bg"
+                android:text="  Need a Ride"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_14sdp" />
 
@@ -51,7 +52,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_8sdp"
                 android:layout_weight="1"
-                android:text="Offer a Ride"
+
+                android:button="@drawable/radio_button_bg"
+                android:text="  Offer a Ride"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_14sdp" />
         </RadioGroup>

@@ -1,5 +1,6 @@
 package com.app.rideshare.api;
 
+import com.app.rideshare.api.response.RideSelect;
 import com.app.rideshare.api.response.SignupResponse;
 
 import retrofit2.Call;
@@ -20,8 +21,9 @@ public interface RestApiInterface {
     @POST("auth/login")
     Call<SignupResponse> login(@Field("u_email") String mEmail,@Field("u_password") String mPassword);
 
-
-
+    @FormUrlEncoded
+    @POST("auth/select_ride")
+    Call<RideSelect> selectRide(@Field("u_id") String mId, @Field("u_ride_type") String mType, @Field("u_lat") String mLatitude, @Field("u_long") String mLongitude);
 
 
 }

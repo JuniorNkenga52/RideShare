@@ -112,6 +112,14 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent i = new Intent(getBaseContext(), LoginActivity.class);
+        startActivity(i);
+        finish();
+    }
+
     private void registerUser(String mFirstName, String mLastName, String mEmail, String mMobile, String password) {
 
         mProgressDialog.show();
@@ -125,6 +133,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         PrefUtils.putBoolean("islogin",true);
                         Intent i = new Intent(RegistrationActivity.this, RideTypeActivity.class);
                         startActivity(i);
+                        finish();
                     } else {
                         ToastUtils.showShort(RegistrationActivity.this, response.body().getmMessage());
                     }
