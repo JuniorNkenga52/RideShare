@@ -1,8 +1,24 @@
 package com.app.rideshare.model;
 
-/**
- * Created by rlogical-dev-19 on 15-Jun-2017.
- */
+public class ContactBean
+{
+    private String name;
+    private String mobile;
 
-public class ContactBean {
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
 }

@@ -15,10 +15,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 
 import com.app.rideshare.R;
 import com.app.rideshare.fragment.HomeFragment;
 import com.app.rideshare.model.Rider;
+import com.app.rideshare.utils.PrefUtils;
 
 import java.util.ArrayList;
 
@@ -33,6 +35,8 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Ride Share");
+
+        PrefUtils.initPreference(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -67,7 +71,7 @@ public class HomeActivity extends AppCompatActivity
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
             transaction.replace(R.id.content_main, mFragment);
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            transaction.addToBackStack(null);
+            transaction.addToBackStack("HomeFragment");
             transaction.commit();
         }
 
@@ -78,7 +82,12 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-
+            switchFragment(HomeFragment.newInstance(mlist));
+        } else   if (id == R.id.nav_logout)
+        {
+            PrefUtils.remove(PrefUtils.PREF_USER_INFO);
+            PrefUtils.remove("islogin");
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

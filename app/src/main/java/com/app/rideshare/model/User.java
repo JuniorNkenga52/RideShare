@@ -31,7 +31,35 @@ public class User implements Serializable
     private String mUpdatedDate;
     @SerializedName("create_date")
     private String mCreatedDate;
+    @SerializedName("mobile_verify_number")
+    private String mMobileNumber;
+    @SerializedName("verify_mobile")
+    private String mIsVerify;
+    @SerializedName("contact_sync")
+    private String contact_sync;
 
+    public String getContact_sync() {
+        return contact_sync;
+    }
+    public void setContact_sync(String contact_sync) {
+        this.contact_sync = contact_sync;
+    }
+
+    public String getmMobileNumber() {
+        return mMobileNumber;
+    }
+
+    public void setmMobileNumber(String mMobileNumber) {
+        this.mMobileNumber = mMobileNumber;
+    }
+
+    public String getmIsVerify() {
+        return mIsVerify;
+    }
+
+    public void setmIsVerify(String mIsVerify) {
+        this.mIsVerify = mIsVerify;
+    }
 
     public String getmUserId() {
         return mUserId;

@@ -21,15 +21,28 @@ public class SplashActivity extends AppCompatActivity {
 
         PrefUtils.initPreference(this);
 
-        new Handler().postDelayed(new Runnable() {
-
+        new Handler().postDelayed(new Runnable()
+        {
             @Override
             public void run() {
 
                 if (PrefUtils.getBoolean("islogin")) {
-                    Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
-                    startActivity(i);
-                    finish();
+
+                    if (PrefUtils.getUserInfo().getmMobileNo()==null ||PrefUtils.getUserInfo().getmMobileNo().equals("") )
+                    {
+                        Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
+                        startActivity(i);
+                        finish();
+                    } else if (PrefUtils.getUserInfo().getmIsVerify().equals("0")) {
+                        Intent i = new Intent(getBaseContext(), VerifyMobileNumberActivity.class);
+                        startActivity(i);
+                        finish();
+                    } else {
+                        Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+                        startActivity(i);
+                        finish();
+                    }
+
                 } else {
                     Intent i = new Intent(getBaseContext(), LoginActivity.class);
                     startActivity(i);

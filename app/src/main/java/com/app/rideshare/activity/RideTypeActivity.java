@@ -16,9 +16,13 @@ import android.widget.Toast;
 import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
+import com.app.rideshare.api.request.ContactRequest;
+import com.app.rideshare.api.response.ContactResponse;
 import com.app.rideshare.api.response.RideSelect;
 import com.app.rideshare.model.User;
+import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
+import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.gun0912.tedpermission.PermissionListener;
@@ -90,8 +94,9 @@ public class RideTypeActivity extends AppCompatActivity {
         new TedPermission(this)
                 .setPermissionListener(permissionlistener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                .setPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+                .setPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_CONTACTS)
                 .check();
+
 
     }
 
@@ -127,6 +132,13 @@ public class RideTypeActivity extends AppCompatActivity {
     PermissionListener permissionlistener = new PermissionListener() {
         @Override
         public void onPermissionGranted() {
+
+            if(mUserBean.getContact_sync().equals("0"))
+            {
+                syncContact();
+            }
+
+
             SmartLocation.with(RideTypeActivity.this).location()
                     .oneFix()
                     .start(new OnLocationUpdatedListener() {
@@ -142,5 +154,41 @@ public class RideTypeActivity extends AppCompatActivity {
             Toast.makeText(RideTypeActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
         }
     };
+
+
+    private void syncContact() {
+
+        mProgressDialog.show();
+
+        final ContactRequest request = new ContactRequest();
+        request.setUser_id(mUserBean.getmUserId());
+        request.setContact(AppUtils.readContacts(RideTypeActivity.this));
+
+        ApiServiceModule.createService(RestApiInterface.class).syncContact(request).enqueue(new Callback<ContactResponse>() {
+            @Override
+            public void onResponse(Call<ContactResponse> call, Response<ContactResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+
+                    if (response.body().getStatus().equals("success")) {
+
+                        mUserBean.setContact_sync("1");
+                        PrefUtils.addUserInfo(mUserBean);
+
+                        ToastUtils.showShort(RideTypeActivity.this, "Contact Sync");
+                    } else {
+                        ToastUtils.showShort(RideTypeActivity.this, "Contact Sync failed");
+                    }
+                }
+                mProgressDialog.cancel();
+            }
+
+            @Override
+            public void onFailure(Call<ContactResponse> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("error", t.toString());
+                mProgressDialog.cancel();
+            }
+        });
+    }
 
 }

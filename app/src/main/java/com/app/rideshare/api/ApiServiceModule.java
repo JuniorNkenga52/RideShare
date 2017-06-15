@@ -21,7 +21,7 @@ public class ApiServiceModule {
         return okHttpClient;
     }
 
-    private static OkHttpClient.Builder okHttpClientTokenHeader(final String token) {
+    private static OkHttpClient.Builder okHttpClientTokenHeader() {
         OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
         okHttpClient.connectTimeout(60 * 1000, TimeUnit.MILLISECONDS);
         okHttpClient.readTimeout(60 * 1000, TimeUnit.MILLISECONDS);
@@ -29,6 +29,7 @@ public class ApiServiceModule {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Request newRequest  = chain.request().newBuilder()
+                        .addHeader("Apikey", "$2y$10$lDBHZhvyNzWTdsgdgsg4cOivLqQAVTGppmV4yEeggsdtttwilio")
                         .build();
                 return chain.proceed(newRequest);
             }
@@ -39,12 +40,12 @@ public class ApiServiceModule {
     private static Retrofit.Builder builder = new Retrofit.Builder().baseUrl(API_ENDPOINT).addConverterFactory(GsonConverterFactory.create());
 
     public static <S> S createService(Class<S> serviceClass) {
-        Retrofit retrofit = builder.client(okHttpClient().build()).build();
+        Retrofit retrofit = builder.client(okHttpClientTokenHeader().build()).build();
         return retrofit.create(serviceClass);
     }
 
     public static <S> S createTokenizedService(Class<S> serviceClass, String token) {
-        Retrofit retrofit = builder.client(okHttpClientTokenHeader(token).build()).build();
+        Retrofit retrofit = builder.client(okHttpClientTokenHeader().build()).build();
         return retrofit.create(serviceClass);
     }
 

@@ -1,4 +1,4 @@
-package com.sukaree.notification;
+package com.app.rideshare.notification;
 
 import android.content.Intent;
 

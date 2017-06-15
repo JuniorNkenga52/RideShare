@@ -1,13 +1,13 @@
-package com.sukaree.notification;
+package com.app.rideshare.notification;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.app.rideshare.R;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-import com.sukaree.R;
 
 public class GCMRegistrationIntentService extends IntentService {
     //Constants for success and errors
@@ -38,7 +38,7 @@ public class GCMRegistrationIntentService extends IntentService {
             InstanceID instanceID = InstanceID.getInstance(getApplicationContext());
  
             //Getting the token from the instance id
-            token = instanceID.getToken(getString(R.string.GSenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+            token = instanceID.getToken(getString(R.string.senderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
  
             //Displaying the token in the log so that we can copy it to send push notification
             //You can also extend the app by storing the token in to your server

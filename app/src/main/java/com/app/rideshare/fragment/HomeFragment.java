@@ -89,7 +89,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
                         Log.d("Bearing", "" + location.getBearing());
                         CameraPosition cameraPosition = new CameraPosition.Builder().target(loc).zoom(16).build();
-                        //mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                        if(mlist.size()==0)
+                        {
+                            mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                        }
                         createMarker();
                         if (curLocMarker == null) {
                             curLocMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker())

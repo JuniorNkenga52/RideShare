@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">RideShare</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="senderId">226419699435</string>
 
     <string name="facebook_app_id">258005881343253</string>
     <string name="fb_login_protocol_scheme">fb258005881343253</string>
