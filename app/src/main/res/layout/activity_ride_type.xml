@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusableInTouchMode="true"
-    android:background="@drawable/ic_login_bg">
+    android:background="@drawable/ic_login_bg"
+    android:focusableInTouchMode="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -27,15 +27,72 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/appBarLayout"
+        android:layout_marginTop="@dimen/_40sdp"
         android:gravity="center_horizontal"
         android:orientation="vertical">
+
+
+        <LinearLayout
+            android:id="@+id/need_ride_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@drawable/edittext_bg"
+            android:gravity="right|center_vertical"
+            android:padding="@dimen/_10sdp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:paddingLeft="@dimen/_30sdp"
+                android:text="Need a Ride"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_16sdp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_need_ride_bg" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/offer_ride_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@drawable/edittext_bg"
+            android:gravity="right|center_vertical"
+            android:padding="@dimen/_10sdp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:paddingLeft="@dimen/_30sdp"
+                android:text="Offer a Ride"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_16sdp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_offer_ride_bg" />
+
+        </LinearLayout>
 
         <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_50sdp"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:visibility="gone">
 
             <RadioButton
                 android:id="@+id/need_ride_rb"
@@ -53,7 +110,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_8sdp"
                 android:layout_weight="1"
-
                 android:button="@drawable/radio_button_bg"
                 android:text="  Offer a Ride"
                 android:textColor="@color/white"
@@ -64,7 +120,7 @@
             android:id="@+id/next_tv"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_35sdp"
-            android:layout_marginTop="@dimen/_55sdp"
+            android:layout_marginTop="@dimen/_45sdp"
             android:background="@drawable/btn_login"
             android:gravity="center"
             android:paddingLeft="@dimen/_35sdp"
@@ -72,6 +128,7 @@
             android:text="NEXT"
             android:textColor="@color/blacltext"
             android:textSize="@dimen/_16sdp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
     </LinearLayout>
 </RelativeLayout>

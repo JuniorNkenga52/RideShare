@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_friensds"
+            android:checkable="true"
+            android:checked="true"
+            android:orderInCategory="100"
+            android:title="Friends Only" />
+
+        <item
+            android:id="@+id/action_all"
+            android:checkable="true"
+            android:orderInCategory="100"
+            android:checked="false"
+            android:title="All" />
+    </group>
 </menu>

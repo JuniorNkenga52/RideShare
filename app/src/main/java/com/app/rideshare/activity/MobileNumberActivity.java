@@ -87,6 +87,7 @@ public class MobileNumberActivity extends AppCompatActivity {
 
                     Intent i=new Intent(MobileNumberActivity.this,VerifyMobileNumberActivity.class);
                     startActivity(i);
+                    finish();
                 } else {
                         ToastUtils.showShort(MobileNumberActivity.this,"Please try againg..");
                 }

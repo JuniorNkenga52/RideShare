@@ -38,6 +38,17 @@ public class Rider  implements Serializable{
     @SerializedName("distance")
     private String mDistance;
 
+    @SerializedName("address_from_google")
+    private String mAddress;
+
+    public String getmAddress() {
+        return mAddress;
+    }
+
+    public void setmAddress(String mAddress) {
+        this.mAddress = mAddress;
+    }
+
     public String getnUserId() {
         return nUserId;
     }

@@ -16,7 +16,10 @@ import android.widget.Toast;
 
 import com.app.rideshare.model.ContactBean;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 public class AppUtils {
@@ -49,7 +52,7 @@ public class AppUtils {
 
     public static void showMessage(Activity activity, boolean isSuccess, String message) {
         Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-        //showCustomToast(activity, message, R.drawable.ic_camera);
+        //showCustomToast(activity_waiting, message, R.drawable.ic_camera);
     }
 
     public static int dp2px(int dp, Context ctx) {
@@ -86,6 +89,25 @@ public class AppUtils {
             }
         }
         return mlist;
+    }
+
+    public static String dateformat(String time)
+    {
+        String inputPattern = "yyyy-MM-dd hh:mm:ss";
+        String outputPattern = "EEE, dd MMM, yyyy";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(time);
+            str = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return str;
     }
 
 }

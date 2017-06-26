@@ -21,15 +21,17 @@ public class SplashActivity extends AppCompatActivity {
 
         PrefUtils.initPreference(this);
 
-        new Handler().postDelayed(new Runnable()
-        {
+        if(!PrefUtils.getBoolean("sortcut")){
+            addShortcut();
+            PrefUtils.putBoolean("sortcut", true);
+        }
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 
                 if (PrefUtils.getBoolean("islogin")) {
 
-                    if (PrefUtils.getUserInfo().getmMobileNo()==null ||PrefUtils.getUserInfo().getmMobileNo().equals("") )
-                    {
+                    if (PrefUtils.getUserInfo().getmMobileNo() == null || PrefUtils.getUserInfo().getmMobileNo().equals("")) {
                         Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
                         startActivity(i);
                         finish();
@@ -50,6 +52,22 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }
         }, 3000);
+    }
+
+    private void addShortcut() {
+
+        Intent shortcutIntent = new Intent(getApplicationContext(),
+                SplashActivity.class);
+
+        shortcutIntent.setAction(Intent.ACTION_MAIN);
+
+        Intent addIntent = new Intent();
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "RideShare");
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,Intent.ShortcutIconResource.fromContext(getApplicationContext(),R.mipmap.ic_launcher));
+        addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        addIntent.putExtra("duplicate", false);
+        getApplicationContext().sendBroadcast(addIntent);
     }
 
 }

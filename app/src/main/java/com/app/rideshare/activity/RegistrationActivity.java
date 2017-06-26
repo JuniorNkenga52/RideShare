@@ -167,6 +167,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 {
                     if (!response.body().getmStatus().equals("error"))
                     {
+                        PrefUtils.putBoolean("isFriends",true);
                         PrefUtils.addUserInfo(response.body().getMlist().get(0));
                         PrefUtils.putBoolean("islogin",true);
                         sendOTP(response.body().getMlist().get(0).getmMobileNo(),response.body().getMlist().get(0).getmUserId());

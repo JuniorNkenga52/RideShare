@@ -9,6 +9,11 @@
     <color name="facebook_btn_color">#3b5999</color>
     <color name="google_btn_color">#df4a32</color>
     <color name="blacltext">#1b1505</color>
-
+    <color name="blue">#043eea</color>
     <color name="white">#FFFFFF</color>
+
+
+    <color name="accept_btn_color">#23ca0d</color>
+    <color name="reject_btn_color">#f10808</color>
+    <color name="gray">#a4a4a4</color>
 </resources>

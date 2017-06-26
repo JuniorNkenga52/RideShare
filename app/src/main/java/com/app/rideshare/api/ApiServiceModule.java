@@ -1,5 +1,8 @@
 package com.app.rideshare.api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -36,8 +39,11 @@ public class ApiServiceModule {
         });
         return okHttpClient;
     }
+    private static  Gson gson = new GsonBuilder()
+            .setLenient()
+            .create();
 
-    private static Retrofit.Builder builder = new Retrofit.Builder().baseUrl(API_ENDPOINT).addConverterFactory(GsonConverterFactory.create());
+    private static Retrofit.Builder builder = new Retrofit.Builder().baseUrl(API_ENDPOINT).addConverterFactory(GsonConverterFactory.create(gson));
 
     public static <S> S createService(Class<S> serviceClass) {
         Retrofit retrofit = builder.client(okHttpClientTokenHeader().build()).build();

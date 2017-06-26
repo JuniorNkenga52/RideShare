@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,11 @@ public class RideTypeActivity extends AppCompatActivity {
     User mUserBean;
     RideShareApp application;
 
+    LinearLayout mNeedRideLL;
+    LinearLayout mOfferRideLL;
+
+    int rideType = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,15 +84,54 @@ public class RideTypeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setTitle("Select Ride");
 
+
+        mNeedRideLL = (LinearLayout) findViewById(R.id.need_ride_ll);
+        mOfferRideLL = (LinearLayout) findViewById(R.id.offer_ride_ll);
+
+
+        mNeedRideLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                if(currentLocation!=null)
+                {
+                    mNeedRideLL.setSelected(true);
+                    mOfferRideLL.setSelected(false);
+                    rideType = 1;
+                    application.setmUserType(""+rideType);
+                    selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
+                }else{
+                    ToastUtils.showShort(RideTypeActivity.this,"Getting your location.");
+                }
+
+            }
+        });
+        mOfferRideLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+
+                if(currentLocation!=null)
+                {
+                    mOfferRideLL.setSelected(true);
+                    mNeedRideLL.setSelected(false);
+                    rideType = 2;
+                    application.setmUserType(""+rideType);
+                    selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
+                }else{
+                    ToastUtils.showShort(RideTypeActivity.this,"Getting your location.");
+                }
+            }
+        });
+
         mNextTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mNeedRideRb.isChecked()) {
-                    application.setmUserType("1");
-                    selectRide(mUserBean.getmUserId(), "1", "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
-                } else if (mOfferRideRb.isChecked()) {
-                    application.setmUserType("2");
-                    selectRide(mUserBean.getmUserId(), "2", "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
+                if (rideType == 0) {
+                    ToastUtils.showShort(RideTypeActivity.this, "Please Select Ride type.");
+                } else {
+                    application.setmUserType(""+rideType);
+
                 }
             }
         });
@@ -133,8 +178,7 @@ public class RideTypeActivity extends AppCompatActivity {
         @Override
         public void onPermissionGranted() {
 
-            if(mUserBean.getContact_sync().equals("0"))
-            {
+            if (mUserBean.getContact_sync().equals("0")) {
                 syncContact();
             }
 
@@ -167,7 +211,7 @@ public class RideTypeActivity extends AppCompatActivity {
         ApiServiceModule.createService(RestApiInterface.class).syncContact(request).enqueue(new Callback<ContactResponse>() {
             @Override
             public void onResponse(Call<ContactResponse> call, Response<ContactResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful() && response.body() != null) {
 
                     if (response.body().getStatus().equals("success")) {
 
