@@ -10,13 +10,21 @@ import com.app.rideshare.api.response.SendOTPResponse;
 import com.app.rideshare.api.response.SendResponse;
 import com.app.rideshare.api.response.SignupResponse;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 public interface RestApiInterface {
+
+
+    MediaType MULTIPART = MediaType.parse("multipart/form-data");
 
     @FormUrlEncoded
     @POST("auth/register")
@@ -78,4 +86,10 @@ public interface RestApiInterface {
     @FormUrlEncoded
     @POST("user/getRideHistory")
     Call<HistoryResponse> getHistory(@Field("user_id") String mUserId);
+
+
+    @Multipart
+    @POST("user/updateProfile")
+    Call<SignupResponse> updateProfile(@Part("user_id") RequestBody mUserId,@Part("u_firstname") RequestBody Firstname,@Part("u_lastname") RequestBody lastName
+            ,@Part("u_mobile") RequestBody mobilenumber,@Part MultipartBody.Part file,@Part("u_email") RequestBody mEmail);
 }

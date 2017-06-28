@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/squar_re"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:theme="@style/TextLabel"
+                android:theme="@style/TextLabel1"
                 app:hintTextAppearance="@style/TextLabelsize">
 
                 <EditText
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/first_name_tl"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:theme="@style/TextLabel"
+                android:theme="@style/TextLabel1"
                 app:hintTextAppearance="@style/TextLabelsize">
 
                 <EditText
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/last_name_tl"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:theme="@style/TextLabel"
+                android:theme="@style/TextLabel1"
                 app:hintTextAppearance="@style/TextLabelsize">
 
                 <EditText
@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/email_tl"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:theme="@style/TextLabel"
+                android:theme="@style/TextLabel1"
                 app:hintTextAppearance="@style/TextLabelsize">
 
                 <EditText
@@ -134,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/mobile_tl"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:theme="@style/TextLabel"
+                android:theme="@style/TextLabel1"
                 app:hintTextAppearance="@style/TextLabelsize">
 
                 <EditText
@@ -155,7 +155,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/password_tl"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:theme="@style/TextLabel"
+                android:theme="@style/TextLabel1"
                 app:hintTextAppearance="@style/TextLabelsize">
 
                 <EditText

@@ -102,7 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/squar_re"
             android:layout_marginTop="@dimen/_25sdp"
-            android:theme="@style/TextLabel"
+            android:theme="@style/TextLabel1"
             app:hintTextAppearance="@style/TextLabelsize">
 
             <EditText
@@ -123,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/usernameWrapper"
             android:layout_marginTop="@dimen/_25sdp"
-            android:theme="@style/TextLabel"
+            android:theme="@style/TextLabel1"
             app:hintTextAppearance="@style/TextLabelsize">
 
             <EditText

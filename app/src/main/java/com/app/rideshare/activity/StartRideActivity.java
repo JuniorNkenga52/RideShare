@@ -1,20 +1,20 @@
 package com.app.rideshare.activity;
 
-import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.app.rideshare.R;
 import com.app.rideshare.api.response.AcceptRider;
 import com.app.rideshare.model.Directions;
-import com.app.rideshare.model.Rider;
 import com.app.rideshare.model.Route;
 import com.app.rideshare.utils.MapDirectionAPI;
-import com.app.rideshare.utils.ToastUtils;
+import com.app.rideshare.utils.TypefaceUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,9 +26,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.gson.Gson;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -50,11 +47,23 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
     private Polyline directionLine;
 
+
+    private TextView mNameTv;
+    private TextView mEmailTv;
+
+    Typeface mRobotoMedium;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_ride_layout);
+
+        mNameTv=(TextView)findViewById(R.id.name_tv);
+        mEmailTv=(TextView)findViewById(R.id.email_tv);
+
+        mRobotoMedium= TypefaceUtils.getTypefaceRobotoMediam(this);
+        mNameTv.setTypeface(mRobotoMedium);
+        mEmailTv.setTypeface(mRobotoMedium);
 
         SupportMapFragment mapFragment = (SupportMapFragment) this.getSupportFragmentManager()
                 .findFragmentById(R.id.mapView);
@@ -63,7 +72,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         try
         {
             mRider=(AcceptRider)getIntent().getExtras().getSerializable("rideobj");
-
              pickuplocation=new LatLng(Double.parseDouble(mRider.getStart_lati()),Double.parseDouble(mRider.getStart_long()));
                 droppfflocation=new LatLng(Double.parseDouble(mRider.getEnd_lati()),Double.parseDouble(mRider.getEnd_long()));
             requestRoute(pickuplocation,droppfflocation);

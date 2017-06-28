@@ -54,5 +54,8 @@ dependencies {
     compile 'pl.bclogic:pulsator4droid:1.0.3'
     compile 'com.github.lzyzsd:circleprogress:1.2.1'
     compile 'com.mikhaellopez:circularimageview:3.0.2'
+    compile 'com.zhihu.android:matisse:0.4.3'
+    compile 'com.github.nguyenhoanglam:ImagePicker:1.1.3'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
 }

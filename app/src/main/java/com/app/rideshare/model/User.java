@@ -38,6 +38,18 @@ public class User implements Serializable
     @SerializedName("contact_sync")
     private String contact_sync;
 
+
+    private String profile_image;
+
+
+    public String getProfile_image() {
+        return profile_image;
+    }
+
+    public void setProfile_image(String profile_image) {
+        this.profile_image = profile_image;
+    }
+
     public String getContact_sync() {
         return contact_sync;
     }

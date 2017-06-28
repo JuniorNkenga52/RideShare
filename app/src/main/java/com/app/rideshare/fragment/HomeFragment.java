@@ -208,7 +208,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
                         currentlthg = new LatLng(location.getLatitude(), location.getLongitude());
                         Log.d("Bearing", "" + location.getBearing());
                         CameraPosition cameraPosition = new CameraPosition.Builder().target(currentlthg).zoom(16).build();
-                        mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                        mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                         if (curLocMarker == null) {
                             curLocMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker())
@@ -287,6 +287,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
             LatLngBounds bounds = builder.build();
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             mGoogleMap.animateCamera(cu);
+        }else{
+            for (Marker m : mlistMarker) {
+                m.remove();
+            }
         }
     }
 

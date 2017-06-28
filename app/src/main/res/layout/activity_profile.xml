@@ -14,10 +14,10 @@
         android:id="@+id/circularImageView"
         android:layout_width="@dimen/_90sdp"
         android:layout_height="@dimen/_90sdp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/_70sdp"
-        android:src="@drawable/banner" />
+        android:layout_marginTop="44dp"
+        android:src="@drawable/banner"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/username_tv"
@@ -32,10 +32,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/username_tv"
+        android:padding="@dimen/_8sdp"
         android:layout_marginTop="@dimen/_10sdp"
         android:orientation="vertical">
 
@@ -122,7 +123,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/linearLayout3">
 
         <ImageView
             android:id="@+id/back_iv"

@@ -236,6 +236,8 @@ public class NotificationActivity extends AppCompatActivity
                 if(jobj.getString("status").equals("success"))
                 {
                     ToastUtils.showShort(NotificationActivity.this,"Ride Cancel");
+                    timer.cancel();
+                    finish();
                 }
 
             }catch (Exception e){

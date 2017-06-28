@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import com.app.rideshare.R;
+import com.app.rideshare.adapter.ChatAdapterAdapter;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
@@ -18,17 +20,27 @@ import org.json.JSONObject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 public class WebSocketActivity extends AppCompatActivity {
     WebSocketClient mWebSocketClient;
     EditText editText;
     Button btnSend;
 
+    private ListView mChatLv;
+    ChatAdapterAdapter mAdapter;
+
+    ArrayList<String> mlist;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.websocket_activity);
         connectWebSocket();
+        mlist=new ArrayList<>();
+
+        mAdapter=new ChatAdapterAdapter(this,mlist);
+        mChatLv=(ListView)findViewById(R.id.chatlv);
+        mChatLv.setAdapter(mAdapter);
 
         editText = (EditText) findViewById(R.id.message);
         btnSend = (Button) findViewById(R.id.btn_Send);
@@ -46,7 +58,7 @@ public class WebSocketActivity extends AppCompatActivity {
     private void connectWebSocket() {
         URI uri;
         try {
-            uri = new URI("ws://192.168.0.30:8090/websocket/php-socket.php");
+            uri = new URI("ws://192.168.0.30:8090/websocketnew/php-socket.php");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
@@ -61,7 +73,33 @@ public class WebSocketActivity extends AppCompatActivity {
 
             @Override
             public void onMessage(String s) {
-                Log.d("Websocket", s);
+                try{
+
+                    final JSONObject jobj=new JSONObject(s);
+
+                    if(!jobj.getString("message_type").equals("chat-connection-ack"))
+                    {
+                        if(!jobj.getString("chat_message").equals("null") && jobj.getString("sender_user").equals("1"))
+                        {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try{
+                                        mAdapter.updatelist(jobj.getString("username")+" - "+jobj.getString("chat_message"));
+                                        mChatLv.setSelection(mAdapter.getCount() - 1);
+                                    }catch (Exception e){
+
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+
+                }catch (Exception e){
+                    Log.d("error",e.toString());
+                }
+
             }
 
             @Override
@@ -83,6 +121,7 @@ public class WebSocketActivity extends AppCompatActivity {
             JSONObject jmessage = new JSONObject();
             jmessage.put("chat_message", message);
             jmessage.put("chat_user", "Dhaiyur");
+            jmessage.put("sender_user","1");
             jmessage.put("message_type", "chat-box-html");
             jmessage.put("message_new", "");
             mWebSocketClient.send(jmessage.toString());

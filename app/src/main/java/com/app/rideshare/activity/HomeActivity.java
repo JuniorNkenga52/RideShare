@@ -38,8 +38,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import it.sephiroth.android.library.easing.Circ;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
@@ -70,6 +73,7 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -78,6 +82,9 @@ public class HomeActivity extends AppCompatActivity
 
         mFnameTv = (TextView) navigationView.getHeaderView(0).findViewById(R.id.header_fname_tv);
         mEmailTv = (TextView) navigationView.getHeaderView(0).findViewById(R.id.header_email_tv);
+        mProfileIv=(CircularImageView)navigationView.getHeaderView(0).findViewById(R.id.nav_profile);
+
+
 
         mEditProfileIv = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.edit_profile);
         mEditProfileIv.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +100,14 @@ public class HomeActivity extends AppCompatActivity
 
         mFnameTv.setText(PrefUtils.getUserInfo().getmFirstName());
         mEmailTv.setText(PrefUtils.getUserInfo().getmEmail());
+        if(!PrefUtils.getUserInfo().getProfile_image().equals("")){
+            Picasso.with(this).load(PrefUtils.getUserInfo().getProfile_image()).into(mProfileIv);
+        }else {
+            Picasso.with(this).load(R.mipmap.ic_launcher).into(mProfileIv);
+        }
+
+
+
 
         mlist = (ArrayList<Rider>) getIntent().getSerializableExtra("list");
 
@@ -115,10 +130,6 @@ public class HomeActivity extends AppCompatActivity
         mPopupIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-             /*   Intent i=new Intent(HomeActivity.this,WebSocketActivity.class);
-                startActivity(i);*/
-
                 if (popupWindow != null && popupWindow.isShowing()) {
                     popupWindow.dismiss();
                 } else {
@@ -126,8 +137,28 @@ public class HomeActivity extends AppCompatActivity
                 }
             }
         });
-    }
+        drawer.setDrawerListener(new DrawerLayout.DrawerListener() {
 
+            @Override
+            public void onDrawerSlide(View arg0, float arg1)
+            {
+                if(PrefUtils.getUserInfo()!=null)
+                {
+                    if(!PrefUtils.getUserInfo().getProfile_image().equals("")){
+                        Picasso.with(HomeActivity.this).load(PrefUtils.getUserInfo().getProfile_image()).into(mProfileIv);
+                    }else {
+                        Picasso.with(HomeActivity.this).load(R.mipmap.ic_launcher).into(mProfileIv);
+                    }
+                    mFnameTv.setText(PrefUtils.getUserInfo().getmFirstName());
+                    mEmailTv.setText(PrefUtils.getUserInfo().getmEmail());
+                }
+
+            }
+            @Override public void onDrawerStateChanged(int arg0) {}
+            @Override public void onDrawerOpened(View arg0) {}
+            @Override public void onDrawerClosed(View arg0) {}
+        });
+    }
     public void showPopup(View v) {
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View popupView = layoutInflater.inflate(R.layout.popup_layout, null);

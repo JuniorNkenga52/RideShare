@@ -1,21 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom">
 
-    <EditText
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name" />
+    <ListView
+        android:id="@+id/chatlv"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/li1"
+        android:layout_height="match_parent"></ListView>
 
-    <Button
-        android:id="@+id/btn_Send"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/li1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Send" />
-</LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Message" />
+
+        <Button
+            android:id="@+id/btn_Send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send" />
+    </LinearLayout>
+</RelativeLayout>
