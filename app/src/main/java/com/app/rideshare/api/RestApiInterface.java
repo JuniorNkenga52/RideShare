@@ -9,6 +9,7 @@ import com.app.rideshare.api.response.RideSelect;
 import com.app.rideshare.api.response.SendOTPResponse;
 import com.app.rideshare.api.response.SendResponse;
 import com.app.rideshare.api.response.SignupResponse;
+import com.app.rideshare.api.response.StartRideResponse;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -92,4 +93,10 @@ public interface RestApiInterface {
     @POST("user/updateProfile")
     Call<SignupResponse> updateProfile(@Part("user_id") RequestBody mUserId,@Part("u_firstname") RequestBody Firstname,@Part("u_lastname") RequestBody lastName
             ,@Part("u_mobile") RequestBody mobilenumber,@Part MultipartBody.Part file,@Part("u_email") RequestBody mEmail);
+
+    @FormUrlEncoded
+    @POST("user/startOrEndRide")
+    Call<StartRideResponse> mStartRide(@Field("ride_id") String mRideId,@Field("ride_status") String mRideStatus,@Field("user_id") String mUserId);
+
+
 }

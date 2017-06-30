@@ -24,6 +24,7 @@ import com.app.rideshare.model.Rider;
 import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.utils.TypefaceUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -161,14 +162,37 @@ public class WaitingActivity extends AppCompatActivity {
                     rider.setEnding_address(jRider.getString("ending_address"));
                     rider.setStart_long(jRider.getString("start_long"));
                     rider.setU_ride_type(jRider.getString("u_ride_type"));
-                    rider.setFrom_id(jRider.getString("from_id"));
-                    rider.setTo_id(jRider.getString("to_id"));
                     rider.setStarting_address(jRider.getString("starting_address"));
                     rider.setCreated_datetime(jRider.getString("created_datetime"));
                     rider.setStart_lati(jRider.getString("start_lati"));
                     rider.setEnd_long(jRider.getString("end_long"));
                     rider.setUpdated_datetime(jRider.getString("updated_datetime"));
                     rider.setEnd_lati(jRider.getString("end_lati"));
+
+
+                    JSONObject jFromRider=jRider.getJSONObject("from_id");
+                    Rider fromRider=new Rider();
+                    fromRider.setnUserId(jFromRider.getString("u_id"));
+                    fromRider.setmFirstName(jFromRider.getString("u_firstname"));
+                    fromRider.setmLastName(jFromRider.getString("u_lastname"));
+                    fromRider.setmEmail(jFromRider.getString("u_email"));
+                    fromRider.setmProfileImage(jFromRider.getString("profile_image"));
+                    fromRider.setmLatitude(jFromRider.getString("u_lat"));
+                    fromRider.setmLongitude(jFromRider.getString("u_long"));
+                    rider.setFromRider(fromRider);
+
+
+                    JSONObject jToRider=jRider.getJSONObject("to_id");
+                    Rider toRider=new Rider();
+                    toRider.setnUserId(jToRider.getString("u_id"));
+                    toRider.setmFirstName(jToRider.getString("u_firstname"));
+                    toRider.setmLastName(jToRider.getString("u_lastname"));
+                    toRider.setmEmail(jToRider.getString("u_email"));
+                    toRider.setmProfileImage(jToRider.getString("profile_image"));
+                    toRider.setmLatitude(jToRider.getString("u_lat"));
+                    toRider.setmLongitude(jToRider.getString("u_long"));
+                    rider.setToRider(toRider);
+
 
                     Intent i = new Intent(WaitingActivity.this, StartRideActivity.class);
                     i.putExtra("rideobj",rider);

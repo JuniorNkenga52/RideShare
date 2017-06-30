@@ -5,7 +5,6 @@ import android.support.multidex.MultiDex;
 
 import com.facebook.FacebookSdk;
 
-
 public class RideShareApp extends Application
 {
     private String mUserType="";

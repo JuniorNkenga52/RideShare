@@ -37,7 +37,6 @@ public class GCMPushReceiverService extends GcmListenerService {
             {
                 JSONArray jarrMsg=jobj.getJSONArray("msg");
                 JSONObject jobjmessage=jarrMsg.getJSONObject(0);
-              //  playSound();
                 openActivity(jobjmessage.toString());
 
             }else if(jobj.getString("type").equals("2"))
@@ -50,6 +49,19 @@ public class GCMPushReceiverService extends GcmListenerService {
                 Intent intent = new Intent("request_notification");
                 intent.putExtra("int_data",jobj.toString());
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            }else if(jobj.getString("type").equals("4"))
+            {
+                Intent intent = new Intent("start_ride");
+                intent.putExtra("int_data","1");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                sendNotification("Your Ride start");
+            }
+            else if(jobj.getString("type").equals("5"))
+            {
+                Intent intent = new Intent("start_ride");
+                intent.putExtra("int_data","2");
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                sendNotification("Your Ride Finish");
             }
         }catch (Exception e){
             Log.d("error",e.toString());
@@ -57,25 +69,11 @@ public class GCMPushReceiverService extends GcmListenerService {
     }
     public void openActivity(String json)
     {
-        /*Intent i=new Intent(getBaseContext(), NotificationActivity.class);
-        i.addFlags(FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        getBaseContext().startActivity(i);
-*/
-
         Intent intent = new Intent(this, NotificationActivity.class);
         intent.putExtra("data",json);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-    }
-    private void playSound(){
-        MediaPlayer BG = MediaPlayer.create(getBaseContext(), R.raw.navy_alarm);
-        BG.setLooping(false);
-        BG.setVolume(100, 100);
-        BG.start();
-
-        Vibrator v = (Vibrator) this.getSystemService(this.VIBRATOR_SERVICE);
-        v.vibrate(2000);
     }
 
     private void sendNotification(String message) {
@@ -92,10 +90,10 @@ public class GCMPushReceiverService extends GcmListenerService {
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(sound)
-                .setAutoCancel(true)
-           .setContentIntent(pendingIntent);
+                .setAutoCancel(true);
+
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(currenttime, noBuilder.build());
+        notificationManager.notify(0, noBuilder.build());
     }
 }

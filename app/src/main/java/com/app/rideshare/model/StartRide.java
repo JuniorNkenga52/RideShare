@@ -1,13 +1,14 @@
-package com.app.rideshare.api.response;
+package com.app.rideshare.model;
 
-import com.app.rideshare.model.Rider;
-import com.google.gson.annotations.SerializedName;
+/**
+ * Created by rlogical-dev-19 on 29-Jun-2017.
+ */
 
-import java.io.Serializable;
-
-
-public class AcceptRider  implements Serializable{
+public class StartRide
+{
     private String ride_id;
+    private String to_id;
+    private String from_id;
     private String u_ride_type;
     private String starting_address;
     private String ending_address;
@@ -16,17 +17,7 @@ public class AcceptRider  implements Serializable{
     private String end_lati;
     private String end_long;
     private String request_status;
-    private String created_datetime;
-    private String updated_datetime;
-
-    @SerializedName("to_id")
-    private Rider toRider;
-
-    @SerializedName("from_id")
-    private Rider fromRider;
-
-
-
+    private String ride_status;
 
     public String getRide_id() {
         return ride_id;
@@ -34,6 +25,22 @@ public class AcceptRider  implements Serializable{
 
     public void setRide_id(String ride_id) {
         this.ride_id = ride_id;
+    }
+
+    public String getTo_id() {
+        return to_id;
+    }
+
+    public void setTo_id(String to_id) {
+        this.to_id = to_id;
+    }
+
+    public String getFrom_id() {
+        return from_id;
+    }
+
+    public void setFrom_id(String from_id) {
+        this.from_id = from_id;
     }
 
     public String getU_ride_type() {
@@ -100,35 +107,11 @@ public class AcceptRider  implements Serializable{
         this.request_status = request_status;
     }
 
-    public String getCreated_datetime() {
-        return created_datetime;
+    public String getRide_status() {
+        return ride_status;
     }
 
-    public void setCreated_datetime(String created_datetime) {
-        this.created_datetime = created_datetime;
-    }
-
-    public String getUpdated_datetime() {
-        return updated_datetime;
-    }
-
-    public void setUpdated_datetime(String updated_datetime) {
-        this.updated_datetime = updated_datetime;
-    }
-
-    public Rider getToRider() {
-        return toRider;
-    }
-
-    public void setToRider(Rider toRider) {
-        this.toRider = toRider;
-    }
-
-    public Rider getFromRider() {
-        return fromRider;
-    }
-
-    public void setFromRider(Rider fromRider) {
-        this.fromRider = fromRider;
+    public void setRide_status(String ride_status) {
+        this.ride_status = ride_status;
     }
 }

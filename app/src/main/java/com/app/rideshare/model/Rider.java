@@ -41,6 +41,18 @@ public class Rider  implements Serializable{
     @SerializedName("address_from_google")
     private String mAddress;
 
+    @SerializedName("profile_image")
+    private String mProfileImage;
+
+
+    public String getmProfileImage() {
+        return mProfileImage;
+    }
+
+    public void setmProfileImage(String mProfileImage) {
+        this.mProfileImage = mProfileImage;
+    }
+
     public String getmAddress() {
         return mAddress;
     }
