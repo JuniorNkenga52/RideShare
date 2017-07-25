@@ -1,10 +1,16 @@
 package com.app.rideshare.activity;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,8 +24,10 @@ import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.request.ContactRequest;
+import com.app.rideshare.api.response.AcceptRider;
 import com.app.rideshare.api.response.ContactResponse;
 import com.app.rideshare.api.response.RideSelect;
+import com.app.rideshare.model.InProgressRide;
 import com.app.rideshare.model.User;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
@@ -33,6 +41,7 @@ import java.util.ArrayList;
 
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
+import me.drakeet.materialdialog.MaterialDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,15 +65,76 @@ public class RideTypeActivity extends AppCompatActivity {
     LinearLayout mOfferRideLL;
 
     int rideType = 0;
+    boolean GpsStatus = false;
+
+    private  String InprogressRide="";
+    MaterialDialog mMaterialDialog;
+    InProgressRide mRide;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_type);
 
-        application = (RideShareApp) getApplicationContext();
-
         PrefUtils.initPreference(this);
+        application = (RideShareApp) getApplicationContext();
+        turnGPSOn();
+
+        if(getIntent().hasExtra("inprogress"))
+        {
+            InprogressRide=getIntent().getExtras().getString("inprogress");
+        }
+        if(InprogressRide.equals("busy"))
+        {
+            mRide=(InProgressRide)getIntent().getExtras().getSerializable("rideprogress");
+            mMaterialDialog = new MaterialDialog(this)
+                    .setTitle("Warning")
+                    .setMessage("You have currently 1 Ride active.Are you want to continue?")
+                    .setPositiveButton("Yes i'm in", new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v) {
+                            mMaterialDialog.dismiss();
+
+                            AcceptRider ride=new AcceptRider();
+                            ride.setToRider(mRide.getmToRider());
+                            ride.setFromRider(mRide.getmFromRider());
+                            ride.setEnd_lati(mRide.getmEndLat());
+                            ride.setEnd_long(mRide.getmEndLang());
+                            ride.setEnding_address(mRide.getmEndingAddress());
+                            ride.setStarting_address(mRide.getmStartingAddress());
+                            ride.setRide_id(mRide.getmRideId());
+                            ride.setU_ride_type(mRide.getmRideType());
+                            ride.setStart_lati(mRide.getmStartLat());
+                            ride.setStart_long(mRide.getmStartLang());
+                            ride.setRequest_status(mRide.getmRequestStatus());
+
+                            if(mRide.getmToRider().getnUserId().equals(PrefUtils.getUserInfo().getmUserId())){
+                                application.setmUserType("" + mRide.getmToRider().getU_ride_type());
+                            }else{
+                                application.setmUserType("" + mRide.getmFromRider().getU_ride_type());
+                            }
+
+                            Intent i=new Intent(RideTypeActivity.this,StartRideActivity.class);
+                            i.putExtra("rideobj",ride);
+                            startActivity(i);
+
+                        }
+                    })
+                    .setNegativeButton("no Cancel", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mMaterialDialog.dismiss();
+
+                        }
+                    });
+
+            mMaterialDialog.show();
+        }
+
+
+
+
         mUserBean = PrefUtils.getUserInfo();
 
         mProgressDialog = new CustomProgressDialog(this);
@@ -91,35 +161,40 @@ public class RideTypeActivity extends AppCompatActivity {
 
         mNeedRideLL.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                if(currentLocation!=null)
-                {
-                    mNeedRideLL.setSelected(true);
-                    mOfferRideLL.setSelected(false);
-                    rideType = 1;
-                    application.setmUserType(""+rideType);
-                    selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
-                }else{
-                    ToastUtils.showShort(RideTypeActivity.this,"Getting your location.");
+            public void onClick(View v) {
+
+                if (!GpsStatus) {
+                    turnGPSOn();
+                } else {
+                    if (currentLocation != null) {
+                        mNeedRideLL.setSelected(true);
+                        mOfferRideLL.setSelected(false);
+                        rideType = 1;
+                        application.setmUserType("" + rideType);
+                        selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
+                    } else {
+                        ToastUtils.showShort(RideTypeActivity.this, "Getting your location.");
+                    }
                 }
 
             }
         });
         mOfferRideLL.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
 
-                if(currentLocation!=null)
-                {
-                    mOfferRideLL.setSelected(true);
-                    mNeedRideLL.setSelected(false);
-                    rideType = 2;
-                    application.setmUserType(""+rideType);
-                    selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
-                }else{
-                    ToastUtils.showShort(RideTypeActivity.this,"Getting your location.");
+                if (!GpsStatus) {
+                    turnGPSOn();
+                } else {
+                    if (currentLocation != null) {
+                        mOfferRideLL.setSelected(true);
+                        mNeedRideLL.setSelected(false);
+                        rideType = 2;
+                        application.setmUserType("" + rideType);
+                        selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
+                    } else {
+                        ToastUtils.showShort(RideTypeActivity.this, "Getting your location.");
+                    }
                 }
             }
         });
@@ -130,8 +205,7 @@ public class RideTypeActivity extends AppCompatActivity {
                 if (rideType == 0) {
                     ToastUtils.showShort(RideTypeActivity.this, "Please Select Ride type.");
                 } else {
-                    application.setmUserType(""+rideType);
-
+                    application.setmUserType("" + rideType);
                 }
             }
         });
@@ -145,6 +219,36 @@ public class RideTypeActivity extends AppCompatActivity {
 
     }
 
+    public void turnGPSOn() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        GpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if (!GpsStatus) {
+            final AlertDialog.Builder builder;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                builder = new AlertDialog.Builder(RideTypeActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+            } else {
+                builder = new AlertDialog.Builder(RideTypeActivity.this);
+            }
+            builder.setCancelable(false);
+            builder.setTitle("Alert")
+                    .setMessage("Please Enable GPS.")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+    }
+
     private void selectRide(String mId, String mType, String latitude, String longitude) {
 
         mProgressDialog.show();
@@ -156,8 +260,7 @@ public class RideTypeActivity extends AppCompatActivity {
                     Intent i = new Intent(RideTypeActivity.this, HomeActivity.class);
                     i.putExtra("list", response.body().getMlistUser());
                     startActivity(i);
-                    finish();
-
+                    //  finish();
 
                 } else {
 

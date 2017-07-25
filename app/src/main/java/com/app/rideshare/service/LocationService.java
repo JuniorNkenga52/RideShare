@@ -44,10 +44,15 @@ public class LocationService extends Service
         if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
             Toast.makeText(getApplicationContext(),"Permission Denied",Toast.LENGTH_SHORT).show();
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 4000, 0, listener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 4000, 0, listener);
-
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
     }
+
+   /* @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        stopSelf();
+    }*/
 
     @Override
     public IBinder onBind(Intent intent)
@@ -139,6 +144,8 @@ public class LocationService extends Service
         {
             Log.i("*********************", "Location changed");
             if(isBetterLocation(loc, previousBestLocation)) {
+
+                previousBestLocation=loc;
                 loc.getLatitude();
                 loc.getLongitude();
                 intent.putExtra("Latitude", loc.getLatitude());

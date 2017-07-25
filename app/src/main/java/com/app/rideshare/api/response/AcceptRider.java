@@ -26,7 +26,10 @@ public class AcceptRider  implements Serializable{
     private Rider fromRider;
 
 
-
+    public AcceptRider()
+    {
+        this.request_status = "";
+    }
 
     public String getRide_id() {
         return ride_id;

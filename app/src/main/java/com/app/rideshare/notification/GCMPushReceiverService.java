@@ -1,28 +1,22 @@
 package com.app.rideshare.notification;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.app.rideshare.R;
-import com.app.rideshare.activity.HomeActivity;
 import com.app.rideshare.activity.NotificationActivity;
 import com.google.android.gms.gcm.GcmListenerService;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class GCMPushReceiverService extends GcmListenerService {
     @Override
@@ -88,6 +82,7 @@ public class GCMPushReceiverService extends GcmListenerService {
         NotificationCompat.Builder noBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentText(message)
+                .setContentTitle("RideShare")
                 .setAutoCancel(true)
                 .setSound(sound)
                 .setAutoCancel(true);

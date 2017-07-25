@@ -2,6 +2,8 @@ package com.app.rideshare.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -16,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -30,6 +33,7 @@ import com.app.rideshare.fragment.HomeFragment;
 import com.app.rideshare.listner.OnBackPressedListener;
 import com.app.rideshare.model.Rider;
 import com.app.rideshare.utils.PrefUtils;
+import com.app.rideshare.utils.TypefaceUtils;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -41,8 +45,6 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-
-import it.sephiroth.android.library.easing.Circ;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
@@ -59,6 +61,10 @@ public class HomeActivity extends AppCompatActivity
     private TextView mEmailTv;
     private ImageView mEditProfileIv;
     CircularImageView mProfileIv;
+
+    private TextView mTitleHomeTv;
+
+    Typeface mRobotoMedium;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +88,12 @@ public class HomeActivity extends AppCompatActivity
 
         mFnameTv = (TextView) navigationView.getHeaderView(0).findViewById(R.id.header_fname_tv);
         mEmailTv = (TextView) navigationView.getHeaderView(0).findViewById(R.id.header_email_tv);
-        mProfileIv=(CircularImageView)navigationView.getHeaderView(0).findViewById(R.id.nav_profile);
+        mProfileIv = (CircularImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profile);
 
-
+        mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
+        mTitleHomeTv = (TextView) findViewById(R.id.title_home_tv);
+        mTitleHomeTv.setTypeface(mRobotoMedium);
+        mTitleHomeTv.setText("RideShare");
 
         mEditProfileIv = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.edit_profile);
         mEditProfileIv.setOnClickListener(new View.OnClickListener() {
@@ -97,16 +106,17 @@ public class HomeActivity extends AppCompatActivity
                 startActivity(i);
             }
         });
+        try {
+            mFnameTv.setText(PrefUtils.getUserInfo().getmFirstName());
+            mEmailTv.setText(PrefUtils.getUserInfo().getmEmail());
+            if (!PrefUtils.getUserInfo().getProfile_image().equals("")) {
+                Picasso.with(this).load(PrefUtils.getUserInfo().getProfile_image()).into(mProfileIv);
+            } else {
+                Picasso.with(this).load(R.mipmap.ic_launcher).into(mProfileIv);
+            }
+        } catch (Exception e) {
 
-        mFnameTv.setText(PrefUtils.getUserInfo().getmFirstName());
-        mEmailTv.setText(PrefUtils.getUserInfo().getmEmail());
-        if(!PrefUtils.getUserInfo().getProfile_image().equals("")){
-            Picasso.with(this).load(PrefUtils.getUserInfo().getProfile_image()).into(mProfileIv);
-        }else {
-            Picasso.with(this).load(R.mipmap.ic_launcher).into(mProfileIv);
         }
-
-
 
 
         mlist = (ArrayList<Rider>) getIntent().getSerializableExtra("list");
@@ -140,13 +150,11 @@ public class HomeActivity extends AppCompatActivity
         drawer.setDrawerListener(new DrawerLayout.DrawerListener() {
 
             @Override
-            public void onDrawerSlide(View arg0, float arg1)
-            {
-                if(PrefUtils.getUserInfo()!=null)
-                {
-                    if(!PrefUtils.getUserInfo().getProfile_image().equals("")){
+            public void onDrawerSlide(View arg0, float arg1) {
+                if (PrefUtils.getUserInfo() != null) {
+                    if (!PrefUtils.getUserInfo().getProfile_image().equals("")) {
                         Picasso.with(HomeActivity.this).load(PrefUtils.getUserInfo().getProfile_image()).into(mProfileIv);
-                    }else {
+                    } else {
                         Picasso.with(HomeActivity.this).load(R.mipmap.ic_launcher).into(mProfileIv);
                     }
                     mFnameTv.setText(PrefUtils.getUserInfo().getmFirstName());
@@ -154,11 +162,21 @@ public class HomeActivity extends AppCompatActivity
                 }
 
             }
-            @Override public void onDrawerStateChanged(int arg0) {}
-            @Override public void onDrawerOpened(View arg0) {}
-            @Override public void onDrawerClosed(View arg0) {}
+
+            @Override
+            public void onDrawerStateChanged(int arg0) {
+            }
+
+            @Override
+            public void onDrawerOpened(View arg0) {
+            }
+
+            @Override
+            public void onDrawerClosed(View arg0) {
+            }
         });
     }
+
     public void showPopup(View v) {
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View popupView = layoutInflater.inflate(R.layout.popup_layout, null);
@@ -167,7 +185,6 @@ public class HomeActivity extends AppCompatActivity
                 popupView,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-
         popupWindow.setOutsideTouchable(true);
 
         final RadioButton mFriendRb = (RadioButton) popupView.findViewById(R.id.fridnds_rb);
@@ -252,7 +269,7 @@ public class HomeActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             HomeFragment myFragment = (HomeFragment) mFragmentManager.findFragmentByTag("HOMEFRAGEMNT");
-
+            mTitleHomeTv.setText("RideShare");
             if (myFragment != null && myFragment.isVisible()) {
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
@@ -262,7 +279,7 @@ public class HomeActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_history) {
             HistoryFragment myFragment = (HistoryFragment) mFragmentManager.findFragmentByTag("HISTORYFRAGMENT");
-
+            mTitleHomeTv.setText("History Page");
             if (myFragment != null && myFragment.isVisible()) {
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
@@ -281,8 +298,12 @@ public class HomeActivity extends AppCompatActivity
                     });
             PrefUtils.remove(PrefUtils.PREF_USER_INFO);
             PrefUtils.remove("islogin");
-            finish();
+            PrefUtils.remove("loginwith");
 
+            Intent i = new Intent(HomeActivity.this, LoginActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

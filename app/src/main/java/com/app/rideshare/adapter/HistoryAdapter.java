@@ -21,11 +21,13 @@ public class HistoryAdapter extends BaseAdapter {
     private Context context;
     private Typeface mRobotoMedium;
     private ArrayList<HistoryBean> mlist;
+    private String mUserId;
 
-    public HistoryAdapter(Context context, ArrayList<HistoryBean> mlist) {
+    public HistoryAdapter(Context context, ArrayList<HistoryBean> mlist,String userid) {
 
         this.context = context;
         this.mlist = mlist;
+        mUserId=userid;
         mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(context);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -37,7 +39,7 @@ public class HistoryAdapter extends BaseAdapter {
 
     @Override
     public String getItem(int position) {
-        return mlist.get(position).getName();
+        return mlist.get(position).getFrom_id();
     }
 
     @Override
@@ -64,13 +66,13 @@ public class HistoryAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.item_history, null);
             holder = new ViewHolder();
 
-            holder.mNameTv=(TextView)convertView.findViewById(R.id.username_tv);
-            holder.mRideTypeTv=(TextView)convertView.findViewById(R.id.ride_type_tv);
-            holder.mStatusTv=(TextView)convertView.findViewById(R.id.status_tv);
-            holder.mStatusResultTv=(TextView)convertView.findViewById(R.id.status_result_tv);
-            holder.mPickupAddressTv=(TextView)convertView.findViewById(R.id.pickup_address_tv);
-            holder.mDropoffAddressTv=(TextView)convertView.findViewById(R.id.drop_off_address);
-            holder.mTimeTv=(TextView)convertView.findViewById(R.id.time_tv);
+            holder.mNameTv = (TextView) convertView.findViewById(R.id.username_tv);
+            holder.mRideTypeTv = (TextView) convertView.findViewById(R.id.ride_type_tv);
+            holder.mStatusTv = (TextView) convertView.findViewById(R.id.status_tv);
+            holder.mStatusResultTv = (TextView) convertView.findViewById(R.id.status_result_tv);
+            holder.mPickupAddressTv = (TextView) convertView.findViewById(R.id.pickup_address_tv);
+            holder.mDropoffAddressTv = (TextView) convertView.findViewById(R.id.drop_off_address);
+            holder.mTimeTv = (TextView) convertView.findViewById(R.id.time_tv);
 
             holder.mNameTv.setTypeface(mRobotoMedium);
             holder.mRideTypeTv.setTypeface(mRobotoMedium);
@@ -88,7 +90,25 @@ public class HistoryAdapter extends BaseAdapter {
 
         HistoryBean bean = mlist.get(position);
 
-        holder.mNameTv.setText(bean.getName());
+        if (bean.getRequest_status().equals("3")) {
+            holder.mStatusResultTv.setText("Inprogress");
+        } else if (bean.getRequest_status().equals("4")) {
+            holder.mStatusResultTv.setText("Complete");
+        } else if (bean.getRequest_status().equals("2")) {
+            holder.mStatusResultTv.setText("Cancel");
+        } else if (bean.getRequest_status().equals("1")) {
+            holder.mStatusResultTv.setText("Accept ride");
+        } else {
+            holder.mStatusResultTv.setText("Decline");
+        }
+
+        if(bean.getFrom_id().equals(mUserId))
+        {
+            holder.mNameTv.setText(bean.getToname());
+        }else{
+            holder.mNameTv.setText(bean.getFromname());
+        }
+
         holder.mPickupAddressTv.setText(bean.getStarting_address());
         holder.mDropoffAddressTv.setText(bean.getEnding_address());
         holder.mTimeTv.setText(AppUtils.dateformat(bean.getTime()));

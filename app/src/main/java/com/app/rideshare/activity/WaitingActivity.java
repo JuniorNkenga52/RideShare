@@ -24,6 +24,7 @@ import com.app.rideshare.model.Rider;
 import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.utils.TypefaceUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -51,6 +52,7 @@ public class WaitingActivity extends AppCompatActivity {
     private TextView mEmailTv;
 
     RideResponse mRideResponse;
+    CircularImageView mProfilePic;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,19 +86,27 @@ public class WaitingActivity extends AppCompatActivity {
 
         mNameTv = (TextView) findViewById(R.id.name_tv);
         mEmailTv = (TextView) findViewById(R.id.email_tv);
+        mProfilePic=(CircularImageView)findViewById(R.id.user_profile);
+
         mNameTv.setTypeface(mRobotoMedium);
         mEmailTv.setTypeface(mRobotoMedium);
 
         mNameTv.setText(currentRider.getmFirstName());
         mEmailTv.setText(currentRider.getmEmail());
+        try{
+            if(!currentRider.getmProfileImage().equals("")){
+                Picasso.with(this).load(currentRider.getmProfileImage()).into(mProfilePic);
+            }
+        }catch (Exception e){
+
+        }
+
+
 
         mCancelTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 cancelRequst(mRideResponse.getRide_id());
-
             }
         });
 

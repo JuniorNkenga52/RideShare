@@ -1,19 +1,25 @@
 package com.app.rideshare.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,7 +30,6 @@ import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.AcceptRider;
 import com.app.rideshare.api.response.StartRideResponse;
 import com.app.rideshare.model.Directions;
-import com.app.rideshare.model.Rider;
 import com.app.rideshare.model.Route;
 import com.app.rideshare.model.User;
 import com.app.rideshare.service.LocationService;
@@ -49,7 +54,6 @@ import com.squareup.picasso.Picasso;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -88,6 +92,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     BroadcastReceiver receiver;
     public static final String RECEIVE_JSON = "com.thetwon.whereareyou.RECEIVE_JSON";
     Double Latitude, Longitude;
+    Double PreLatitude=0.0,PreLongitude=0.0;
     String Provider;
     User mUserbean;
     RideShareApp mApp;
@@ -99,13 +104,15 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     Marker CustomerMarker;
 
     Location mDriverLocation;
-    Location mDriverLastLocation;
-
+    Location mPreDriverLocation;
 
     WebSocketClient mWebSocketClient;
     CustomProgressDialog mProgressDialog;
 
-    int position = 0;
+    float zoomLevel = 16f;
+    int updateinterval = 5000;
+    CameraPosition cameraPosition;
+    private final Handler mUpdaterHandler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -131,17 +138,18 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         mFinishRideBtn = (Button) findViewById(R.id.finish_ride_btn);
 
         mFinishRideBtn.setVisibility(View.GONE);
+
         mStartRideBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startRide(mRider.getRide_id(),"1",mUserbean.getmUserId());
+                startRide(mRider.getRide_id(), "3", mUserbean.getmUserId());
             }
         });
 
         mFinishRideBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startRide(mRider.getRide_id(),"2",mUserbean.getmUserId());
+                startRide(mRider.getRide_id(), "4", mUserbean.getmUserId());
             }
         });
 
@@ -159,6 +167,11 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             Log.d("Error", e.toString());
         }
 
+        if(mRider.getRequest_status().equals("3"))
+        {
+            mFinishRideBtn.setVisibility(View.VISIBLE);
+            mStartRideBtn.setVisibility(View.GONE);
+        }
 
         receiver = new BroadcastReceiver() {
             @Override
@@ -174,38 +187,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     mDriverLocation = new Location("");
                     mDriverLocation.setLatitude(Latitude);
                     mDriverLocation.setLongitude(Latitude);
-
-                    if (mDriverLastLocation == null)
-                        mDriverLastLocation = mDriverLocation;
-
-                    float angle = mDriverLastLocation.bearingTo(mDriverLocation);
-                    Log.d("bearing", "" + angle);
-
-                    mDriverLastLocation = mDriverLocation;
-
-
-                    if (DriverMarker == null) {
-                        DriverMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin))
-                                .position(DriverLocation));//.flat(true)
-                    } else {
-                        DriverMarker.setPosition(DriverLocation);
-                        DriverMarker.setRotation(angle);
-
-                        // DriverMarker.setAnchor(0.5f, 0.5f);
-                        //DriverMarker.setFlat(true);
-                    }
-
-                   /* try {
-                        JSONObject jmessage = new JSONObject();
-                        jmessage.put("chat_message", "" + Latitude + "`" + Longitude);
-                        jmessage.put("chat_user", "RideShare");
-                        jmessage.put("sender_user", mRider.getRide_id());
-                        jmessage.put("message_type", "chat-box-html");
-                        jmessage.put("message_new", "");
-                        mWebSocketClient.send(jmessage.toString());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }*/
                 }
             }
         };
@@ -215,8 +196,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         bManager.registerReceiver(receiver, intentFilter);
 
         if (mApp.getmUserType().equals("2")) {
-           /* Intent intent = new Intent(StartRideActivity.this, LocationService.class);
-            startService(intent);*/
+            Intent intent = new Intent(StartRideActivity.this, LocationService.class);
+            startService(intent);
         }
 
         if (mApp.getmUserType().equals("2")) {
@@ -263,52 +244,46 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 DriverLocation = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
                 CustomerLocaton = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
             }
+            mStartRideLi.setVisibility(View.GONE);
         }
-        //connectWebSocket();
+
+        connectWebSocket();
     }
+
+    private Runnable runnable = new Runnable() {
+
+        @Override
+        public void run() {
+
+            try {
+                   if(mDriverLocation.distanceTo(mPreDriverLocation)>=0.5f)
+                    {
+                     mPreDriverLocation=mDriverLocation;
+
+                    ToastUtils.showShort(StartRideActivity.this,"Send");
+
+                    animateMarkerNew(DriverMarker, new LatLng(Latitude,Longitude));
+
+                    JSONObject jmessage = new JSONObject();
+                    jmessage.put("chat_message", "" + Latitude + "`" + Longitude);
+                    jmessage.put("chat_user", "RideShare");
+                    jmessage.put("sender_user", mRider.getRide_id());
+                    jmessage.put("message_type", "chat-box-html");
+                    jmessage.put("message_new", "");
+                    mWebSocketClient.send(jmessage.toString());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                mPreDriverLocation=mDriverLocation;
+            }
+
+            mUpdaterHandler.postDelayed(this, updateinterval);
+        }
+    };
 
     private void requestRoute(LatLng picklng, LatLng droplng) {
         if (picklng != null && droplng != null) {
             MapDirectionAPI.getDirection(picklng, droplng).enqueue(updateRouteCallback);
-        }
-    }
-
-
-    public void drawRoute() {
-        for (int i = 0; i < routes.get(0).getOverviewPolyLine().size(); i++) {
-
-           try {
-               Thread.sleep(1000);
-           }catch (Exception e){
-                e.printStackTrace();
-           }
-
-            Latitude = routes.get(0).getOverviewPolyLine().get(i).latitude;
-            Longitude = routes.get(0).getOverviewPolyLine().get(i).longitude;
-
-            DriverLocation = new LatLng(Latitude, Longitude);
-            mDriverLocation = new Location("");
-            mDriverLocation.setLatitude(Latitude);
-            mDriverLocation.setLongitude(Latitude);
-
-            if (mDriverLastLocation == null)
-                mDriverLastLocation = mDriverLocation;
-
-            float angle = mDriverLastLocation.bearingTo(mDriverLocation);
-            Log.d("bearing", "" + angle);
-
-            mDriverLastLocation = mDriverLocation;
-
-            if (DriverMarker == null) {
-                DriverMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin))
-                        .position(DriverLocation));//.flat(true)
-            } else {
-                DriverMarker.setPosition(DriverLocation);
-                DriverMarker.setRotation(getBearing(mDriverLastLocation,mDriverLocation));
-                // DriverMarker.setAnchor(0.5f, 0.5f);
-                //DriverMarker.setFlat(true);
-            }
-
         }
     }
 
@@ -355,6 +330,18 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
     @Override
     public void onBackPressed() {
+
+        Intent intent = new Intent(StartRideActivity.this, LocationService.class);
+        stopService(intent);
+        mUpdaterHandler.removeCallbacks(runnable);
+        mUpdaterHandler.removeCallbacksAndMessages(null);
+        if(mWebSocketClient!=null)
+        {
+            mWebSocketClient.close();
+            mWebSocketClient=null;
+        }
+
+        super.onBackPressed();
     }
 
     @Override
@@ -366,7 +353,10 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     public void onLocationUpdated(Location location) {
                         currentlthg = new LatLng(location.getLatitude(), location.getLongitude());
                         Log.d("Bearing", "" + location.getBearing());
-                        CameraPosition cameraPosition = new CameraPosition.Builder().target(currentlthg).zoom(16).build();
+                        if (zoomLevel <= 2.0f) {
+                            zoomLevel = 16.0f;
+                        }
+                        cameraPosition= new CameraPosition.Builder().target(currentlthg).zoom(zoomLevel).build();
                         mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                         mDriverLocation = new Location("");
@@ -402,17 +392,28 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-
-
                 return false;
             }
         });
+
+        mGoogleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                zoomLevel = mGoogleMap.getCameraPosition().zoom;
+            }
+        });
+
+        if (mApp.getmUserType().equals("2")) {
+            mUpdaterHandler.post(runnable);
+        }
+
+
     }
 
     private void connectWebSocket() {
         URI uri;
         try {
-            uri = new URI("ws://192.168.0.30:8090/websocketnew/php-socket.php");
+            uri = new URI("ws://php.rlogical.com:8090/websocketnew/php-socket.php");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
@@ -422,7 +423,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
                 Log.i("Websocket", "Opened");
-                mWebSocketClient.send("Hello from " + Build.MANUFACTURER + " " + Build.MODEL);
             }
 
             @Override
@@ -430,8 +430,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 try {
 
                     final JSONObject jobj = new JSONObject(s);
-
-
                     if (mApp.getmUserType().equals("1")) {
 
                         if (!jobj.getString("message_type").equals("chat-connection-ack")) {
@@ -441,6 +439,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                                     public void run() {
                                         try {
 
+                                            ToastUtils.showShort(StartRideActivity.this, "received");
+
                                             String updatedlocation[] = jobj.getString("chat_message").split("`");
                                             double mlet = Double.parseDouble(updatedlocation[0]);
                                             double mlong = Double.parseDouble(updatedlocation[1]);
@@ -449,25 +449,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                                             mDriverLocation.setLatitude(mlet);
                                             mDriverLocation.setLongitude(mlong);
 
-                                            if (mDriverLastLocation == null)
-                                                mDriverLastLocation = mDriverLocation;
-
-                                            float angle = mDriverLastLocation.bearingTo(mDriverLocation);
-                                            Log.d("bearing", "" + angle);
-
-                                            mDriverLastLocation = mDriverLocation;
-
-
-                                            if (DriverMarker == null) {
-                                                DriverMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin))
-                                                        .position(DriverLocation));//.flat(true)
-                                            } else {
-                                                DriverMarker.setPosition(new LatLng(mlet, mlong));
-                                                DriverMarker.setRotation(getBearing(mDriverLastLocation,mDriverLocation));
-
-                                                //DriverMarker.setAnchor(0.5f, 0.5f);
-                                                //DriverMarker.setFlat(true);
-                                            }
+                                            animateMarkerNew(DriverMarker, new LatLng(mlet,mlong));
 
                                         } catch (Exception e) {
 
@@ -487,43 +469,35 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClose(int i, String s, boolean b) {
                 Log.i("Websocket", "Closed " + s);
+
+
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onError(final Exception e) {
                 Log.i("Websocket", "Error " + e.getMessage());
             }
         };
         mWebSocketClient.connect();
-    }
-    private float getBearing(Location begin, Location end) {
 
-        double lat = Math.abs(begin.getLatitude() - end.getLatitude());
-        double lng = Math.abs(begin.getLongitude() - end.getLongitude());
 
-        if (begin.getLatitude() < end.getLatitude() && begin.getLongitude() < end.getLongitude())
-            return (float) (Math.toDegrees(Math.atan(lng / lat)));
-        else if (begin.getLatitude() >= end.getLatitude() && begin.getLongitude() < end.getLongitude())
-            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 90);
-        else if (begin.getLatitude() >= end.getLatitude() && begin.getLongitude() >= end.getLongitude())
-            return (float) (Math.toDegrees(Math.atan(lng / lat)) + 180);
-        else if (begin.getLatitude() < end.getLatitude() && begin.getLongitude() >= end.getLongitude())
-            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 270);
-        return -1;
     }
-    private void startRide(String mId,final String mType,String userid) {
+
+
+    private void startRide(String mId, final String mType, String userid) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).mStartRide(mId, mType,userid).enqueue(new Callback<StartRideResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).mStartRide(mId, mType, userid).enqueue(new Callback<StartRideResponse>() {
             @Override
             public void onResponse(Call<StartRideResponse> call, Response<StartRideResponse> response) {
-                if (response.isSuccessful() && response.body() != null)
-                {
-
-                    if(mType.equals("1"))
-                    {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (mType.equals("3")) {
                         mFinishRideBtn.setVisibility(View.VISIBLE);
                         mStartRideBtn.setVisibility(View.GONE);
-                    }else{
+                    } else if (mType.equals("4")) {
+                        Intent intent = new Intent(StartRideActivity.this, LocationService.class);
+                        stopService(intent);
+                        mUpdaterHandler.removeCallbacks(runnable);
+                        mUpdaterHandler.removeCallbacksAndMessages(null);
                         finish();
                     }
                 } else {
@@ -546,18 +520,13 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            String staus= intent.getStringExtra("int_data");
-
-            if(staus.equals("1"))
-            {
-                ToastUtils.showShort(StartRideActivity.this,"Your Ride Started.");
-            }else if(staus.equals("2"))
-            {
-                ToastUtils.showShort(StartRideActivity.this,"Your Ride Finish.");
+            String staus = intent.getStringExtra("int_data");
+            if (staus.equals("1")) {
+                ToastUtils.showShort(StartRideActivity.this, "Your Ride Started.");
+            } else if (staus.equals("2")) {
+                ToastUtils.showShort(StartRideActivity.this, "Your Ride Finish.");
                 finish();
             }
-
         }
     };
 
@@ -571,5 +540,84 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     public void onPause() {
         LocalBroadcastManager.getInstance(StartRideActivity.this).unregisterReceiver(mMessageReceiver);
         super.onPause();
+    }
+
+    private float getBearing(LatLng begin, LatLng end) {
+
+        double PI = 3.14159;
+        double lat1 = begin.latitude * PI / 180;
+        double long1 = begin.longitude * PI / 180;
+        double lat2 = end.latitude * PI / 180;
+        double long2 = end.longitude * PI / 180;
+
+        double dLon = (long2 - long1);
+
+        double y = Math.sin(dLon) * Math.cos(lat2);
+        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+
+        double brng = Math.atan2(y, x);
+
+        brng = Math.toDegrees(brng);
+        brng = (brng + 360) % 360;
+
+        return (float) brng;
+    }
+
+    private interface LatLngInterpolatorNew {
+        LatLng interpolate(float fraction, LatLng a, LatLng b);
+
+        class LinearFixed implements LatLngInterpolatorNew {
+            @Override
+            public LatLng interpolate(float fraction, LatLng a, LatLng b) {
+                double lat = (b.latitude - a.latitude) * fraction + a.latitude;
+                double lngDelta = b.longitude - a.longitude;
+                // Take the shortest path across the 180th meridian.
+                if (Math.abs(lngDelta) > 180)
+                    lngDelta -= Math.signum(lngDelta) * 360;
+
+                double lng = lngDelta * fraction + a.longitude;
+                return new LatLng(lat, lng);
+            }
+        }
+    }
+
+    private void animateMarkerNew(final Marker marker,final LatLng newlatlng) {
+
+        final Location destination = new Location(LocationManager.GPS_PROVIDER);
+        destination.setLatitude(newlatlng.latitude);
+        destination.setLongitude(newlatlng.longitude);
+
+        if (marker != null) {
+            final LatLng startPosition = marker.getPosition();
+            final LatLng endPosition = new LatLng(destination.getLatitude(), destination.getLongitude());
+            final LatLngInterpolatorNew latLngInterpolator = new LatLngInterpolatorNew.LinearFixed();
+            ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
+            valueAnimator.setDuration(updateinterval); // duration 3 second
+            valueAnimator.setInterpolator(new LinearInterpolator());
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+
+                    try {
+                        float v = animation.getAnimatedFraction();
+                        LatLng newPosition = latLngInterpolator.interpolate(v, startPosition, endPosition);
+                        marker.setPosition(newPosition);
+                        marker.setRotation(getBearing(startPosition, endPosition));
+                    } catch (Exception ex) {
+                        //I don't care atm..
+                }
+                }
+            });
+            valueAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
+                            .target(newlatlng).zoom(zoomLevel).build()));
+
+                }
+            });
+            valueAnimator.start();
+        }
     }
 }

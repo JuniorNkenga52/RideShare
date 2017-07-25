@@ -5,11 +5,46 @@ public class HistoryBean
     private String ride_id;
     private String u_ride_type;
     private String request_status;
-    private String name;
+    private String fromname;
+    private String toname;
     private String time;
     private String starting_address;
     private String ending_address;
+    private String from_id;
+    private String to_id;
 
+
+    public String getFromname() {
+        return fromname;
+    }
+
+    public void setFromname(String fromname) {
+        this.fromname = fromname;
+    }
+
+    public String getToname() {
+        return toname;
+    }
+
+    public void setToname(String toname) {
+        this.toname = toname;
+    }
+
+    public String getFrom_id() {
+        return from_id;
+    }
+
+    public void setFrom_id(String from_id) {
+        this.from_id = from_id;
+    }
+
+    public String getTo_id() {
+        return to_id;
+    }
+
+    public void setTo_id(String to_id) {
+        this.to_id = to_id;
+    }
 
     public String getRide_id() {
         return ride_id;
@@ -33,14 +68,6 @@ public class HistoryBean
 
     public void setRequest_status(String request_status) {
         this.request_status = request_status;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getTime() {

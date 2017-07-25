@@ -1,6 +1,7 @@
 package com.app.rideshare.api.response;
 
 
+import com.app.rideshare.model.InProgressRide;
 import com.app.rideshare.model.User;
 import com.google.gson.annotations.SerializedName;
 
@@ -16,6 +17,10 @@ public class SignupResponse
 
     @SerializedName("message")
     private String mMessage;
+
+    @SerializedName("ride_history")
+    ArrayList<InProgressRide> mProgressRide;
+
 
     public String getmMessage() {
         return mMessage;
@@ -39,5 +44,13 @@ public class SignupResponse
 
     public void setMlist(ArrayList<User> mlist) {
         this.mlist = mlist;
+    }
+
+    public ArrayList<InProgressRide> getmProgressRide() {
+        return mProgressRide;
+    }
+
+    public void setmProgressRide(ArrayList<InProgressRide> mProgressRide) {
+        this.mProgressRide = mProgressRide;
     }
 }

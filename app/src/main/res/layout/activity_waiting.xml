@@ -13,15 +13,23 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/_8sdp">
 
-        <ImageView
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_50sdp"
-            android:background="@mipmap/ic_launcher" />
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/user_profile"
+            android:layout_width="@dimen/_45sdp"
+            android:layout_height="@dimen/_45sdp"
+            android:src="@drawable/banner"
+            app:civ_border_color="#EEEEEE"
+            app:civ_border_width="1dp"
+            app:civ_shadow="false"
+            app:civ_shadow_color="#8BC34A"
+            app:civ_shadow_radius="10" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
+            android:layout_marginLeft="@dimen/_3sdp"
             android:orientation="vertical">
 
             <TextView

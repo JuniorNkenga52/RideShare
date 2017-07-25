@@ -44,6 +44,16 @@ public class Rider  implements Serializable{
     @SerializedName("profile_image")
     private String mProfileImage;
 
+    @SerializedName("u_ride_type")
+    private String u_ride_type;
+
+    public String getU_ride_type() {
+        return u_ride_type;
+    }
+
+    public void setU_ride_type(String u_ride_type) {
+        this.u_ride_type = u_ride_type;
+    }
 
     public String getmProfileImage() {
         return mProfileImage;

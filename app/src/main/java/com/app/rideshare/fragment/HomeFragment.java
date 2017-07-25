@@ -1,6 +1,5 @@
 package com.app.rideshare.fragment;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -26,9 +25,7 @@ import android.widget.TextView;
 import com.app.rideshare.R;
 import com.app.rideshare.activity.AutoCompleteLocationActivity;
 import com.app.rideshare.activity.HomeActivity;
-import com.app.rideshare.activity.NotificationActivity;
 import com.app.rideshare.activity.RideShareApp;
-import com.app.rideshare.activity.StartRideActivity;
 import com.app.rideshare.activity.WaitingActivity;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
@@ -56,6 +53,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -64,7 +62,6 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
@@ -181,7 +178,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
                     } else {
                         selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude,"1");
                     }
-
                 }else{
                     if (PrefUtils.getBoolean("isFriends"))
                     {
@@ -208,6 +204,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
                         currentlthg = new LatLng(location.getLatitude(), location.getLongitude());
                         Log.d("Bearing", "" + location.getBearing());
                         CameraPosition cameraPosition = new CameraPosition.Builder().target(currentlthg).zoom(16).build();
+
                         mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                         if (curLocMarker == null) {
@@ -219,10 +216,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
                         builder.include(currentlthg);
                     }
                 });
-
         initMap();
     }
-
     public void initMap() {
         mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
         mGoogleMap.setBuildingsEnabled(false);
@@ -232,7 +227,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mGoogleMap.setIndoorEnabled(false);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(true);
-
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -348,7 +342,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
                                 .addAll(routes.get(0).getOverviewPolyLine())
                                 .color(ContextCompat.getColor(getActivity(), R.color.blacltext))
                                 .width(10));
-
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -369,7 +362,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
                     builder.include(currentlthg);
                     createMarker();
                 } else {
-
+                    ToastUtils.showShort(getActivity(),"No any user available.");
                 }
                 mProgressDialog.cancel();
             }
@@ -480,6 +473,5 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
     {
         getActivity().finish();
     }
-
 
 }

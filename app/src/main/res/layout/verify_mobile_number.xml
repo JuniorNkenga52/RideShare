@@ -18,6 +18,17 @@
         android:textColor="@color/white"
         android:textSize="@dimen/_14sdp" />
 
+    <TextView
+        android:id="@+id/change_mobile_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:gravity="center"
+        android:text="Change Mobile Number"
+        android:textColor="@color/loginbtn"
+        android:textSize="@dimen/_14sdp"
+        android:textStyle="bold" />
+
 
     <com.dpizarro.pinview.library.PinView
         android:id="@+id/pinView"

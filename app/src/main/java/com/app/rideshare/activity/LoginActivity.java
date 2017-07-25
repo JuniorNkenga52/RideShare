@@ -265,16 +265,22 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-    private void loginuser(String mEmail, String password) {
+    private void loginuser(final String mEmail, final String password) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password,token).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password, token).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (!response.body().getmStatus().equals("error")) {
                         PrefUtils.addUserInfo(response.body().getMlist().get(0));
                         PrefUtils.putBoolean("islogin", true);
-                        PrefUtils.putBoolean("isFriends",true);
+                        PrefUtils.putBoolean("isFriends", true);
+
+                        PrefUtils.putString("loginwith", "normal");
+                        PrefUtils.putString("gemail", mEmail);
+                        PrefUtils.putString("gId", password);
+
+
                         if (PrefUtils.getUserInfo().getmMobileNo().equals("")) {
                             Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
                             startActivity(i);
@@ -307,16 +313,22 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-    private void loginfacebookuser(String mFacebookId, String mEmail, String mFirstName, String mLastName) {
+    private void loginfacebookuser(final String mFacebookId, final  String mEmail, final String mFirstName,final  String mLastName) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName,token).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (!response.body().getmStatus().equals("error")) {
                         PrefUtils.addUserInfo(response.body().getMlist().get(0));
-                        PrefUtils.putBoolean("isFriends",true);
+                        PrefUtils.putBoolean("isFriends", true);
                         PrefUtils.putBoolean("islogin", true);
+
+                        PrefUtils.putString("loginwith", "facebook");
+                        PrefUtils.putString("gemail", mEmail);
+                        PrefUtils.putString("gId", mFacebookId);
+                        PrefUtils.putString("gfname", mFirstName);
+                        PrefUtils.putString("glast", mLastName);
 
                         if (PrefUtils.getUserInfo().getmMobileNo().equals("")) {
                             Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
@@ -351,17 +363,24 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-    private void logingoogle(String mGoogleId, String mEmail, String mFirstName, String mLastName) {
+    private void logingoogle(final String mGoogleId, final String mEmail, final String mFirstName, final String mLastName) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).signGoogleplus(mGoogleId, mEmail, mFirstName, mLastName,token).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).signGoogleplus(mGoogleId, mEmail, mFirstName, mLastName, token).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (!response.body().getmStatus().equals("error")) {
                         PrefUtils.addUserInfo(response.body().getMlist().get(0));
                         PrefUtils.putBoolean("islogin", true);
-                        PrefUtils.putBoolean("isFriends",true);
-                            if (PrefUtils.getUserInfo().getmMobileNo().equals("")) {
+                        PrefUtils.putBoolean("isFriends", true);
+
+                        PrefUtils.putString("loginwith", "google");
+                        PrefUtils.putString("gemail", mEmail);
+                        PrefUtils.putString("gId", mGoogleId);
+                        PrefUtils.putString("gfname", mFirstName);
+                        PrefUtils.putString("glast", mLastName);
+
+                        if (PrefUtils.getUserInfo().getmMobileNo().equals("")) {
                             Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
                             startActivity(i);
                             finish();

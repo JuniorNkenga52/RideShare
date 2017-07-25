@@ -38,9 +38,18 @@ public class User implements Serializable
     @SerializedName("contact_sync")
     private String contact_sync;
 
+    @SerializedName("ride_status")
+    private String mRidestatus;
 
     private String profile_image;
 
+    public String getmRidestatus() {
+        return mRidestatus;
+    }
+
+    public void setmRidestatus(String mRidestatus) {
+        this.mRidestatus = mRidestatus;
+    }
 
     public String getProfile_image() {
         return profile_image;

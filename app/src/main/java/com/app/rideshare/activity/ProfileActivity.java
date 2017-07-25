@@ -213,9 +213,13 @@ public class ProfileActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
-            images = data.getParcelableArrayListExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES);
-            mProfileIv.setImageURI(Uri.parse(images.get(0).getPath()));
-            mSaveTv.setVisibility(View.VISIBLE);
+            try{
+                images = data.getParcelableArrayListExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES);
+                mProfileIv.setImageURI(Uri.parse(images.get(0).getPath()));
+                mSaveTv.setVisibility(View.VISIBLE);
+            }catch (Exception e){
+
+            }
         }
     }
     private void updateProfile()

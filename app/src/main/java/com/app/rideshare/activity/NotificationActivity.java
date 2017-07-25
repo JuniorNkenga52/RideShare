@@ -1,6 +1,5 @@
 package com.app.rideshare.activity;
 
-import android.accessibilityservice.GestureDescription;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,23 +23,23 @@ import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.AcceptRequest;
-import com.app.rideshare.api.response.SendResponse;
 import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.github.lzyzsd.circleprogress.DonutProgress;
-import com.google.gson.JsonNull;
+import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
+import it.sephiroth.android.library.easing.Circ;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class NotificationActivity extends AppCompatActivity
-{
+public class NotificationActivity extends AppCompatActivity {
 
     CustomProgressDialog mProgressDialog;
 
@@ -69,32 +68,44 @@ public class NotificationActivity extends AppCompatActivity
     MediaPlayer BG;
     Vibrator vibration;
     JSONObject jobjRide;
+
+    private TextView mNameTv;
+    private TextView mEmailTv;
+
+    private String Email="";
+    private String profilePic="";
+
+    CircularImageView mProfilePicIv;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
         mProgressDialog = new CustomProgressDialog(this);
 
-        try{
-            jobjRide= new JSONObject(getIntent().getExtras().getString("data"));
-            Log.d("erroe",""+jobjRide);
+        try {
+            jobjRide = new JSONObject(getIntent().getExtras().getString("data"));
+            Log.d("erroe", "" + jobjRide);
 
-            mRideId=jobjRide.getString("ride_id");
-            mFirstName=jobjRide.getString("u_firstname");
-            mStartingAddress=jobjRide.getString("starting_address");
-            mEndingAddress=jobjRide.getString("ending_address");
-        }catch (Exception e){
-            Log.d("erroe",e.toString());
+            mRideId = jobjRide.getString("ride_id");
+            mFirstName = jobjRide.getString("u_firstname");
+            mStartingAddress = jobjRide.getString("starting_address");
+            mEndingAddress = jobjRide.getString("ending_address");
+            Email=jobjRide.getString("u_email");
+            profilePic=jobjRide.getString("profile_image");
+
+        } catch (Exception e) {
+            Log.d("erroe", e.toString());
         }
 
-        mStartingAddressTv=(TextView)findViewById(R.id.starting_address_tv);
-        mEndingAddressTv=(TextView)findViewById(R.id.ending_address_tv);
+        mStartingAddressTv = (TextView) findViewById(R.id.starting_address_tv);
+        mEndingAddressTv = (TextView) findViewById(R.id.ending_address_tv);
 
 
-        mAcceptBtn=(Button)findViewById(R.id.btnAccept);
-        mRejectBtn=(Button)findViewById(R.id.btnReject);
-        mTitleTv=(TextView)findViewById(R.id.title_tv);
-        mRobotoMedium= TypefaceUtils.getTypefaceRobotoMediam(this);
+        mAcceptBtn = (Button) findViewById(R.id.btnAccept);
+        mRejectBtn = (Button) findViewById(R.id.btnReject);
+        mTitleTv = (TextView) findViewById(R.id.title_tv);
+        mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
 
         mStartingAddressTv.setTypeface(mRobotoMedium);
         mEndingAddressTv.setTypeface(mRobotoMedium);
@@ -106,30 +117,47 @@ public class NotificationActivity extends AppCompatActivity
         mAcceptBtn.setTypeface(mRobotoMedium);
         mRejectBtn.setTypeface(mRobotoMedium);
 
-        mTitleTv.setText("Ride Request from "+mFirstName);
+        mNameTv = (TextView) findViewById(R.id.name_tv);
+        mEmailTv = (TextView) findViewById(R.id.email_tv);
+        mProfilePicIv=(CircularImageView)findViewById(R.id.user_profile);
+
+        mNameTv.setTypeface(mRobotoMedium);
+        mEmailTv.setTypeface(mRobotoMedium);
+        mNameTv.setText(mFirstName);
+        mEmailTv.setText(Email);
+
+        try{
+            if(!profilePic.equals(""))
+            {
+                Picasso.with(this).load(profilePic).into(mProfilePicIv);
+            }
+        }catch (Exception e){
+
+        }
+
+        mTitleTv.setText("Ride Request from " + mFirstName);
 
         mAcceptBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(BG.isPlaying()){
+                if (BG.isPlaying()) {
                     BG.stop();
                     vibration.cancel();
                 }
-                acceptOrRejectRequest(mRideId,"1");
+                acceptOrRejectRequest(mRideId, "1");
 
             }
         });
         mRejectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(BG.isPlaying()){
+                if (BG.isPlaying()) {
                     BG.stop();
                     vibration.cancel();
                 }
-                acceptOrRejectRequest(mRideId,"0");
+                acceptOrRejectRequest(mRideId, "0");
             }
         });
-
 
 
         pulsator = (PulsatorLayout) findViewById(R.id.pulsator);
@@ -137,7 +165,7 @@ public class NotificationActivity extends AppCompatActivity
         pulsator.start();
 
 
-        mCircleProgress=(DonutProgress)findViewById(R.id.donut_progress);
+        mCircleProgress = (DonutProgress) findViewById(R.id.donut_progress);
         mCircleProgress.setMax(30);
         mCircleProgress.setSuffixText("");
         mCircleProgress.setStartingDegree(270);
@@ -153,22 +181,17 @@ public class NotificationActivity extends AppCompatActivity
     }
 
 
-    public void acceptOrRejectRequest(String mRideId,String acceptOrreject)
-    {
+    public void acceptOrRejectRequest(String mRideId, String acceptOrreject) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).acceptRequest(mRideId, acceptOrreject).enqueue(new Callback<AcceptRequest>()
-        {
+        ApiServiceModule.createService(RestApiInterface.class).acceptRequest(mRideId, acceptOrreject).enqueue(new Callback<AcceptRequest>() {
             @Override
             public void onResponse(Call<AcceptRequest> call, Response<AcceptRequest> response) {
 
-                if (response.isSuccessful() && response.body() != null)
-                {
-                    if(response.body().getStatus().equals("success"))
-                    {
-                        if(response.body().getMsg().get(0).getRequest_status().equals("1"))
-                        {
-                            Intent i=new Intent(NotificationActivity.this,StartRideActivity.class);
-                            i.putExtra("rideobj",response.body().getMsg().get(0));
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getStatus().equals("success")) {
+                        if (response.body().getMsg().get(0).getRequest_status().equals("1")) {
+                            Intent i = new Intent(NotificationActivity.this, StartRideActivity.class);
+                            i.putExtra("rideobj", response.body().getMsg().get(0));
                             startActivity(i);
                             finish();
                         }
@@ -176,7 +199,12 @@ public class NotificationActivity extends AppCompatActivity
                 } else {
 
                 }
-                mProgressDialog.cancel();
+                try{
+                    mProgressDialog.cancel();
+                }catch (Exception e){
+
+                }
+
                 finish();
             }
 
@@ -189,6 +217,7 @@ public class NotificationActivity extends AppCompatActivity
             }
         });
     }
+
     public class OTPTimer extends CountDownTimer {
 
         public OTPTimer(long millisInFuture, long countDownInterval) {
@@ -198,14 +227,14 @@ public class NotificationActivity extends AppCompatActivity
         @Override
         public void onTick(long millisUntilFinished) {
             int progress = (int) (millisUntilFinished / 1000);
-            mCircleProgress.setText(""+progress);
+            mCircleProgress.setText("" + progress);
             mCircleProgress.setProgress(progress);
         }
 
         @Override
         public void onFinish() {
             pulsator.stop();
-            if(BG.isPlaying()){
+            if (BG.isPlaying()) {
                 BG.stop();
                 vibration.cancel();
             }
@@ -230,33 +259,34 @@ public class NotificationActivity extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             String info = intent.getStringExtra("int_data");
 
-            try{
-                JSONObject jobj=new JSONObject(info);
+            try {
+                JSONObject jobj = new JSONObject(info);
 
-                if(jobj.getString("status").equals("success"))
-                {
-                    ToastUtils.showShort(NotificationActivity.this,"Ride Cancel");
+                if (jobj.getString("status").equals("success")) {
+                    ToastUtils.showShort(NotificationActivity.this, "Ride Cancel");
                     timer.cancel();
                     finish();
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
 
         }
     };
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(timer != null)
+        if (timer != null)
             timer.cancel();
 
-        if(BG.isPlaying()){
+        if (BG.isPlaying()) {
             BG.stop();
             vibration.cancel();
         }
     }
+
     @Override
     public void onPause() {
         LocalBroadcastManager.getInstance(NotificationActivity.this).unregisterReceiver(mMessageReceiver);
@@ -264,9 +294,9 @@ public class NotificationActivity extends AppCompatActivity
     }
 
 
-    private void playSound(){
+    private void playSound() {
         vibration = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
-        long[] pattern = { 0, 100, 700};
+        long[] pattern = {0, 100, 700};
         vibration.vibrate(pattern, 0);
         try {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
