@@ -1,4 +1,4 @@
-package com.dsmtracker.api;
+package com.app.rideshare.api;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -29,6 +29,7 @@ public class DSMTrackerApiCall {
             conn.setRequestMethod("POST");
             conn.setDoInput(true);
             conn.setDoOutput(true);
+            conn.addRequestProperty("Apikey","$2y$10$lDBHZhvyNzWTdsgdgsg4cOivLqQAVTGppmV4yEeggsdtttwilio");
 
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));

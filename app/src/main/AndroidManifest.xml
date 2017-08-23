@@ -142,6 +142,7 @@
         </service>
         <service
             android:name=".service.LocationService"
+            android:stopWithTask="false"
             android:enabled="true" />
         <meta-data
             android:name="io.fabric.ApiKey"

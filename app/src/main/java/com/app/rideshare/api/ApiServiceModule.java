@@ -16,6 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiServiceModule {
 
     private static final String API_ENDPOINT = "http://php.rlogical.com/rideshare/api/";
+    public static final String WEBSOCKET_ENDPOINT="ws://php.rlogical.com:8090/websocketnew/php-socket.php";
 
     private static OkHttpClient.Builder okHttpClient() {
         OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();

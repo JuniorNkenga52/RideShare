@@ -53,7 +53,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -66,6 +65,7 @@ import java.util.List;
 
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
+import me.drakeet.materialdialog.MaterialDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -73,7 +73,7 @@ import retrofit2.Response;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBackPressedListener {
+public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBackPressedListener {
 
     private GoogleMap mGoogleMap;
     private Marker curLocMarker;
@@ -110,6 +110,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
     private TextView mSearchCabTv;
 
     User mUserBean;
+
+    MaterialDialog mMaterialDialog;
 
     @Nullable
     @Override
@@ -161,8 +163,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
 
         mSearchCabTv = (TextView) rootview.findViewById(R.id.search_cab_iv);
         mSearchCabTv.setTypeface(mRobotoReguler);
-        if(mUserType.equals("2"))
-        {
+        if (mUserType.equals("2")) {
             mSearchCabTv.setText("Find Rider");
         }
 
@@ -170,27 +171,43 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
             @Override
             public void onClick(View v) {
 
-                  if (mUserType.equals("1"))
-                {
-                    if (PrefUtils.getBoolean("isFriends"))
-                    {
-                        selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude,"1");
+
+                if (currentlthg != null) {
+                    if (mUserType.equals("1")) {
+                        if (PrefUtils.getBoolean("isFriends")) {
+                            selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "1");
+                        } else {
+                            selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "1");
+                        }
                     } else {
-                        selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude,"1");
-                    }
-                }else{
-                    if (PrefUtils.getBoolean("isFriends"))
-                    {
-                        selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude,"2");
-                    } else {
-                        selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude,"2");
+                        if (PrefUtils.getBoolean("isFriends")) {
+                            selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "2");
+                        } else {
+                            selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "2");
+                        }
                     }
                 }
+
             }
         });
 
 
         return rootview;
+    }
+
+    public void showDialog() {
+        mMaterialDialog = new MaterialDialog(getActivity())
+                .setTitle(getResources().getString(R.string.app_name))
+                .setMessage("No user found near by you.")
+                .setPositiveButton("ok", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mMaterialDialog.dismiss();
+                    }
+                });
+
+
+        mMaterialDialog.show();
     }
 
     @Override
@@ -218,6 +235,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
                 });
         initMap();
     }
+
     public void initMap() {
         mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
         mGoogleMap.setBuildingsEnabled(false);
@@ -234,10 +252,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
                 if (marker.getSnippet() != null) {
                     Rider selectedRide = new Gson().fromJson(marker.getSnippet(), Rider.class);
 
-                    if(mLocationSearchAtv.getText().toString().isEmpty())
-                    {
-                        ToastUtils.showShort(getActivity(),"Please select destination location.");
-                    }else{
+                    if (mLocationSearchAtv.getText().toString().isEmpty()) {
+                        ToastUtils.showShort(getActivity(), "Please select destination location.");
+                    } else {
                         getRiderInfoDialog(selectedRide);
                     }
 
@@ -281,7 +298,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
             LatLngBounds bounds = builder.build();
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             mGoogleMap.animateCamera(cu);
-        }else{
+        } else {
             for (Marker m : mlistMarker) {
                 m.remove();
             }
@@ -350,19 +367,23 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
         });
     }
 
-    private void selectRide(String mId, String mType, String latitude, String longitude,String mRideType) {
+    private void selectRide(String mId, String mType, String latitude, String longitude, String mRideType) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).getUser(mId, mType, latitude, longitude,mRideType).enqueue(new Callback<RideSelect>() {
+        ApiServiceModule.createService(RestApiInterface.class).getUser(mId, mType, latitude, longitude, mRideType).enqueue(new Callback<RideSelect>() {
             @Override
             public void onResponse(Call<RideSelect> call, Response<RideSelect> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    mlist.clear();
-                    mlist.addAll(response.body().getMlistUser());
-                    builder=new LatLngBounds.Builder();
-                    builder.include(currentlthg);
-                    createMarker();
+                    if (response.body().getMlistUser().size() == 0) {
+                        showDialog();
+                    } else {
+                        mlist.clear();
+                        mlist.addAll(response.body().getMlistUser());
+                        builder = new LatLngBounds.Builder();
+                        builder.include(currentlthg);
+                        createMarker();
+                    }
                 } else {
-                    ToastUtils.showShort(getActivity(),"No any user available.");
+                    ToastUtils.showShort(getActivity(), "No any user available.");
                 }
                 mProgressDialog.cancel();
             }
@@ -411,8 +432,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
 
         TextView mGetRideTv = (TextView) dialog.findViewById(R.id.get_ride_tv);
         TextView mCancelTv = (TextView) dialog.findViewById(R.id.cancel_ride_tv);
-        if(mUserType.equals("2"))
-        {
+        if (mUserType.equals("2")) {
             mGetRideTv.setText("Offer Ride");
         }
         mGetRideTv.setTypeface(mRobotoReguler);
@@ -429,28 +449,25 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
             @Override
             public void onClick(View v) {
                 dialog.cancel();
-                SendRideRequest(rider.getnUserId(),mUserBean.getmUserId(),rider);
+                SendRideRequest(rider.getnUserId(), mUserBean.getmUserId(), rider);
             }
         });
 
         dialog.show();
     }
 
-    public void SendRideRequest(String userid, String fromuserid, final Rider rider)
-    {
+    public void SendRideRequest(String userid, String fromuserid, final Rider rider) {
         mProgressDialog.show();
 
-        ApiServiceModule.createService(RestApiInterface.class).sendRequest(userid, fromuserid,""+currentlthg.latitude,""+currentlthg.longitude,""+destinationLatLang.latitude,""+destinationLatLang.longitude,mUserType,"","").enqueue(new Callback<SendResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).sendRequest(userid, fromuserid, "" + currentlthg.latitude, "" + currentlthg.longitude, "" + destinationLatLang.latitude, "" + destinationLatLang.longitude, mUserType, "", "").enqueue(new Callback<SendResponse>() {
             @Override
             public void onResponse(Call<SendResponse> call, Response<SendResponse> response) {
 
-                if (response.isSuccessful() && response.body() != null)
-                {
-                    if(response.body().getmStatus().equals("success"))
-                    {
-                        Intent i=new Intent(getActivity(), WaitingActivity.class);
-                        i.putExtra("rider",rider);
-                        i.putExtra("rider_data",response.body().getMlist().get(0));
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getmStatus().equals("success")) {
+                        Intent i = new Intent(getActivity(), WaitingActivity.class);
+                        i.putExtra("rider", rider);
+                        i.putExtra("rider_data", response.body().getMlist().get(0));
                         startActivity(i);
                     }
                 } else {
@@ -469,8 +486,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback ,OnBack
     }
 
     @Override
-    public void doBack()
-    {
+    public void doBack() {
         getActivity().finish();
     }
 

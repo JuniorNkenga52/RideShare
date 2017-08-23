@@ -15,7 +15,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.app.rideshare.activity.LongOperation;
 import com.app.rideshare.activity.StartRideActivity;
+import com.app.rideshare.model.User;
+import com.app.rideshare.utils.PrefUtils;
 
 public class LocationService extends Service
 {
@@ -29,11 +32,14 @@ public class LocationService extends Service
     int counter = 0;
     BroadcastReceiver receiver;
 
+    User bean;
     @Override
     public void onCreate()
     {
         super.onCreate();
+        PrefUtils.initPreference(this);
         intent = new Intent(BROADCAST_ACTION);
+        bean=PrefUtils.getUserInfo();
     }
 
     @Override
@@ -48,12 +54,13 @@ public class LocationService extends Service
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
     }
 
-   /* @Override
+    @Override
     public void onTaskRemoved(Intent rootIntent) {
-        super.onTaskRemoved(rootIntent);
-        stopSelf();
-    }*/
-
+       super.onTaskRemoved(rootIntent);
+        try {
+            new LongOperation().execute(bean.getmUserId(), "0").get();
+        }catch (Exception ignore){}
+    }
     @Override
     public IBinder onBind(Intent intent)
     {
@@ -119,6 +126,7 @@ public class LocationService extends Service
         if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
             Toast.makeText(getApplicationContext(),"Permission Denied",Toast.LENGTH_SHORT).show();
         }
+
         locationManager.removeUpdates(listener);
     }
 
@@ -178,6 +186,7 @@ public class LocationService extends Service
         {
 
         }
-
     }
+
+
 }

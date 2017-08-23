@@ -28,11 +28,15 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
+import com.app.rideshare.api.ApiServiceModule;
+import com.app.rideshare.api.RestApiInterface;
+import com.app.rideshare.api.response.RideSelect;
 import com.app.rideshare.fragment.HistoryFragment;
 import com.app.rideshare.fragment.HomeFragment;
 import com.app.rideshare.listner.OnBackPressedListener;
 import com.app.rideshare.model.Rider;
 import com.app.rideshare.utils.PrefUtils;
+import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.utils.TypefaceUtils;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
@@ -45,6 +49,10 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
@@ -276,7 +284,6 @@ public class HomeActivity extends AppCompatActivity
             } else {
                 switchFragment(HomeFragment.newInstance(mlist), "HOMEFRAGEMNT");
             }
-
         } else if (id == R.id.nav_history) {
             HistoryFragment myFragment = (HistoryFragment) mFragmentManager.findFragmentByTag("HISTORYFRAGMENT");
             mTitleHomeTv.setText("History Page");
@@ -286,31 +293,50 @@ public class HomeActivity extends AppCompatActivity
             } else {
                 switchFragment(HistoryFragment.newInstance(), "HISTORYFRAGMENT");
             }
-
-        } else if (id == R.id.nav_logout) {
-            LoginManager.getInstance().logOut();
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                    new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(Status status) {
-                            Log.d("status", "" + status);
-                        }
-                    });
-            PrefUtils.remove(PrefUtils.PREF_USER_INFO);
-            PrefUtils.remove("islogin");
-            PrefUtils.remove("loginwith");
-
-            Intent i = new Intent(HomeActivity.this, LoginActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-            finish();
+        } else if (id == R.id.nav_logout)
+        {
+            selectRide(PrefUtils.getUserInfo().getmUserId(),"0","","");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    private void selectRide(String mId, String mType, String latitude, String longitude) {
 
+        ApiServiceModule.createService(RestApiInterface.class).selectRide(mId, mType, latitude, longitude).enqueue(new Callback<RideSelect>() {
+            @Override
+            public void onResponse(Call<RideSelect> call, Response<RideSelect> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    LoginManager.getInstance().logOut();
+                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                            new ResultCallback<Status>() {
+                                @Override
+                                public void onResult(Status status) {
+                                    Log.d("status", "" + status);
+                                }
+                            });
+                    PrefUtils.remove(PrefUtils.PREF_USER_INFO);
+                    PrefUtils.remove("islogin");
+                    PrefUtils.remove("loginwith");
+
+                    Intent i = new Intent(HomeActivity.this, LoginActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                    finish();
+
+                } else {
+                    ToastUtils.showShort(HomeActivity.this,"Please try again.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RideSelect> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("error", t.toString());
+            }
+        });
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

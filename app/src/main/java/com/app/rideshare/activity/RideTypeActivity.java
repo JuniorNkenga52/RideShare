@@ -29,6 +29,7 @@ import com.app.rideshare.api.response.ContactResponse;
 import com.app.rideshare.api.response.RideSelect;
 import com.app.rideshare.model.InProgressRide;
 import com.app.rideshare.model.User;
+import com.app.rideshare.service.LocationService;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.ToastUtils;
@@ -285,7 +286,8 @@ public class RideTypeActivity extends AppCompatActivity {
                 syncContact();
             }
 
-
+            Intent intent = new Intent(RideTypeActivity.this, LocationService.class);
+            startService(intent);
             SmartLocation.with(RideTypeActivity.this).location()
                     .oneFix()
                     .start(new OnLocationUpdatedListener() {

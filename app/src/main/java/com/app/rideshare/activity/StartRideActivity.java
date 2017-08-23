@@ -153,7 +153,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
-
         SupportMapFragment mapFragment = (SupportMapFragment) this.getSupportFragmentManager()
                 .findFragmentById(R.id.mapView);
         mapFragment.getMapAsync(this);
@@ -413,7 +412,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     private void connectWebSocket() {
         URI uri;
         try {
-            uri = new URI("ws://php.rlogical.com:8090/websocketnew/php-socket.php");
+            uri = new URI(ApiServiceModule.WEBSOCKET_ENDPOINT);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
