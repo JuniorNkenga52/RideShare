@@ -375,9 +375,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             public void onResponse(Call<RideSelect> call, Response<RideSelect> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getMlistUser().size() == 0) {
-                        //showDialog();
-                        Intent intent = new Intent(getActivity(), Admin_FunctionsActivity.class);
-                        startActivity(intent);
+                        showDialog();
                     } else {
                         mlist.clear();
                         mlist.addAll(response.body().getMlistUser());

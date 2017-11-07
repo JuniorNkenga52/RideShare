@@ -293,6 +293,9 @@ public class HomeActivity extends AppCompatActivity
             }
         } else if (id == R.id.nav_logout) {
             selectRide(PrefUtils.getUserInfo().getmUserId(), "0", "", "");
+        } else if (id == R.id.nav_admin) {
+            Intent intent = new Intent(HomeActivity.this, Admin_FunctionsActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
