@@ -12,13 +12,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
+import com.app.rideshare.adapter.ChooseGroupAdapter;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SignupResponse;
+import com.app.rideshare.model.ChooseGroupModel;
 import com.app.rideshare.notification.GCMRegistrationIntentService;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.ToastUtils;
@@ -31,6 +37,8 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.gitonway.lee.niftymodaldialogeffects.lib.Effectstype;
+import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyDialogBuilder;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -41,13 +49,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private CardView mFacebookCv;
     private CardView mGoogleCv;
@@ -71,6 +80,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     CustomProgressDialog mProgressDialog;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     String token;
+
+    Spinner choose_group;
+    ChooseGroupAdapter chooseGroupAdapter;
+    ArrayList<ChooseGroupModel>  listgroup = new ArrayList<>();
+    ChooseGroupModel chooseGroupModel;
+    Button create_group;
+    PopupWindow popupWindow;
+    private NiftyDialogBuilder dialogBuilder;
+    String[] groupname = {"Xyz", "Abc", "Pqr"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,12 +128,46 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mRobotoMediam = TypefaceUtils.getTypefaceRobotoMediam(this);
 
         mEmailEt = (EditText) findViewById(R.id.username_et);
+        mEmailEt.setTypeface(mRobotoMediam);
         mPasswordEt = (EditText) findViewById(R.id.password_et);
         mLoginTv = (TextView) findViewById(R.id.login_tv);
         mForgotPasswordTv = (TextView) findViewById(R.id.forgot_password_tv);
         mSignUpTv = (TextView) findViewById(R.id.signup_tv);
 
-        mEmailEt.setTypeface(mRobotoMediam);
+
+        for (int i = 0; i < 3; i++) {
+            chooseGroupModel = new ChooseGroupModel(i, groupname[i]);
+            listgroup.add(chooseGroupModel);
+        }
+
+
+        choose_group = (Spinner) findViewById(R.id.choose_group);
+        chooseGroupAdapter = new ChooseGroupAdapter(this, listgroup);
+        choose_group.setAdapter(chooseGroupAdapter);
+        choose_group.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TextView userid = (TextView) view.findViewById(R.id.txt_choose_group);
+                if (listgroup.size() > 0) {
+                    mEmailEt.setText(userid.getText().toString());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        create_group = (Button) findViewById(R.id.create_group);
+        create_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopup();
+
+            }
+        });
+
+
         mPasswordEt.setTypeface(mRobotoMediam);
         mLoginTv.setTypeface(mRobotoMediam);
         mForgotPasswordTv.setTypeface(mRobotoMediam);
@@ -313,7 +365,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-    private void loginfacebookuser(final String mFacebookId, final  String mEmail, final String mFirstName,final  String mLastName) {
+    private void loginfacebookuser(final String mFacebookId, final String mEmail, final String mFirstName, final String mLastName) {
         mProgressDialog.show();
         ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token).enqueue(new Callback<SignupResponse>() {
             @Override
@@ -426,5 +478,44 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onPause();
         Log.w("MainActivity", "onPause");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+    }
+
+    public void showPopup() {
+        dialogBuilder = NiftyDialogBuilder.getInstance(this);
+        dialogBuilder.withTitleColor(getResources().getColor(R.color.colorPrimaryDark))
+                .withTitle(getString(R.string.create_group_text)).withMessage(null)
+                .withDividerColor(getResources().getColor(R.color.colorPrimary))
+                .withDialogColor(getResources().getColor(R.color.TransWhite)).withDuration(200)
+                .withEffect(Effectstype.SlideBottom).isCancelableOnTouchOutside(false)
+                .setCustomView(R.layout.popup_group_layout, this);
+
+        final EditText edt_grp_name = (EditText) dialogBuilder.findViewById(R.id.edt_group_name);
+
+
+        Button btn_create = (Button) dialogBuilder.findViewById(R.id.btn_create);
+        Button btn_cancel = (Button) dialogBuilder.findViewById(R.id.btn_cancel);
+
+
+        btn_create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String group_name = edt_grp_name.getText().toString();
+                chooseGroupModel = new ChooseGroupModel(2, group_name);
+                listgroup.add(chooseGroupModel);
+                dialogBuilder.dismiss();
+            }
+        });
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogBuilder.cancel();
+            }
+        });
+        dialogBuilder.show();
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

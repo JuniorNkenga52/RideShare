@@ -16,7 +16,6 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.app.rideshare.permission.MAPS_RECEIVE" />
-
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <application
@@ -32,6 +31,7 @@
         <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -62,7 +62,6 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.NotificationActivity"
             android:screenOrientation="portrait" />
@@ -75,42 +74,39 @@
             android:name=".activity.HomeActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
-
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.MobileNumberActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.VerifyMobileNumberActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
-
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.WebSocketActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.WaitingActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.StartRideActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.AutoCompleteLocationActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.RideRateActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBMGkCUsUDvBQSkib9Uc2ZAo7hgNR5cMr0" />
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -142,11 +138,14 @@
         </service>
         <service
             android:name=".service.LocationService"
-            android:stopWithTask="false"
-            android:enabled="true" />
+            android:enabled="true"
+            android:stopWithTask="false" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="222483a7f0f7bff743470f4112c6de9459fe0141" />
+
+        <activity android:name=".activity.Admin_FunctionsActivity"></activity>
     </application>
 
 </manifest>

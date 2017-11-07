@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
+import com.app.rideshare.activity.Admin_FunctionsActivity;
 import com.app.rideshare.activity.AutoCompleteLocationActivity;
 import com.app.rideshare.activity.HomeActivity;
 import com.app.rideshare.activity.RideShareApp;
@@ -374,7 +375,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             public void onResponse(Call<RideSelect> call, Response<RideSelect> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getMlistUser().size() == 0) {
-                        showDialog();
+                        //showDialog();
+                        Intent intent = new Intent(getActivity(), Admin_FunctionsActivity.class);
+                        startActivity(intent);
                     } else {
                         mlist.clear();
                         mlist.addAll(response.body().getMlistUser());

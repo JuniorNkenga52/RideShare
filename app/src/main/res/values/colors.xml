@@ -16,4 +16,5 @@
     <color name="accept_btn_color">#23ca0d</color>
     <color name="reject_btn_color">#f10808</color>
     <color name="gray">#a4a4a4</color>
+    <color name="TransWhite">#DCFFFFFF</color>
 </resources>

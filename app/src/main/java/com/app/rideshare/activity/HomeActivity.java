@@ -3,7 +3,6 @@ package com.app.rideshare.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -18,7 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -54,6 +52,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -83,7 +82,6 @@ public class HomeActivity extends AppCompatActivity
         getSupportActionBar().setTitle("Ride Share");
 
         PrefUtils.initPreference(this);
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -293,15 +291,15 @@ public class HomeActivity extends AppCompatActivity
             } else {
                 switchFragment(HistoryFragment.newInstance(), "HISTORYFRAGMENT");
             }
-        } else if (id == R.id.nav_logout)
-        {
-            selectRide(PrefUtils.getUserInfo().getmUserId(),"0","","");
+        } else if (id == R.id.nav_logout) {
+            selectRide(PrefUtils.getUserInfo().getmUserId(), "0", "", "");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     private void selectRide(String mId, String mType, String latitude, String longitude) {
 
         ApiServiceModule.createService(RestApiInterface.class).selectRide(mId, mType, latitude, longitude).enqueue(new Callback<RideSelect>() {
@@ -326,7 +324,7 @@ public class HomeActivity extends AppCompatActivity
                     finish();
 
                 } else {
-                    ToastUtils.showShort(HomeActivity.this,"Please try again.");
+                    ToastUtils.showShort(HomeActivity.this, "Please try again.");
                 }
             }
 
@@ -337,6 +335,7 @@ public class HomeActivity extends AppCompatActivity
             }
         });
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -350,4 +349,5 @@ public class HomeActivity extends AppCompatActivity
     public static void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
         onBackPressed = onBackPressedListener;
     }
+
 }

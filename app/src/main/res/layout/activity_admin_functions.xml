@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/admin_fun_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:titleTextColor="@color/colorAccent"
+        app:navigationIcon="@drawable/ic_back"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="Rate Ride" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/admin_fun_toolbar"
+        android:orientation="vertical"
+        android:padding="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_30sdp">
+
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/blacltext" />
+
+        <LinearLayout
+            android:id="@+id/admin_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:gravity="center_vertical">
+
+            <View
+                android:id="@+id/txtview"
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="@color/blacltext" />
+
+            <TextView
+                android:id="@+id/admin_fname"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.75"
+                android:gravity="center"
+                android:padding="@dimen/_1sdp"
+                android:text="@string/user_name"
+                android:textAllCaps="false"
+                android:textColor="@color/blacltext"
+                android:textSize="@dimen/_10sdp" />
+
+            <View
+                android:id="@+id/txtview1"
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="@color/blacltext" />
+
+            <TextView
+                android:id="@+id/admin_lname"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.75"
+                android:gravity="center"
+                android:padding="@dimen/_1sdp"
+                android:text="@string/user_lname"
+                android:textAllCaps="false"
+                android:textColor="@color/blacltext"
+                android:textSize="@dimen/_10sdp" />
+
+            <View
+                android:id="@+id/txtview2"
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="@color/blacltext" />
+
+            <TextView
+                android:id="@+id/admin_urole"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.75"
+                android:gravity="center"
+                android:padding="@dimen/_1sdp"
+                android:text="@string/user_role"
+                android:textAllCaps="false"
+                android:textColor="@color/blacltext"
+                android:textSize="@dimen/_10sdp" />
+
+            <View
+                android:id="@+id/txtview3"
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="@color/blacltext" />
+
+            <TextView
+                android:id="@+id/admin_aprove_req"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:padding="@dimen/_2sdp"
+                android:text="@string/approve_req"
+                android:textAllCaps="false"
+                android:textColor="@color/blacltext"
+                android:textSize="@dimen/_9sdp" />
+
+            <View
+                android:id="@+id/txtview4"
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="@color/blacltext" />
+
+            <TextView
+                android:id="@+id/admin_disable"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.75"
+                android:gravity="center"
+                android:padding="@dimen/_2sdp"
+                android:text="@string/disable"
+                android:textAllCaps="false"
+                android:textColor="@color/blacltext"
+                android:textSize="@dimen/_9sdp" />
+
+            <View
+                android:id="@+id/txtview5"
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="@color/blacltext" />
+
+            <TextView
+                android:id="@+id/admin_aprove_priviledge"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:padding="@dimen/_2sdp"
+                android:text="@string/approve_privilege"
+                android:textAllCaps="false"
+                android:textColor="@color/blacltext"
+                android:textSize="@dimen/_8sdp" />
+
+            <View
+                android:id="@+id/txtview6"
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:background="@color/blacltext" />
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/list_riders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/admin_layout" />
+
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:text="@string/admin_apply" />
+</RelativeLayout>
