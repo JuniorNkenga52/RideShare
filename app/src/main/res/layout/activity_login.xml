@@ -101,14 +101,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/squar_re"
-
             android:orientation="horizontal">
 
             <Spinner
                 android:id="@+id/choose_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:theme="@style/TextLabel1" />
 
             <Button
                 android:id="@+id/create_group"

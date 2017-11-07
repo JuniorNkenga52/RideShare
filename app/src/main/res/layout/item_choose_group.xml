@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/squar_re"
-        android:layout_marginTop="@dimen/_25sdp"
         app:hintTextAppearance="@style/TextLabelsize">
 
         <TextView
@@ -20,7 +19,7 @@
             android:hint="@string/choose_group_text"
             android:padding="@dimen/_8sdp"
             android:textAlignment="textStart"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/loginbtn"
             android:textSize="@dimen/_14sdp" />
 
     </android.support.design.widget.TextInputLayout>
@@ -30,5 +29,5 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_1sdp"
         android:layout_below="@+id/choose_group"
-        android:background="@color/gray" />
+        android:background="@color/loginbtn" />
 </RelativeLayout>
