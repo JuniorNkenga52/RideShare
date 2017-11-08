@@ -8,9 +8,11 @@ import java.util.ArrayList;
  * Created by rlogical-dev-19 on 15-Jun-2017.
  */
 
-public class ContactRequest
-{
+public class ContactRequest {
     private String user_id;
+    private String group_id;
+
+
     private ArrayList<ContactBean> contact;
 
 
@@ -28,5 +30,13 @@ public class ContactRequest
 
     public void setContact(ArrayList<ContactBean> contact) {
         this.contact = contact;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
     }
 }

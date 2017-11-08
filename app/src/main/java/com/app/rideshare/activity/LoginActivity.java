@@ -81,9 +81,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     String token;
 
-    Spinner choose_group;
+    Spinner mchoose_group;
     ChooseGroupAdapter chooseGroupAdapter;
-    ArrayList<ChooseGroupModel>  listgroup = new ArrayList<>();
+    ArrayList<ChooseGroupModel> listgroup = new ArrayList<>();
     ChooseGroupModel chooseGroupModel;
     Button create_group;
     PopupWindow popupWindow;
@@ -142,10 +142,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
 
 
-        choose_group = (Spinner) findViewById(R.id.choose_group);
+        mchoose_group = (Spinner) findViewById(R.id.choose_group);
         chooseGroupAdapter = new ChooseGroupAdapter(this, listgroup);
-        choose_group.setAdapter(chooseGroupAdapter);
-        choose_group.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mchoose_group.setAdapter(chooseGroupAdapter);
+        mchoose_group.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TextView userid = (TextView) view.findViewById(R.id.txt_choose_group);
@@ -274,7 +274,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 } else if (mPasswordEt.getText().toString().isEmpty()) {
                     ToastUtils.showShort(LoginActivity.this, "Please enter password.");
                 } else {
-                    loginuser(mEmailEt.getText().toString(), mPasswordEt.getText().toString());
+                    loginuser(mEmailEt.getText().toString(), mPasswordEt.getText().toString(), String.valueOf(mchoose_group.getSelectedItemId()));
                 }
             }
         });
@@ -319,9 +319,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-    private void loginuser(final String mEmail, final String password) {
+    private void loginuser(final String mEmail, final String password, final String group_id) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password, token).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password, token, group_id).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -333,7 +333,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         PrefUtils.putString("loginwith", "normal");
                         PrefUtils.putString("gemail", mEmail);
                         PrefUtils.putString("gId", password);
-
+                        PrefUtils.putString("group_id", group_id);
 
                         if (PrefUtils.getUserInfo().getmMobileNo().equals("")) {
                             Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
@@ -365,6 +365,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
     }
+
 
 
     private void loginfacebookuser(final String mFacebookId, final String mEmail, final String mFirstName, final String mLastName) {
@@ -502,8 +503,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onClick(View v) {
                 String group_name = edt_grp_name.getText().toString();
-                chooseGroupModel = new ChooseGroupModel(2, group_name);
-                listgroup.add(chooseGroupModel);
+                /*chooseGroupModel = new ChooseGroupModel(2, group_name);
+                listgroup.add(chooseGroupModel);*/
+                create_group(String.valueOf("123"),group_name);
                 dialogBuilder.dismiss();
             }
         });
@@ -520,4 +522,35 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void onClick(View v) {
 
     }
+
+    private void create_group(final String user_id, final String group_name) {
+        mProgressDialog.show();
+        ApiServiceModule.createService_group(RestApiInterface.class).creategroup(user_id, group_name).enqueue(new Callback<SignupResponse>() {
+            @Override
+            public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (!response.body().getmStatus().equals("error")) {
+
+                        PrefUtils.putString("user_id", user_id);
+                        PrefUtils.putString("group_name", group_name);
+
+                        ToastUtils.showShort(LoginActivity.this, "Group Created");
+                    } else {
+                        ToastUtils.showShort(LoginActivity.this, response.body().getmMessage());
+                    }
+                } else {
+
+                }
+                mProgressDialog.cancel();
+            }
+
+            @Override
+            public void onFailure(Call<SignupResponse> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("error", t.toString());
+                mProgressDialog.cancel();
+            }
+        });
+    }
+
 }

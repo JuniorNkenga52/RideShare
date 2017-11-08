@@ -104,7 +104,7 @@ public class SplashActivity extends AppCompatActivity {
             } else if (PrefUtils.getString("loginwith").equals("facebook")) {
                 loginfacebookuser(PrefUtils.getString("gId"), PrefUtils.getString("gemail"), PrefUtils.getString("gfname"), PrefUtils.getString("glast"));
             } else if (PrefUtils.getString("loginwith").equals("normal")) {
-                loginuser(PrefUtils.getString("gemail"), PrefUtils.getString("gId"));
+                loginuser(PrefUtils.getString("gemail"), PrefUtils.getString("gId"),PrefUtils.getString("group_id"));
             }
         }
     }
@@ -126,8 +126,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-    private void loginuser(final String mEmail, final String password) {
-        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password, token).enqueue(new Callback<SignupResponse>() {
+    private void loginuser(final String mEmail, final String password, final String group_id) {
+        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password, token,group_id).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -139,7 +139,7 @@ public class SplashActivity extends AppCompatActivity {
                         PrefUtils.putString("loginwith", "normal");
                         PrefUtils.putString("gemail", mEmail);
                         PrefUtils.putString("gId", password);
-
+                        PrefUtils.putString("group_id", group_id);
 
                         if (PrefUtils.getUserInfo().getmMobileNo().equals("")) {
                             Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);

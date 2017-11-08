@@ -6,20 +6,20 @@ package com.app.rideshare.model;
 
 public class ChooseGroupModel {
 
-    private int gropid;
-    private String groupname;
+    private int user_id;
+    private String group_name;
 
     public ChooseGroupModel(int gropid, String groupname) {
-        this.gropid = gropid;
-        this.groupname = groupname;
+        this.user_id = gropid;
+        this.group_name = groupname;
     }
 
     public int getGropid() {
-        return gropid;
+        return user_id;
     }
 
     public String getGroupname() {
-        return groupname;
+        return group_name;
     }
 
 }

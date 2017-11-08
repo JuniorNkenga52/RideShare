@@ -29,12 +29,16 @@ public interface RestApiInterface {
 
     @FormUrlEncoded
     @POST("auth/register")
-    Call<SignupResponse> signup(@Field("u_firstname") String mFirstName, @Field("u_lastname") String mLastName, @Field("u_email") String mEmail, @Field("u_mo_number") String mMobileNuber, @Field("u_password") String mPassword,@Field("deviceToken") String deviceTocken);
+    Call<SignupResponse> signup(@Field("u_firstname") String mFirstName, @Field("u_lastname") String mLastName, @Field("u_email") String mEmail, @Field("u_mo_number") String mMobileNuber, @Field("u_password") String mPassword, @Field("deviceToken") String deviceTocken);
 
 
     @FormUrlEncoded
     @POST("auth/login")
-    Call<SignupResponse> login(@Field("u_email") String mEmail, @Field("u_password") String mPassword,@Field("deviceToken") String deviceTocken);
+    Call<SignupResponse> login(@Field("u_email") String mEmail, @Field("u_password") String mPassword, @Field("deviceToken") String deviceTocken,@Field("group_id")String mGroup_id);
+
+    @FormUrlEncoded
+    @POST("group/create")
+    Call<SignupResponse> creategroup(@Field("user_id")String mUserid,@Field("group_name")String mGroupName);
 
     @FormUrlEncoded
     @POST("auth/select_ride")
@@ -43,16 +47,16 @@ public interface RestApiInterface {
 
     @FormUrlEncoded
     @POST("user/getUserContacts")
-    Call<RideSelect> getUser(@Field("user_id") String mId, @Field("friend_list_type") String mType, @Field("u_lat") String mLatitude, @Field("u_long") String mLongitude,@Field("u_ride_type") String mRideType);
+    Call<RideSelect> getUser(@Field("user_id") String mId, @Field("friend_list_type") String mType, @Field("u_lat") String mLatitude, @Field("u_long") String mLongitude, @Field("u_ride_type") String mRideType);
 
     @FormUrlEncoded
     @POST("auth/facebook_register")
-    Call<SignupResponse> signfacebook(@Field("facebook_id") String mFacebookId, @Field("u_email") String mEmail, @Field("u_firstname") String mFirstName, @Field("u_lastname") String mLastName,@Field("deviceToken") String deviceTocken);
+    Call<SignupResponse> signfacebook(@Field("facebook_id") String mFacebookId, @Field("u_email") String mEmail, @Field("u_firstname") String mFirstName, @Field("u_lastname") String mLastName, @Field("deviceToken") String deviceTocken);
 
 
     @FormUrlEncoded
     @POST("auth/google_register")
-    Call<SignupResponse> signGoogleplus(@Field("google_id") String mGoogleId, @Field("u_email") String mEmail, @Field("u_firstname") String mFirstName, @Field("u_lastname") String mLastName,@Field("deviceToken") String deviceTocken);
+    Call<SignupResponse> signGoogleplus(@Field("google_id") String mGoogleId, @Field("u_email") String mEmail, @Field("u_firstname") String mFirstName, @Field("u_lastname") String mLastName, @Field("deviceToken") String deviceTocken);
 
 
     @FormUrlEncoded
@@ -70,10 +74,10 @@ public interface RestApiInterface {
 
     @FormUrlEncoded
     @POST("user/sendRequest")
-    Call<SendResponse> sendRequest(@Field("user_id") String mUserId,@Field("from_id") String mFromUserId,
-                                   @Field("start_latitude") String startlatitude,@Field("start_longitude") String startLongitude,
-                                   @Field("end_latitude") String endlatitude,@Field("end_longitude") String endlongitude,
-                                   @Field("u_ride_type") String mtype,@Field("start_address") String mStartAddress,@Field("end_address") String mEndAddress);
+    Call<SendResponse> sendRequest(@Field("user_id") String mUserId, @Field("from_id") String mFromUserId,
+                                   @Field("start_latitude") String startlatitude, @Field("start_longitude") String startLongitude,
+                                   @Field("end_latitude") String endlatitude, @Field("end_longitude") String endlongitude,
+                                   @Field("u_ride_type") String mtype, @Field("start_address") String mStartAddress, @Field("end_address") String mEndAddress, @Field("group_id") String mGroup_id);
 
     @FormUrlEncoded
     @POST("user/acceptDeclineRequest")
@@ -91,12 +95,12 @@ public interface RestApiInterface {
 
     @Multipart
     @POST("user/updateProfile")
-    Call<SignupResponse> updateProfile(@Part("user_id") RequestBody mUserId,@Part("u_firstname") RequestBody Firstname,@Part("u_lastname") RequestBody lastName
-            ,@Part("u_mobile") RequestBody mobilenumber,@Part MultipartBody.Part file,@Part("u_email") RequestBody mEmail);
+    Call<SignupResponse> updateProfile(@Part("user_id") RequestBody mUserId, @Part("u_firstname") RequestBody Firstname, @Part("u_lastname") RequestBody lastName
+            , @Part("u_mobile") RequestBody mobilenumber, @Part MultipartBody.Part file, @Part("u_email") RequestBody mEmail);
 
     @FormUrlEncoded
     @POST("user/startOrEndRide")
-    Call<StartRideResponse> mStartRide(@Field("ride_id") String mRideId,@Field("ride_status") String mRideStatus,@Field("user_id") String mUserId);
+    Call<StartRideResponse> mStartRide(@Field("ride_id") String mRideId, @Field("ride_status") String mRideStatus, @Field("user_id") String mUserId);
 
 
 }

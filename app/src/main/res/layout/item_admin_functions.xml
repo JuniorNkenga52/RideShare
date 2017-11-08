@@ -38,18 +38,23 @@
             android:layout_height="match_parent"
             android:background="@color/blacltext" />
 
-        <TextView
-            android:id="@+id/item_lname"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-
             android:layout_weight="0.75"
-            android:gravity="center_vertical"
-            android:padding="@dimen/_1sdp"
-            android:text="@string/user_lname"
-            android:textAllCaps="false"
-            android:textColor="@color/blacltext"
-            android:textSize="@dimen/_10sdp" />
+            android:gravity="center"
+            android:padding="@dimen/_1sdp">
+
+            <TextView
+                android:id="@+id/item_lname"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/_1sdp"
+                android:text="@string/user_lname"
+                android:textAllCaps="false"
+                android:textColor="@color/blacltext"
+                android:textSize="@dimen/_10sdp" />
+        </LinearLayout>
 
         <View
             android:id="@+id/txtview2"
@@ -68,7 +73,6 @@
                 android:id="@+id/item_urole"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-
                 android:padding="@dimen/_1sdp"
                 android:text="@string/user_role"
                 android:textAllCaps="false"

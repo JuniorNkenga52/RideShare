@@ -5,8 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 
-public class User implements Serializable
-{
+public class User implements Serializable {
     @SerializedName("u_id")
     private String mUserId;
     @SerializedName("u_firstname")
@@ -43,6 +42,10 @@ public class User implements Serializable
 
     private String profile_image;
 
+    @SerializedName("group_id")
+    private String mGroup_id;
+
+
     public String getmRidestatus() {
         return mRidestatus;
     }
@@ -62,6 +65,7 @@ public class User implements Serializable
     public String getContact_sync() {
         return contact_sync;
     }
+
     public void setContact_sync(String contact_sync) {
         this.contact_sync = contact_sync;
     }
@@ -176,5 +180,13 @@ public class User implements Serializable
 
     public void setmCreatedDate(String mCreatedDate) {
         this.mCreatedDate = mCreatedDate;
+    }
+
+    public String getmGroup_id() {
+        return mGroup_id;
+    }
+
+    public void setmGroup_id(String mGroup_id) {
+        this.mGroup_id = mGroup_id;
     }
 }

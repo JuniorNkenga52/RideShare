@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Rider  implements Serializable{
+public class Rider implements Serializable {
 
 
     @SerializedName("u_id")
@@ -46,6 +46,10 @@ public class Rider  implements Serializable{
 
     @SerializedName("u_ride_type")
     private String u_ride_type;
+
+
+    @SerializedName("group_id")
+    private String mGroup_id;
 
     public String getU_ride_type() {
         return u_ride_type;
@@ -149,5 +153,13 @@ public class Rider  implements Serializable{
 
     public void setmDistance(String mDistance) {
         this.mDistance = mDistance;
+    }
+
+    public String getmGroup_id() {
+        return mGroup_id;
+    }
+
+    public void setmGroup_id(String mGroup_id) {
+        this.mGroup_id = mGroup_id;
     }
 }
