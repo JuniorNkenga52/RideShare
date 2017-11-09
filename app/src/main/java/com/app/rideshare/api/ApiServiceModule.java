@@ -15,9 +15,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiServiceModule {
 
-    private static final String API_ENDPOINT = "http://ec2-18-220-69-218.us-east-2.compute.amazonaws.com/rideshare/api/";
+  //  private static final String API_ENDPOINT = "http://ec2-18-220-69-218.us-east-2.compute.amazonaws.com/rideshare/api/";
     public static final String WEBSOCKET_ENDPOINT="ws://ec2-18-220-69-218.us-east-2.compute.amazonaws.com:8090/ride-share-websocket/php-socket.php";
-    public static final String SERVER_URL = "http://php.rlogical.com/rideshare/api/";
+    public static final String API_ENDPOINT = "http://php.rlogical.com/rideshare/api/";
 
     private static OkHttpClient.Builder okHttpClient() {
         OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
@@ -57,10 +57,5 @@ public class ApiServiceModule {
         return retrofit.create(serviceClass);
     }
 
-    private static Retrofit.Builder builder_group = new Retrofit.Builder().baseUrl(SERVER_URL).addConverterFactory(GsonConverterFactory.create(gson));
 
-    public static <S> S createService_group(Class<S> serviceClass) {
-        Retrofit retrofit = builder_group.client(okHttpClientTokenHeader().build()).build();
-        return retrofit.create(serviceClass);
-    }
 }

@@ -43,7 +43,10 @@
     <string name="approve_privilege">Approve\n(Admin Privilege)</string>
     <string name="admin_apply">Apply</string>
     <string name="choose_group_text">Choose Group</string>
-    <string name="create_group_text">Create Group</string>
+    <string name="create_group_text">CREATE GROUP</string>
+    <string name="group_name">GROUP NAME</string>
+    <string name="group_create">CREATE</string>
+    <string name="group_cancel">CANCEL</string>
     <string name="btn_create">Create</string>
     <string name="btn_cancle">Cancel</string>
     <string name="rider_ratings">Ratings : </string>

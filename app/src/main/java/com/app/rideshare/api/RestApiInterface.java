@@ -4,6 +4,7 @@ import com.app.rideshare.api.request.ContactRequest;
 import com.app.rideshare.api.response.AcceptRequest;
 import com.app.rideshare.api.response.CancelRequest;
 import com.app.rideshare.api.response.ContactResponse;
+import com.app.rideshare.api.response.GroupResponce;
 import com.app.rideshare.api.response.HistoryResponse;
 import com.app.rideshare.api.response.RideSelect;
 import com.app.rideshare.api.response.SendOTPResponse;
@@ -34,11 +35,11 @@ public interface RestApiInterface {
 
     @FormUrlEncoded
     @POST("auth/login")
-    Call<SignupResponse> login(@Field("u_email") String mEmail, @Field("u_password") String mPassword, @Field("deviceToken") String deviceTocken,@Field("group_id")String mGroup_id);
+    Call<SignupResponse> login(@Field("u_email") String mEmail, @Field("u_password") String mPassword, @Field("deviceToken") String deviceTocken, @Field("group_id") String mGroup_id);
 
     @FormUrlEncoded
     @POST("group/create")
-    Call<SignupResponse> creategroup(@Field("user_id")String mUserid,@Field("group_name")String mGroupName);
+    Call<GroupResponce> creategroup(@Field("group_name") String group_name, @Field("email") String email);
 
     @FormUrlEncoded
     @POST("auth/select_ride")

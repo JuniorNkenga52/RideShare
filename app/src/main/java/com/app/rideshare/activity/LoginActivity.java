@@ -1,10 +1,12 @@
 package com.app.rideshare.activity;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
@@ -12,9 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -23,9 +28,12 @@ import com.app.rideshare.R;
 import com.app.rideshare.adapter.ChooseGroupAdapter;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
+import com.app.rideshare.api.response.GroupResponce;
 import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.model.ChooseGroupModel;
+import com.app.rideshare.model.Rider;
 import com.app.rideshare.notification.GCMRegistrationIntentService;
+import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.utils.TypefaceUtils;
@@ -202,7 +210,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("226419699435-664j5a9sfct42n6icr0usefpkhrlld1a.apps.googleusercontent.com")
+                .requestIdToken("226419699435-hrvru21qoe0sbdjckajisd91rq7hrb8o.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
@@ -367,7 +375,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-
     private void loginfacebookuser(final String mFacebookId, final String mEmail, final String mFirstName, final String mLastName) {
         mProgressDialog.show();
         ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token).enqueue(new Callback<SignupResponse>() {
@@ -483,7 +490,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
 
-    public void showPopup() {
+    public void showPopup1() {
         dialogBuilder = NiftyDialogBuilder.getInstance(this);
         dialogBuilder.withTitleColor(getResources().getColor(R.color.colorPrimaryDark))
                 .withTitle(getString(R.string.create_group_text)).withMessage(null)
@@ -493,19 +500,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .setCustomView(R.layout.popup_group_layout, this);
 
         final EditText edt_grp_name = (EditText) dialogBuilder.findViewById(R.id.edt_group_name);
+        final EditText edt_group_email_id = (EditText) dialogBuilder.findViewById(R.id.edt_group_email_id);
 
-
-        Button btn_create = (Button) dialogBuilder.findViewById(R.id.btn_create);
-        Button btn_cancel = (Button) dialogBuilder.findViewById(R.id.btn_cancel);
+        TextView btn_create = (TextView) dialogBuilder.findViewById(R.id.btn_create);
+        TextView btn_cancel = (TextView) dialogBuilder.findViewById(R.id.btn_cancel);
 
 
         btn_create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String group_name = edt_grp_name.getText().toString();
+                String group_email = edt_group_email_id.getText().toString();
                 /*chooseGroupModel = new ChooseGroupModel(2, group_name);
                 listgroup.add(chooseGroupModel);*/
-                create_group(String.valueOf("123"),group_name);
+                create_group(group_name,group_email);
                 dialogBuilder.dismiss();
             }
         });
@@ -523,20 +531,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     }
 
-    private void create_group(final String user_id, final String group_name) {
+    private void create_group(final String group_name,final String group_email) {
         mProgressDialog.show();
-        ApiServiceModule.createService_group(RestApiInterface.class).creategroup(user_id, group_name).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).creategroup(group_name,group_email).enqueue(new Callback<GroupResponce>() {
             @Override
-            public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
+            public void onResponse(Call<GroupResponce> call, Response<GroupResponce> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if (!response.body().getmStatus().equals("error")) {
+                    if (!response.body().getStatus().equals("error")) {
 
-                        PrefUtils.putString("user_id", user_id);
+                        PrefUtils.putString("group_email", group_email);
                         PrefUtils.putString("group_name", group_name);
 
                         ToastUtils.showShort(LoginActivity.this, "Group Created");
                     } else {
-                        ToastUtils.showShort(LoginActivity.this, response.body().getmMessage());
+                        ToastUtils.showShort(LoginActivity.this, response.body().getMessage());
                     }
                 } else {
 
@@ -545,7 +553,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
 
             @Override
-            public void onFailure(Call<SignupResponse> call, Throwable t) {
+            public void onFailure(Call<GroupResponce> call, Throwable t) {
                 t.printStackTrace();
                 Log.d("error", t.toString());
                 mProgressDialog.cancel();
@@ -553,4 +561,49 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
     }
 
+
+    public void showPopup() {
+        final Dialog dialog = new Dialog(this);
+
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+
+        window.setAttributes(wlp);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.popup_group_layout);
+
+
+        CardView mllCustomDialogError = (CardView) dialog.findViewById(R.id.card_view_group);
+        mllCustomDialogError.setLayoutParams(new LinearLayout.LayoutParams(
+                (int) (AppUtils.getDeviceWidth(this) / 1.2),
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+
+        final EditText edt_grp_name = (EditText) dialog.findViewById(R.id.edt_group_name);
+        final EditText edt_group_email_id = (EditText) dialog.findViewById(R.id.edt_group_email_id);
+
+
+        TextView btn_create = (TextView) dialog.findViewById(R.id.btn_create);
+        TextView btn_cancel = (TextView) dialog.findViewById(R.id.btn_cancel);
+
+        btn_create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String group_name = edt_grp_name.getText().toString();
+                String group_email = edt_group_email_id.getText().toString();
+                create_group(group_name,group_email);
+                dialog.dismiss();
+            }
+        });
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        dialog.show();
+    }
 }

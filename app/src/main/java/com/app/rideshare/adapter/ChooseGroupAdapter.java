@@ -63,7 +63,7 @@ public class ChooseGroupAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.txt_choose_group.setText(listdata.get(position).getGroupname());
+        holder.txt_choose_group.setText(listdata.get(position).getGroup_name());
 
 
         return convertView;
