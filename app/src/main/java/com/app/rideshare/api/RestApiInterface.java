@@ -4,6 +4,7 @@ import com.app.rideshare.api.request.ContactRequest;
 import com.app.rideshare.api.response.AcceptRequest;
 import com.app.rideshare.api.response.CancelRequest;
 import com.app.rideshare.api.response.ContactResponse;
+import com.app.rideshare.api.response.GroupListResponce;
 import com.app.rideshare.api.response.GroupResponce;
 import com.app.rideshare.api.response.HistoryResponse;
 import com.app.rideshare.api.response.RideSelect;
@@ -40,6 +41,10 @@ public interface RestApiInterface {
     @FormUrlEncoded
     @POST("group/create")
     Call<GroupResponce> creategroup(@Field("group_name") String group_name, @Field("email") String email);
+
+
+    @POST("group")
+    Call<GroupListResponce> getgrouplist();
 
     @FormUrlEncoded
     @POST("auth/select_ride")

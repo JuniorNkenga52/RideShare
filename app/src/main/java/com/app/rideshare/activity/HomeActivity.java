@@ -128,11 +128,9 @@ public class HomeActivity extends AppCompatActivity
         mlist = (ArrayList<Rider>) getIntent().getSerializableExtra("list");
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("607370527920-d8hii8b0uhjj9fre1ljlipi6fc5ivtd4.apps.googleusercontent.com")
-                //.requestIdToken("226419699435-cvmecrd57sop93sok5r4p7dccicut64l.apps.googleusercontent.com")
+                .requestIdToken(getString(R.string.google_sign_in_key))
                 .requestEmail()
                 .build();
-                // .requestIdToken("226419699435-664j5a9sfct42n6icr0usefpkhrlld1a.apps.googleusercontent.com")
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)

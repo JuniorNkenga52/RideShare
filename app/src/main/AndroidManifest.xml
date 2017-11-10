@@ -106,7 +106,8 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCu4lPzMQCvTqiPYrjQahTXAyjxTliNRak" />
+            android:value="AIzaSyCsPnKCHv86btuRsb1AkSqcihb3kKo8ykI" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -118,7 +119,7 @@
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
-                <category android:name="com.sukaree" />
+                <category android:name="com.app.rideshare" />
             </intent-filter>
         </receiver>
 
@@ -146,6 +147,7 @@
             android:value="222483a7f0f7bff743470f4112c6de9459fe0141" />
 
         <activity android:name=".activity.Admin_FunctionsActivity"></activity>
+
     </application>
 
 </manifest>

@@ -28,10 +28,10 @@ import com.app.rideshare.R;
 import com.app.rideshare.adapter.ChooseGroupAdapter;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
+import com.app.rideshare.api.response.GroupListResponce;
 import com.app.rideshare.api.response.GroupResponce;
 import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.model.ChooseGroupModel;
-import com.app.rideshare.model.Rider;
 import com.app.rideshare.notification.GCMRegistrationIntentService;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
@@ -144,12 +144,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mSignUpTv = (TextView) findViewById(R.id.signup_tv);
 
 
-        for (int i = 0; i < 3; i++) {
-            chooseGroupModel = new ChooseGroupModel(i, groupname[i]);
-            listgroup.add(chooseGroupModel);
-        }
-
-
+        get_group_list_data();
         mchoose_group = (Spinner) findViewById(R.id.choose_group);
         chooseGroupAdapter = new ChooseGroupAdapter(this, listgroup);
         mchoose_group.setAdapter(chooseGroupAdapter);
@@ -158,7 +153,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TextView userid = (TextView) view.findViewById(R.id.txt_choose_group);
                 if (listgroup.size() > 0) {
-                    mEmailEt.setText(userid.getText().toString());
+                    mEmailEt.setText(chooseGroupModel.getGroup_name());
                 }
             }
 
@@ -210,7 +205,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("226419699435-hrvru21qoe0sbdjckajisd91rq7hrb8o.apps.googleusercontent.com")
+                .requestIdToken(getString(R.string.google_sign_in_key))
                 .requestEmail()
                 .build();
 
@@ -513,7 +508,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 String group_email = edt_group_email_id.getText().toString();
                 /*chooseGroupModel = new ChooseGroupModel(2, group_name);
                 listgroup.add(chooseGroupModel);*/
-                create_group(group_name,group_email);
+                create_group(group_name, group_email);
                 dialogBuilder.dismiss();
             }
         });
@@ -531,9 +526,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     }
 
-    private void create_group(final String group_name,final String group_email) {
+    private void create_group(final String group_name, final String group_email) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).creategroup(group_name,group_email).enqueue(new Callback<GroupResponce>() {
+        ApiServiceModule.createService(RestApiInterface.class).creategroup(group_name, group_email).enqueue(new Callback<GroupResponce>() {
             @Override
             public void onResponse(Call<GroupResponce> call, Response<GroupResponce> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -542,7 +537,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         PrefUtils.putString("group_email", group_email);
                         PrefUtils.putString("group_name", group_name);
 
-                        ToastUtils.showShort(LoginActivity.this, "Group Created");
+                        ToastUtils.showShort(LoginActivity.this, response.body().getMessage());
                     } else {
                         ToastUtils.showShort(LoginActivity.this, response.body().getMessage());
                     }
@@ -572,13 +567,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(true);
+        dialog.setCancelable(false);
         dialog.setContentView(R.layout.popup_group_layout);
 
 
         CardView mllCustomDialogError = (CardView) dialog.findViewById(R.id.card_view_group);
         mllCustomDialogError.setLayoutParams(new LinearLayout.LayoutParams(
-                (int) (AppUtils.getDeviceWidth(this) / 1.2),
+                (int) (AppUtils.getDeviceWidth(this) / 1.1),
                 LinearLayout.LayoutParams.WRAP_CONTENT));
 
         final EditText edt_grp_name = (EditText) dialog.findViewById(R.id.edt_group_name);
@@ -593,7 +588,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onClick(View v) {
                 String group_name = edt_grp_name.getText().toString();
                 String group_email = edt_group_email_id.getText().toString();
-                create_group(group_name,group_email);
+                create_group(group_name, group_email);
                 dialog.dismiss();
             }
         });
@@ -605,5 +600,38 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
 
         dialog.show();
+    }
+
+    private void get_group_list_data() {
+        mProgressDialog.show();
+        ApiServiceModule.createService(RestApiInterface.class).getgrouplist().enqueue(new Callback<GroupListResponce>() {
+            @Override
+            public void onResponse(Call<GroupListResponce> call, Response<GroupListResponce> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                    if (response.body().getResult().size() == 0) {
+                        ToastUtils.showShort(LoginActivity.this, "Problem in data");
+                    } else {
+                        ToastUtils.showShort(LoginActivity.this, "Data Received.!");
+                        listgroup.clear();
+                        for (int i = 0; i < response.body().getResult().size(); i++) {
+                            int groupid = response.body().getResult().get(i).getId();
+                            String groupname = response.body().getResult().get(i).getGroup_name();
+                            chooseGroupModel = new ChooseGroupModel(groupid, groupname);
+                            listgroup.add(chooseGroupModel);
+                        }
+                    }
+                } else {
+
+                }
+                mProgressDialog.cancel();
+            }
+
+            @Override
+            public void onFailure(Call<GroupListResponce> call, Throwable t) {
+                t.printStackTrace();
+                mProgressDialog.cancel();
+            }
+        });
     }
 }
