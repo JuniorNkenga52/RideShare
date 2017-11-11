@@ -418,9 +418,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                 (int) (AppUtils.getDeviceWidth(getActivity()) / 1.2),
                 LinearLayout.LayoutParams.WRAP_CONTENT));
 
+        TextView mDetails_tv = (TextView) dialog.findViewById(R.id.ride_type_details_tv);
         TextView mNameTv = (TextView) dialog.findViewById(R.id.name_tv);
         TextView mVahicalTv = (TextView) dialog.findViewById(R.id.vahical_tv);
         TextView mAddressTv = (TextView) dialog.findViewById(R.id.address_tv);
+        LinearLayout mOther_info = (LinearLayout) dialog.findViewById(R.id.ride_other_info);
         mNameTv.setTypeface(mRobotoReguler);
         mVahicalTv.setTypeface(mRobotoReguler);
         mAddressTv.setTypeface(mRobotoReguler);
@@ -429,11 +431,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             mNameTv.setText(rider.getmFirstName());
             mAddressTv.setText(rider.getmAddress());
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         TextView mGetRideTv = (TextView) dialog.findViewById(R.id.get_ride_tv);
         TextView mCancelTv = (TextView) dialog.findViewById(R.id.cancel_ride_tv);
         if (mUserType.equals("2")) {
+            mOther_info.setVisibility(View.GONE);
+            mDetails_tv.setText("Rider details");
             mGetRideTv.setText("Offer Ride");
         }
         mGetRideTv.setTypeface(mRobotoReguler);

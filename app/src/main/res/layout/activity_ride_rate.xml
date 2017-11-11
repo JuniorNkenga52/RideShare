@@ -113,15 +113,20 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/txt_rate_word"
-                android:text="Submit" />
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/btn_login"
+                android:text="@string/btn_submit" />
 
             <Button
                 android:id="@+id/btn_cancle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txt_rate_word"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_toLeftOf="@+id/btn_submit"
-                android:text="Cancle" />
+                android:background="@drawable/btn_login"
+                android:text="@string/btn_cancel" />
         </RelativeLayout>
 
     </RelativeLayout>

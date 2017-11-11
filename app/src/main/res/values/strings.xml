@@ -51,4 +51,7 @@
     <string name="btn_create">Create</string>
     <string name="btn_cancle">Cancel</string>
     <string name="rider_ratings">Ratings : </string>
+    <string name="driver_details">Driver details</string>
+    <string name="btn_submit">Submit</string>
+    <string name="btn_cancel">Cancel</string>
 </resources>

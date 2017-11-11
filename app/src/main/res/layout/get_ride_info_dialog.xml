@@ -20,6 +20,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/ride_type_details_tv"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_below="@+id/passwordWrapper"
+                android:background="@drawable/btn_login"
+                android:gravity="center"
+                android:lineSpacingExtra="1.2dp"
+                android:text="@string/driver_details"
+                android:textColor="@color/blacltext"
+                android:textSize="@dimen/_16sdp"
+                android:textStyle="bold" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,7 +45,7 @@
                     android:layout_weight="1">
 
                     <ImageView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/ic_car_dialog" />
                 </LinearLayout>
@@ -116,6 +128,7 @@
                 android:background="@color/colorAccent" />
 
             <LinearLayout
+                android:id="@+id/ride_other_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"

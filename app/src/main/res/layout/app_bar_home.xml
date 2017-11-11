@@ -30,7 +30,7 @@
                     android:layout_centerVertical="true"
                     android:text="RideShare"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_18sdp" />
+                    android:textSize="@dimen/_15sdp" />
 
                 <ImageView
                     android:id="@+id/popup_iv"

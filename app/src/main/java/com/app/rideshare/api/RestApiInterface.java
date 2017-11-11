@@ -57,12 +57,12 @@ public interface RestApiInterface {
 
     @FormUrlEncoded
     @POST("auth/facebook_register")
-    Call<SignupResponse> signfacebook(@Field("facebook_id") String mFacebookId, @Field("u_email") String mEmail, @Field("u_firstname") String mFirstName, @Field("u_lastname") String mLastName, @Field("deviceToken") String deviceTocken);
+    Call<SignupResponse> signfacebook(@Field("facebook_id") String mFacebookId, @Field("u_email") String mEmail, @Field("u_firstname") String mFirstName, @Field("u_lastname") String mLastName, @Field("deviceToken") String deviceTocken, @Field("group_id") String group_id);
 
 
     @FormUrlEncoded
     @POST("auth/google_register")
-    Call<SignupResponse> signGoogleplus(@Field("google_id") String mGoogleId, @Field("u_email") String mEmail, @Field("u_firstname") String mFirstName, @Field("u_lastname") String mLastName, @Field("deviceToken") String deviceTocken);
+    Call<SignupResponse> signGoogleplus(@Field("google_id") String mGoogleId, @Field("u_email") String mEmail, @Field("u_firstname") String mFirstName, @Field("u_lastname") String mLastName, @Field("deviceToken") String deviceTocken, @Field("group_id") String group_id);
 
 
     @FormUrlEncoded

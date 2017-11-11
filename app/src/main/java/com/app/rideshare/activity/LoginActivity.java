@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -144,15 +145,25 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mSignUpTv = (TextView) findViewById(R.id.signup_tv);
 
 
+        create_group = (Button) findViewById(R.id.create_group);
+        create_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopup();
+
+            }
+        });
         get_group_list_data();
         mchoose_group = (Spinner) findViewById(R.id.choose_group);
         chooseGroupAdapter = new ChooseGroupAdapter(this, listgroup);
         mchoose_group.setAdapter(chooseGroupAdapter);
+        //mchoose_group.getSelectedItem().toString();
         mchoose_group.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TextView userid = (TextView) view.findViewById(R.id.txt_choose_group);
                 if (listgroup.size() > 0) {
+                    mchoose_group.setSelection(position);
                     mEmailEt.setText(chooseGroupModel.getGroup_name());
                 }
             }
@@ -162,16 +173,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             }
         });
-
-        create_group = (Button) findViewById(R.id.create_group);
-        create_group.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopup();
-
-            }
-        });
-
 
         mPasswordEt.setTypeface(mRobotoMediam);
         mLoginTv.setTypeface(mRobotoMediam);
@@ -240,11 +241,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                         String mFiratName = name[0];
                                         String mLastName = name[1];
 
-                                        loginfacebookuser(mId, mEmail, mFiratName, mLastName);
+                                        loginfacebookuser(mId, mEmail, mFiratName, mLastName,String.valueOf(listgroup.get(1).getId()));
 
                                     } catch (Exception e) {
 
-                                        loginfacebookuser(mId, mEmail, mName, mName);
+                                        loginfacebookuser(mId, mEmail, mName, mName,String.valueOf(listgroup.get(1).getId()));
                                     }
 
                                 } catch (Exception e) {
@@ -304,7 +305,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             Log.d("name", acct.getDisplayName());
             Log.d("name", acct.getGivenName());
 
-            logingoogle(acct.getId(), acct.getEmail(), acct.getDisplayName(), acct.getGivenName());
+            logingoogle(acct.getId(), acct.getEmail(), acct.getDisplayName(), acct.getGivenName(),String.valueOf(listgroup.get(1).getId()));
 
         } else {
             Log.d("faile", "faile");
@@ -370,9 +371,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-    private void loginfacebookuser(final String mFacebookId, final String mEmail, final String mFirstName, final String mLastName) {
+    private void loginfacebookuser(final String mFacebookId, final String mEmail, final String mFirstName, final String mLastName, final String group_id) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token,group_id).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -420,9 +421,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-    private void logingoogle(final String mGoogleId, final String mEmail, final String mFirstName, final String mLastName) {
+    private void logingoogle(final String mGoogleId, final String mEmail, final String mFirstName, final String mLastName, final String group_id) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).signGoogleplus(mGoogleId, mEmail, mFirstName, mLastName, token).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).signGoogleplus(mGoogleId, mEmail, mFirstName, mLastName, token,group_id).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -476,6 +477,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
+
+
     }
 
     @Override
@@ -610,9 +613,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if (response.isSuccessful() && response.body() != null) {
 
                     if (response.body().getResult().size() == 0) {
-                        ToastUtils.showShort(LoginActivity.this, "Problem in data");
+                        ToastUtils.showShort(LoginActivity.this, "Problem in Retriving data");
                     } else {
-                        ToastUtils.showShort(LoginActivity.this, "Data Received.!");
+                        //ToastUtils.showShort(LoginActivity.this, "Data Received.!");
                         listgroup.clear();
                         for (int i = 0; i < response.body().getResult().size(); i++) {
                             int groupid = response.body().getResult().get(i).getId();
