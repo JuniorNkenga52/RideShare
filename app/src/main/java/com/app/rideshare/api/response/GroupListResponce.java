@@ -28,11 +28,5 @@ public class GroupListResponce {
     public void setResult(ArrayList<ChooseGroupModel> result) {
         this.result = result;
     }
-    /*public ChooseGroupModel getResult() {
-        return result;
-    }
 
-    public void setResult(ChooseGroupModel result) {
-        this.result = result;
-    }*/
 }

@@ -71,7 +71,7 @@ public class ChooseGroupModel {
 
 
     public ChooseGroupModel(int gropid, String groupname) {
-        this.user_id = gropid;
+        this.id = gropid;
         this.group_name = groupname;
     }
 

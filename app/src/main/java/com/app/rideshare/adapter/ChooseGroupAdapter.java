@@ -62,7 +62,7 @@ public class ChooseGroupAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
+        holder.txt_choose_group.setTextColor(context.getResources().getColor(R.color.loginbtn));
         holder.txt_choose_group.setText(listdata.get(position).getGroup_name());
 
 
@@ -72,4 +72,6 @@ public class ChooseGroupAdapter extends BaseAdapter {
     private class ViewHolder {
         TextView txt_choose_group;
     }
+
+
 }

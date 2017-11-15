@@ -7,6 +7,10 @@
             android:icon="@drawable/ic_action_home"
             android:title="Home" />
         <item
+            android:id="@+id/nav_admin"
+            android:icon="@drawable/ic_logout"
+            android:title="Admin" />
+        <item
             android:id="@+id/nav_history"
             android:icon="@drawable/ic_action_history"
             android:title="History" />
@@ -14,9 +18,6 @@
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_logout"
             android:title="Logout" />
-        <item
-            android:id="@+id/nav_admin"
-            android:icon="@drawable/ic_logout"
-            android:title="Admin" />
+
     </group>
 </menu>

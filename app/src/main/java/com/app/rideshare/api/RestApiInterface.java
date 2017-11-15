@@ -7,11 +7,13 @@ import com.app.rideshare.api.response.ContactResponse;
 import com.app.rideshare.api.response.GroupListResponce;
 import com.app.rideshare.api.response.GroupResponce;
 import com.app.rideshare.api.response.HistoryResponse;
+import com.app.rideshare.api.response.MyGroupsResponce;
 import com.app.rideshare.api.response.RideSelect;
 import com.app.rideshare.api.response.SendOTPResponse;
 import com.app.rideshare.api.response.SendResponse;
 import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.api.response.StartRideResponse;
+import com.app.rideshare.model.ChooseGroupModel;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -45,6 +47,14 @@ public interface RestApiInterface {
 
     @POST("group")
     Call<GroupListResponce> getgrouplist();
+
+    @FormUrlEncoded
+    @POST("user/mygroups")
+    Call<GroupListResponce> mygroups(@Field("user_id") String user_id);
+
+    @FormUrlEncoded
+    @POST("user/groupusers")
+    Call<MyGroupsResponce> groupusers(@Field("group_id") String group_id, @Field("user_id") String user_id);
 
     @FormUrlEncoded
     @POST("auth/select_ride")

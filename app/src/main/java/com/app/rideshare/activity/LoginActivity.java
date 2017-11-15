@@ -155,24 +155,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
         get_group_list_data();
         mchoose_group = (Spinner) findViewById(R.id.choose_group);
-        chooseGroupAdapter = new ChooseGroupAdapter(this, listgroup);
-        mchoose_group.setAdapter(chooseGroupAdapter);
-        //mchoose_group.getSelectedItem().toString();
-        mchoose_group.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TextView userid = (TextView) view.findViewById(R.id.txt_choose_group);
-                if (listgroup.size() > 0) {
-                    mchoose_group.setSelection(position);
-                    mEmailEt.setText(chooseGroupModel.getGroup_name());
-                }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         mPasswordEt.setTypeface(mRobotoMediam);
         mLoginTv.setTypeface(mRobotoMediam);
@@ -241,11 +224,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                         String mFiratName = name[0];
                                         String mLastName = name[1];
 
-                                        loginfacebookuser(mId, mEmail, mFiratName, mLastName,String.valueOf(listgroup.get(1).getId()));
+                                        loginfacebookuser(mId, mEmail, mFiratName, mLastName, String.valueOf(listgroup.get((Integer) mchoose_group.getSelectedItem()).getId()));
 
                                     } catch (Exception e) {
 
-                                        loginfacebookuser(mId, mEmail, mName, mName,String.valueOf(listgroup.get(1).getId()));
+                                        loginfacebookuser(mId, mEmail, mName, mName, String.valueOf(listgroup.get((Integer) mchoose_group.getSelectedItem()).getId()));
                                     }
 
                                 } catch (Exception e) {
@@ -278,7 +261,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 } else if (mPasswordEt.getText().toString().isEmpty()) {
                     ToastUtils.showShort(LoginActivity.this, "Please enter password.");
                 } else {
-                    loginuser(mEmailEt.getText().toString(), mPasswordEt.getText().toString(), String.valueOf(mchoose_group.getSelectedItemId()));
+                    loginuser(mEmailEt.getText().toString(), mPasswordEt.getText().toString(), String.valueOf(listgroup.get((Integer) mchoose_group.getSelectedItem()).getId()));
                 }
             }
         });
@@ -305,7 +288,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             Log.d("name", acct.getDisplayName());
             Log.d("name", acct.getGivenName());
 
-            logingoogle(acct.getId(), acct.getEmail(), acct.getDisplayName(), acct.getGivenName(),String.valueOf(listgroup.get(1).getId()));
+            logingoogle(acct.getId(), acct.getEmail(), acct.getDisplayName(), acct.getGivenName(), String.valueOf(listgroup.get((Integer) mchoose_group.getSelectedItem()).getId()));
 
         } else {
             Log.d("faile", "faile");
@@ -373,7 +356,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void loginfacebookuser(final String mFacebookId, final String mEmail, final String mFirstName, final String mLastName, final String group_id) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token,group_id).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token, group_id).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -423,7 +406,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void logingoogle(final String mGoogleId, final String mEmail, final String mFirstName, final String mLastName, final String group_id) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).signGoogleplus(mGoogleId, mEmail, mFirstName, mLastName, token,group_id).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).signGoogleplus(mGoogleId, mEmail, mFirstName, mLastName, token, group_id).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -437,7 +420,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         PrefUtils.putString("gId", mGoogleId);
                         PrefUtils.putString("gfname", mFirstName);
                         PrefUtils.putString("glast", mLastName);
-
+                        PrefUtils.putString("groupid", group_id);
                         if (PrefUtils.getUserInfo().getmMobileNo().equals("")) {
                             Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
                             startActivity(i);
@@ -613,7 +596,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if (response.isSuccessful() && response.body() != null) {
 
                     if (response.body().getResult().size() == 0) {
-                        ToastUtils.showShort(LoginActivity.this, "Problem in Retriving data");
+                        ToastUtils.showShort(LoginActivity.this, "Problem in Retrieving data");
                     } else {
                         //ToastUtils.showShort(LoginActivity.this, "Data Received.!");
                         listgroup.clear();
@@ -623,6 +606,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             chooseGroupModel = new ChooseGroupModel(groupid, groupname);
                             listgroup.add(chooseGroupModel);
                         }
+                        bindSpinner(mchoose_group, listgroup.get(0).getGroup_name());
                     }
                 } else {
 
@@ -634,6 +618,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onFailure(Call<GroupListResponce> call, Throwable t) {
                 t.printStackTrace();
                 mProgressDialog.cancel();
+            }
+        });
+    }
+
+    public void bindSpinner(final Spinner spinner, final String value) {
+
+        mchoose_group.setAdapter(new ChooseGroupAdapter(this, listgroup));
+        spinner.post(new Runnable() {
+            @Override
+            public void run() {
+
+                if (listgroup.size() > 0) {
+                    spinner.setSelection(listgroup.indexOf(value));
+                    mEmailEt.setText(chooseGroupModel.getGroup_name());
+                }
             }
         });
     }

@@ -28,6 +28,9 @@ import android.widget.TextView;
 import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
+import com.app.rideshare.api.response.GroupListResponce;
+import com.app.rideshare.api.response.GroupResponce;
+import com.app.rideshare.api.response.MyGroupsResponce;
 import com.app.rideshare.api.response.RideSelect;
 import com.app.rideshare.fragment.HistoryFragment;
 import com.app.rideshare.fragment.HomeFragment;
@@ -293,7 +296,9 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
             selectRide(PrefUtils.getUserInfo().getmUserId(), "0", "", "");
         } else if (id == R.id.nav_admin) {
+
             Intent intent = new Intent(HomeActivity.this, Admin_FunctionsActivity.class);
+
             startActivity(intent);
         }
 
@@ -337,6 +342,8 @@ public class HomeActivity extends AppCompatActivity
             }
         });
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

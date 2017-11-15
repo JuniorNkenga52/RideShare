@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import com.app.rideshare.model.GroupusersModel;
 import com.app.rideshare.model.User;
 import com.google.gson.Gson;
 
@@ -13,6 +14,7 @@ public class PrefUtils {
     private static SharedPreferences SETTINGS = null;
     private static Editor EDITOR = null;
     public static final String PREF_USER_INFO = "PREF_USER_INFO";
+    public static final String PREF_ADMIN_INFO = "PREF_ADMIN_INFO";
     public static final String PREF_USER_MEDICINE_LIST = "PREF_USER_MEDICINE_LIST";
 
     public static void initPreference(Context context) {
@@ -74,5 +76,13 @@ public class PrefUtils {
 
     public static User getUserInfo() {
         return new Gson().fromJson(getString(PREF_USER_INFO), User.class);
+    }
+
+    public static void addAdminInfo(GroupusersModel user) {
+        putString(PREF_ADMIN_INFO, new Gson().toJson(user));
+    }
+
+    public static GroupusersModel getAdminInfo() {
+        return new Gson().fromJson(getString(PREF_ADMIN_INFO), GroupusersModel.class);
     }
 }

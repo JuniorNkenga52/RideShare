@@ -39,9 +39,9 @@
     <string name="user_name">Name</string>
     <string name="user_lname">Last Name</string>
     <string name="user_role">User Role</string>
-    <string name="approve_req">Approve\n(Driver Request)</string>
+    <string name="approve_req">Approve (Driver Request)</string>
     <string name="disable">Disable</string>
-    <string name="approve_privilege">Approve\n(Admin Privilege)</string>
+    <string name="approve_privilege">Approve (Admin Privilege)</string>
     <string name="admin_apply">Apply</string>
     <string name="choose_group_text">Choose Group</string>
     <string name="create_group_text">CREATE GROUP</string>

@@ -1,6 +1,7 @@
 package com.app.rideshare.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,9 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
+import com.app.rideshare.activity.Admin_Userinfo_Activity;
 import com.app.rideshare.model.AdminFunctions;
+import com.app.rideshare.model.GroupusersModel;
 
 import java.util.ArrayList;
 
@@ -20,10 +23,10 @@ import java.util.ArrayList;
 public class AdminFuncitonsAdapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<AdminFunctions> listdata;
+    private ArrayList<GroupusersModel> listdata;
     private LayoutInflater mInflater;
 
-    public AdminFuncitonsAdapter(Context context, ArrayList<AdminFunctions> listdata) {
+    public AdminFuncitonsAdapter(Context context, ArrayList<GroupusersModel> listdata) {
         this.context = context;
         this.listdata = listdata;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -45,44 +48,38 @@ public class AdminFuncitonsAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
 
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.item_admin_functions, null);
             holder = new ViewHolder();
 
-            holder.item_fname = (TextView) convertView.findViewById(R.id.item_fname);
-            holder.item_lname = (TextView) convertView.findViewById(R.id.item_lname);
-            holder.item_urole = (TextView) convertView.findViewById(R.id.item_urole);
-            holder.item_aprove_req = (CheckBox) convertView.findViewById(R.id.item_aprove_req);
-            holder.item_disable = (CheckBox) convertView.findViewById(R.id.item_disable);
-            holder.item_aprove_priviledge = (CheckBox) convertView.findViewById(R.id.item_aprove_priviledge);
+            holder.item_user_name_tv = (TextView) convertView.findViewById(R.id.item_user_name_tv);
+            holder.item_phno_tv = (TextView) convertView.findViewById(R.id.item_phno_tv);
+
 
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.item_fname.setText(listdata.get(position).getFname());
-        holder.item_lname.setText(listdata.get(position).getLname());
-        holder.item_urole.setText(listdata.get(position).getUrole());
-        if (listdata.get(position).getAp_dr_req() == 0 || listdata.get(position).getDisble() == 0 || listdata.get(position).getAp_admin_priv() == 0) {
-            holder.item_aprove_req.setChecked(true);
-            holder.item_disable.setChecked(true);
-            holder.item_aprove_priviledge.setChecked(true);
-        } else {
-            holder.item_aprove_req.setChecked(false);
-            holder.item_disable.setChecked(false);
-            holder.item_aprove_priviledge.setChecked(false);
-        }
+        holder.item_user_name_tv.setText(listdata.get(position).getU_firstname());
+        holder.item_phno_tv.setText(listdata.get(position).getU_mo_number());
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, Admin_Userinfo_Activity.class);
+                intent.putExtra("pos",position);
+                context.startActivity(intent);
+            }
+        });
 
 
         return convertView;
     }
 
     private class ViewHolder {
-        TextView item_fname, item_lname, item_urole;
-        CheckBox item_aprove_req, item_disable, item_aprove_priviledge;
+        TextView item_user_name_tv, item_phno_tv;
     }
 }
