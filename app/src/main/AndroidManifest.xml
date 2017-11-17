@@ -146,7 +146,8 @@
             android:value="222483a7f0f7bff743470f4112c6de9459fe0141" />
 
         <activity android:name=".activity.Admin_FunctionsActivity" />
-        <activity android:name=".activity.Admin_Userinfo_Activity"></activity>
+        <activity android:name=".activity.Admin_Userinfo_Activity" />
+        <activity android:name=".activity.DriverPrivileges"></activity>
     </application>
 
 </manifest>

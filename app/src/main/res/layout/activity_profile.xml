@@ -117,6 +117,13 @@
                 android:textSize="@dimen/_14sdp" />
 
         </android.support.design.widget.TextInputLayout>
+        <Button
+            android:id="@+id/btn_privileges"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@color/loginbtn"
+            android:text="@string/vehicle_privileges" />
     </LinearLayout>
 
     <LinearLayout

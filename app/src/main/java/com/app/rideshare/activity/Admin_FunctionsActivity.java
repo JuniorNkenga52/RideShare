@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -52,7 +53,6 @@ public class Admin_FunctionsActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 finish();
             }
         });
@@ -61,9 +61,8 @@ public class Admin_FunctionsActivity extends AppCompatActivity {
         mProgressDialog = new CustomProgressDialog(this);
 
 
-
         my_group_data(PrefUtils.getUserInfo().getmUserId());
-        group_data("35", PrefUtils.getUserInfo().getmUserId());
+
         admin_choose_group = (Spinner) findViewById(R.id.admin_choose_group);
 
     }
@@ -79,7 +78,6 @@ public class Admin_FunctionsActivity extends AppCompatActivity {
         ApiServiceModule.createService(RestApiInterface.class).mygroups(user_id).enqueue(new Callback<GroupListResponce>() {
             @Override
             public void onResponse(Call<GroupListResponce> call, Response<GroupListResponce> response) {
-                ToastUtils.showShort(Admin_FunctionsActivity.this, "Success");
                 if (response.isSuccessful() && response.body() != null) {
 
                     for (int i = 0; i < response.body().getResult().size(); i++) {
@@ -90,15 +88,15 @@ public class Admin_FunctionsActivity extends AppCompatActivity {
                         mygroupdata.add(chooseGroupModel);
                     }
                     bindSpinner(admin_choose_group, mygroupdata.get(0).getGroup_name());
-                    mProgressDialog.dismiss();
                 }
 
-
+                mProgressDialog.dismiss();
             }
 
             @Override
             public void onFailure(Call<GroupListResponce> call, Throwable t) {
                 ToastUtils.showShort(Admin_FunctionsActivity.this, "Problem in Retrieving data");
+                mProgressDialog.cancel();
             }
         });
         {
@@ -107,21 +105,24 @@ public class Admin_FunctionsActivity extends AppCompatActivity {
     }
 
     private void group_data(String group_id, String user_id) {
+        mProgressDialog.show();
         ApiServiceModule.createService(RestApiInterface.class).groupusers(group_id, user_id).enqueue(new Callback<MyGroupsResponce>() {
             @Override
             public void onResponse(Call<MyGroupsResponce> call, Response<MyGroupsResponce> response) {
-                ToastUtils.showShort(Admin_FunctionsActivity.this, "Success");
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful() && response.body() != null && response.body().getResult().size() > 0) {
                     PrefUtils.addAdminInfo(response.body().getResult().get(0));
                     adminFuncitonsAdapter = new AdminFuncitonsAdapter(context, response.body().getResult());
                     list_riders.setAdapter(adminFuncitonsAdapter);
                 }
+                mProgressDialog.cancel();
             }
 
             @Override
             public void onFailure(Call<MyGroupsResponce> call, Throwable t) {
                 ToastUtils.showShort(Admin_FunctionsActivity.this, "Problem in Retrieving data");
+                mProgressDialog.cancel();
             }
+
         });
     }
 
@@ -131,6 +132,18 @@ public class Admin_FunctionsActivity extends AppCompatActivity {
             @Override
             public void run() {
                 spinner.setSelection(mygroupdata.indexOf(value));
+            }
+        });
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                group_data(String.valueOf(mygroupdata.get(position).getId()), PrefUtils.getUserInfo().getmUserId());
+                list_riders.invalidateViews();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }

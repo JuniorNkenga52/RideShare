@@ -631,7 +631,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                 if (listgroup.size() > 0) {
                     spinner.setSelection(listgroup.indexOf(value));
-                    mEmailEt.setText(chooseGroupModel.getGroup_name());
+                    //mEmailEt.setText(chooseGroupModel.getGroup_name());
                 }
             }
         });

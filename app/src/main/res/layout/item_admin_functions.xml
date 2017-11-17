@@ -31,7 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="User Name : "
+                    android:text="@string/txt_user_name"
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 
@@ -57,7 +57,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Phone Number : "
+                    android:text="@string/txt_ph_no"
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 

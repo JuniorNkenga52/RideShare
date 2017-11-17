@@ -11,6 +11,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -61,6 +62,8 @@ public class ProfileActivity extends AppCompatActivity
 
     private static final int REQUEST_CODE_CHOOSE=101;
     CustomProgressDialog mProgressDialog;
+    Button mprivileges;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +101,8 @@ public class ProfileActivity extends AppCompatActivity
         mMobileEt=(EditText)findViewById(R.id.mobile_et);
         mEmailEt=(EditText)findViewById(R.id.email_et);
 
+
+
         mFirstNameEt.setTypeface(mRobotoMedium);
         mLastNameEt.setTypeface(mRobotoMedium);
         mMobileEt.setTypeface(mRobotoMedium);
@@ -108,6 +113,16 @@ public class ProfileActivity extends AppCompatActivity
         mLastNameEt.setText(mUserBean.getmLastName());
         mMobileEt.setText(mUserBean.getmMobileNo());
         mEmailEt.setText(mUserBean.getmEmail());
+
+        mprivileges= (Button) findViewById(R.id.btn_privileges);
+        mprivileges.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, DriverPrivileges.class);
+
+                startActivity(intent);
+            }
+        });
 
         mFirstNameEt.addTextChangedListener(new TextWatcher() {
             @Override

@@ -12,13 +12,14 @@ apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    google()
 }
 
 apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "com.app.rideshare"
         minSdkVersion 15

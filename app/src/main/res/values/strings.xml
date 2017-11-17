@@ -54,4 +54,12 @@
     <string name="driver_details">Driver details</string>
     <string name="btn_submit">Submit</string>
     <string name="btn_cancel">Cancel</string>
+    <string name="txt_user_name">User Name</string>
+    <string name="txt_ph_no">Phone Number</string>
+
+    <!--Rider Privileges-->
+    <string name="vehicle_privileges">Driver Privileges</string>
+    <string name="vehicle_model">Vehicle Model</string>
+    <string name="vehicle_type">Vehicle Type</string>
+    <string name="vehicle_passengers">Max passengers</string>
 </resources>
