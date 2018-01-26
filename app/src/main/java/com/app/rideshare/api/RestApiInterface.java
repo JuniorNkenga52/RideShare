@@ -8,12 +8,12 @@ import com.app.rideshare.api.response.GroupListResponce;
 import com.app.rideshare.api.response.GroupResponce;
 import com.app.rideshare.api.response.HistoryResponse;
 import com.app.rideshare.api.response.MyGroupsResponce;
+import com.app.rideshare.api.response.RateRideResponce;
 import com.app.rideshare.api.response.RideSelect;
 import com.app.rideshare.api.response.SendOTPResponse;
 import com.app.rideshare.api.response.SendResponse;
 import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.api.response.StartRideResponse;
-import com.app.rideshare.model.ChooseGroupModel;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -35,6 +35,10 @@ public interface RestApiInterface {
     @POST("auth/register")
     Call<SignupResponse> signup(@Field("u_firstname") String mFirstName, @Field("u_lastname") String mLastName, @Field("u_email") String mEmail, @Field("u_mo_number") String mMobileNuber, @Field("u_password") String mPassword, @Field("deviceToken") String deviceTocken);
 
+    @FormUrlEncoded
+    @POST("auth/forgotpassword")
+    Call<SignupResponse> forgotpassword(@Field("u_email") String mU_email);
+
 
     @FormUrlEncoded
     @POST("auth/login")
@@ -55,6 +59,10 @@ public interface RestApiInterface {
     @FormUrlEncoded
     @POST("user/groupusers")
     Call<MyGroupsResponce> groupusers(@Field("group_id") String group_id, @Field("user_id") String user_id);
+
+    @FormUrlEncoded
+    @POST("user/updateAdminFunction")
+    Call<MyGroupsResponce> updateAdminFunction(@Field("user_id") String user_id, @Field("driver_request") String d_req, @Field("user_disable") String user_disable, @Field("group_id") String group_id, @Field("is_admin") String is_admin);
 
     @FormUrlEncoded
     @POST("auth/select_ride")
@@ -112,11 +120,14 @@ public interface RestApiInterface {
     @Multipart
     @POST("user/updateProfile")
     Call<SignupResponse> updateProfile(@Part("user_id") RequestBody mUserId, @Part("u_firstname") RequestBody Firstname, @Part("u_lastname") RequestBody lastName
-            , @Part("u_mobile") RequestBody mobilenumber, @Part MultipartBody.Part file, @Part("u_email") RequestBody mEmail);
+            , @Part("u_mobile") RequestBody mobilenumber, @Part MultipartBody.Part file, @Part("u_email") RequestBody mEmail, @Part("vehicle_model") RequestBody mVh_Model, @Part("vehicle_type") RequestBody mVh_Type, @Part("max_passengers") RequestBody mMax_Passengers, @Part("requested_as_driver") RequestBody mReq_driver, @Part("group_id") RequestBody mgroup_id);
 
     @FormUrlEncoded
     @POST("user/startOrEndRide")
     Call<StartRideResponse> mStartRide(@Field("ride_id") String mRideId, @Field("ride_status") String mRideStatus, @Field("user_id") String mUserId);
 
+    @FormUrlEncoded
+    @POST("user/rideRate")
+    Call<RateRideResponce> rateride(@Field("driver_id") String mDriver_id,@Field("rider_id") String mRider_id, @Field("ride_id") String mRideId, @Field("ride_rate") String mRideRate, @Field("ride_review") String mRideReview);
 
 }

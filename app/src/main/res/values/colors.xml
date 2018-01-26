@@ -11,10 +11,13 @@
     <color name="blacltext">#1b1505</color>
     <color name="blue">#043eea</color>
     <color name="white">#FFFFFF</color>
+    <color name="blue_info">#3B5999</color>
 
 
     <color name="accept_btn_color">#23ca0d</color>
     <color name="reject_btn_color">#f10808</color>
     <color name="gray">#a4a4a4</color>
     <color name="TransWhite">#DCFFFFFF</color>
+
+    <color name="forgot_signup_blue_color">#66CCFF</color>
 </resources>

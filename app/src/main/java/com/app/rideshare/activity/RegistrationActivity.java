@@ -20,7 +20,6 @@ import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SendOTPResponse;
 import com.app.rideshare.api.response.SignupResponse;
-import com.app.rideshare.model.User;
 import com.app.rideshare.notification.GCMRegistrationIntentService;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
@@ -36,21 +35,19 @@ import retrofit2.Response;
 
 
 public class RegistrationActivity extends AppCompatActivity {
+    CustomProgressDialog mProgressDialog;
+    String token;
     private EditText mFirstNameEt;
     private EditText mLastNameEt;
     private EditText mEmailEt;
     private EditText mMobileEt;
     private EditText mPasswordEt;
     private EditText mConfirmPasswordEt;
-
     private TextView mSignupTv;
     private Typeface mRobotoMedium;
-
     private TextView mAuthenticationTv;
-
-    CustomProgressDialog mProgressDialog;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    String token;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,10 +130,10 @@ public class RegistrationActivity extends AppCompatActivity {
                     ToastUtils.showShort(RegistrationActivity.this, "Please enter Email.");
                 } else if (mMobileEt.getText().toString().isEmpty()) {
                     ToastUtils.showShort(RegistrationActivity.this, "Please enter Mobile Number.");
-                } else if (mPasswordEt.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(RegistrationActivity.this, "Please enter Last Name.");
-                } else if (mConfirmPasswordEt.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(RegistrationActivity.this, "Please enter Last Name.");
+                } else if (mPasswordEt.getText().toString().isEmpty() || mPasswordEt.getText().toString().length()<8) {
+                    ToastUtils.showShort(RegistrationActivity.this, "Please enter valid Password.");
+                } else if (mConfirmPasswordEt.getText().toString().isEmpty() || mConfirmPasswordEt.getText().toString().length()<8) {
+                    ToastUtils.showShort(RegistrationActivity.this, "Please enter valid Password.");
                 } else if (!mConfirmPasswordEt.getText().toString().equals(mPasswordEt.getText().toString())) {
                     ToastUtils.showShort(RegistrationActivity.this, "Password and Confirm password must be Same.");
                 } else if (!AppUtils.isEmail(mEmailEt.getText().toString())) {
@@ -155,22 +152,20 @@ public class RegistrationActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
+
     private void registerUser(String mFirstName, String mLastName, String mEmail, String mMobile, String password) {
 
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).signup(mFirstName, mLastName, mEmail, mMobile, password,token).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).signup(mFirstName, mLastName, mEmail, mMobile, password, token).enqueue(new Callback<SignupResponse>() {
             @Override
-            public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response)
-            {
+            public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 mProgressDialog.cancel();
-                if (response.isSuccessful() && response.body() != null)
-                {
-                    if (!response.body().getmStatus().equals("error"))
-                    {
-                        PrefUtils.putBoolean("isFriends",true);
+                if (response.isSuccessful() && response.body() != null) {
+                    if (!response.body().getmStatus().equals("error")) {
+                        PrefUtils.putBoolean("isFriends", true);
                         PrefUtils.addUserInfo(response.body().getMlist().get(0));
-                        PrefUtils.putBoolean("islogin",true);
-                        sendOTP(response.body().getMlist().get(0).getmMobileNo(),response.body().getMlist().get(0).getmUserId());
+                        PrefUtils.putBoolean("islogin", true);
+                        sendOTP(response.body().getMlist().get(0).getmMobileNo(), response.body().getMlist().get(0).getmUserId());
                     } else {
                         ToastUtils.showShort(RegistrationActivity.this, response.body().getmMessage());
                     }
@@ -178,6 +173,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                 }
             }
+
             @Override
             public void onFailure(Call<SignupResponse> call, Throwable t) {
                 t.printStackTrace();
@@ -186,19 +182,18 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
     }
-    private void sendOTP(final String mobileNuber, String nUserId)
-    {
+
+    private void sendOTP(final String mobileNuber, String nUserId) {
         mProgressDialog.show();
         ApiServiceModule.createService(RestApiInterface.class).sendOTP(mobileNuber, nUserId).enqueue(new Callback<SendOTPResponse>() {
             @Override
             public void onResponse(Call<SendOTPResponse> call, Response<SendOTPResponse> response) {
-                if (response.isSuccessful() && response.body() != null)
-                {
-                    Intent i=new Intent(RegistrationActivity.this,VerifyMobileNumberActivity.class);
+                if (response.isSuccessful() && response.body() != null) {
+                    Intent i = new Intent(RegistrationActivity.this, VerifyMobileNumberActivity.class);
                     startActivity(i);
                     finish();
                 } else {
-                    ToastUtils.showShort(RegistrationActivity.this,"Please try againg..");
+                    ToastUtils.showShort(RegistrationActivity.this, "Please try againg..");
                 }
                 mProgressDialog.cancel();
             }

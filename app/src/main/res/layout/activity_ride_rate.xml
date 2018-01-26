@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/notification"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-    android:orientation="horizontal">
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/ride_rate_toolbar"
@@ -17,117 +17,134 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:title="Rate Ride" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/ride_rate_toolbar"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:padding="@dimen/_10sdp">
 
-        <RelativeLayout
+
+        <com.app.rideshare.widget.TextViewSemiBold
+            android:id="@+id/txt_rate_ride"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center">
+            android:layout_gravity="center_horizontal"
+            android:text="@string/ride_rate"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_18sdp" />
 
-            <TextView
-                android:id="@+id/txt_rate_ride"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="@string/ride_rate"
-                android:textColor="@color/blue"
-                android:textSize="@dimen/_20sdp" />
+        <com.app.rideshare.widget.TextViewRegular
+            android:id="@+id/txt_rate_ride_msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/_7sdp"
+            android:text="@string/ride_rate_msg"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_16sdp" />
 
-            <TextView
-                android:id="@+id/txt_rate_ride_msg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txt_rate_ride"
-                android:text="@string/ride_rate_msg"
-                android:textAlignment="center"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/_18sdp" />
+        <RatingBar
+            android:id="@+id/ride_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:numStars="5"
+            android:stepSize="1"
+            android:theme="@style/RatingBar" />
 
-            <RatingBar
-                android:id="@+id/ride_rate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txt_rate_ride_msg"
-                android:layout_centerHorizontal="true"
-                android:numStars="5"
-                android:stepSize="1"
-                android:theme="@style/RatingBar" />
+        <com.app.rideshare.widget.TextViewRegular
+            android:id="@+id/txt_rate_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/_7sdp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_14sdp"
+            android:visibility="invisible" />
 
-            <TextView
-                android:id="@+id/txt_rate_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/ride_rate"
-                android:layout_centerHorizontal="true"
-                android:text="@string/ride_rate"
-                android:visibility="invisible" />
+        <!-- <android.support.design.widget.TextInputLayout
+             android:id="@+id/textContainer"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_below="@+id/txt_rate_type"
+             >-->
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txt_rate_type"
-                android:textColorHint="@color/colorPrimary">
+        <EditText
+            android:id="@+id/edt_comment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittextfeedback"
+            android:gravity="top"
+            android:hint="@string/ride_rate_comment"
+            android:inputType="textEmailAddress|textMultiLine"
+            android:lines="20"
+            android:minLines="5"
+            android:padding="@dimen/_7sdp"
+            android:scrollHorizontally="false"
+            android:scrollbars="vertical"
+            android:textColorHint="@color/colorPrimary" />
 
-                <EditText
-                    android:id="@+id/edt_comment"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="top|left"
-                    android:inputType="textEmailAddress|textMultiLine"
-                    android:lines="20"
-                    android:minLines="5"
-                    android:scrollHorizontally="false"
-                    android:scrollbars="vertical" />
 
-            </android.support.design.widget.TextInputLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/_5sdp">
 
-            <TextView
+            <com.app.rideshare.widget.TextViewRegular
                 android:id="@+id/txt_rate_word"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textContainer"
-                android:layout_toLeftOf="@+id/txt_rate_tword"
                 android:text="@string/ride_rate_wordcount"
+                android:textColor="@color/blacltext"
                 android:visibility="visible" />
 
-            <TextView
+            <com.app.rideshare.widget.TextViewRegular
                 android:id="@+id/txt_rate_tword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/textContainer"
                 android:text="@string/ride_rate_totalwords"
+                android:textColor="@color/blacltext"
                 android:visibility="visible" />
+        </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_submit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/txt_rate_word"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:background="@drawable/btn_login"
-                android:text="@string/btn_submit" />
 
-            <Button
-                android:id="@+id/btn_cancle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txt_rate_word"
-                android:layout_marginRight="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:layout_toLeftOf="@+id/btn_submit"
-                android:background="@drawable/btn_login"
-                android:text="@string/btn_cancel" />
-        </RelativeLayout>
+        <com.app.rideshare.widget.TextViewSemiBold
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_18sdp"
+            android:background="@color/colorAccent"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/_10sdp"
+            android:text="@string/btn_submit"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16sdp" />
 
-    </RelativeLayout>
-</RelativeLayout>
+        <!--<com.app.rideshare.widget.TextViewSemiBold
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/_12sdp"
+            android:layout_below="@+id/txt_rate_word"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="@color/colorAccent"
+            android:text="@string/btn_submit" />-->
+
+        <!--<Button
+            android:id="@+id/btn_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_rate_word"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_toLeftOf="@+id/btn_submit"
+            android:background="@drawable/btn_login"
+            android:text="@string/btn_cancel" />-->
+
+
+    </LinearLayout>
+</LinearLayout>

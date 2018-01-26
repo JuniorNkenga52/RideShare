@@ -8,6 +8,8 @@ import com.app.rideshare.model.GroupusersModel;
 import com.app.rideshare.model.User;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+
 public class PrefUtils {
 
     private static final String PREFS_NAME = "RideShare";
@@ -78,11 +80,9 @@ public class PrefUtils {
         return new Gson().fromJson(getString(PREF_USER_INFO), User.class);
     }
 
-    public static void addAdminInfo(GroupusersModel user) {
-        putString(PREF_ADMIN_INFO, new Gson().toJson(user));
-    }
+    public static ArrayList<GroupusersModel> listAdminData;
 
-    public static GroupusersModel getAdminInfo() {
-        return new Gson().fromJson(getString(PREF_ADMIN_INFO), GroupusersModel.class);
+    public static ArrayList<GroupusersModel> getAdminData() {
+        return listAdminData;
     }
 }

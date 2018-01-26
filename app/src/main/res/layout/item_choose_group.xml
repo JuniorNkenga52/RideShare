@@ -6,30 +6,21 @@
     android:layout_height="match_parent">
 
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/item_choose_group"
+    <TextView
+        android:id="@+id/txt_choose_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/squar_re"
-        app:hintTextAppearance="@style/TextLabelsize">
-
-        <TextView
-            android:id="@+id/txt_choose_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/choose_group_text"
-            android:padding="@dimen/_8sdp"
-            android:textAlignment="textStart"
-            android:textColor="@color/loginbtn"
-            android:textSize="@dimen/_14sdp"
-            tools:ignore="RtlCompat" />
-
-    </android.support.design.widget.TextInputLayout>
+        android:hint="@string/choose_group_text"
+        android:padding="@dimen/_7sdp"
+        android:textAlignment="textStart"
+        android:textColor="@color/loginbtn"
+        android:textSize="@dimen/_14sdp"
+        tools:ignore="RtlCompat" />
 
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/_1sdp"
-        android:layout_below="@+id/item_choose_group"
+        android:layout_below="@+id/txt_choose_group"
         android:background="@color/loginbtn" />
 </RelativeLayout>

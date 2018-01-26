@@ -68,53 +68,104 @@ import retrofit2.Response;
 
 
 public class StartRideActivity extends AppCompatActivity implements OnMapReadyCallback {
-    private GoogleMap mGoogleMap;
-    private Marker PickupMarker;
-    private Marker DropoffMarker;
+    public static final String RECEIVE_JSON = "com.thetwon.whereareyou.RECEIVE_JSON";
+    private final Handler mUpdaterHandler = new Handler();
     LatLng currentlthg;
-    private Marker curLocMarker;
     AcceptRider mRider;
     LatLng pickuplocation;
     LatLng droppfflocation;
-
+    Typeface mRobotoMedium;
+    BroadcastReceiver receiver;
+    Double Latitude, Longitude;
+    Double PreLatitude = 0.0, PreLongitude = 0.0;
+    String Provider;
+    User mUserbean;
+    RideShareApp mApp;
+    LatLng DriverLocation;
+    LatLng CustomerLocaton;
+    Marker DriverMarker;
+    Marker CustomerMarker;
+    Location mDriverLocation;
+    Location mPreDriverLocation;
+    WebSocketClient mWebSocketClient;
+    CustomProgressDialog mProgressDialog;
+    float zoomLevel = 16f;
+    int updateinterval = 5000;
+    CameraPosition cameraPosition;
+    RideShareApp application;
+    List<Route> routes;
+    private GoogleMap mGoogleMap;
+    private Marker PickupMarker;
+    private Marker DropoffMarker;
+    private Marker curLocMarker;
     private Polyline directionLine;
-
     private TextView mNameTv;
     private TextView mEmailTv;
     private CircularImageView mProfileIv;
     private LinearLayout mStartRideLi;
     private Button mStartRideBtn;
     private Button mFinishRideBtn;
+    private Runnable runnable = new Runnable() {
 
+        @Override
+        public void run() {
 
-    Typeface mRobotoMedium;
-    BroadcastReceiver receiver;
-    public static final String RECEIVE_JSON = "com.thetwon.whereareyou.RECEIVE_JSON";
-    Double Latitude, Longitude;
-    Double PreLatitude = 0.0, PreLongitude = 0.0;
-    String Provider;
-    User mUserbean;
-    RideShareApp mApp;
+            try {
+                if (mDriverLocation.distanceTo(mPreDriverLocation) >= 0.5f) {
+                    mPreDriverLocation = mDriverLocation;
 
+                    ToastUtils.showShort(StartRideActivity.this, "Send");
 
-    LatLng DriverLocation;
-    LatLng CustomerLocaton;
-    Marker DriverMarker;
-    Marker CustomerMarker;
+                    animateMarkerNew(DriverMarker, new LatLng(Latitude, Longitude));
 
-    Location mDriverLocation;
-    Location mPreDriverLocation;
+                    JSONObject jmessage = new JSONObject();
+                    jmessage.put("chat_message", "" + Latitude + "`" + Longitude);
+                    jmessage.put("chat_user", "RideShare");
+                    jmessage.put("sender_user", mRider.getRide_id());
+                    jmessage.put("message_type", "chat-box-html");
+                    jmessage.put("message_new", "");
+                    mWebSocketClient.send(jmessage.toString());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                mPreDriverLocation = mDriverLocation;
+            }
 
-    WebSocketClient mWebSocketClient;
-    CustomProgressDialog mProgressDialog;
+            mUpdaterHandler.postDelayed(this, updateinterval);
+        }
+    };
+    private okhttp3.Callback updateRouteCallback = new okhttp3.Callback() {
+        @Override
+        public void onFailure(okhttp3.Call call, IOException e) {
+            Log.d("Error", e.toString());
+        }
 
-    float zoomLevel = 16f;
-    int updateinterval = 5000;
-    CameraPosition cameraPosition;
-    private final Handler mUpdaterHandler = new Handler();
+        @Override
+        public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+            if (response.isSuccessful()) {
+                final String json = response.body().string();
+                updateLineDestination(json);
 
+            }
+        }
+    };
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 
-    RideShareApp application;
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String staus = intent.getStringExtra("int_data");
+            if (staus.equals("1")) {
+                ToastUtils.showShort(StartRideActivity.this, "Your Ride Started.");
+            } else if (staus.equals("2")) {
+                ToastUtils.showShort(StartRideActivity.this, "Your Ride Finish.");
+                Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
+                rateride.putExtra("riderate", mRider.getRide_id());
+                rateride.putExtra("driverid", mRider.getFromRider().getnUserId());
+                startActivity(rateride);
+                finish();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -201,109 +252,66 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             Intent intent = new Intent(StartRideActivity.this, LocationService.class);
             startService(intent);
         }
+        try {
 
-        if (mApp.getmUserType().equals("2")) {
-            if (mUserbean.getmUserId().equals(mRider.getFromRider().getnUserId())) {
-                mNameTv.setText(mRider.getToRider().getmFirstName());
-                mEmailTv.setText(mRider.getToRider().getmEmail());
 
-                if (!mRider.getToRider().getmProfileImage().equals("")) {
-                    Picasso.with(StartRideActivity.this).load(mRider.getToRider().getmProfileImage()).into(mProfileIv);
+            if (mApp.getmUserType().equals("2")) {
+                if (mUserbean.getmUserId().equals(mRider.getFromRider().getnUserId())) {
+                    mNameTv.setText(mRider.getToRider().getmFirstName());
+                    mEmailTv.setText(mRider.getToRider().getmEmail());
+
+                    if (!mRider.getToRider().getmProfileImage().equals("")) {
+                        Picasso.with(StartRideActivity.this).load(mRider.getToRider().getmProfileImage()).into(mProfileIv);
+                    }
+
+                    DriverLocation = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
+                    CustomerLocaton = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
+                } else if (mUserbean.getmUserId().equals(mRider.getToRider().getnUserId())) {
+                    mNameTv.setText(mRider.getFromRider().getmFirstName());
+                    mEmailTv.setText(mRider.getFromRider().getmEmail());
+                    if (!mRider.getFromRider().getmProfileImage().equals("")) {
+                        Picasso.with(StartRideActivity.this).load(mRider.getFromRider().getmProfileImage()).into(mProfileIv);
+                    }
+
+                    DriverLocation = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
+                    CustomerLocaton = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
                 }
+                mStartRideLi.setVisibility(View.VISIBLE);
+            } else {
+                if (mUserbean.getmUserId().equals(mRider.getFromRider().getnUserId())) {
+                    mNameTv.setText(mRider.getToRider().getmFirstName());
+                    mEmailTv.setText(mRider.getToRider().getmEmail());
 
-                DriverLocation = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
-                CustomerLocaton = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
-            } else if (mUserbean.getmUserId().equals(mRider.getToRider().getnUserId())) {
-                mNameTv.setText(mRider.getFromRider().getmFirstName());
-                mEmailTv.setText(mRider.getFromRider().getmEmail());
-                if (!mRider.getFromRider().getmProfileImage().equals("")) {
-                    Picasso.with(StartRideActivity.this).load(mRider.getFromRider().getmProfileImage()).into(mProfileIv);
+
+                    if (!mRider.getToRider().getmProfileImage().equals("")) {
+                        Picasso.with(StartRideActivity.this).load(mRider.getToRider().getmProfileImage()).into(mProfileIv);
+                    }
+
+                    CustomerLocaton = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
+                    DriverLocation = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
+                } else if (mUserbean.getmUserId().equals(mRider.getToRider().getnUserId())) {
+                    mNameTv.setText(mRider.getFromRider().getmFirstName());
+                    mEmailTv.setText(mRider.getFromRider().getmEmail());
+
+                    if (!mRider.getFromRider().getmProfileImage().equals("")) {
+                        Picasso.with(StartRideActivity.this).load(mRider.getFromRider().getmProfileImage()).into(mProfileIv);
+                    }
+                    DriverLocation = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
+                    CustomerLocaton = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
                 }
-
-                DriverLocation = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
-                CustomerLocaton = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
+                mStartRideLi.setVisibility(View.GONE);
             }
-            mStartRideLi.setVisibility(View.VISIBLE);
-        } else {
-            if (mUserbean.getmUserId().equals(mRider.getFromRider().getnUserId())) {
-                mNameTv.setText(mRider.getToRider().getmFirstName());
-                mEmailTv.setText(mRider.getToRider().getmEmail());
+        } catch (Exception e) {
 
-
-                if (!mRider.getToRider().getmProfileImage().equals("")) {
-                    Picasso.with(StartRideActivity.this).load(mRider.getToRider().getmProfileImage()).into(mProfileIv);
-                }
-
-                CustomerLocaton = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
-                DriverLocation = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
-            } else if (mUserbean.getmUserId().equals(mRider.getToRider().getnUserId())) {
-                mNameTv.setText(mRider.getFromRider().getmFirstName());
-                mEmailTv.setText(mRider.getFromRider().getmEmail());
-
-                if (!mRider.getFromRider().getmProfileImage().equals("")) {
-                    Picasso.with(StartRideActivity.this).load(mRider.getFromRider().getmProfileImage()).into(mProfileIv);
-                }
-                DriverLocation = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
-                CustomerLocaton = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
-            }
-            mStartRideLi.setVisibility(View.GONE);
         }
-
         connectWebSocket();
     }
-
-    private Runnable runnable = new Runnable() {
-
-        @Override
-        public void run() {
-
-            try {
-                if (mDriverLocation.distanceTo(mPreDriverLocation) >= 0.5f) {
-                    mPreDriverLocation = mDriverLocation;
-
-                    ToastUtils.showShort(StartRideActivity.this, "Send");
-
-                    animateMarkerNew(DriverMarker, new LatLng(Latitude, Longitude));
-
-                    JSONObject jmessage = new JSONObject();
-                    jmessage.put("chat_message", "" + Latitude + "`" + Longitude);
-                    jmessage.put("chat_user", "RideShare");
-                    jmessage.put("sender_user", mRider.getRide_id());
-                    jmessage.put("message_type", "chat-box-html");
-                    jmessage.put("message_new", "");
-                    mWebSocketClient.send(jmessage.toString());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                mPreDriverLocation = mDriverLocation;
-            }
-
-            mUpdaterHandler.postDelayed(this, updateinterval);
-        }
-    };
 
     private void requestRoute(LatLng picklng, LatLng droplng) {
         if (picklng != null && droplng != null) {
             MapDirectionAPI.getDirection(picklng, droplng).enqueue(updateRouteCallback);
         }
     }
-
-
-    private okhttp3.Callback updateRouteCallback = new okhttp3.Callback() {
-        @Override
-        public void onFailure(okhttp3.Call call, IOException e) {
-            Log.d("Error", e.toString());
-        }
-
-        @Override
-        public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
-            if (response.isSuccessful()) {
-                final String json = response.body().string();
-                updateLineDestination(json);
-
-            }
-        }
-    };
 
     private void updateLineDestination(final String json) {
 
@@ -327,8 +335,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
-    List<Route> routes;
-
     @Override
     public void onBackPressed() {
 
@@ -351,30 +357,36 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 .start(new OnLocationUpdatedListener() {
                     @Override
                     public void onLocationUpdated(Location location) {
-                        currentlthg = new LatLng(location.getLatitude(), location.getLongitude());
-                        Log.d("Bearing", "" + location.getBearing());
-                        if (zoomLevel <= 2.0f) {
-                            zoomLevel = 16.0f;
-                        }
-                        cameraPosition = new CameraPosition.Builder().target(currentlthg).zoom(zoomLevel).build();
-                        mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                        try {
 
-                        mDriverLocation = new Location("");
-                        mDriverLocation.setLatitude(DriverLocation.latitude);
-                        mDriverLocation.setLongitude(DriverLocation.longitude);
 
-                        if (DriverMarker == null) {
-                            DriverMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin))
-                                    .position(DriverLocation));
-                        } else {
-                            DriverMarker.setPosition(DriverLocation);
-                        }
+                            currentlthg = new LatLng(location.getLatitude(), location.getLongitude());
+                            Log.d("Bearing", "" + location.getBearing());
+                            if (zoomLevel <= 2.0f) {
+                                zoomLevel = 16.0f;
+                            }
+                            cameraPosition = new CameraPosition.Builder().target(currentlthg).zoom(zoomLevel).build();
+                            mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-                        if (CustomerMarker == null) {
-                            CustomerMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
-                                    .position(CustomerLocaton));
-                        } else {
-                            CustomerMarker.setPosition(CustomerLocaton);
+                            mDriverLocation = new Location("");
+                            mDriverLocation.setLatitude(DriverLocation.latitude);
+                            mDriverLocation.setLongitude(DriverLocation.longitude);
+
+                            if (DriverMarker == null) {
+                                DriverMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin))
+                                        .position(DriverLocation));
+                            } else {
+                                DriverMarker.setPosition(DriverLocation);
+                            }
+
+                            if (CustomerMarker == null) {
+                                CustomerMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
+                                        .position(CustomerLocaton));
+                            } else {
+                                CustomerMarker.setPosition(CustomerLocaton);
+                            }
+                        } catch (Exception e) {
+
                         }
                     }
                 });
@@ -483,7 +495,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
-
     private void startRide(String mId, final String mType, String userid) {
         mProgressDialog.show();
         ApiServiceModule.createService(RestApiInterface.class).mStartRide(mId, mType, userid).enqueue(new Callback<StartRideResponse>() {
@@ -503,8 +514,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                         finish();
 
 
-                            // rate & rewie
-
+                        // rate & rewie
 
 
                     }
@@ -522,23 +532,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
     }
-
-
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String staus = intent.getStringExtra("int_data");
-            if (staus.equals("1")) {
-                ToastUtils.showShort(StartRideActivity.this, "Your Ride Started.");
-            } else if (staus.equals("2")) {
-                ToastUtils.showShort(StartRideActivity.this, "Your Ride Finish.");
-                Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
-                startActivity(rateride);
-                finish();
-            }
-        }
-    };
 
     @Override
     protected void onResume() {
@@ -571,24 +564,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         brng = (brng + 360) % 360;
 
         return (float) brng;
-    }
-
-    private interface LatLngInterpolatorNew {
-        LatLng interpolate(float fraction, LatLng a, LatLng b);
-
-        class LinearFixed implements LatLngInterpolatorNew {
-            @Override
-            public LatLng interpolate(float fraction, LatLng a, LatLng b) {
-                double lat = (b.latitude - a.latitude) * fraction + a.latitude;
-                double lngDelta = b.longitude - a.longitude;
-                // Take the shortest path across the 180th meridian.
-                if (Math.abs(lngDelta) > 180)
-                    lngDelta -= Math.signum(lngDelta) * 360;
-
-                double lng = lngDelta * fraction + a.longitude;
-                return new LatLng(lat, lng);
-            }
-        }
     }
 
     private void animateMarkerNew(final Marker marker, final LatLng newlatlng) {
@@ -628,6 +603,24 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 }
             });
             valueAnimator.start();
+        }
+    }
+
+    private interface LatLngInterpolatorNew {
+        LatLng interpolate(float fraction, LatLng a, LatLng b);
+
+        class LinearFixed implements LatLngInterpolatorNew {
+            @Override
+            public LatLng interpolate(float fraction, LatLng a, LatLng b) {
+                double lat = (b.latitude - a.latitude) * fraction + a.latitude;
+                double lngDelta = b.longitude - a.longitude;
+                // Take the shortest path across the 180th meridian.
+                if (Math.abs(lngDelta) > 180)
+                    lngDelta -= Math.signum(lngDelta) * 360;
+
+                double lng = lngDelta * fraction + a.longitude;
+                return new LatLng(lat, lng);
+            }
         }
     }
 }

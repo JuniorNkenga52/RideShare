@@ -16,8 +16,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -46,7 +44,6 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.gitonway.lee.niftymodaldialogeffects.lib.Effectstype;
 import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyDialogBuilder;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -67,37 +64,31 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
-    private CardView mFacebookCv;
-    private CardView mGoogleCv;
-
+    private static final int RC_SIGN_IN = 101;
     LoginButton loginButton;
     CallbackManager callbackManager;
-
-    private static final int RC_SIGN_IN = 101;
-    private GoogleApiClient mGoogleApiClient;
-
-    private Typeface mRobotoMediam;
-
-    private EditText mEmailEt;
-    private EditText mPasswordEt;
-
-    private TextView mLoginTv;
-    private TextView mForgotPasswordTv;
-    private TextView mSignUpTv;
-
-
     CustomProgressDialog mProgressDialog;
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
     String token;
-
     Spinner mchoose_group;
     ChooseGroupAdapter chooseGroupAdapter;
     ArrayList<ChooseGroupModel> listgroup = new ArrayList<>();
     ChooseGroupModel chooseGroupModel;
     Button create_group;
     PopupWindow popupWindow;
-    private NiftyDialogBuilder dialogBuilder;
     String[] groupname = {"Choose Group", "Abc", "Pqr"};
+    private CardView mFacebookCv;
+    private CardView mGoogleCv;
+    private GoogleApiClient mGoogleApiClient;
+    private Typeface mRobotoMediam;
+    private EditText mEmailEt;
+    private EditText mPasswordEt;
+    private TextView mLoginTv;
+    private TextView mForgotPasswordTv;
+    private TextView mSignUpTv;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private NiftyDialogBuilder dialogBuilder;
+    private Dialog dialog;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +97,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         PrefUtils.initPreference(this);
 
-
+        context = this;
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
 
 
@@ -168,6 +159,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 Intent i = new Intent(LoginActivity.this, RegistrationActivity.class);
                 startActivity(i);
                 finish();
+            }
+        });
+
+        mForgotPasswordTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                startActivity(i);
             }
         });
 
@@ -256,12 +255,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mLoginTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mEmailEt.getText().toString().isEmpty()) {
+                if (mEmailEt.getText().toString().isEmpty() || (!AppUtils.isEmail(mEmailEt.getText().toString()) && !AppUtils.isMobileNumber(mEmailEt.getText().toString()))) {
                     ToastUtils.showShort(LoginActivity.this, "Please enter mobile number or email");
                 } else if (mPasswordEt.getText().toString().isEmpty()) {
                     ToastUtils.showShort(LoginActivity.this, "Please enter password.");
                 } else {
-                    loginuser(mEmailEt.getText().toString(), mPasswordEt.getText().toString(), String.valueOf(listgroup.get((Integer) mchoose_group.getSelectedItem()).getId()));
+                    if (AppUtils.isInternetAvailable(context)) {
+                        loginuser(mEmailEt.getText().toString(), mPasswordEt.getText().toString(), String.valueOf(listgroup.get((Integer) mchoose_group.getSelectedItem()).getId()));
+                    } else {
+                        ToastUtils.showShort(LoginActivity.this, "Please check your Internet connection");
+                    }
+
                 }
             }
         });
@@ -471,41 +475,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
 
-    public void showPopup1() {
-        dialogBuilder = NiftyDialogBuilder.getInstance(this);
-        dialogBuilder.withTitleColor(getResources().getColor(R.color.colorPrimaryDark))
-                .withTitle(getString(R.string.create_group_text)).withMessage(null)
-                .withDividerColor(getResources().getColor(R.color.colorPrimary))
-                .withDialogColor(getResources().getColor(R.color.TransWhite)).withDuration(200)
-                .withEffect(Effectstype.SlideBottom).isCancelableOnTouchOutside(false)
-                .setCustomView(R.layout.popup_group_layout, this);
-
-        final EditText edt_grp_name = (EditText) dialogBuilder.findViewById(R.id.edt_group_name);
-        final EditText edt_group_email_id = (EditText) dialogBuilder.findViewById(R.id.edt_group_email_id);
-
-        TextView btn_create = (TextView) dialogBuilder.findViewById(R.id.btn_create);
-        TextView btn_cancel = (TextView) dialogBuilder.findViewById(R.id.btn_cancel);
-
-
-        btn_create.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String group_name = edt_grp_name.getText().toString();
-                String group_email = edt_group_email_id.getText().toString();
-                /*chooseGroupModel = new ChooseGroupModel(2, group_name);
-                listgroup.add(chooseGroupModel);*/
-                create_group(group_name, group_email);
-                dialogBuilder.dismiss();
-            }
-        });
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialogBuilder.cancel();
-            }
-        });
-        dialogBuilder.show();
-    }
 
     @Override
     public void onClick(View v) {
@@ -522,29 +491,32 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                         PrefUtils.putString("group_email", group_email);
                         PrefUtils.putString("group_name", group_name);
-
+                        get_group_list_data();
                         ToastUtils.showShort(LoginActivity.this, response.body().getMessage());
                     } else {
                         ToastUtils.showShort(LoginActivity.this, response.body().getMessage());
                     }
                 } else {
-
+                    ToastUtils.showShort(LoginActivity.this, response.body().getMessage());
                 }
                 mProgressDialog.cancel();
+                dialog.dismiss();
             }
 
             @Override
             public void onFailure(Call<GroupResponce> call, Throwable t) {
                 t.printStackTrace();
-                Log.d("error", t.toString());
                 mProgressDialog.cancel();
+                ToastUtils.showShort(LoginActivity.this, "Requested user is not exist in our record");
+                Log.d("error", t.toString());
+
             }
         });
     }
 
 
     public void showPopup() {
-        final Dialog dialog = new Dialog(this);
+        dialog = new Dialog(this);
 
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
@@ -574,8 +546,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onClick(View v) {
                 String group_name = edt_grp_name.getText().toString();
                 String group_email = edt_group_email_id.getText().toString();
-                create_group(group_name, group_email);
-                dialog.dismiss();
+
+                if (group_email.isEmpty()) {
+                    ToastUtils.showShort(LoginActivity.this, "Please enter Email.");
+                } else if (!AppUtils.isEmail(group_email)) {
+                    ToastUtils.showShort(LoginActivity.this, "Please enter valid email.");
+                } else if (group_name.isEmpty()) {
+                    ToastUtils.showShort(LoginActivity.this, "Please enter Group Name.");
+                } else {
+
+                    create_group(group_name, group_email);
+
+                }
+
             }
         });
         btn_cancel.setOnClickListener(new View.OnClickListener() {
@@ -636,4 +619,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
     }
+
+
 }

@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "237817979464",
-    "project_id": "rideshare-185607"
+    "firebase_url": "https://rideshare-185607.firebaseio.com",
+    "project_id": "rideshare-185607",
+    "storage_bucket": "rideshare-185607.appspot.com"
   },
   "client": [
     {
@@ -13,16 +15,28 @@
       },
       "oauth_client": [
         {
-          "client_id": "237817979464-tr38ehl0emlb8nvvncj4aldp7tb67uho.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "237817979464-66mof0c6saermkfp7mrjh4g7j7jmugdn.apps.googleusercontent.com",
+          "client_id": "237817979464-bm88s7rcgnrbup2p7h4ce0sb43jtli3h.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.app.rideshare",
             "certificate_hash": "2849e503b795a0b5376ef36ed7f73c8a640b4067"
           }
+        },
+        {
+          "client_id": "237817979464-rqum1tklgaqn3t1utl67korf3aou077l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.rideshare",
+            "certificate_hash": "4bfe2a05b434c3c1cc2cbe4aa1a7cadf08c46c0d"
+          }
+        },
+        {
+          "client_id": "237817979464-8r302nr5euouieoqpvg7vlqhrrspuckj.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "237817979464-tr38ehl0emlb8nvvncj4aldp7tb67uho.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
@@ -35,11 +49,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "237817979464-8r302nr5euouieoqpvg7vlqhrrspuckj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

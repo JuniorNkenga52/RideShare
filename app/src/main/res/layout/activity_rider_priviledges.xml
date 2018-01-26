@@ -93,10 +93,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
+                        android:gravity="bottom"
                         android:hint="@string/vehicle_model"
                         android:textAllCaps="false"
-                        android:gravity="bottom"
-                        android:textAlignment="textEnd"
                         android:textColor="@color/loginbtn"
                         android:textSize="@dimen/_14sdp"
                         android:theme="@style/TextLabel1" />
@@ -135,10 +134,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
+                        android:gravity="bottom"
                         android:hint="@string/vehicle_type"
                         android:textAllCaps="false"
-                        android:gravity="bottom"
-                        android:textAlignment="textEnd"
                         android:textColor="@color/loginbtn"
                         android:textSize="@dimen/_14sdp"
                         android:theme="@style/TextLabel1" />
@@ -181,8 +179,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
                         android:gravity="bottom"
-                        android:textAlignment="textEnd"
                         android:hint="@string/vehicle_passengers"
+
                         android:textAllCaps="false"
                         android:textColor="@color/loginbtn"
                         android:textSize="@dimen/_14sdp"

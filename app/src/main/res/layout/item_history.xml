@@ -82,7 +82,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_circle"
+                    android:background="@drawable/ic_circle_fill"
                     android:padding="@dimen/_5sdp" />
 
                 <TextView
@@ -104,7 +104,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_circle_red"
+                    android:background="@drawable/ic_circle_red_fill"
                     android:padding="@dimen/_5sdp" />
 
                 <TextView

@@ -12,16 +12,21 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SignupResponse;
+import com.app.rideshare.api.response.UpdateProfileResponse;
 import com.app.rideshare.model.User;
 import com.app.rideshare.utils.PrefUtils;
+import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.gun0912.tedpermission.PermissionListener;
@@ -57,12 +62,20 @@ public class ProfileActivity extends AppCompatActivity
     private EditText mLastNameEt;
     private EditText mMobileEt;
     private EditText mEmailEt;
+    private EditText mVhmodel_Et;
+    private EditText mVhtype_Et;
+    private EditText mMaxpassenger_Et;
+    private CheckBox mReqdriver_Ch;
+    private LinearLayout layout_req_driver;
+    private LinearLayout layout_other_op;
+
     private CircularImageView mProfileIv;
     ArrayList<Image> images;
 
     private static final int REQUEST_CODE_CHOOSE=101;
     CustomProgressDialog mProgressDialog;
-    Button mprivileges;
+    private int ch_val=0;
+    //Button mprivileges;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,20 +114,38 @@ public class ProfileActivity extends AppCompatActivity
         mMobileEt=(EditText)findViewById(R.id.mobile_et);
         mEmailEt=(EditText)findViewById(R.id.email_et);
 
-
+        mVhmodel_Et=(EditText)findViewById(R.id.vhmodel_et);
+        mVhtype_Et=(EditText)findViewById(R.id.vhtype_et);
+        mMaxpassenger_Et=(EditText)findViewById(R.id.maxpassenger_et);
+        mReqdriver_Ch= (CheckBox) findViewById(R.id.reqdriver_ch);
+        layout_req_driver= (LinearLayout) findViewById(R.id.layout_req_driver);
+        layout_other_op= (LinearLayout) findViewById(R.id.layout_other_op);
 
         mFirstNameEt.setTypeface(mRobotoMedium);
         mLastNameEt.setTypeface(mRobotoMedium);
         mMobileEt.setTypeface(mRobotoMedium);
         mEmailEt.setTypeface(mRobotoMedium);
 
+        mVhmodel_Et.setTypeface(mRobotoMedium);
+        mVhtype_Et.setTypeface(mRobotoMedium);
+        mMaxpassenger_Et.setTypeface(mRobotoMedium);
 
         mFirstNameEt.setText(mUserBean.getmFirstName());
         mLastNameEt.setText(mUserBean.getmLastName());
         mMobileEt.setText(mUserBean.getmMobileNo());
         mEmailEt.setText(mUserBean.getmEmail());
+        mVhmodel_Et.setText(mUserBean.getMvehicle_model());
+        mVhtype_Et.setText(mUserBean.getMvehicle_type());
+        mMaxpassenger_Et.setText(mUserBean.getmMax_passengers());
 
-        mprivileges= (Button) findViewById(R.id.btn_privileges);
+        if(mUserBean.getMrequested_as_driver()!=null){
+            if(mUserBean.getMrequested_as_driver().equals("1")){
+                mReqdriver_Ch.setChecked(true);
+                layout_other_op.setVisibility(View.VISIBLE);
+            }
+
+        }
+        /*mprivileges= (Button) findViewById(R.id.btn_privileges);
         mprivileges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,7 +153,22 @@ public class ProfileActivity extends AppCompatActivity
 
                 startActivity(intent);
             }
+        });*/
+        mReqdriver_Ch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    ch_val=1;
+                    layout_other_op.setVisibility(View.VISIBLE);
+                }else {
+                    ch_val=0;
+                    layout_other_op.setVisibility(View.GONE);
+                }
+                mSaveTv.setVisibility(View.VISIBLE);
+            }
         });
+
+
 
         mFirstNameEt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -188,6 +234,57 @@ public class ProfileActivity extends AppCompatActivity
 
             }
         });
+
+        mVhmodel_Et.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mSaveTv.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        mVhtype_Et.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mSaveTv.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        mMaxpassenger_Et.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mSaveTv.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         mProfileIv=(CircularImageView)findViewById(R.id.circularImageView);
         if(!PrefUtils.getUserInfo().getProfile_image().equals("")){
             Picasso.with(this).load(mUserBean.getProfile_image()).into(mProfileIv);
@@ -245,6 +342,11 @@ public class ProfileActivity extends AppCompatActivity
         RequestBody mMobile=RequestBody.create(okhttp3.MultipartBody.FORM, mMobileEt.getText().toString());
         RequestBody mUserId=RequestBody.create(okhttp3.MultipartBody.FORM, mUserBean.getmUserId());
         RequestBody mEmail=RequestBody.create(okhttp3.MultipartBody.FORM, mEmailEt.getText().toString());
+        RequestBody mVh_Model=RequestBody.create(okhttp3.MultipartBody.FORM, mVhmodel_Et.getText().toString());
+        RequestBody mVh_Type=RequestBody.create(okhttp3.MultipartBody.FORM, mVhtype_Et.getText().toString());
+        RequestBody mMax_Passengers=RequestBody.create(okhttp3.MultipartBody.FORM, mMaxpassenger_Et.getText().toString());
+        RequestBody mGroupid=RequestBody.create(okhttp3.MultipartBody.FORM, mUserBean.getmGroup_id());
+        RequestBody mReq_driver=RequestBody.create(okhttp3.MultipartBody.FORM, String.valueOf(ch_val));
 
         RequestBody requestFile=null;
         MultipartBody.Part body=null;
@@ -255,12 +357,13 @@ public class ProfileActivity extends AppCompatActivity
             body = MultipartBody.Part.createFormData("profile_image", images.get(0).getName(), requestFile);
         }
 
-        ApiServiceModule.createService(RestApiInterface.class).updateProfile(mUserId, mfirstname,mlatname,mMobile,body,mEmail).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).updateProfile(mUserId, mfirstname,mlatname,mMobile,body,mEmail,mVh_Model,mVh_Type,mMax_Passengers,mReq_driver,mGroupid).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 mProgressDialog.cancel();
                 if (response.isSuccessful() && response.body() != null) {
                     PrefUtils.addUserInfo(response.body().getMlist().get(0));
+                    ToastUtils.showShort(ProfileActivity.this,response.body().getmMessage());
                     finish();
                 }
             }

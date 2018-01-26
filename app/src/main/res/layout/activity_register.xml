@@ -70,7 +70,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/last_name"
-                    android:inputType="textEmailAddress"
+                    android:inputType="textPersonName"
                     android:textColor="#FFF"
                     android:textSize="@dimen/_14sdp" />
 
@@ -111,7 +111,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/mobile"
-                    android:inputType="textEmailAddress"
+                    android:inputType="number"
                     android:textColor="#FFF"
                     android:textSize="@dimen/_14sdp" />
 

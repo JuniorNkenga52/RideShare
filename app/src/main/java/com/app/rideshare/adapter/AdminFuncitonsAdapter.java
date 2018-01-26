@@ -6,12 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
-import com.app.rideshare.activity.Admin_Userinfo_Activity;
-import com.app.rideshare.model.AdminFunctions;
+import com.app.rideshare.activity.AdminUserinfoActivity;
 import com.app.rideshare.model.GroupusersModel;
 
 import java.util.ArrayList;
@@ -69,7 +67,7 @@ public class AdminFuncitonsAdapter extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, Admin_Userinfo_Activity.class);
+                Intent intent = new Intent(context, AdminUserinfoActivity.class);
                 intent.putExtra("pos",position);
                 context.startActivity(intent);
             }

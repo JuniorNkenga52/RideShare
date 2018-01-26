@@ -50,6 +50,12 @@ public class AppUtils {
         return emailPattern.matcher(email).find();
     }
 
+    public static boolean isMobileNumber(String mno) {
+        Pattern emailPattern = Pattern.compile("^[0-9]*$");
+        return emailPattern.matcher(mno).find();
+    }
+
+
     public static void showMessage(Activity activity, boolean isSuccess, String message) {
         Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
         //showCustomToast(activity_waiting, message, R.drawable.ic_camera);

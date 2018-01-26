@@ -106,7 +106,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCsPnKCHv86btuRsb1AkSqcihb3kKo8ykI" />
+            android:value="AIzaSyChC2mPyZsEQp0hXSqW2wwcdIrILZaJG-k" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -145,9 +145,10 @@
             android:name="io.fabric.ApiKey"
             android:value="222483a7f0f7bff743470f4112c6de9459fe0141" />
 
-        <activity android:name=".activity.Admin_FunctionsActivity" />
-        <activity android:name=".activity.Admin_Userinfo_Activity" />
-        <activity android:name=".activity.DriverPrivileges"></activity>
+        <activity android:name=".activity.AdminFunctionsActivity" />
+        <activity android:name=".activity.AdminUserinfoActivity" />
+        <activity android:name=".activity.DriverPrivileges" />
+        <activity android:name=".activity.ForgotPasswordActivity"></activity>
     </application>
 
 </manifest>

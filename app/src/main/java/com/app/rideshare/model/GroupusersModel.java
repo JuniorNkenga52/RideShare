@@ -27,7 +27,10 @@ public class GroupusersModel {
     private String ride_status;
     private String contact_sync;
     private String is_rider;
-    private String is_drive;
+
+
+
+    private String is_driver;
     private String requested_as_driver;
     private String update_date;
     private String create_date;
@@ -185,6 +188,7 @@ public class GroupusersModel {
         this.ride_status = ride_status;
     }
 
+
     public String getContact_sync() {
         return contact_sync;
     }
@@ -201,12 +205,12 @@ public class GroupusersModel {
         this.is_rider = is_rider;
     }
 
-    public String getIs_drive() {
-        return is_drive;
+    public String getIs_driver() {
+        return is_driver;
     }
 
-    public void setIs_drive(String is_drive) {
-        this.is_drive = is_drive;
+    public void setIs_driver(String is_driver) {
+        this.is_driver = is_driver;
     }
 
     public String getRequested_as_driver() {

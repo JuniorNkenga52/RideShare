@@ -28,9 +28,6 @@ import android.widget.TextView;
 import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
-import com.app.rideshare.api.response.GroupListResponce;
-import com.app.rideshare.api.response.GroupResponce;
-import com.app.rideshare.api.response.MyGroupsResponce;
 import com.app.rideshare.api.response.RideSelect;
 import com.app.rideshare.fragment.HistoryFragment;
 import com.app.rideshare.fragment.HomeFragment;
@@ -59,22 +56,22 @@ import retrofit2.Response;
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
+    public static OnBackPressedListener onBackPressed;
+    PopupWindow popupWindow;
+    FragmentManager mFragmentManager;
+    CircularImageView mProfileIv;
+    Typeface mRobotoMedium;
     private ArrayList<Rider> mlist;
     private ImageView mPopupIv;
-    PopupWindow popupWindow;
     private GoogleApiClient mGoogleApiClient;
-
-    public static OnBackPressedListener onBackPressed;
-    FragmentManager mFragmentManager;
-
     private TextView mFnameTv;
     private TextView mEmailTv;
     private ImageView mEditProfileIv;
-    CircularImageView mProfileIv;
-
     private TextView mTitleHomeTv;
 
-    Typeface mRobotoMedium;
+    public static void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
+        onBackPressed = onBackPressedListener;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +113,7 @@ public class HomeActivity extends AppCompatActivity
             }
         });
         try {
-            mFnameTv.setText(PrefUtils.getUserInfo().getmFirstName());
+            mFnameTv.setText(PrefUtils.getUserInfo().getmFirstName() + " " + PrefUtils.getUserInfo().getmLastName());
             mEmailTv.setText(PrefUtils.getUserInfo().getmEmail());
             if (!PrefUtils.getUserInfo().getProfile_image().equals("")) {
                 Picasso.with(this).load(PrefUtils.getUserInfo().getProfile_image()).into(mProfileIv);
@@ -287,6 +284,7 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_history) {
             HistoryFragment myFragment = (HistoryFragment) mFragmentManager.findFragmentByTag("HISTORYFRAGMENT");
             mTitleHomeTv.setText("History Page");
+            mPopupIv.setVisibility(View.GONE);
             if (myFragment != null && myFragment.isVisible()) {
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
@@ -297,9 +295,13 @@ public class HomeActivity extends AppCompatActivity
             selectRide(PrefUtils.getUserInfo().getmUserId(), "0", "", "");
         } else if (id == R.id.nav_admin) {
 
-            Intent intent = new Intent(HomeActivity.this, Admin_FunctionsActivity.class);
+            Intent intent = new Intent(HomeActivity.this, AdminFunctionsActivity.class);
 
             startActivity(intent);
+
+            /*Intent rateride = new Intent(HomeActivity.this, RideRateActivity.class);
+            rateride.putExtra("riderate", "21");
+            startActivity(rateride);*/
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -343,8 +345,6 @@ public class HomeActivity extends AppCompatActivity
         });
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -353,10 +353,6 @@ public class HomeActivity extends AppCompatActivity
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }
-
-    public static void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
-        onBackPressed = onBackPressedListener;
     }
 
 }

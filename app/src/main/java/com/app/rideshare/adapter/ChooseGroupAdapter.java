@@ -20,10 +20,10 @@ import java.util.ArrayList;
 
 public class ChooseGroupAdapter extends BaseAdapter {
 
-    private Context context;
-    private ArrayList<ChooseGroupModel> listdata;
-    private LayoutInflater mInflater;
-    private Typeface mRobotoMediam;
+        private Context context;
+        private ArrayList<ChooseGroupModel> listdata;
+        private LayoutInflater mInflater;
+        private Typeface mRobotoMediam;
 
     public ChooseGroupAdapter(Context context, ArrayList<ChooseGroupModel> listdata) {
         this.context = context;

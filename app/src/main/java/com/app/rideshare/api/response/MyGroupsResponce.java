@@ -16,6 +16,9 @@ public class MyGroupsResponce {
     @SerializedName("result")
     private ArrayList<GroupusersModel> result;
 
+    @SerializedName("message")
+    private String message;
+
     public String getStatus() {
         return status;
     }
@@ -30,5 +33,13 @@ public class MyGroupsResponce {
 
     public void setResult(ArrayList<GroupusersModel> result) {
         this.result = result;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
