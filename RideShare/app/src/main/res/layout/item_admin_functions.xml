@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/google_cv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_8sdp"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="@dimen/_3sdp"
+        card_view:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/_17sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.app.rideshare.widget.TextViewRegular
+                    android:id="@+id/username_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/txt_user_name"
+                    android:textColor="@color/blacltext"
+                    android:textSize="@dimen/_14sdp" />
+
+                <com.app.rideshare.widget.TextViewRegular
+                    android:id="@+id/item_user_name_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/blacltext"
+                    android:textSize="@dimen/_14sdp"
+                    android:text="123123"
+                    android:gravity="end"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.app.rideshare.widget.TextViewRegular
+                    android:id="@+id/item_userphno_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/txt_ph_no"
+                    android:textColor="@color/blacltext"
+                    android:textSize="@dimen/_14sdp" />
+
+                <com.app.rideshare.widget.TextViewRegular
+                    android:id="@+id/item_phno_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="123116545"
+                    android:textColor="@color/blacltext"
+                    android:textSize="@dimen/_14sdp"
+                    android:gravity="end" />
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_login_bg">
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_8sdp">
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/user_profile"
+            android:layout_width="@dimen/_45sdp"
+            android:layout_height="@dimen/_45sdp"
+            android:src="@drawable/banner"
+            app:civ_border_color="#EEEEEE"
+            app:civ_border_width="1dp"
+            app:civ_shadow="false"
+            app:civ_shadow_color="#8BC34A"
+            app:civ_shadow_radius="10" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="@dimen/_3sdp"
+            android:orientation="vertical">
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:id="@+id/name_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dhaiyur"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14sdp" />
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:id="@+id/email_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dhaiyur"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14sdp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rele"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_200sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <pl.bclogic.pulsator4droid.library.PulsatorLayout
+            android:id="@+id/pulsator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            app:pulse_color="@color/colorAccent"
+            app:pulse_count="5"
+            app:pulse_duration="7000"
+            app:pulse_interpolator="Linear"
+            app:pulse_repeat="0"
+            app:pulse_startFromScratch="true">
+
+        </pl.bclogic.pulsator4droid.library.PulsatorLayout>
+
+        <com.github.lzyzsd.circleprogress.DonutProgress
+            android:id="@+id/donut_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            custom:donut_progress="30" />
+    </RelativeLayout>
+
+    <com.app.rideshare.widget.TextViewRegular
+        android:id="@+id/wait_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rele"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:gravity="center"
+        android:text="Please wait until driver accept request"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14sdp" />
+
+
+    <com.app.rideshare.widget.TextViewRegular
+        android:id="@+id/btn_cancel_ride"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:padding="@dimen/_8sdp"
+        android:text="Cancel"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14sdp" />
+
+
+</RelativeLayout>
