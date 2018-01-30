@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -33,7 +32,6 @@ import com.app.rideshare.service.LocationService;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.ToastUtils;
-import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -54,7 +52,7 @@ public class RideTypeActivity extends AppCompatActivity {
     RadioButton mNeedRideRb;
     RadioButton mOfferRideRb;
 
-    Typeface mRobotoMediam;
+    //Typeface mRobotoMediam;
 
     TextView mNextTv;
     Location currentLocation;
@@ -68,10 +66,34 @@ public class RideTypeActivity extends AppCompatActivity {
 
     int rideType = 0;
     boolean GpsStatus = false;
-
-    private  String InprogressRide="";
     MaterialDialog mMaterialDialog;
     InProgressRide mRide;
+    PermissionListener permissionlistener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+
+            if (mUserBean.getContact_sync().equals("0")) {
+                syncContact();
+            }
+
+            Intent intent = new Intent(RideTypeActivity.this, LocationService.class);
+            startService(intent);
+            SmartLocation.with(RideTypeActivity.this).location()
+                    .oneFix()
+                    .start(new OnLocationUpdatedListener() {
+                        @Override
+                        public void onLocationUpdated(Location location) {
+                            currentLocation = location;
+                        }
+                    });
+        }
+
+        @Override
+        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+            Toast.makeText(RideTypeActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+        }
+    };
+    private String InprogressRide = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,23 +104,20 @@ public class RideTypeActivity extends AppCompatActivity {
         application = (RideShareApp) getApplicationContext();
         turnGPSOn();
 
-        if(getIntent().hasExtra("inprogress"))
-        {
-            InprogressRide=getIntent().getExtras().getString("inprogress");
+        if (getIntent().hasExtra("inprogress")) {
+            InprogressRide = getIntent().getExtras().getString("inprogress");
         }
-        if(InprogressRide.equals("busy"))
-        {
-            mRide=(InProgressRide)getIntent().getExtras().getSerializable("rideprogress");
+        if (InprogressRide.equals("busy")) {
+            mRide = (InProgressRide) getIntent().getExtras().getSerializable("rideprogress");
             mMaterialDialog = new MaterialDialog(this)
                     .setTitle("Warning")
                     .setMessage("You have currently 1 Ride active.Are you want to continue?")
-                    .setPositiveButton("Yes i'm in", new View.OnClickListener()
-                    {
+                    .setPositiveButton("Yes i'm in", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             mMaterialDialog.dismiss();
 
-                            AcceptRider ride=new AcceptRider();
+                            AcceptRider ride = new AcceptRider();
                             ride.setToRider(mRide.getmToRider());
                             ride.setFromRider(mRide.getmFromRider());
                             ride.setEnd_lati(mRide.getmEndLat());
@@ -111,14 +130,14 @@ public class RideTypeActivity extends AppCompatActivity {
                             ride.setStart_long(mRide.getmStartLang());
                             ride.setRequest_status(mRide.getmRequestStatus());
 
-                            if(mRide.getmToRider().getnUserId().equals(PrefUtils.getUserInfo().getmUserId())){
+                            if (mRide.getmToRider().getnUserId().equals(PrefUtils.getUserInfo().getmUserId())) {
                                 application.setmUserType("" + mRide.getmToRider().getU_ride_type());
-                            }else{
+                            } else {
                                 application.setmUserType("" + mRide.getmFromRider().getU_ride_type());
                             }
 
-                            Intent i=new Intent(RideTypeActivity.this,StartRideActivity.class);
-                            i.putExtra("rideobj",ride);
+                            Intent i = new Intent(RideTypeActivity.this, StartRideActivity.class);
+                            i.putExtra("rideobj", ride);
                             startActivity(i);
 
                         }
@@ -135,22 +154,20 @@ public class RideTypeActivity extends AppCompatActivity {
         }
 
 
-
-
         mUserBean = PrefUtils.getUserInfo();
 
         mProgressDialog = new CustomProgressDialog(this);
 
-        mRobotoMediam = TypefaceUtils.getTypefaceRobotoMediam(this);
+        //mRobotoMediam = TypefaceUtils.getTypefaceRobotoMediam(this);
 
         mNeedRideRb = (RadioButton) findViewById(R.id.need_ride_rb);
         mOfferRideRb = (RadioButton) findViewById(R.id.offer_ride_rb);
 
-        mNeedRideRb.setTypeface(mRobotoMediam);
-        mOfferRideRb.setTypeface(mRobotoMediam);
+       /* mNeedRideRb.setTypeface(mRobotoMediam);
+        mOfferRideRb.setTypeface(mRobotoMediam);*/
 
         mNextTv = (TextView) findViewById(R.id.next_tv);
-        mNextTv.setTypeface(mRobotoMediam);
+        //mNextTv.setTypeface(mRobotoMediam);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -278,33 +295,6 @@ public class RideTypeActivity extends AppCompatActivity {
             }
         });
     }
-
-    PermissionListener permissionlistener = new PermissionListener() {
-        @Override
-        public void onPermissionGranted() {
-
-            if (mUserBean.getContact_sync().equals("0")) {
-                syncContact();
-            }
-
-            Intent intent = new Intent(RideTypeActivity.this, LocationService.class);
-            startService(intent);
-            SmartLocation.with(RideTypeActivity.this).location()
-                    .oneFix()
-                    .start(new OnLocationUpdatedListener() {
-                        @Override
-                        public void onLocationUpdated(Location location) {
-                            currentLocation = location;
-                        }
-                    });
-        }
-
-        @Override
-        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-            Toast.makeText(RideTypeActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
-        }
-    };
-
 
     private void syncContact() {
 

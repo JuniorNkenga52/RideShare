@@ -53,7 +53,7 @@ public class ProfileActivity extends AppCompatActivity
     private TextView mSaveTv;
     private TextView mUserNameTv;
 
-    private Typeface mRobotoMedium;
+    //private Typeface mRobotoMedium;
 
     User mUserBean;
 
@@ -86,7 +86,7 @@ public class ProfileActivity extends AppCompatActivity
         mUserBean= PrefUtils.getUserInfo();
         mProgressDialog=new CustomProgressDialog(this);
 
-        mRobotoMedium= TypefaceUtils.getTypefaceRobotoMediam(this);
+        //mRobotoMedium= TypefaceUtils.getTypefaceRobotoMediam(this);
         mBackIv=(ImageView)findViewById(R.id.back_iv);
         mBackIv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,7 +96,7 @@ public class ProfileActivity extends AppCompatActivity
         });
 
         mSaveTv=(TextView)findViewById(R.id.save_tv);
-        mSaveTv.setTypeface(mRobotoMedium);
+        //mSaveTv.setTypeface(mRobotoMedium);
         mSaveTv.setVisibility(View.INVISIBLE);
 
         mSaveTv.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +106,7 @@ public class ProfileActivity extends AppCompatActivity
             }
         });
         mUserNameTv=(TextView)findViewById(R.id.username_tv);
-        mUserNameTv.setTypeface(mRobotoMedium);
+       // mUserNameTv.setTypeface(mRobotoMedium);
         mUserNameTv.setText(mUserBean.getmFirstName());
 
         mFirstNameEt=(EditText)findViewById(R.id.first_name_et);
@@ -121,14 +121,14 @@ public class ProfileActivity extends AppCompatActivity
         layout_req_driver= (LinearLayout) findViewById(R.id.layout_req_driver);
         layout_other_op= (LinearLayout) findViewById(R.id.layout_other_op);
 
-        mFirstNameEt.setTypeface(mRobotoMedium);
+        /*mFirstNameEt.setTypeface(mRobotoMedium);
         mLastNameEt.setTypeface(mRobotoMedium);
         mMobileEt.setTypeface(mRobotoMedium);
         mEmailEt.setTypeface(mRobotoMedium);
 
         mVhmodel_Et.setTypeface(mRobotoMedium);
         mVhtype_Et.setTypeface(mRobotoMedium);
-        mMaxpassenger_Et.setTypeface(mRobotoMedium);
+        mMaxpassenger_Et.setTypeface(mRobotoMedium);*/
 
         mFirstNameEt.setText(mUserBean.getmFirstName());
         mLastNameEt.setText(mUserBean.getmLastName());

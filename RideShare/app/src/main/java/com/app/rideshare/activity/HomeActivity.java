@@ -113,7 +113,7 @@ public class HomeActivity extends AppCompatActivity
         mEmailTv = (TextView) navigationView.getHeaderView(0).findViewById(R.id.header_email_tv);
         mProfileIv = (CircularImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profile);
 
-        mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
+        mRobotoMedium = TypefaceUtils.getOpenSansRegular(this);
         mTitleHomeTv = (TextView) findViewById(R.id.title_home_tv);
         mTitleHomeTv.setTypeface(mRobotoMedium);
         mTitleHomeTv.setText("RideShare");

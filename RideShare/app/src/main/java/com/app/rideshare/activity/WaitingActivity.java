@@ -40,7 +40,7 @@ public class WaitingActivity extends AppCompatActivity {
 
     private TextView mCancelTv;
     private TextView mWaitTv;
-    private Typeface mRobotoMedium;
+    //private Typeface mRobotoMedium;
 
     DonutProgress mCircleProgress;
     private OTPTimer timer;
@@ -59,16 +59,16 @@ public class WaitingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiting);
 
-        mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
+        //mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
 
         currentRider = (Rider) getIntent().getExtras().getSerializable("rider");
         mRideResponse = (RideResponse) getIntent().getExtras().getSerializable("rider_data");
 
         mCancelTv = (TextView) findViewById(R.id.btn_cancel_ride);
-        mCancelTv.setTypeface(mRobotoMedium);
+        //mCancelTv.setTypeface(mRobotoMedium);
 
         mWaitTv = (TextView) findViewById(R.id.wait_tv);
-        mWaitTv.setTypeface(mRobotoMedium);
+        //mWaitTv.setTypeface(mRobotoMedium);
 
         pulsator = (PulsatorLayout) findViewById(R.id.pulsator);
         pulsator.start();
@@ -88,8 +88,8 @@ public class WaitingActivity extends AppCompatActivity {
         mEmailTv = (TextView) findViewById(R.id.email_tv);
         mProfilePic=(CircularImageView)findViewById(R.id.user_profile);
 
-        mNameTv.setTypeface(mRobotoMedium);
-        mEmailTv.setTypeface(mRobotoMedium);
+        /*mNameTv.setTypeface(mRobotoMedium);
+        mEmailTv.setTypeface(mRobotoMedium);*/
 
         mNameTv.setText(currentRider.getmFirstName());
         mEmailTv.setText(currentRider.getmEmail());

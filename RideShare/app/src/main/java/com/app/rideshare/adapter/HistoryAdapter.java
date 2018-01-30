@@ -74,13 +74,13 @@ public class HistoryAdapter extends BaseAdapter {
             holder.mDropoffAddressTv = (TextView) convertView.findViewById(R.id.drop_off_address);
             holder.mTimeTv = (TextView) convertView.findViewById(R.id.time_tv);
 
-            holder.mNameTv.setTypeface(mRobotoMedium);
+          /*  holder.mNameTv.setTypeface(mRobotoMedium);
             holder.mRideTypeTv.setTypeface(mRobotoMedium);
             holder.mStatusTv.setTypeface(mRobotoMedium);
             holder.mStatusResultTv.setTypeface(mRobotoMedium);
             holder.mPickupAddressTv.setTypeface(mRobotoMedium);
             holder.mDropoffAddressTv.setTypeface(mRobotoMedium);
-            holder.mTimeTv.setTypeface(mRobotoMedium);
+            holder.mTimeTv.setTypeface(mRobotoMedium);*/
 
             convertView.setTag(holder);
         } else {

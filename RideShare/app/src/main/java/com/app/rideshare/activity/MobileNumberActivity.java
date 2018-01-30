@@ -34,7 +34,7 @@ public class MobileNumberActivity extends AppCompatActivity {
 
     private TextView mSendOTPTv;
 
-    private Typeface mRobotoRegular;
+    //private Typeface mRobotoRegular;
     CustomProgressDialog mProgressDialog;
 
 
@@ -46,17 +46,17 @@ public class MobileNumberActivity extends AppCompatActivity {
 
         PrefUtils.initPreference(this);
 
-        mRobotoRegular = TypefaceUtils.getTypefaceRobotoMediam(this);
+        //mRobotoRegular = TypefaceUtils.getOpenSansRegular(this);
         mTitleTv = (TextView) findViewById(R.id.title_tv);
         mMobileEt = (EditText) findViewById(R.id.mobile_et);
         mInfoTv = (TextView) findViewById(R.id.title_number_tv);
 
-        mTitleTv.setTypeface(mRobotoRegular);
+        /*mTitleTv.setTypeface(mRobotoRegular);
         mMobileEt.setTypeface(mRobotoRegular);
-        mInfoTv.setTypeface(mRobotoRegular);
+        mInfoTv.setTypeface(mRobotoRegular);*/
 
         mSendOTPTv=(TextView)findViewById(R.id.send_code_tv);
-        mSendOTPTv.setTypeface(mRobotoRegular);
+        //mSendOTPTv.setTypeface(mRobotoRegular);
 
         mSendOTPTv.setOnClickListener(new View.OnClickListener() {
             @Override

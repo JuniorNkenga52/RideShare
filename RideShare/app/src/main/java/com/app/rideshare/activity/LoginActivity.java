@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private CardView mFacebookCv;
     private CardView mGoogleCv;
     private GoogleApiClient mGoogleApiClient;
-    private Typeface mRobotoMediam;
+    //private Typeface mRobotoMediam;
     private EditText mEmailEt;
     private EditText mPasswordEt;
     private TextView mLoginTv;
@@ -125,10 +125,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         mProgressDialog = new CustomProgressDialog(this);
 
-        mRobotoMediam = TypefaceUtils.getTypefaceRobotoMediam(this);
+        //mRobotoMediam = TypefaceUtils.getTypefaceRobotoMediam(this);
 
         mEmailEt = (EditText) findViewById(R.id.username_et);
-        mEmailEt.setTypeface(mRobotoMediam);
+        //mEmailEt.setTypeface(mRobotoMediam);
         mEmailEt.setText("");
         mPasswordEt = (EditText) findViewById(R.id.password_et);
         mLoginTv = (TextView) findViewById(R.id.login_tv);
@@ -148,10 +148,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mchoose_group = (Spinner) findViewById(R.id.choose_group);
 
 
-        mPasswordEt.setTypeface(mRobotoMediam);
+        /*mPasswordEt.setTypeface(mRobotoMediam);
         mLoginTv.setTypeface(mRobotoMediam);
         mForgotPasswordTv.setTypeface(mRobotoMediam);
-        mSignUpTv.setTypeface(mRobotoMediam);
+        mSignUpTv.setTypeface(mRobotoMediam);*/
 
         mSignUpTv.setOnClickListener(new View.OnClickListener() {
             @Override

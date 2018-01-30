@@ -2,13 +2,11 @@ package com.app.rideshare.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -48,7 +46,6 @@ import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MapDirectionAPI;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.ToastUtils;
-import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -91,7 +88,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     RideShareApp application;
     ArrayList<Rider> mlist;
     // ArrayList<Marker> mlistMarker;
-    Typeface mRobotoReguler;
+    //Typeface mRobotoReguler;
     LatLng currentlthg;
     LatLng destinationLatLang;
     CustomProgressDialog mProgressDialog;
@@ -155,10 +152,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
         builder = new LatLngBounds.Builder();
 
-        mRobotoReguler = TypefaceUtils.getTypefaceRobotoMediam(getActivity());
+        //mRobotoReguler = TypefaceUtils.getTypefaceRobotoMediam(getActivity());
 
         mLocationSearchAtv = (EditText) rootview.findViewById(R.id.location_search);
-        mLocationSearchAtv.setTypeface(mRobotoReguler);
+        //mLocationSearchAtv.setTypeface(mRobotoReguler);
 
         mLocationSearchAtv.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -182,7 +179,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         });
 
         mSearchCabTv = (TextView) rootview.findViewById(R.id.search_cab_iv);
-        mSearchCabTv.setTypeface(mRobotoReguler);
+        //mSearchCabTv.setTypeface(mRobotoReguler);
         if (mUserType.equals("2")) {
             mSearchCabTv.setText("Find Rider");
         }
@@ -245,8 +242,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                         if (curLocMarker == null) {
-                            curLocMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker())
-                                    .position(currentlthg));
+                            /*curLocMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker())
+                                    .position(currentlthg));*/
+                            curLocMarker = setcutommarker(currentlthg, null, mUserBean, 1);
+                            getMarkerBitmapFromView(getActivity(), null, mUserBean, 1, currentlthg);
+
                         } else {
                             curLocMarker.setPosition(currentlthg);
                         }
@@ -321,8 +321,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                             .rotation(0f)
                             .flat(true));
                 } else {
-                    m = setcutommarker(currentDriverPos, driver);
-                    getMarkerBitmapFromView(getActivity(), driver, currentDriverPos);
+                    m = setcutommarker(currentDriverPos, driver, mUserBean, 0);
+                    getMarkerBitmapFromView(getActivity(), driver, mUserBean, 0, currentDriverPos);
                 }
 
                 mlistMarker.add(m);
@@ -353,7 +353,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             }
             destinationLocationMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker())
                     .position(destinationLatLang).title("destination"));
-
 
 
             requestRoute();
@@ -444,9 +443,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         TextView mVahicalTv = (TextView) dialog.findViewById(R.id.vahical_tv);
         TextView mAddressTv = (TextView) dialog.findViewById(R.id.address_tv);
         LinearLayout mOther_info = (LinearLayout) dialog.findViewById(R.id.ride_other_info);
-        mNameTv.setTypeface(mRobotoReguler);
+        /*mNameTv.setTypeface(mRobotoReguler);
         mVahicalTv.setTypeface(mRobotoReguler);
-        mAddressTv.setTypeface(mRobotoReguler);
+        mAddressTv.setTypeface(mRobotoReguler);*/
 
         try {
             mNameTv.setText(rider.getmFirstName());
@@ -462,8 +461,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             mDetails_tv.setText("Rider details");
             mGetRideTv.setText("Offer Ride");
         }
-        mGetRideTv.setTypeface(mRobotoReguler);
-        mCancelTv.setTypeface(mRobotoReguler);
+        /*mGetRideTv.setTypeface(mRobotoReguler);
+        mCancelTv.setTypeface(mRobotoReguler);*/
 
         mCancelTv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -512,28 +511,44 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         });
     }
 
-    private Marker setcutommarker(LatLng currentDriverPos, Rider driver) {
-
-        getMarkerBitmapFromView(getActivity(), driver, currentDriverPos);
+    private Marker setcutommarker(LatLng currentDriverPos, Rider driver, User user, int type) {
+        String userImage;
+        if (type == 0) {
+            userImage = driver.getmProfileImage();
+        } else {
+            userImage = user.getProfile_image();
+        }
+        getMarkerBitmapFromView(getActivity(), driver, user, type, currentDriverPos);
 
         return mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
                 .position(currentDriverPos).anchor(0.5f, 0.5f)
-                .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), driver)))
+                .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), userImage)))
                 // Specifies the anchor to be at a particular point in the marker image.
                 .rotation(0f)
                 .flat(true));
     }
 
-    public void getMarkerBitmapFromView(Activity activity, final Rider driver, final LatLng currentDriverPos) {
+    public void getMarkerBitmapFromView(Activity activity, final Rider driver, final User user, final int type, final LatLng currentDriverPos) {
 
         final View customMarkerView = activity.getLayoutInflater().inflate(R.layout.item_custom_marker, null);
 
         CircleImageView markerImageView = customMarkerView.findViewById(R.id.user_dp);
+        String userimage = "";
+        if (type == 0) {
+            userimage = driver.getmProfileImage();
+        } else {
+            userimage = user.getProfile_image();
+        }
 
-        Glide.with(activity).load(driver.getmProfileImage()).listener(new RequestListener<String, GlideDrawable>() {
+        final String finalUserimage = userimage;
+        Glide.with(activity).load(userimage).listener(new RequestListener<String, GlideDrawable>() {
             @Override
             public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                return false;
+            }
 
+            @Override
+            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                 customMarkerView.setDrawingCacheEnabled(true);
 
                 customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
@@ -552,24 +567,25 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
                 customMarkerView.draw(canvas);
 
-                mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
-                        .position(currentDriverPos).anchor(0.5f, 0.5f)
-                        .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), driver)))
-                        // Specifies the anchor to be at a particular point in the marker image.
-                        .rotation(0f)
-                        .flat(true));
-
+                if (type == 0) {
+                    mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
+                            .position(currentDriverPos).anchor(0.5f, 0.5f)
+                            .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), finalUserimage)))
+                            // Specifies the anchor to be at a particular point in the marker image.
+                            .rotation(0f)
+                            .flat(true));
+                } else {
+                    mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(user))
+                            .position(currentDriverPos).anchor(0.5f, 0.5f)
+                            .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), finalUserimage)))
+                            // Specifies the anchor to be at a particular point in the marker image.
+                            .rotation(0f)
+                            .flat(true));
+                }
                 return false;
             }
-
-            @Override
-            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-
-                return false;
-            }
-        }).error(R.drawable.icon_test).placeholder(R.drawable.icon_test).into(markerImageView);
+        }).error(R.drawable.ic_user_pin).placeholder(R.drawable.ic_user_pin).into(markerImageView);
     }
-
 
 
     @Override

@@ -35,7 +35,7 @@ public class VerifyMobileNumberActivity extends AppCompatActivity {
     private String mOTP = "";
 
     private TextView mTitleTv;
-    private Typeface mRobotoMeduim;
+    //private Typeface mRobotoMeduim;
     private TextView mChangeMobile;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,14 +65,14 @@ public class VerifyMobileNumberActivity extends AppCompatActivity {
         mTitleTv = (TextView) findViewById(R.id.title_tv);
         mTitleTv.setText("Please input your 5 digit verification code.We sent code to your mobile number " + mBean.getmMobileNo());
 
-        mRobotoMeduim = TypefaceUtils.getTypefaceRobotoMediam(this);
-        mResendTv.setTypeface(mRobotoMeduim);
+        //mRobotoMeduim = TypefaceUtils.getTypefaceRobotoMediam(this);
+        /*mResendTv.setTypeface(mRobotoMeduim);
         mVerifyTv.setTypeface(mRobotoMeduim);
-        mTitleTv.setTypeface(mRobotoMeduim);
+        mTitleTv.setTypeface(mRobotoMeduim);*/
 
 
         mChangeMobile=(TextView)findViewById(R.id.change_mobile_tv);
-        mChangeMobile.setTypeface(mRobotoMeduim);
+        //mChangeMobile.setTypeface(mRobotoMeduim);
         mChangeMobile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

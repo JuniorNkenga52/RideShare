@@ -31,7 +31,7 @@ public class HistoryFragment extends Fragment {
     private ListView mHistoryLv;
     private HistoryAdapter mHistoryAdapter;
     private TextView mNoHistoryTv;
-    private Typeface mRobotoMeduim;
+    //private Typeface mRobotoMeduim;
 
     public static HistoryFragment newInstance() {
         Bundle bundle = new Bundle();
@@ -53,8 +53,8 @@ public class HistoryFragment extends Fragment {
         mUserBean = PrefUtils.getUserInfo();
 
         mNoHistoryTv = (TextView) rootview.findViewById(R.id.no_history);
-        mRobotoMeduim = TypefaceUtils.getTypefaceRobotoMediam(getActivity());
-        mNoHistoryTv.setTypeface(mRobotoMeduim);
+        //mRobotoMeduim = TypefaceUtils.getTypefaceRobotoMediam(getActivity());
+        //mNoHistoryTv.setTypeface(mRobotoMeduim);
         mNoHistoryTv.setVisibility(View.GONE);
 
         getHistory(mUserBean.getmUserId());

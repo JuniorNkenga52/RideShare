@@ -92,7 +92,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     AcceptRider mRider;
     LatLng pickuplocation;
     LatLng droppfflocation;
-    Typeface mRobotoMedium;
+    //Typeface mRobotoMedium;
     BroadcastReceiver receiver;
     Double Latitude, Longitude;
     Double PreLatitude = 0.0, PreLongitude = 0.0;
@@ -204,9 +204,9 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         mProfileIv = (CircularImageView) findViewById(R.id.user_profile);
         mStartRideLi = (LinearLayout) findViewById(R.id.li1);
         mStartRideLi.setVisibility(View.GONE);
-        mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
-        mNameTv.setTypeface(mRobotoMedium);
-        mEmailTv.setTypeface(mRobotoMedium);
+        //mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
+        /*mNameTv.setTypeface(mRobotoMedium);
+        mEmailTv.setTypeface(mRobotoMedium);*/
 
         mStartRideBtn = (Button) findViewById(R.id.start_ride_btn);
         mFinishRideBtn = (Button) findViewById(R.id.finish_ride_btn);
@@ -646,62 +646,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-    private Marker setcutommarker(LatLng currentDriverPos, Rider driver) {
 
-        getMarkerBitmapFromView(activity, driver, currentDriverPos);
-
-        return mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
-                .position(currentDriverPos).anchor(0.5f, 0.5f)
-                .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(activity, driver)))
-                // Specifies the anchor to be at a particular point in the marker image.
-                .rotation(0f)
-                .flat(true));
-    }
-
-    public void getMarkerBitmapFromView(final Activity activity, final Rider driver, final LatLng currentDriverPos) {
-
-        final View customMarkerView = activity.getLayoutInflater().inflate(R.layout.item_custom_marker, null);
-
-        CircleImageView markerImageView = customMarkerView.findViewById(R.id.user_dp);
-
-        Glide.with(activity).load(driver.getmProfileImage()).listener(new RequestListener<String, GlideDrawable>() {
-            @Override
-            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-
-                customMarkerView.setDrawingCacheEnabled(true);
-
-                customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
-                customMarkerView.buildDrawingCache();
-
-                Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-
-                Canvas canvas = new Canvas(returnedBitmap);
-                canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
-
-                Drawable drawable = customMarkerView.getBackground();
-
-                if (drawable != null)
-                    drawable.draw(canvas);
-
-                customMarkerView.draw(canvas);
-
-                mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
-                        .position(currentDriverPos).anchor(0.5f, 0.5f)
-                        .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(activity, driver)))
-                        // Specifies the anchor to be at a particular point in the marker image.
-                        .rotation(0f)
-                        .flat(true));
-
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-
-                return false;
-            }
-        }).error(R.drawable.icon_test).placeholder(R.drawable.icon_test).into(markerImageView);
-    }
 
 }

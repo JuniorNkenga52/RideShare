@@ -51,7 +51,7 @@ public class NotificationActivity extends AppCompatActivity {
 
     private TextView mTitleTv;
 
-    private Typeface mRobotoMedium;
+    //private Typeface mRobotoMedium;
 
 
     DonutProgress mCircleProgress;
@@ -105,24 +105,24 @@ public class NotificationActivity extends AppCompatActivity {
         mAcceptBtn = (Button) findViewById(R.id.btnAccept);
         mRejectBtn = (Button) findViewById(R.id.btnReject);
         mTitleTv = (TextView) findViewById(R.id.title_tv);
-        mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
+        //mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
 
-        mStartingAddressTv.setTypeface(mRobotoMedium);
-        mEndingAddressTv.setTypeface(mRobotoMedium);
+        /*mStartingAddressTv.setTypeface(mRobotoMedium);
+        mEndingAddressTv.setTypeface(mRobotoMedium);*/
 
         mStartingAddressTv.setText(mStartingAddress);
         mEndingAddressTv.setText(mEndingAddress);
 
-        mTitleTv.setTypeface(mRobotoMedium);
+        /*mTitleTv.setTypeface(mRobotoMedium);
         mAcceptBtn.setTypeface(mRobotoMedium);
-        mRejectBtn.setTypeface(mRobotoMedium);
+        mRejectBtn.setTypeface(mRobotoMedium);*/
 
         mNameTv = (TextView) findViewById(R.id.name_tv);
         mEmailTv = (TextView) findViewById(R.id.email_tv);
         mProfilePicIv=(CircularImageView)findViewById(R.id.user_profile);
 
-        mNameTv.setTypeface(mRobotoMedium);
-        mEmailTv.setTypeface(mRobotoMedium);
+        /*mNameTv.setTypeface(mRobotoMedium);
+        mEmailTv.setTypeface(mRobotoMedium);*/
         mNameTv.setText(mFirstName);
         mEmailTv.setText(Email);
 

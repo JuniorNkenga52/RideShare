@@ -23,13 +23,13 @@ public class ChooseGroupAdapter extends BaseAdapter {
         private Context context;
         private ArrayList<ChooseGroupModel> listdata;
         private LayoutInflater mInflater;
-        private Typeface mRobotoMediam;
+        //private Typeface mRobotoMediam;
 
     public ChooseGroupAdapter(Context context, ArrayList<ChooseGroupModel> listdata) {
         this.context = context;
         this.listdata = listdata;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mRobotoMediam = TypefaceUtils.getTypefaceRobotoMediam(context);
+        //mRobotoMediam = TypefaceUtils.getTypefaceRobotoMediam(context);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ChooseGroupAdapter extends BaseAdapter {
             holder = new ViewHolder();
 
             holder.txt_choose_group = (TextView) convertView.findViewById(R.id.txt_choose_group);
-            holder.txt_choose_group.setTypeface(mRobotoMediam);
+            //holder.txt_choose_group.setTypeface(mRobotoMediam);
 
             convertView.setTag(holder);
         } else {

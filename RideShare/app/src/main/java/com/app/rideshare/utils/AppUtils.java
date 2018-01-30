@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.app.rideshare.R;
 import com.app.rideshare.model.ContactBean;
 import com.app.rideshare.model.Rider;
+import com.app.rideshare.model.User;
 import com.bumptech.glide.Glide;
 
 import java.text.ParseException;
@@ -126,13 +127,13 @@ public class AppUtils {
         return str;
     }
 
-    public static Bitmap getMarkerBitmapFromView(Activity activity, Rider rider) {
+    public static Bitmap getMarkerBitmapFromView(Activity activity, String userImage) {
 
         View customMarkerView = activity.getLayoutInflater().inflate(R.layout.item_custom_marker, null);
 
         CircleImageView markerImageView = customMarkerView.findViewById(R.id.user_dp);
 
-        Glide.with(activity).load(rider.getmProfileImage()).error(R.drawable.icon_test).placeholder(R.drawable.icon_test).into(markerImageView);
+        Glide.with(activity).load(userImage).error(R.drawable.icon_test).placeholder(R.drawable.icon_test).into(markerImageView);
 
         customMarkerView.setDrawingCacheEnabled(true);
 
@@ -155,4 +156,32 @@ public class AppUtils {
         return returnedBitmap;
     }
 
+    public static Bitmap getMarkerBitmapFromViewUser(Activity activity, User user) {
+
+        View customMarkerView = activity.getLayoutInflater().inflate(R.layout.item_custom_marker, null);
+
+        CircleImageView markerImageView = customMarkerView.findViewById(R.id.user_dp);
+
+        Glide.with(activity).load(user.getProfile_image()).error(R.drawable.icon_test).placeholder(R.drawable.icon_test).into(markerImageView);
+
+        customMarkerView.setDrawingCacheEnabled(true);
+
+        customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
+        customMarkerView.buildDrawingCache();
+
+        Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(returnedBitmap);
+        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
+
+        Drawable drawable = customMarkerView.getBackground();
+
+        if (drawable != null)
+            drawable.draw(canvas);
+
+        customMarkerView.draw(canvas);
+
+        return returnedBitmap;
+    }
 }

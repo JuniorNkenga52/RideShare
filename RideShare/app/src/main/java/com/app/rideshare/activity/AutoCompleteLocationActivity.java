@@ -61,7 +61,7 @@ public class AutoCompleteLocationActivity extends AppCompatActivity  implements 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auto_complte_location);
 
-        mRobotoRegular= TypefaceUtils.getTypefaceRobotoMediam(this);
+        mRobotoRegular= TypefaceUtils.getOpenSansRegular(this);
 
         pickUpText = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         pickUpText.setTypeface(mRobotoRegular);

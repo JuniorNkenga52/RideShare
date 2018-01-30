@@ -44,7 +44,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText mPasswordEt;
     private EditText mConfirmPasswordEt;
     private TextView mSignupTv;
-    private Typeface mRobotoMedium;
+    //private Typeface mRobotoMedium;
     private TextView mAuthenticationTv;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
@@ -97,7 +97,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
+        //mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
 
         mFirstNameEt = (EditText) findViewById(R.id.first_name_et);
         mLastNameEt = (EditText) findViewById(R.id.last_name_et);
@@ -108,16 +108,16 @@ public class RegistrationActivity extends AppCompatActivity {
 
         mSignupTv = (TextView) findViewById(R.id.signup_tv);
 
-        mSignupTv.setTypeface(mRobotoMedium);
+        /*mSignupTv.setTypeface(mRobotoMedium);
         mFirstNameEt.setTypeface(mRobotoMedium);
         mLastNameEt.setTypeface(mRobotoMedium);
         mEmailEt.setTypeface(mRobotoMedium);
         mMobileEt.setTypeface(mRobotoMedium);
         mPasswordEt.setTypeface(mRobotoMedium);
-        mConfirmPasswordEt.setTypeface(mRobotoMedium);
+        mConfirmPasswordEt.setTypeface(mRobotoMedium);*/
 
         mAuthenticationTv = (TextView) findViewById(R.id.authentication_sent_tv);
-        mAuthenticationTv.setTypeface(mRobotoMedium);
+        //mAuthenticationTv.setTypeface(mRobotoMedium);
 
         mSignupTv.setOnClickListener(new View.OnClickListener() {
             @Override
