@@ -3,6 +3,7 @@ package com.app.rideshare.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +13,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -34,14 +37,20 @@ import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.AcceptRider;
 import com.app.rideshare.api.response.StartRideResponse;
 import com.app.rideshare.model.Directions;
+import com.app.rideshare.model.Rider;
 import com.app.rideshare.model.Route;
 import com.app.rideshare.model.User;
 import com.app.rideshare.service.LocationService;
+import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MapDirectionAPI;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.view.CustomProgressDialog;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -53,6 +62,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -65,6 +75,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
 import retrofit2.Call;
@@ -75,6 +86,8 @@ import retrofit2.Response;
 public class StartRideActivity extends AppCompatActivity implements OnMapReadyCallback {
     public static final String RECEIVE_JSON = "com.thetwon.whereareyou.RECEIVE_JSON";
     private final Handler mUpdaterHandler = new Handler();
+
+    Activity activity;
     LatLng currentlthg;
     AcceptRider mRider;
     LatLng pickuplocation;
@@ -177,6 +190,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_ride_layout);
 
+        activity=this;
         application = (RideShareApp) getApplicationContext();
 
         PrefUtils.initPreference(this);
@@ -385,9 +399,10 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                             }
 
                             if (CustomerMarker == null) {
-                                /*CustomerMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
-                                        .position(CustomerLocaton));*/
-                                CustomerMarker = setcutommarker();
+                                CustomerMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
+                                        .position(CustomerLocaton));
+                                //curLocMarker=setcutommarker(CustomerLocaton,mRider);
+                                //CustomerMarker = setcutommarker();
                             } else {
                                 CustomerMarker.setPosition(CustomerLocaton);
                             }
@@ -612,29 +627,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-    private Marker setcutommarker() {
-        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-        Bitmap bmp = Bitmap.createBitmap(80, 80, conf);
-        Canvas canvas1 = new Canvas(bmp);
-
-        // paint defines the text color, stroke width and size
-        Paint color = new Paint();
-        color.setTextSize(35);
-        color.setColor(Color.BLACK);
-
-        // modify canvas
-        canvas1.drawBitmap(BitmapFactory.decodeResource(getResources(),
-                R.drawable.ic_pin_start), 0, 0, color);
-        canvas1.drawText("User Name!", 30, 40, color);
-
-
-        // add marker to Map
-        return mGoogleMap.addMarker(new MarkerOptions()
-                .position(DriverLocation)
-                .icon(BitmapDescriptorFactory.fromBitmap(bmp))
-                // Specifies the anchor to be at a particular point in the marker image.
-                .anchor(0.5f, 1));
-    }
 
     private interface LatLngInterpolatorNew {
         LatLng interpolate(float fraction, LatLng a, LatLng b);
@@ -653,4 +645,63 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             }
         }
     }
+
+    private Marker setcutommarker(LatLng currentDriverPos, Rider driver) {
+
+        getMarkerBitmapFromView(activity, driver, currentDriverPos);
+
+        return mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
+                .position(currentDriverPos).anchor(0.5f, 0.5f)
+                .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(activity, driver)))
+                // Specifies the anchor to be at a particular point in the marker image.
+                .rotation(0f)
+                .flat(true));
+    }
+
+    public void getMarkerBitmapFromView(final Activity activity, final Rider driver, final LatLng currentDriverPos) {
+
+        final View customMarkerView = activity.getLayoutInflater().inflate(R.layout.item_custom_marker, null);
+
+        CircleImageView markerImageView = customMarkerView.findViewById(R.id.user_dp);
+
+        Glide.with(activity).load(driver.getmProfileImage()).listener(new RequestListener<String, GlideDrawable>() {
+            @Override
+            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+
+                customMarkerView.setDrawingCacheEnabled(true);
+
+                customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+                customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
+                customMarkerView.buildDrawingCache();
+
+                Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+
+                Canvas canvas = new Canvas(returnedBitmap);
+                canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
+
+                Drawable drawable = customMarkerView.getBackground();
+
+                if (drawable != null)
+                    drawable.draw(canvas);
+
+                customMarkerView.draw(canvas);
+
+                mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
+                        .position(currentDriverPos).anchor(0.5f, 0.5f)
+                        .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(activity, driver)))
+                        // Specifies the anchor to be at a particular point in the marker image.
+                        .rotation(0f)
+                        .flat(true));
+
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+
+                return false;
+            }
+        }).error(R.drawable.icon_test).placeholder(R.drawable.icon_test).into(markerImageView);
+    }
+
 }

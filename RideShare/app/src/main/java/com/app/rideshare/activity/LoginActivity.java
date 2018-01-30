@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     ChooseGroupAdapter chooseGroupAdapter;
     ArrayList<ChooseGroupModel> listgroup = new ArrayList<>();
     ChooseGroupModel chooseGroupModel;
-    Button create_group;
+    TextView create_group;
     PopupWindow popupWindow;
     String[] groupname = {"Choose Group", "Abc", "Pqr"};
     private CardView mFacebookCv;
@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mSignUpTv = (TextView) findViewById(R.id.signup_tv);
 
 
-        create_group = (Button) findViewById(R.id.create_group);
+        create_group = (TextView) findViewById(R.id.create_group);
         create_group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

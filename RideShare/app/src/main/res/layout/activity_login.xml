@@ -109,13 +109,14 @@
                 android:gravity="center_vertical"
                 android:theme="@style/TextLabel1" />
 
-            <Button
+            <com.app.rideshare.widget.TextViewSemiBold
                 android:id="@+id/create_group"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
                 android:background="@drawable/btn_login"
                 android:text="@string/create_group_text"
+                android:textColor="@color/blacltext"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textSize="@dimen/_14sdp" />
@@ -130,7 +131,7 @@
             android:theme="@style/TextLabel1"
             app:hintTextAppearance="@style/TextLabelsize">
 
-            <EditText
+            <com.app.rideshare.widget.EditTextRegular
                 android:id="@+id/username_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -151,7 +152,7 @@
             android:theme="@style/TextLabel1"
             app:hintTextAppearance="@style/TextLabelsize">
 
-            <EditText
+            <com.app.rideshare.widget.EditTextRegular
                 android:id="@+id/password_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

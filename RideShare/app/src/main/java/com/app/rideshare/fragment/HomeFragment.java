@@ -316,7 +316,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                 if (mUserType.equals("1")) {
                     m = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
                             .position(currentDriverPos).anchor(0.5f, 0.5f)
-                            .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), driver)))
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin))
                             // Specifies the anchor to be at a particular point in the marker image.
                             .rotation(0f)
                             .flat(true));
@@ -354,8 +354,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             destinationLocationMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker())
                     .position(destinationLatLang).title("destination"));
 
-            /*setcutommarker(destinationLatLang, driver);
-            getMarkerBitmapFromView(getActivity(), driver, destinationLatLang);*/
+
 
             requestRoute();
         }
@@ -571,24 +570,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         }).error(R.drawable.icon_test).placeholder(R.drawable.icon_test).into(markerImageView);
     }
 
-    private Bitmap getBitmapFromURL(Context context) {
 
-        View customMarkerView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.item_custom_marker, null);
-        ImageView markerImageView = (ImageView) customMarkerView.findViewById(R.id.user_dp);
-        markerImageView.setImageResource(R.drawable.icon_test);
-        customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
-        customMarkerView.buildDrawingCache();
-        Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(),
-                Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(returnedBitmap);
-        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
-        Drawable drawable = customMarkerView.getBackground();
-        if (drawable != null)
-            drawable.draw(canvas);
-        customMarkerView.draw(canvas);
-        return returnedBitmap;
-    }
 
     @Override
     public void doBack() {
