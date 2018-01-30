@@ -26,6 +26,13 @@ import retrofit2.Response;
 
 public class HistoryFragment extends Fragment {
 
+    CustomProgressDialog mProgressDialog;
+    User mUserBean;
+    private ListView mHistoryLv;
+    private HistoryAdapter mHistoryAdapter;
+    private TextView mNoHistoryTv;
+    private Typeface mRobotoMeduim;
+
     public static HistoryFragment newInstance() {
         Bundle bundle = new Bundle();
         HistoryFragment fragment = new HistoryFragment();
@@ -33,13 +40,6 @@ public class HistoryFragment extends Fragment {
         return fragment;
     }
 
-    private ListView mHistoryLv;
-    CustomProgressDialog mProgressDialog;
-    User mUserBean;
-    private HistoryAdapter mHistoryAdapter;
-
-    private TextView mNoHistoryTv;
-    private Typeface mRobotoMeduim;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,8 +52,8 @@ public class HistoryFragment extends Fragment {
         PrefUtils.initPreference(getActivity());
         mUserBean = PrefUtils.getUserInfo();
 
-        mNoHistoryTv=(TextView)rootview.findViewById(R.id.no_history);
-        mRobotoMeduim= TypefaceUtils.getTypefaceRobotoMediam(getActivity());
+        mNoHistoryTv = (TextView) rootview.findViewById(R.id.no_history);
+        mRobotoMeduim = TypefaceUtils.getTypefaceRobotoMediam(getActivity());
         mNoHistoryTv.setTypeface(mRobotoMeduim);
         mNoHistoryTv.setVisibility(View.GONE);
 
@@ -69,11 +69,10 @@ public class HistoryFragment extends Fragment {
             public void onResponse(Call<HistoryResponse> call, Response<HistoryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
 
-                    if(response.body().getResult().size()==0)
-                    {
+                    if (response.body().getResult().size() == 0) {
                         mNoHistoryTv.setVisibility(View.VISIBLE);
-                    }else{
-                        mHistoryAdapter = new HistoryAdapter(getActivity(), response.body().getResult(),mId);
+                    } else {
+                        mHistoryAdapter = new HistoryAdapter(getActivity(), response.body().getResult(), mId);
                         mHistoryLv.setAdapter(mHistoryAdapter);
                     }
                 } else {

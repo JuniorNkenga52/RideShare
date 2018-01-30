@@ -295,11 +295,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             mlistMarker.clear();
 
             BitmapDescriptor icon = null;
-            if (mUserType.equals("1")) {
+            /*if (mUserType.equals("1")) {
                 icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin);
+
             } else if (mUserType.equals("2")) {
                 icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin);
-            }
+            }*/
 
             for (Rider driver : mlist) {
 
@@ -311,16 +312,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         .rotation(0f)
                         .flat(true)
                         .icon(icon));*/
-                Marker m = setcutommarker(currentDriverPos, driver);
-
-                getMarkerBitmapFromView(getActivity(), driver, currentDriverPos);
-
-               /* mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
-                        .position(currentDriverPos).anchor(0.5f, 0.5f)
-                        .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), driver)))
-                        // Specifies the anchor to be at a particular point in the marker image.
-                        .rotation(0f)
-                        .flat(true));*/
+                Marker m;
+                if (mUserType.equals("1")) {
+                    m = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
+                            .position(currentDriverPos).anchor(0.5f, 0.5f)
+                            .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), driver)))
+                            // Specifies the anchor to be at a particular point in the marker image.
+                            .rotation(0f)
+                            .flat(true));
+                } else {
+                    m = setcutommarker(currentDriverPos, driver);
+                    getMarkerBitmapFromView(getActivity(), driver, currentDriverPos);
+                }
 
                 mlistMarker.add(m);
             }
@@ -350,6 +353,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             }
             destinationLocationMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker())
                     .position(destinationLatLang).title("destination"));
+
+            /*setcutommarker(destinationLatLang, driver);
+            getMarkerBitmapFromView(getActivity(), driver, destinationLatLang);*/
+
             requestRoute();
         }
     }
