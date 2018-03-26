@@ -46,6 +46,11 @@
         <activity
             android:name=".activity.RegistrationActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.SignUpActivity"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
