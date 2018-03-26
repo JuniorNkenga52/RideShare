@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/llTop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/txtNext"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+
+
+
+    </LinearLayout>
+
+
+    <com.app.rideshare.widget.TextViewSemiBold
+        android:id="@+id/txtNext"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_45sdp"
+        android:background="@drawable/btn_login"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:lineSpacingExtra="1.2dp"
+        android:text="@string/txt_next"
+        android:textColor="@color/blacltext"
+        android:textSize="@dimen/_16sdp" />
+</RelativeLayout>

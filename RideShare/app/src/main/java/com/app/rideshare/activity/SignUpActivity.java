@@ -4,17 +4,23 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 import com.app.rideshare.R;
+import com.app.rideshare.fragment.AddressFragment;
+import com.app.rideshare.fragment.EmailFragment;
+import com.app.rideshare.fragment.MobileNumberFragment;
+import com.app.rideshare.fragment.NameFragment;
+import com.app.rideshare.fragment.OTPFragment;
+import com.app.rideshare.fragment.ProfilePhotoFragment;
 import com.app.rideshare.notification.GCMRegistrationIntentService;
 import com.app.rideshare.utils.PrefUtils;
 import com.google.android.gms.common.ConnectionResult;
@@ -27,40 +33,16 @@ public class SignUpActivity extends AppCompatActivity {
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     Context context;
 
+    ViewPager mViewPager;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
         context = this;
-        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        setTitle("Sign Up");
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-        for (int i = 0; i < toolbar.getChildCount(); i++) {
-            View view = toolbar.getChildAt(i);
-            if (view instanceof TextView) {
-                TextView tv = (TextView) view;
-                Typeface titleFont = Typeface.
-                        createFromAsset(context.getAssets(), "OpenSans-Regular.ttf");
-                if (tv.getText().equals(toolbar.getTitle())) {
-                    tv.setTypeface(titleFont);
-                    break;
-                }
-            }
-        }*/
         PrefUtils.initPreference(this);
-
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
 
@@ -88,6 +70,8 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
 
+        mViewPager = (ViewPager) findViewById(R.id.pagerSignUp);
+        mViewPager.setAdapter(new SignUpPagerAdapter(getSupportFragmentManager()));
     }
 
     @Override
@@ -114,5 +98,37 @@ public class SignUpActivity extends AppCompatActivity {
         super.onPause();
         Log.w("MainActivity", "onPause");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+    }
+
+    public class SignUpPagerAdapter extends FragmentPagerAdapter {
+
+        public SignUpPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            /** Show a Fragment based on the position of the current screen */
+            if (position == 0) {
+                return new MobileNumberFragment();
+            } else if (position == 1) {
+                return new OTPFragment();
+            } else if (position == 2) {
+                return new NameFragment();
+            } else if (position == 3) {
+                return new AddressFragment();
+            } else if (position == 4) {
+                return new EmailFragment()   ;
+            } else if (position == 5) {
+                return new ProfilePhotoFragment()   ;
+            } else
+                return new OTPFragment();
+        }
+
+        @Override
+        public int getCount() {
+            // Show 2 total pages.
+            return 6;
+        }
     }
 }
