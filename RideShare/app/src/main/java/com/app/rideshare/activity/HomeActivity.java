@@ -73,6 +73,7 @@ public class HomeActivity extends AppCompatActivity
     private TextView mEmailTv;
     private ImageView mEditProfileIv;
     private TextView mTitleHomeTv;
+    Context context;
 
     public static void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
         onBackPressed = onBackPressedListener;
@@ -82,9 +83,25 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        context=this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Ride Share");
+
+        for(int i = 0; i < toolbar.getChildCount(); i++){
+            View view = toolbar.getChildAt(i);
+            if(view instanceof TextView){
+                TextView tv = (TextView) view;
+                Typeface titleFont = Typeface.
+                        createFromAsset(context.getAssets(), "OpenSans-Regular.ttf");
+                if(tv.getText().equals(toolbar.getTitle())){
+                    tv.setTypeface(titleFont);
+                    break;
+                }
+            }
+        }
+
 
         PrefUtils.initPreference(this);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

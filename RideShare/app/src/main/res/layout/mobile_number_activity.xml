@@ -30,7 +30,7 @@
         card_view:cardElevation="@dimen/_3sdp"
         card_view:cardUseCompatPadding="true">
 
-        <EditText
+        <com.app.rideshare.widget.EditTextRegular
             android:id="@+id/mobile_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

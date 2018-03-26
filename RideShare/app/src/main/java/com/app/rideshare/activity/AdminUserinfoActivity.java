@@ -1,6 +1,8 @@
 package com.app.rideshare.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -33,13 +35,14 @@ public class AdminUserinfoActivity extends AppCompatActivity {
 
     private Button item_btn_ad_submit;
     private CustomProgressDialog mProgressDialog;
-
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_userinfo);
 
+        context=this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.admin_fun_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Admin Functions");
@@ -51,6 +54,19 @@ public class AdminUserinfoActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        for(int i = 0; i < toolbar.getChildCount(); i++){
+            View view = toolbar.getChildAt(i);
+            if(view instanceof TextView){
+                TextView tv = (TextView) view;
+                Typeface titleFont = Typeface.
+                        createFromAsset(context.getAssets(), "OpenSans-Regular.ttf");
+                if(tv.getText().equals(toolbar.getTitle())){
+                    tv.setTypeface(titleFont);
+                    break;
+                }
+            }
+        }
 
         PrefUtils.initPreference(this);
         Intent intent=getIntent();

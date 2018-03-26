@@ -44,7 +44,7 @@
                 android:theme="@style/TextLabel1"
                 app:hintTextAppearance="@style/TextLabelsize">
 
-                <EditText
+                <com.app.rideshare.widget.EditTextRegular
                     android:id="@+id/edt_group_email_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
                 android:theme="@style/TextLabel1"
                 app:hintTextAppearance="@style/TextLabelsize">
 
-                <EditText
+                <com.app.rideshare.widget.EditTextRegular
                     android:id="@+id/edt_group_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

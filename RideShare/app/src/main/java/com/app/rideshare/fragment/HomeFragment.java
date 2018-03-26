@@ -215,6 +215,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     public void showDialog() {
         mMaterialDialog = new MaterialDialog(getActivity())
                 .setTitle(getResources().getString(R.string.app_name))
+
                 .setMessage("No user found near by you.")
                 .setPositiveButton("ok", new View.OnClickListener() {
                     @Override

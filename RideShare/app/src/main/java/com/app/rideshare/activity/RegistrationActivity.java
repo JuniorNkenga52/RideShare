@@ -47,16 +47,30 @@ public class RegistrationActivity extends AppCompatActivity {
     //private Typeface mRobotoMedium;
     private TextView mAuthenticationTv;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+    Context context;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        context=this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("Sign Up");
 
+        for(int i = 0; i < toolbar.getChildCount(); i++){
+            View view = toolbar.getChildAt(i);
+            if(view instanceof TextView){
+                TextView tv = (TextView) view;
+                Typeface titleFont = Typeface.
+                        createFromAsset(context.getAssets(), "OpenSans-Regular.ttf");
+                if(tv.getText().equals(toolbar.getTitle())){
+                    tv.setTypeface(titleFont);
+                    break;
+                }
+            }
+        }
         PrefUtils.initPreference(this);
 
 

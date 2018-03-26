@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -53,7 +54,7 @@ public class RideTypeActivity extends AppCompatActivity {
     RadioButton mOfferRideRb;
 
     //Typeface mRobotoMediam;
-
+    Context context;
     TextView mNextTv;
     Location currentLocation;
 
@@ -101,6 +102,8 @@ public class RideTypeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ride_type);
 
         PrefUtils.initPreference(this);
+        context=this;
+
         application = (RideShareApp) getApplicationContext();
         turnGPSOn();
 
@@ -173,6 +176,18 @@ public class RideTypeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setTitle("Select Ride");
 
+        for(int i = 0; i < toolbar.getChildCount(); i++){
+            View view = toolbar.getChildAt(i);
+            if(view instanceof TextView){
+                TextView tv = (TextView) view;
+                Typeface titleFont = Typeface.
+                        createFromAsset(context.getAssets(), "OpenSans-Regular.ttf");
+                if(tv.getText().equals(toolbar.getTitle())){
+                    tv.setTypeface(titleFont);
+                    break;
+                }
+            }
+        }
 
         mNeedRideLL = (LinearLayout) findViewById(R.id.need_ride_ll);
         mOfferRideLL = (LinearLayout) findViewById(R.id.offer_ride_ll);

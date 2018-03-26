@@ -130,7 +130,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mEmailEt = (EditText) findViewById(R.id.username_et);
         //mEmailEt.setTypeface(mRobotoMediam);
         mEmailEt.setText("");
-        mPasswordEt = (EditText) findViewById(R.id.password_et);
+        mPasswordEt = (EditText) findViewById(R.id.login_password_et);
         mLoginTv = (TextView) findViewById(R.id.login_tv);
         mForgotPasswordTv = (TextView) findViewById(R.id.forgot_password_tv);
         mSignUpTv = (TextView) findViewById(R.id.signup_tv);

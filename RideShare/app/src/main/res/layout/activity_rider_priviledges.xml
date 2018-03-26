@@ -88,7 +88,7 @@
                         android:textColor="@color/colorAccent"
                         android:textSize="@dimen/_14sdp" />
 
-                    <EditText
+                    <com.app.rideshare.widget.EditTextRegular
                         android:id="@+id/item_vehicle_model"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -129,7 +129,7 @@
                         android:textColor="@color/colorAccent"
                         android:textSize="@dimen/_14sdp" />
 
-                    <EditText
+                    <com.app.rideshare.widget.EditTextRegular
                         android:id="@+id/item_vehicle_type"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -173,7 +173,7 @@
                         android:textColor="@color/colorAccent"
                         android:textSize="@dimen/_14sdp" />
 
-                    <EditText
+                    <com.app.rideshare.widget.EditTextRegular
                         android:id="@+id/item_vehicle_passengers"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

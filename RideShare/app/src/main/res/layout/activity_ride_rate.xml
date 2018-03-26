@@ -71,7 +71,7 @@
              android:layout_below="@+id/txt_rate_type"
              >-->
 
-        <EditText
+        <com.app.rideshare.widget.EditTextRegular
             android:id="@+id/edt_comment"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

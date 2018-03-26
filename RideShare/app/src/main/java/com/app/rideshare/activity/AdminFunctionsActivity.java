@@ -1,6 +1,7 @@
 package com.app.rideshare.activity;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.app.rideshare.R;
 import com.app.rideshare.adapter.AdminFuncitonsAdapter;
@@ -56,6 +58,19 @@ public class AdminFunctionsActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        for(int i = 0; i < toolbar.getChildCount(); i++){
+            View view = toolbar.getChildAt(i);
+            if(view instanceof TextView){
+                TextView tv = (TextView) view;
+                Typeface titleFont = Typeface.
+                        createFromAsset(context.getAssets(), "OpenSans-Regular.ttf");
+                if(tv.getText().equals(toolbar.getTitle())){
+                    tv.setTypeface(titleFont);
+                    break;
+                }
+            }
+        }
 
         list_riders = (ListView) findViewById(R.id.list_riders);
         mProgressDialog = new CustomProgressDialog(this);
