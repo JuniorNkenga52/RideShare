@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imgBack"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:padding="@dimen/_8sdp"
+        android:src="@drawable/ic_close_white" />
 
     <LinearLayout
         android:id="@+id/llTop"
@@ -9,9 +17,77 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/txtNext"
         android:layout_alignParentTop="true"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
 
+        <com.app.rideshare.widget.TextViewBold
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_100sdp"
+            android:gravity="center"
+            android:text="@string/whats_your_mobile_number"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sdp" />
+
+        <com.app.rideshare.widget.TextViewRegular
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:gravity="center"
+            android:text="@string/txt_we_text_you_code_to_verify_this_number"
+            android:textColor="@color/whiteOff"
+            android:textSize="@dimen/_12sdp" />
+
+        <com.github.pinball83.maskededittext.MaskedEditText
+            android:id="@+id/txtPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_15sdp"
+            android:background="#00000000"
+            android:gravity="center"
+            android:hint="(   )    -    "
+            android:inputType="number"
+            android:padding="@dimen/_8sdp"
+            android:textColor="@color/white"
+            android:textColorHighlight="@color/white"
+            android:textSize="@dimen/_25sdp"
+            app:mask="(***) ***-****"
+            app:maskIconColor="@color/white"
+            app:notMaskedSymbol="*" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <com.app.rideshare.widget.CheckBoxRegular
+                android:id="@+id/chkIAgree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/txt_i_agree_to"
+                android:paddingLeft="@dimen/_5sdp"
+                android:checked="false"
+                android:paddingTop="@dimen/_5sdp"
+                android:paddingBottom="@dimen/_5sdp"
+                android:button="@drawable/checkbox_selector"
+                android:textSize="@dimen/_10sdp"/>
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:id="@+id/txtTermsOfService"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginLeft="@dimen/_2sdp"
+                android:text="@string/term_of_service"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10sdp" />
+
+
+
+        </LinearLayout>
 
 
     </LinearLayout>
@@ -21,9 +97,9 @@
         android:id="@+id/txtNext"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
+        android:layout_alignParentBottom="true"
         android:background="@drawable/btn_login"
         android:gravity="center"
-        android:layout_alignParentBottom="true"
         android:lineSpacingExtra="1.2dp"
         android:text="@string/txt_next"
         android:textColor="@color/blacltext"

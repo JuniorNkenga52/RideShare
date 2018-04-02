@@ -19,6 +19,8 @@ public class PrefUtils {
     public static final String PREF_ADMIN_INFO = "PREF_ADMIN_INFO";
     public static final String PREF_USER_MEDICINE_LIST = "PREF_USER_MEDICINE_LIST";
 
+
+
     public static void initPreference(Context context) {
         if (SETTINGS == null && EDITOR == null) {
             SETTINGS = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);

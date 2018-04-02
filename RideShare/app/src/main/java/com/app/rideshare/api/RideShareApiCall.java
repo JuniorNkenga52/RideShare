@@ -12,7 +12,7 @@ import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class DSMTrackerApiCall {
+public class RideShareApiCall {
 
     private static final int TIMEOUT = 60000;
 
@@ -29,7 +29,7 @@ public class DSMTrackerApiCall {
             conn.setRequestMethod("POST");
             conn.setDoInput(true);
             conn.setDoOutput(true);
-            conn.addRequestProperty("Apikey","$2y$10$lDBHZhvyNzWTdsgdgsg4cOivLqQAVTGppmV4yEeggsdtttwilio");
+            conn.addRequestProperty("APIKEY","$2y$10$lDBHZhvyNzWTdsgdgsg4cOivLqQAVTGppmV4yEeggsdtttwilio");
 
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));

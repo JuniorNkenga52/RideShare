@@ -41,6 +41,7 @@ public class PlaceAutocompleteAdapter extends ArrayAdapter<AutocompletePredictio
 
     ArrayList<SearchPlace> mArrSearchLocation = new ArrayList<>();
     Context context;
+
     public PlaceAutocompleteAdapter(Context context, GoogleApiClient googleApiClient, LatLngBounds bounds, AutocompleteFilter filter) {
         super(context, android.R.layout.simple_expandable_list_item_2, android.R.id.text1);
         mGoogleApiClient = googleApiClient;
@@ -49,6 +50,7 @@ public class PlaceAutocompleteAdapter extends ArrayAdapter<AutocompletePredictio
                 //.setCountry("ID")
                 .build();
         this.context = context;
+
     }
 
     public ArrayList<SearchPlace> getPlaceList() {
@@ -127,7 +129,7 @@ public class PlaceAutocompleteAdapter extends ArrayAdapter<AutocompletePredictio
                         mArrSearchLocation.add(bean);
                     }
 
-                    ((AutoCompleteLocationActivity)context).refreshList(mArrSearchLocation);
+                    ((AutoCompleteLocationActivity) context).refreshList(mArrSearchLocation);
                 } else {
                     // The API did not return any results, invalidate the data set.
                     notifyDataSetInvalidated();

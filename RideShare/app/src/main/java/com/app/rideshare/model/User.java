@@ -14,6 +14,12 @@ public class User implements Serializable {
     private String mLastName;
     @SerializedName("u_email")
     private String mEmail;
+
+    @SerializedName("description")
+    private String mDescription;
+    @SerializedName("address")
+    private String mAddress;
+
     @SerializedName("u_mo_number")
     private String mMobileNo;
     @SerializedName("u_lat")
@@ -81,6 +87,22 @@ public class User implements Serializable {
 
     @SerializedName("token")
     private String mtoken;
+
+    public String getmDescription() {
+        return mDescription;
+    }
+
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
+    }
+
+    public String getmAddress() {
+        return mAddress;
+    }
+
+    public void setmAddress(String mAddress) {
+        this.mAddress = mAddress;
+    }
 
     public String getMu_fb_id() {
         return mu_fb_id;

@@ -23,11 +23,11 @@ public class HistoryAdapter extends BaseAdapter {
     private ArrayList<HistoryBean> mlist;
     private String mUserId;
 
-    public HistoryAdapter(Context context, ArrayList<HistoryBean> mlist,String userid) {
+    public HistoryAdapter(Context context, ArrayList<HistoryBean> mlist, String userid) {
 
         this.context = context;
         this.mlist = mlist;
-        mUserId=userid;
+        mUserId = userid;
         mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(context);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -102,10 +102,9 @@ public class HistoryAdapter extends BaseAdapter {
             holder.mStatusResultTv.setText("Decline");
         }
 
-        if(bean.getFrom_id().equals(mUserId))
-        {
+        if (bean.getFrom_id().equals(mUserId)) {
             holder.mNameTv.setText(bean.getToname());
-        }else{
+        } else {
             holder.mNameTv.setText(bean.getFromname());
         }
 

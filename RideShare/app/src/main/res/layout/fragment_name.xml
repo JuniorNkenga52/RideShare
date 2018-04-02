@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imgBack"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:padding="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:src="@drawable/ic_back" />
+
+    <LinearLayout
+        android:id="@+id/llTop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/txtNext"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+
+        <com.app.rideshare.widget.TextViewBold
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_100sdp"
+            android:gravity="center"
+            android:text="@string/whats_your_name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sdp" />
+
+        <com.app.rideshare.widget.TextViewRegular
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:gravity="center"
+            android:text="@string/being_real_persion"
+            android:textColor="@color/whiteOff"
+            android:textSize="@dimen/_12sdp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_15sdp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.app.rideshare.widget.EditTextRegular
+                    android:id="@+id/txtFirstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/_8sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_weight="1"
+                    android:background="#00000000"
+                    android:hint="@string/first_name_new"
+                    android:inputType="textCapSentences"
+                    android:padding="@dimen/_8sdp"
+                    android:singleLine="true"
+                    android:textColor="#FFF"
+                    android:textColorHint="@color/gray"
+                    android:textSize="@dimen/_14sdp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginRight="@dimen/_8sdp"
+                    android:background="@color/white" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.app.rideshare.widget.EditTextRegular
+                    android:id="@+id/txtLastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_weight="1"
+                    android:background="#00000000"
+                    android:hint="@string/last_name_new"
+                    android:inputType="textCapSentences"
+                    android:padding="@dimen/_8sdp"
+                    android:singleLine="true"
+                    android:textColor="#FFF"
+                    android:textColorHint="@color/gray"
+                    android:textSize="@dimen/_14sdp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white" />s
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <com.app.rideshare.widget.TextViewSemiBold
+        android:id="@+id/txtNext"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btn_login"
+        android:gravity="center"
+        android:lineSpacingExtra="1.2dp"
+        android:text="@string/txt_next"
+        android:textColor="@color/blacltext"
+        android:textSize="@dimen/_16sdp" />
+</RelativeLayout>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.app.rideshare.widget.TextViewBold
+        android:id="@+id/txtHeaderName"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:textSize="@dimen/_18sdp"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:text="Notification"/>
+
+    <RelativeLayout
+        android:layout_below="@+id/txtHeaderName"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/mLvGroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:divider="#00000000"
+            android:listSelector="#00000000" />
+
+        <com.app.rideshare.widget.TextViewRegular
+            android:id="@+id/no_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="No notification available to display"
+            android:textSize="@dimen/_14sdp" />
+
+    </RelativeLayout>
+    
+</RelativeLayout>

@@ -11,13 +11,32 @@
     <color name="blacltext">#1b1505</color>
     <color name="blue">#043eea</color>
     <color name="white">#FFFFFF</color>
+    <color name="whiteOff">#FEFEFE</color>
+
     <color name="blue_info">#3B5999</color>
 
 
     <color name="accept_btn_color">#23ca0d</color>
     <color name="reject_btn_color">#f10808</color>
+    <color name="orange">#FFA500</color>
     <color name="gray">#a4a4a4</color>
     <color name="TransWhite">#DCFFFFFF</color>
 
     <color name="forgot_signup_blue_color">#66CCFF</color>
+
+    <color name="contentBG">#e7e9e6</color>
+    <color name="contentBGnew">#EBF4F7</color>
+
+    <color name="dark_white">#eae9e9</color>
+
+    <color name="Gray1">#555555</color>
+    <color name="Gray2">#666666</color>
+    <color name="Gray10">#222222</color>
+    <color name="GrayLine">#92999E</color>
+
+    <color name="transparent">#00000000</color>
+
+    <color name="darkGreen">#167c09</color>
+
+    <color name="TransGrayColor">#1d000000</color>
 </resources>

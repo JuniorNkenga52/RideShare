@@ -39,7 +39,6 @@ public interface RestApiInterface {
     @POST("auth/forgotpassword")
     Call<SignupResponse> forgotpassword(@Field("u_email") String mU_email);
 
-
     @FormUrlEncoded
     @POST("auth/login")
     Call<SignupResponse> login(@Field("u_email") String mEmail, @Field("u_password") String mPassword, @Field("deviceToken") String deviceTocken, @Field("group_id") String mGroup_id);
@@ -115,7 +114,6 @@ public interface RestApiInterface {
     @FormUrlEncoded
     @POST("user/getRideHistory")
     Call<HistoryResponse> getHistory(@Field("user_id") String mUserId);
-
 
     @Multipart
     @POST("user/updateProfile")

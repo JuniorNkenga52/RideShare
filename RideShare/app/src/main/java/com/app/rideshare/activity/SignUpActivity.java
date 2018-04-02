@@ -1,5 +1,6 @@
 package com.app.rideshare.activity;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,17 +24,34 @@ import com.app.rideshare.fragment.OTPFragment;
 import com.app.rideshare.fragment.ProfilePhotoFragment;
 import com.app.rideshare.notification.GCMRegistrationIntentService;
 import com.app.rideshare.utils.PrefUtils;
+import com.app.rideshare.widget.CustomViewPager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.squareup.picasso.Picasso;
+import com.tangxiaolv.telegramgallery.GalleryActivity;
+
+import java.util.ArrayList;
 
 
 public class SignUpActivity extends AppCompatActivity {
 
-    String token;
+    public static String token  = "";
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     Context context;
 
-    ViewPager mViewPager;
+    public static CustomViewPager mViewPager;
+
+    public static String mUserId = "";
+    public static String PhoneNumber = "";
+
+    public static String FirstName = "";
+    public static String LastName = "";
+    public static String HomeAddress = "";
+    public static String EmailId = "";
+    public static String ProfilePhotoPath = "";
+
+    private int PICK_CAMERA = 1;
+    private int PICK_GALLERY = 2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,22 +88,36 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
 
-        mViewPager = (ViewPager) findViewById(R.id.pagerSignUp);
+        mViewPager = (CustomViewPager) findViewById(R.id.pagerSignUp);
         mViewPager.setAdapter(new SignUpPagerAdapter(getSupportFragmentManager()));
+        mViewPager.setPagingEnabled(false);
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        Intent i = new Intent(getBaseContext(), LoginActivity.class);
+        //super.onBackPressed();
+        /*Intent i = new Intent(getBaseContext(), LoginActivity.class);
         startActivity(i);
-        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();*/
+        if(mViewPager.getCurrentItem() == 0){
+            finish();
+        } else {
+            int pos = mViewPager.getCurrentItem() - 1;
+            mViewPager.setCurrentItem(pos);
+        }
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        FirstName = "";
+        LastName = "";
+        HomeAddress = "";
+        EmailId = "";
+
         Log.w("MainActivity", "onResume");
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
@@ -129,6 +161,23 @@ public class SignUpActivity extends AppCompatActivity {
         public int getCount() {
             // Show 2 total pages.
             return 6;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (PICK_GALLERY == requestCode && resultCode == Activity.RESULT_OK) {
+            ArrayList<String> photos = (ArrayList<String>) data.getSerializableExtra(GalleryActivity.PHOTOS);
+            ProfilePhotoFragment.setProfilePhoto(photos.get(0));
+
+            //Picasso.with(SignUpActivity.this).load(photos.get(0)).into(imgProfilePhoto);
+        } else if (PICK_CAMERA == requestCode && resultCode == Activity.RESULT_OK) {
+            //String imagePath = "file://" + convertImageUriToFile(imageUri, getActivity());
+            //File imgFile = new  File(imagePath);
+            //Picasso.with(getActivity()).load(imagePath).resize(300,300).centerCrop().into(imgProfilePhoto);
+            //Picasso.with(getActivity()).load(imgFile.getAbsolutePath()).resize(300,300).centerCrop().into(imgProfilePhoto);
+
         }
     }
 }

@@ -11,6 +11,7 @@ import io.fabric.sdk.android.Fabric;
 public class RideShareApp extends Application
 {
     private String mUserType="";
+    public static int mHomeTabPos = 0;
 
     @Override
     public void onCreate() {

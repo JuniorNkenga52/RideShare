@@ -79,4 +79,40 @@
     <string name="forgot_reset_password">Reset Password</string>
     <string name="forgot_emailid">Email</string>
     <string name="forgot_back">Back</string>
+
+
+    <string name="whats_your_mobile_number">What\'s your mobile number?</string>
+    <string name="txt_we_text_you_code_to_verify_this_number">We\'ll text you a code to verify this number</string>
+    <string name="txt_i_agree_to">I agree to RideShare\'s</string>
+    <string name="term_of_service">Terms of Service</string>
+
+    <string name="whats_the_verification_code">What\'s the verification code?</string>
+    <string name="txt_enter_the_code">Enter the code send to </string>
+    <string name="resend_code">Resend Code</string>
+
+    <string name="whats_your_name">What\'s your name?</string>
+    <string name="being_real_persion">Being a real persion is important on </string>
+
+    <string name="where_do_you_live">Where do you live?</string>
+    <string name="essential_find_address">Essential to find matches for you. We don\'t show anyone your exact address.</string>
+    <string name="home_address">Home Address</string>
+
+    <string name="whats_your_email">What\'s your email address?</string>
+    <string name="we_use_this_alert">We use this to alert you to carpool matches and other ride notification.</string>
+    <string name="email_address">Email Address</string>
+
+    <string name="add_photo">Add Photo</string>
+    <string name="add_profile_photo">Add a profile photo?</string>
+    <string name="a_clear_photo">A clear photo of your smiling face helps build trust among RideShare users.</string>
+
+    <string name="first_name_new">First Name</string>
+    <string name="last_name_new">Last Name</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="group_name_new">Group Name</string>
+    <string name="group_description">Description</string>
+    <string name="select_theme_for_group">Select a theme for the group</string>
+
+    <string name="txt_write_a_message">Write a message</string>
+    <string name="logout">Logout</string>
+    <string name="logout_message">Are you sure you want to logout?</string>
 </resources>

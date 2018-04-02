@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.app.rideshare.widget.TextViewBold
+        android:id="@+id/txtHeaderName"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:textSize="@dimen/_18sdp"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:text="My Profile"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/txtHeaderName"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/llMyProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingLeft="@dimen/_12sdp"
+            android:background="@drawable/group_selector"
+            android:paddingRight="@dimen/_12sdp"
+            android:orientation="horizontal">
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/imgProfilePhoto"
+                android:layout_width="@dimen/_55sdp"
+                android:layout_height="@dimen/_55sdp"
+                android:src="@drawable/user_icon"
+                app:civ_border_color="#EEEEEE"
+                app:civ_border_width="0dp"
+                app:civ_shadow="true"
+                android:layout_marginRight="@dimen/_12sdp"
+                app:civ_shadow_radius="0"
+                app:civ_shadow_color="#00000000"/>
+
+            <com.app.rideshare.widget.TextViewBold
+                android:id="@+id/txtUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/_15sdp"
+                android:textColor="@color/black"
+                android:gravity="center_vertical"
+                android:text="My Profile"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_right_arrow"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/llMyGroup"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:paddingLeft="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:background="@drawable/group_selector"
+            android:paddingRight="@dimen/_12sdp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:src="@drawable/ic_admin"
+                android:layout_marginRight="@dimen/_12sdp"/>
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/_13sdp"
+                android:textColor="@color/black"
+                android:gravity="center_vertical"
+                android:text="My Group"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_right_arrow"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/GrayLine" />
+
+        <LinearLayout
+            android:id="@+id/llCreateGroup"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:paddingLeft="@dimen/_12sdp"
+            android:background="@drawable/group_selector"
+            android:paddingRight="@dimen/_12sdp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:src="@drawable/ic_admin"
+                android:layout_marginRight="@dimen/_12sdp"/>
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/_13sdp"
+                android:textColor="@color/black"
+                android:gravity="center_vertical"
+                android:text="Create Group"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_right_arrow"/>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/vvv"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/GrayLine" />
+
+        <LinearLayout
+            android:id="@+id/llHistory"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:paddingLeft="@dimen/_12sdp"
+            android:background="@drawable/group_selector"
+            android:paddingRight="@dimen/_12sdp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:src="@drawable/ic_admin"
+                android:layout_marginRight="@dimen/_12sdp"/>
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/_13sdp"
+                android:textColor="@color/black"
+                android:gravity="center_vertical"
+                android:text="History"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_right_arrow"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/GrayLine" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:paddingLeft="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:background="@drawable/group_selector"
+            android:paddingRight="@dimen/_12sdp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:src="@drawable/ic_admin"
+                android:layout_marginRight="@dimen/_12sdp"/>
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/_13sdp"
+                android:textColor="@color/black"
+                android:gravity="center_vertical"
+                android:text="Settings"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_right_arrow"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/GrayLine" />
+
+        <LinearLayout
+            android:id="@+id/llLogout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:paddingLeft="@dimen/_12sdp"
+            android:background="@drawable/group_selector"
+            android:paddingRight="@dimen/_12sdp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:src="@drawable/ic_admin"
+                android:layout_marginRight="@dimen/_12sdp"/>
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/_13sdp"
+                android:textColor="@color/black"
+                android:gravity="center_vertical"
+                android:text="Logout"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_right_arrow"/>
+
+        </LinearLayout>
+    </LinearLayout>
+    
+</RelativeLayout>

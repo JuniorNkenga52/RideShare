@@ -159,6 +159,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 //Intent i = new Intent(LoginActivity.this, RegistrationActivity.class);
                 Intent i = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(i);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
             }
         });

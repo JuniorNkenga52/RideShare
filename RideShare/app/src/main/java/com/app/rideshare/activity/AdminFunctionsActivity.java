@@ -75,11 +75,9 @@ public class AdminFunctionsActivity extends AppCompatActivity {
         list_riders = (ListView) findViewById(R.id.list_riders);
         mProgressDialog = new CustomProgressDialog(this);
 
-
         my_group_data(PrefUtils.getUserInfo().getmUserId());
 
         admin_choose_group = (Spinner) findViewById(R.id.admin_choose_group);
-
     }
 
     @Override

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/contentBGnew"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:titleTextColor="@color/colorAccent"
+        app:navigationIcon="@drawable/ic_back"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="Rate Ride" />
+
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/circularImageView"
+        android:layout_width="@dimen/_90sdp"
+        android:layout_height="@dimen/_90sdp"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:src="@drawable/banner"
+        app:civ_border_color="@color/black"
+        app:civ_border_width="2dp" />
+
+    <com.app.rideshare.widget.TextViewBold
+        android:id="@+id/groupname_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/circularImageView"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:text="Rider"
+        android:textColor="@color/blacltext"
+        android:textSize="@dimen/_16sdp" />
+
+    <com.app.rideshare.widget.TextViewRegular
+        android:id="@+id/description_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/circularImageView"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:paddingLeft="@dimen/_15sdp"
+        android:paddingRight="@dimen/_15sdp"
+        android:text=""
+        android:textColor="@color/Gray2"
+        android:textSize="@dimen/_9sdp" />
+
+    <com.app.rideshare.widget.TextViewBold
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:text="Participants"
+        android:padding="@dimen/_8sdp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_15sdp" />
+
+    <View
+        android:id="@+id/vvv"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/GrayLine" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ListView
+            android:id="@+id/mLvGroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/txtHeaderName"
+            android:background="@color/white"
+            android:divider="#00000000"
+            android:listSelector="#00000000" />
+
+        <com.app.rideshare.widget.TextViewRegular
+            android:id="@+id/no_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="No user available to display"
+            android:textSize="@dimen/_14sdp" />
+
+    </RelativeLayout>
+</LinearLayout>

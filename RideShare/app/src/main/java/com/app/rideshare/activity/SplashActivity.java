@@ -65,6 +65,8 @@ public class SplashActivity extends AppCompatActivity {
 
         PrefUtils.initPreference(this);
 
+        RideShareApp.mHomeTabPos = 0;
+
         if (!PrefUtils.getBoolean("sortcut")) {
             addShortcut();
             PrefUtils.putBoolean("sortcut", true);
@@ -77,7 +79,7 @@ public class SplashActivity extends AppCompatActivity {
 
                     if (PrefUtils.getBoolean("islogin")) {
 
-                        if (PrefUtils.getUserInfo().getmMobileNo() == null || PrefUtils.getUserInfo().getmMobileNo().equals("")) {
+                        /*if (PrefUtils.getUserInfo().getmMobileNo() == null || PrefUtils.getUserInfo().getmMobileNo().equals("")) {
                             Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
                             startActivity(i);
                             finish();
@@ -89,23 +91,34 @@ public class SplashActivity extends AppCompatActivity {
                             Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
                             startActivity(i);
                             finish();
-                        }
+                        }*/
+
+                        Intent i = new Intent(getBaseContext(), HomeNewActivity.class);
+                        startActivity(i);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        finish();
 
                     } else {
-                        Intent i = new Intent(getBaseContext(), LoginActivity.class);
+                        Intent i = new Intent(getBaseContext(), SignUpActivity.class);
                         startActivity(i);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         finish();
                     }
                 }
             }, 3000);
         } else {
-            if (PrefUtils.getString("loginwith").equals("google")) {
+            /*if (PrefUtils.getString("loginwith").equals("google")) {
                 logingoogle(PrefUtils.getString("gId"), PrefUtils.getString("gemail"), PrefUtils.getString("gfname"), PrefUtils.getString("glast"));
             } else if (PrefUtils.getString("loginwith").equals("facebook")) {
                 loginfacebookuser(PrefUtils.getString("gId"), PrefUtils.getString("gemail"), PrefUtils.getString("gfname"), PrefUtils.getString("glast"));
             } else if (PrefUtils.getString("loginwith").equals("normal")) {
                 loginuser(PrefUtils.getString("gemail"), PrefUtils.getString("gId"),PrefUtils.getString("group_id"));
-            }
+            }*/
+
+            Intent i = new Intent(getBaseContext(), HomeNewActivity.class);
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
         }
     }
 

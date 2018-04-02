@@ -80,5 +80,12 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:26.0.2'
     compile 'com.github.sd6352051:NiftyDialogEffects:1.0.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
+
+    compile 'com.github.pinball83:masked-edittext:1.0.4'
+    compile 'com.mikhaellopez:circularimageview:3.0.2'
+
+    compile 'com.library.tangxiaolv:telegramgallery:1.0.5'
+    compile 'com.theartofdev.edmodo:android-image-cropper:2.3.+'
+
     testCompile 'junit:junit:4.12'
 }

@@ -14,10 +14,6 @@ import com.app.rideshare.model.GroupusersModel;
 
 import java.util.ArrayList;
 
-/**
- * Created by rlogical-dev-48 on 11/7/2017.
- */
-
 public class AdminFuncitonsAdapter extends BaseAdapter {
 
     private Context context;
