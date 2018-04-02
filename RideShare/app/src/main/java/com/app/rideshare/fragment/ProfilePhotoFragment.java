@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.activity.HomeNewActivity;
+import com.app.rideshare.activity.RideTypeActivity;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.User;
@@ -181,7 +182,7 @@ public class ProfilePhotoFragment extends Fragment {
 
                         PrefUtils.addUserInfo(beanUser);
 
-                        Intent i = new Intent(getActivity(), HomeNewActivity.class);
+                        Intent i = new Intent(getActivity(), RideTypeActivity.class);
                         startActivity(i);
                         getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         getActivity().finish();

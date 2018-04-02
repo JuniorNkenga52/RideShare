@@ -13,11 +13,8 @@ import android.widget.TextView;
 
 import com.app.rideshare.R;
 import com.app.rideshare.activity.HomeNewActivity;
-import com.app.rideshare.activity.LoginActivity;
-import com.app.rideshare.activity.RegistrationActivity;
 import com.app.rideshare.activity.RideTypeActivity;
 import com.app.rideshare.activity.SignUpActivity;
-import com.app.rideshare.activity.VerifyMobileNumberActivity;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.RideShareApi;
@@ -184,7 +181,7 @@ public class OTPFragment extends Fragment {
                         PrefUtils.putBoolean("islogin", true);
                         PrefUtils.putString("loginwith", "normal");
 
-                        Intent i = new Intent(getActivity(), HomeNewActivity.class);
+                        Intent i = new Intent(getActivity(), RideTypeActivity.class);
                         startActivity(i);
                         getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         getActivity().finish();

@@ -170,11 +170,11 @@
         <activity android:name=".activity.AdminFunctionsActivity" />
         <activity android:name=".activity.AdminUserinfoActivity" />
         <activity android:name=".activity.DriverPrivileges" />
-        <activity android:name=".activity.ForgotPasswordActivity"></activity>
-        <activity android:name=".activity.CreateGroupActivity"></activity>
-        <activity android:name=".activity.HistoryActivity"></activity>
-        <activity android:name=".activity.MyGroupActivity"></activity>
-        <activity android:name=".activity.GroupDetailActivity"></activity>
+        <activity android:name=".activity.ForgotPasswordActivity"/>
+        <activity android:name=".activity.CreateGroupActivity"/>
+        <activity android:name=".activity.HistoryActivity"/>
+        <activity android:name=".activity.MyGroupActivity"/>
+        <activity android:name=".activity.GroupDetailActivity"/>
 
 
         <activity android:name="com.tangxiaolv.telegramgallery.GalleryActivity" />

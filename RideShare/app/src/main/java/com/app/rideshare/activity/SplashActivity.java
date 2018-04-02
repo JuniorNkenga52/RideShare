@@ -11,7 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
+import com.app.rideshare.BuildConfig;
 import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
@@ -30,6 +32,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     String token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +40,8 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
 
+        TextView textViewVersion = (TextView) findViewById(R.id.textViewVersion);
+        textViewVersion.setText("Version " + BuildConfig.VERSION_NAME);
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
 
@@ -93,7 +98,7 @@ public class SplashActivity extends AppCompatActivity {
                             finish();
                         }*/
 
-                        Intent i = new Intent(getBaseContext(), HomeNewActivity.class);
+                        Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
                         startActivity(i);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         finish();
@@ -115,7 +120,7 @@ public class SplashActivity extends AppCompatActivity {
                 loginuser(PrefUtils.getString("gemail"), PrefUtils.getString("gId"),PrefUtils.getString("group_id"));
             }*/
 
-            Intent i = new Intent(getBaseContext(), HomeNewActivity.class);
+            Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
             startActivity(i);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
@@ -140,7 +145,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
     private void loginuser(final String mEmail, final String password, final String group_id) {
-        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password, token,group_id).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password, token, group_id).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -164,9 +169,9 @@ public class SplashActivity extends AppCompatActivity {
                             finish();
                         } else {
                             Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
-                            i.putExtra("inprogress",response.body().getMlist().get(0).getmRidestatus());
-                            if(!response.body().getMlist().get(0).getmRidestatus().equals("free")){
-                                i.putExtra("rideprogress",response.body().getmProgressRide().get(0));
+                            i.putExtra("inprogress", response.body().getMlist().get(0).getmRidestatus());
+                            if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {
+                                i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
                             }
                             startActivity(i);
                             finish();
@@ -188,7 +193,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void loginfacebookuser(final String mFacebookId, final String mEmail, final String mFirstName, final String mLastName) {
-        ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token,"4").enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token, "4").enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -213,9 +218,9 @@ public class SplashActivity extends AppCompatActivity {
                             finish();
                         } else {
                             Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
-                            i.putExtra("inprogress",response.body().getMlist().get(0).getmRidestatus());
-                            if(!response.body().getMlist().get(0).getmRidestatus().equals("free")){
-                                i.putExtra("rideprogress",response.body().getmProgressRide().get(0));
+                            i.putExtra("inprogress", response.body().getMlist().get(0).getmRidestatus());
+                            if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {
+                                i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
 
                             }
                             startActivity(i);
@@ -241,7 +246,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void logingoogle(final String mGoogleId, final String mEmail, final String mFirstName, final String mLastName) {
 
-        ApiServiceModule.createService(RestApiInterface.class).signGoogleplus(mGoogleId, mEmail, mFirstName, mLastName, token,"4").enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).signGoogleplus(mGoogleId, mEmail, mFirstName, mLastName, token, "4").enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -266,9 +271,9 @@ public class SplashActivity extends AppCompatActivity {
                             finish();
                         } else {
                             Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
-                            i.putExtra("inprogress",response.body().getMlist().get(0).getmRidestatus());
-                            if(!response.body().getMlist().get(0).getmRidestatus().equals("free")){
-                                i.putExtra("rideprogress",response.body().getmProgressRide().get(0));
+                            i.putExtra("inprogress", response.body().getMlist().get(0).getmRidestatus());
+                            if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {
+                                i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
                             }
                             startActivity(i);
                             finish();
@@ -288,6 +293,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     protected void onResume() {
         super.onResume();

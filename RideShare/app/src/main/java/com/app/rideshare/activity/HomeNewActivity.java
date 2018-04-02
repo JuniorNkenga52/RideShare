@@ -12,9 +12,13 @@ import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.fragment.ExploreFragment;
+import com.app.rideshare.fragment.HomeFragment;
 import com.app.rideshare.fragment.MessagesFragment;
 import com.app.rideshare.fragment.NotificationFragment;
 import com.app.rideshare.fragment.ProfileFragment;
+import com.app.rideshare.model.Rider;
+
+import java.util.ArrayList;
 
 
 public class HomeNewActivity extends AppCompatActivity {
@@ -24,6 +28,7 @@ public class HomeNewActivity extends AppCompatActivity {
     private static long back_pressed;
     public BottomNavigationView bottomNavigationView;
 
+    ArrayList<Rider> mlist = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +36,8 @@ public class HomeNewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_new);
 
         context = this;
+
+        mlist = (ArrayList<Rider>) getIntent().getSerializableExtra("list");
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
 
@@ -40,20 +47,24 @@ public class HomeNewActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         Fragment selectedFragment = null;
                         switch (item.getItemId()) {
-                            case R.id.action_item1:
+                            case R.id.action_home:
                                 RideShareApp.mHomeTabPos = 0;
+                                selectedFragment = HomeFragment.newInstance(mlist);
+                                break;
+                            case R.id.action_item1:
+                                RideShareApp.mHomeTabPos = 1;
                                 selectedFragment = ExploreFragment.newInstance();
                                 break;
                             case R.id.action_item2:
-                                RideShareApp.mHomeTabPos = 1;
+                                RideShareApp.mHomeTabPos = 2;
                                 selectedFragment = MessagesFragment.newInstance();
                                 break;
                             case R.id.action_item3:
-                                RideShareApp.mHomeTabPos = 2;
+                                RideShareApp.mHomeTabPos = 3;
                                 selectedFragment = NotificationFragment.newInstance();
                                 break;
                             case R.id.action_item4:
-                                RideShareApp.mHomeTabPos = 3;
+                                RideShareApp.mHomeTabPos = 4;
                                 selectedFragment = ProfileFragment.newInstance();
                                 break;
                         }
@@ -65,10 +76,12 @@ public class HomeNewActivity extends AppCompatActivity {
                 });
 
         if (RideShareApp.mHomeTabPos == 0)
-            bottomNavigationView.setSelectedItemId(R.id.action_item1);
+            bottomNavigationView.setSelectedItemId(R.id.action_home);
         else if (RideShareApp.mHomeTabPos == 1)
-            bottomNavigationView.setSelectedItemId(R.id.action_item2);
+            bottomNavigationView.setSelectedItemId(R.id.action_item1);
         else if (RideShareApp.mHomeTabPos == 2)
+            bottomNavigationView.setSelectedItemId(R.id.action_item2);
+        else if (RideShareApp.mHomeTabPos == 3)
             bottomNavigationView.setSelectedItemId(R.id.action_item3);
         else if (RideShareApp.mHomeTabPos == 3)
             bottomNavigationView.setSelectedItemId(R.id.action_item4);

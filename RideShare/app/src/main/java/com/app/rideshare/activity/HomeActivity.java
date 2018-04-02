@@ -155,7 +155,7 @@ public class HomeActivity extends AppCompatActivity
                 Picasso.with(this).load(R.mipmap.ic_launcher).into(mProfileIv);
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
 

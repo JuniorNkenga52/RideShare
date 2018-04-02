@@ -2,6 +2,7 @@ package com.app.rideshare.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -22,9 +23,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
@@ -86,7 +90,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
     private static final int REQUEST_LOCATION = 11;
     RideShareApp application;
-    ArrayList<Rider> mlist;
+    ArrayList<Rider> mlist = new ArrayList<>();
     // ArrayList<Marker> mlistMarker;
     //Typeface mRobotoReguler;
     LatLng currentlthg;
@@ -208,6 +212,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             }
         });
 
+        init(rootview);
 
         return rootview;
     }
@@ -398,6 +403,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         showDialog();
                         //startActivity(new Intent(getContext(), RideRateActivity.class));
                     } else {
+                        if (mlist == null){
+                            mlist = new ArrayList<>();
+                        }
                         mlist.clear();
                         mlist.addAll(response.body().getMlistUser());
                         builder = new LatLngBounds.Builder();
@@ -592,6 +600,83 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     @Override
     public void doBack() {
         getActivity().finish();
+    }
+
+
+    private PopupWindow popupWindow;
+    private ImageView mPopupIv;
+
+    private void init(View view){
+
+        mPopupIv = (ImageView) view.findViewById(R.id.popup_iv);
+        mPopupIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (popupWindow != null && popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                } else {
+                    showPopup(v);
+                }
+            }
+        });
+    }
+
+    public void showPopup(View v) {
+        LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View popupView = layoutInflater.inflate(R.layout.popup_layout, null);
+
+        popupWindow = new PopupWindow(
+                popupView,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setOutsideTouchable(true);
+
+        final RadioButton mFriendRb = (RadioButton) popupView.findViewById(R.id.fridnds_rb);
+        final RadioButton mAllRb = (RadioButton) popupView.findViewById(R.id.all_rb);
+
+        if (PrefUtils.getBoolean("isFriends")) {
+            mFriendRb.setChecked(true);
+        } else if (PrefUtils.getBoolean("isAll")) {
+            mAllRb.setChecked(true);
+        }
+
+        mFriendRb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mFriendRb.setChecked(true);
+                    mAllRb.setChecked(false);
+                    PrefUtils.putBoolean("isFriends", true);
+                    PrefUtils.putBoolean("isAll", false);
+                } else {
+                    mFriendRb.setChecked(false);
+                    mAllRb.setChecked(true);
+                    PrefUtils.putBoolean("isFriends", false);
+                    PrefUtils.putBoolean("isAll", true);
+                }
+                popupWindow.dismiss();
+
+            }
+        });
+        mAllRb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mFriendRb.setChecked(false);
+                    mAllRb.setChecked(true);
+                    PrefUtils.putBoolean("isAll", true);
+                    PrefUtils.putBoolean("isFriends", false);
+                } else {
+                    mFriendRb.setChecked(true);
+                    mAllRb.setChecked(false);
+                    PrefUtils.putBoolean("isAll", false);
+                    PrefUtils.putBoolean("isFriends", true);
+                }
+                popupWindow.dismiss();
+            }
+        });
+
+        popupWindow.showAsDropDown(v);
     }
 
 }

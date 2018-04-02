@@ -5,13 +5,40 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true">
 
+    <RelativeLayout
+        android:id="@+id/rlToolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.app.rideshare.widget.TextViewBold
+            android:id="@+id/txtHeaderName"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:textSize="@dimen/_18sdp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:text="Home"/>
+
+        <ImageView
+            android:id="@+id/popup_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/_3sdp"
+            android:background="@drawable/ic_action_menu"
+            android:padding="@dimen/_5sdp" />
+    </RelativeLayout>
+
     <fragment
         android:id="@+id/rideCar_mapView"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/linearLayout" />
+        android:layout_above="@+id/linearLayout"
+        android:layout_below="@id/rlToolBar"/>
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_view_pin"
@@ -21,7 +48,8 @@
         android:layout_margin="@dimen/_4sdp"
         card_view:cardCornerRadius="2dp"
         card_view:cardElevation="@dimen/_3sdp"
-        card_view:cardUseCompatPadding="true">
+        card_view:cardUseCompatPadding="true"
+        android:layout_below="@id/rlToolBar">
 
         <LinearLayout
             android:layout_width="match_parent"

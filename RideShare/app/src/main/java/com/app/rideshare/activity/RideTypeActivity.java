@@ -291,7 +291,7 @@ public class RideTypeActivity extends AppCompatActivity {
             public void onResponse(Call<RideSelect> call, Response<RideSelect> response) {
                 if (response.isSuccessful() && response.body() != null) {
 
-                    Intent i = new Intent(RideTypeActivity.this, HomeActivity.class);
+                    Intent i = new Intent(RideTypeActivity.this, HomeNewActivity.class);
                     i.putExtra("list", response.body().getMlistUser());
                     startActivity(i);
                     //  finish();
