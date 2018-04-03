@@ -21,6 +21,7 @@ import com.app.rideshare.R;
 import com.app.rideshare.activity.GroupDetailActivity;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.GroupList;
+import com.app.rideshare.utils.Constant;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.squareup.picasso.Picasso;
@@ -83,6 +84,7 @@ public class ExploreFragment extends Fragment {
                 Intent ii = new Intent(getActivity(), GroupDetailActivity.class);
                 ii.putExtra("groupDetail", mSearchListGroup.get(position));
                 ii.putExtra("mTag", "Explore");
+                ii.putExtra(Constant.intentKey.MyGroup, false);
                 startActivity(ii);
                 getActivity().finish();
             }
@@ -142,6 +144,7 @@ public class ExploreFragment extends Fragment {
                         bean.setIs_joined(jObjResult.getString("is_joined"));
                         bean.setIs_admin(jObjResult.optString("is_admin"));
                         bean.setStatus(jObjResult.optString("status"));
+                        bean.setShareLink(jObjResult.optString("share_link"));
 
                         if (jObjResult.optString("is_admin").equalsIgnoreCase("0"))
                             mListGroup.add(bean);
@@ -153,7 +156,6 @@ public class ExploreFragment extends Fragment {
 
                     groupAdapter = new GroupAdapter();
                     mLvGroup.setAdapter(groupAdapter);
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -338,5 +340,4 @@ public class ExploreFragment extends Fragment {
             }
         }
     }
-
 }

@@ -82,7 +82,7 @@ public class HistoryActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        RideShareApp.mHomeTabPos = 3;
+        RideShareApp.mHomeTabPos = 4;
 
         Intent i = new Intent(HistoryActivity.this, HomeNewActivity.class);
         startActivity(i);

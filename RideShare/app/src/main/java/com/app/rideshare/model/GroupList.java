@@ -10,13 +10,13 @@ public class GroupList implements Serializable {
 
     private String id;
     private String group_name;
-
     private String group_description;
     private String category_name;
     private String category_image;
     private String is_joined;
     private String is_admin;
     private String status;
+    private String shareLink;
 
     public String getStatus() {
         return status;
@@ -82,5 +82,11 @@ public class GroupList implements Serializable {
         this.group_name = group_name;
     }
 
+    public String getShareLink() {
+        return shareLink;
+    }
 
+    public void setShareLink(String shareLink) {
+        this.shareLink = shareLink;
+    }
 }

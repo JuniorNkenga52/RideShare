@@ -83,7 +83,7 @@ public class HomeNewActivity extends AppCompatActivity {
             bottomNavigationView.setSelectedItemId(R.id.action_item2);
         else if (RideShareApp.mHomeTabPos == 3)
             bottomNavigationView.setSelectedItemId(R.id.action_item3);
-        else if (RideShareApp.mHomeTabPos == 3)
+        else if (RideShareApp.mHomeTabPos == 4)
             bottomNavigationView.setSelectedItemId(R.id.action_item4);
 
     }

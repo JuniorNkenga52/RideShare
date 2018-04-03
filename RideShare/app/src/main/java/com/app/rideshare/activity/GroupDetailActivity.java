@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -20,6 +21,8 @@ import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.GroupList;
 import com.app.rideshare.model.User;
+import com.app.rideshare.utils.CommonDialog;
+import com.app.rideshare.utils.Constant;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -47,6 +50,7 @@ public class GroupDetailActivity extends AppCompatActivity {
     private TextView mGroupDescription;
 
     private TextView mNoUserTv;
+    private boolean MyGroup;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +63,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         if(getIntent().hasExtra("groupDetail")){
             groupDetail = (GroupList) getIntent().getSerializableExtra("groupDetail");
             mTag = getIntent().getStringExtra("mTag");
+            MyGroup =  getIntent().getBooleanExtra(Constant.intentKey.MyGroup, false);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -102,6 +107,26 @@ public class GroupDetailActivity extends AppCompatActivity {
 
         mLvGroup = (ListView) findViewById(R.id.mLvGroup);
 
+
+        ImageView ivInviteLink = (ImageView) findViewById(R.id.ivInviteLink);
+        if (MyGroup){
+            ivInviteLink.setVisibility(View.VISIBLE);
+        } else {
+            ivInviteLink.setVisibility(View.GONE);
+        }
+
+        ivInviteLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String shareData = groupDetail.getShareLink();
+                if (shareData != null && !shareData.trim().isEmpty()) {
+                    CommonDialog.shareInviteLinkDialog(GroupDetailActivity.this, shareData);
+                } else {
+                    CommonDialog.shareInviteLinkDialog(GroupDetailActivity.this, "Testing data");
+                }
+            }
+        });
+
         new AsyncGroupDetail(groupDetail.getId()).execute();
     }
 
@@ -110,16 +135,17 @@ public class GroupDetailActivity extends AppCompatActivity {
         super.onBackPressed();
 
         if(mTag.equalsIgnoreCase("Explore")) {
-            RideShareApp.mHomeTabPos = 0;
+            RideShareApp.mHomeTabPos = 1;
 
             Intent i = new Intent(GroupDetailActivity.this, HomeNewActivity.class);
             startActivity(i);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
         } else {
-            RideShareApp.mHomeTabPos = 3;
+            RideShareApp.mHomeTabPos = 4;
 
             Intent i = new Intent(GroupDetailActivity.this, MyGroupActivity.class);
+            i.putExtra("", false);
             startActivity(i);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
@@ -258,6 +284,5 @@ public class GroupDetailActivity extends AppCompatActivity {
             return vi;
         }
     }
-
 
 }

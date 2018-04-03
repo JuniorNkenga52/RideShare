@@ -115,4 +115,11 @@
     <string name="txt_write_a_message">Write a message</string>
     <string name="logout">Logout</string>
     <string name="logout_message">Are you sure you want to logout?</string>
+
+    // INVITE DIALOG STRINGS
+    <string name="invite_email">Invite by email</string>
+    <string name="invite_sms">Invite by text message</string>
+    <string name="invite_copy">Copy invite link</string>
+    <string name="invite_more">More</string>
+    <string name="invite_title">Share Invite Link</string>
 </resources>

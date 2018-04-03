@@ -338,7 +338,7 @@ public class EditProfileActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        RideShareApp.mHomeTabPos = 3;
+        RideShareApp.mHomeTabPos = 4;
 
         Intent i = new Intent(EditProfileActivity.this, HomeNewActivity.class);
         startActivity(i);
@@ -518,7 +518,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                         PrefUtils.addUserInfo(beanUser);
 
-                        RideShareApp.mHomeTabPos = 3;
+                        RideShareApp.mHomeTabPos = 4;
 
                         Intent i = new Intent(EditProfileActivity.this, HomeNewActivity.class);
                         startActivity(i);

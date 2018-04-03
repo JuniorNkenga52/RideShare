@@ -7,24 +7,37 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:titleTextColor="@color/colorAccent"
-        app:navigationIcon="@drawable/ic_back"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="Rate Ride" />
+        android:layout_height="wrap_content">
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:titleTextColor="@color/colorAccent"
+            app:navigationIcon="@drawable/ic_back"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:title="Rate Ride" />
+
+        <ImageView
+            android:id="@+id/ivInviteLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_share_invite"
+            android:padding="@dimen/_8sdp"
+            android:layout_gravity="end|center_vertical"
+            android:contentDescription="@null"/>
+    </FrameLayout>
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/circularImageView"
         android:layout_width="@dimen/_90sdp"
         android:layout_height="@dimen/_90sdp"
-        android:layout_below="@+id/linearLayout3"
-        android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/_15sdp"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/linearLayout3"
         android:src="@drawable/banner"
         app:civ_border_color="@color/black"
         app:civ_border_width="2dp" />
@@ -33,10 +46,10 @@
         android:id="@+id/groupname_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/circularImageView"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/circularImageView"
         android:text="Rider"
         android:textColor="@color/blacltext"
         android:textSize="@dimen/_16sdp" />
@@ -45,9 +58,9 @@
         android:id="@+id/description_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/circularImageView"
-        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/circularImageView"
         android:paddingLeft="@dimen/_15sdp"
         android:paddingRight="@dimen/_15sdp"
         android:text=""
@@ -57,10 +70,10 @@
     <com.app.rideshare.widget.TextViewBold
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:layout_gravity="center_horizontal"
-        android:text="Participants"
+        android:background="@color/white"
         android:padding="@dimen/_8sdp"
+        android:text="Participants"
         android:textColor="@color/black"
         android:textSize="@dimen/_15sdp" />
 

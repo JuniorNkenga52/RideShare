@@ -7,9 +7,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,38 +18,33 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
-import com.app.rideshare.fragment.ExploreFragment;
-import com.app.rideshare.model.Category;
 import com.app.rideshare.model.GroupList;
 import com.app.rideshare.model.User;
+import com.app.rideshare.utils.Constant;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
-import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
+import java.util.Locale;
 
 public class MyGroupActivity extends AppCompatActivity {
-    private ImageView mBackIv;
-
     User mUserBean;
 
     private ListView mLvGroup;
-    ArrayList<GroupList> mListGroup = new ArrayList<>();
-    GroupAdapter groupAdapter;
+    private ArrayList<GroupList> mListGroup = new ArrayList<>();
+    private ArrayList<GroupList> mSearchListGroup = new ArrayList<>();
+    private GroupAdapter groupAdapter;
+
+    private EditText tvSearchGroup;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,22 +84,56 @@ public class MyGroupActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent ii = new Intent(MyGroupActivity.this, GroupDetailActivity.class);
-                ii.putExtra("groupDetail", mListGroup.get(position));
+                ii.putExtra("groupDetail", mSearchListGroup.get(position));
                 ii.putExtra("mTag", "Profile");
+                ii.putExtra(Constant.intentKey.MyGroup, true);
                 startActivity(ii);
                 finish();
             }
         });
 
+        ImageView ivCreateGroup = (ImageView) findViewById(R.id.ivCreateGroup);
+        ivCreateGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), CreateGroupActivity.class);
+                startActivity(i);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//                finish();
+            }
+        });
+
         new AsyncAllGroup().execute();
+
+
+        tvSearchGroup = (EditText) findViewById(R.id.tvSearchGroup);
+        tvSearchGroup.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                String text = tvSearchGroup.getText().toString().toLowerCase(Locale.getDefault());
+                if (groupAdapter != null)
+                    groupAdapter.filter(text.trim());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1,
+                                          int arg2, int arg3) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+                                      int arg3) {
+            }
+        });
+
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
 
-        RideShareApp.mHomeTabPos = 3;
-
+        RideShareApp.mHomeTabPos = 4;
         Intent i = new Intent(MyGroupActivity.this, HomeNewActivity.class);
         startActivity(i);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -115,7 +145,7 @@ public class MyGroupActivity extends AppCompatActivity {
 
         CustomProgressDialog mProgressDialog;
 
-        public AsyncAllGroup() {
+        AsyncAllGroup() {
 
             mProgressDialog = new CustomProgressDialog(MyGroupActivity.this);
             mProgressDialog.show();
@@ -143,6 +173,7 @@ public class MyGroupActivity extends AppCompatActivity {
             mProgressDialog.dismiss();
 
             try {
+                Log.e("AsyncAllGroup", "onPostExecute: result>> " + result.toString());
                 JSONObject jsonObject = new JSONObject(result.toString());
 
                 if (jsonObject.getString("status").equalsIgnoreCase("success")) {
@@ -160,10 +191,14 @@ public class MyGroupActivity extends AppCompatActivity {
                         bean.setCategory_name(jObjResult.getString("category_name"));
                         bean.setCategory_image(jObjResult.getString("category_image"));
                         bean.setIs_joined(jObjResult.optString("is_joined"));
+                        bean.setShareLink(jObjResult.optString("share_link"));
 
                         mListGroup.add(bean);
 
                     }
+
+                    mSearchListGroup.clear();
+                    mSearchListGroup.addAll(mListGroup);
 
                     groupAdapter = new GroupAdapter();
                     mLvGroup.setAdapter(groupAdapter);
@@ -171,7 +206,6 @@ public class MyGroupActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-
             }
         }
     }
@@ -186,7 +220,7 @@ public class MyGroupActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return mListGroup.size();
+            return mSearchListGroup.size();
         }
 
         @Override
@@ -206,7 +240,6 @@ public class MyGroupActivity extends AppCompatActivity {
             TextView txtJoin;
         }
 
-
         @Override
         public View getView(final int pos, View vi, ViewGroup parent) {
 
@@ -214,7 +247,7 @@ public class MyGroupActivity extends AppCompatActivity {
 
             if (vi == null) {
 
-                vi = mInflater.inflate(R.layout.item_group, null);
+                vi = mInflater.inflate(R.layout.item_group, parent, false);
 
                 holder = new GroupAdapter.ViewHolder();
 
@@ -228,7 +261,7 @@ public class MyGroupActivity extends AppCompatActivity {
                 holder = (GroupAdapter.ViewHolder) vi.getTag();
             }
 
-            final GroupList bean = mListGroup.get(pos);
+            final GroupList bean = mSearchListGroup.get(pos);
 
             holder.txtGroupName.setText(bean.getGroup_name());
             holder.txtGroupDescription.setText(bean.getGroup_description());
@@ -239,7 +272,25 @@ public class MyGroupActivity extends AppCompatActivity {
 
             return vi;
         }
+
+        // Filter Class
+        public void filter(String charText) {
+            try {
+                charText = charText.toLowerCase(Locale.getDefault());
+                mSearchListGroup.clear();
+                if (charText.length() == 0) {
+                    mSearchListGroup.addAll(mListGroup);
+                } else {
+                    for (GroupList gp : mListGroup) {
+                        if (gp.getGroup_name().toLowerCase(Locale.getDefault()).contains(charText)) {
+                            mSearchListGroup.add(gp);
+                        }
+                    }
+                }
+                notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
-
-
 }

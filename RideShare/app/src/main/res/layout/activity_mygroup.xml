@@ -4,27 +4,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/contentBGnew"
-    android:orientation="vertical"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:titleTextColor="@color/colorAccent"
+            app:navigationIcon="@drawable/ic_back"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:title="Rate Ride" />
+
+        <ImageView
+            android:id="@+id/ivCreateGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add"
+            android:padding="@dimen/_8sdp"
+            android:layout_gravity="end|center_vertical"
+            android:contentDescription="@null"/>
+    </FrameLayout>
+
+    <com.app.rideshare.widget.EditTextRegular
+        android:id="@+id/tvSearchGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:titleTextColor="@color/colorAccent"
-        app:navigationIcon="@drawable/ic_back"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="Rate Ride" />
-
+        android:background="@drawable/edittext_bg_gray_border"
+        android:ems="10"
+        android:hint="Search group"
+        android:drawableLeft="@drawable/ic_search_cab"
+        android:drawableStart="@drawable/ic_search_cab"
+        android:drawablePadding="@dimen/_6sdp"
+        android:imeOptions="actionDone"
+        android:inputType="textCapSentences"
+        android:padding="@dimen/_8sdp"
+        android:layout_margin="@dimen/_5sdp"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:textColorHint="#aeb1b5"
+        android:textSize="@dimen/_12sdp" />
 
     <ListView
         android:id="@+id/mLvGroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="#00000000"
-        android:layout_below="@+id/txtHeaderName"
-        android:paddingTop="@dimen/_5sdp"
-        android:listSelector="#00000000"/>
+        android:listSelector="#00000000"
+        android:paddingTop="@dimen/_5sdp" />
 
 </LinearLayout>

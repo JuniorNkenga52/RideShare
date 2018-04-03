@@ -171,7 +171,13 @@
         <activity android:name=".activity.AdminUserinfoActivity" />
         <activity android:name=".activity.DriverPrivileges" />
         <activity android:name=".activity.ForgotPasswordActivity"/>
-        <activity android:name=".activity.CreateGroupActivity"/>
+        <activity android:name=".activity.CreateGroupActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" >
+                </action>
+            </intent-filter>
+        </activity>
         <activity android:name=".activity.HistoryActivity"/>
         <activity android:name=".activity.MyGroupActivity"/>
         <activity android:name=".activity.GroupDetailActivity"/>

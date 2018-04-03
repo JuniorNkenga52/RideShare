@@ -111,7 +111,8 @@
             android:background="@drawable/group_selector"
             android:paddingRight="@dimen/_12sdp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="@dimen/_25sdp"

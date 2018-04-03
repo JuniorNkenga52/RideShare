@@ -1,7 +1,6 @@
 package com.app.rideshare.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +22,11 @@ import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.Category;
 import com.app.rideshare.model.User;
+import com.app.rideshare.utils.CommonDialog;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
+import com.google.gson.JsonObject;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -86,7 +88,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         txtGroupDescription = (EditText) findViewById(R.id.txtGroupDescription);
 
         mThemeRecycler = (RecyclerView) findViewById(R.id.mThemeRecycler);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(CreateGroupActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         mThemeRecycler.setLayoutManager(layoutManager);
 
         new AsyncAllTheme().execute();
@@ -106,11 +108,11 @@ public class CreateGroupActivity extends AppCompatActivity {
                 }
 
                 if (txtGroupName.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(CreateGroupActivity.this, "Please enter group name.");
+                    ToastUtils.showShort(getApplicationContext(), "Please enter group name.");
                 } else if (txtGroupDescription.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(CreateGroupActivity.this, "Please enter description.");
+                    ToastUtils.showShort(getApplicationContext(), "Please enter description.");
                 } else if (themeId.isEmpty()) {
-                    ToastUtils.showShort(CreateGroupActivity.this, "Please choose theme.");
+                    ToastUtils.showShort(getApplicationContext(), "Please choose theme.");
                 } else {
                     new AsyncCreateGroup(themeId,
                             txtGroupName.getText().toString().trim(),
@@ -125,12 +127,11 @@ public class CreateGroupActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        RideShareApp.mHomeTabPos = 3;
-
-        Intent i = new Intent(CreateGroupActivity.this, HomeNewActivity.class);
-        startActivity(i);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finish();
+//        RideShareApp.mHomeTabPos = 3;
+//        Intent i = new Intent(CreateGroupActivity.this, HomeNewActivity.class);
+//        startActivity(i);
+//        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//        finish();
 
     }
 
@@ -186,7 +187,7 @@ public class CreateGroupActivity extends AppCompatActivity {
 
                     }
 
-                    mAdapter = new ThemeAdapter(CreateGroupActivity.this, mListTheme);
+                    mAdapter = new ThemeAdapter(getApplicationContext(), mListTheme);
 
                     mThemeRecycler.setAdapter(mAdapter);
 
@@ -221,7 +222,7 @@ public class CreateGroupActivity extends AppCompatActivity {
             final Category bean = dataList.get(position);
 
             //MyImageUtils.loadImagePicasso(mContext, (itemRowHolder).imageView, bean.getFlower_image(), R.drawable.flower_unselect_bg);
-            Picasso.with(CreateGroupActivity.this).load(bean.getImage())
+            Picasso.with(mContext).load(bean.getImage())
                     .resize(300, 300).centerCrop()
                     .error(R.drawable.user_icon).into((itemRowHolder).imageView);
 
@@ -312,6 +313,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
 
             mProgressDialog.dismiss();
+            Log.e("AsyncCreateGroup", "onPostExecute: result >>" + result);
 
             try {
 
@@ -320,22 +322,24 @@ public class CreateGroupActivity extends AppCompatActivity {
                     JSONObject jObj = new JSONObject(result);
 
                     if (jObj.getString("status").equals("success")) {
-                        ToastUtils.showShort(CreateGroupActivity.this, "Group Created.");
+                        ToastUtils.showShort(getApplicationContext(), "Group Created.");
+//                        RideShareApp.mHomeTabPos = 0;
+//                        Intent i = new Intent(CreateGroupActivity.this, HomeNewActivity.class);
+//                        startActivity(i);
+//                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//                        finish();
 
-                        RideShareApp.mHomeTabPos = 0;
-
-                        Intent i = new Intent(CreateGroupActivity.this, HomeNewActivity.class);
-                        startActivity(i);
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                        finish();
+                        JSONObject resultJsonObject = jObj.optJSONObject("result");
+                        if (resultJsonObject != null)
+                            CommonDialog.shareInviteLinkDialog(CreateGroupActivity.this, resultJsonObject.optString("share_link"));
                     } else {
-                        ToastUtils.showShort(CreateGroupActivity.this, "The Group Name field must contain a unique value.");
+                        ToastUtils.showShort(getApplicationContext(), "The Group Name field must contain a unique value.");
                     }
                 } else {
-                    ToastUtils.showShort(CreateGroupActivity.this, "Please Try Again.");
+                    ToastUtils.showShort(getApplicationContext(), "Please Try Again.");
                 }
             } catch (Exception e) {
-                ToastUtils.showShort(CreateGroupActivity.this, "Please Try Again.");
+                ToastUtils.showShort(getApplicationContext(), "Please Try Again.");
             }
         }
     }
