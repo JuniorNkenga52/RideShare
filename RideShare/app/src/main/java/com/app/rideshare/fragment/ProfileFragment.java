@@ -17,6 +17,7 @@ import com.app.rideshare.activity.CreateGroupActivity;
 import com.app.rideshare.activity.EditProfileActivity;
 import com.app.rideshare.activity.HistoryActivity;
 import com.app.rideshare.activity.MyGroupActivity;
+import com.app.rideshare.activity.SettingActivity;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.utils.PrefUtils;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -31,6 +32,7 @@ public class ProfileFragment extends Fragment {
     private LinearLayout llMyGroup;
     private LinearLayout llCreateGroup;
     private LinearLayout llHistory;
+    private LinearLayout llSetting;
     private LinearLayout llLogout;
 
     public static ProfileFragment newInstance() {
@@ -40,7 +42,7 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_profile, container,
                 false);
 
@@ -84,10 +86,10 @@ public class ProfileFragment extends Fragment {
         llCreateGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), CreateGroupActivity.class);
-                startActivity(i);
-                getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                getActivity().finish();
+//                Intent i = new Intent(getActivity(), CreateGroupActivity.class);
+//                startActivity(i);
+//                getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//                getActivity().finish();
             }
         });
 
@@ -102,6 +104,15 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        llSetting = (LinearLayout) rootView.findViewById(R.id.llSetting);
+        llSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+
         llLogout = (LinearLayout) rootView.findViewById(R.id.llLogout);
         llLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +124,7 @@ public class ProfileFragment extends Fragment {
                         .setMessage(getResources().getString(R.string.logout_message))
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                try{
+                                try {
                                     PrefUtils.putBoolean("islogin", false);
 
                                     PrefUtils.putString("loginwith", "");
@@ -126,7 +137,8 @@ public class ProfileFragment extends Fragment {
                                     getActivity().finish();
                                     getActivity().finishAffinity();
 
-                                } catch (Exception e){}
+                                } catch (Exception e) {
+                                }
 
                             }
                         })

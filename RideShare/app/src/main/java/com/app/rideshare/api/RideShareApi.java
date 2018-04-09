@@ -146,6 +146,23 @@ public class RideShareApi {
         }
     }
 
+    public static String editGroup(String UserId,String group_id, String category_id, String group_name, String group_description) {
+        try {
+            String URL = SERVER_URL + "group/editGroup";
+
+            LinkedHashMap<String, String> params = new LinkedHashMap<>();
+            params.put("user_id", UserId);
+            params.put("group_id", group_id);
+            params.put("category_id", category_id);
+            params.put("group_name", group_name);
+            params.put("group_description", group_description);
+
+            return RideShareApiCall.postWebserviceCall(URL, params);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static String updateProfileNew(String user_id, String u_firstname, String u_lastname, String address, String u_email, String profile_image,
                                           String vehicle_model, String vehicle_type, String max_passengers) {
         try {

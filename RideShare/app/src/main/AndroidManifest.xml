@@ -126,6 +126,10 @@
             android:name=".activity.RideRateActivity"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".activity.SettingActivity"
+            android:screenOrientation="portrait"/>
+
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyChC2mPyZsEQp0hXSqW2wwcdIrILZaJG-k" />

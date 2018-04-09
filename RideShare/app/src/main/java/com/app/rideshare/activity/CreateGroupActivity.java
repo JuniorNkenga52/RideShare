@@ -1,6 +1,7 @@
 package com.app.rideshare.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,19 +15,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.Category;
+import com.app.rideshare.model.GroupList;
 import com.app.rideshare.model.User;
 import com.app.rideshare.utils.CommonDialog;
+import com.app.rideshare.utils.Constant;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
-import com.google.gson.JsonObject;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -39,7 +40,6 @@ import java.util.Objects;
 
 
 public class CreateGroupActivity extends AppCompatActivity {
-    private ImageView mBackIv;
 
     User mUserBean;
 
@@ -51,18 +51,29 @@ public class CreateGroupActivity extends AppCompatActivity {
     ArrayList<Category> mListTheme = new ArrayList<>();
 
     ThemeAdapter mAdapter;
+    private boolean isEditGroupDetail;
+    GroupList groupDetailInfo;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creategroup);
 
+        Intent intent = getIntent();
+        isEditGroupDetail = intent.getBooleanExtra(Constant.intentKey.isEditGroup, false);
+
         PrefUtils.initPreference(this);
         mUserBean = PrefUtils.getUserInfo();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Create Group");
+
+        if (isEditGroupDetail) {
+            getSupportActionBar().setTitle("Edit Group");
+            groupDetailInfo = (GroupList) intent.getSerializableExtra(Constant.intentKey.groupDetail);
+        } else
+            getSupportActionBar().setTitle("Create Group");
+
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,9 +129,20 @@ public class CreateGroupActivity extends AppCompatActivity {
                             txtGroupName.getText().toString().trim(),
                             txtGroupDescription.getText().toString().trim()).execute();
                 }
-
             }
         });
+
+        setData();
+    }
+
+    private void setData() {
+        if (isEditGroupDetail && groupDetailInfo != null) {
+            txtGroupDescription.setText(groupDetailInfo.getGroup_description());
+            txtGroupName.setText(groupDetailInfo.getGroup_name());
+            txtCreate.setText("Update");
+        } else {
+            txtCreate.setText("Create");
+        }
     }
 
     @Override
@@ -183,6 +205,15 @@ public class CreateGroupActivity extends AppCompatActivity {
                         bean.setImage(jObjResult.getString("image"));
                         bean.setStatus(jObjResult.getString("status"));
 
+                        if (isEditGroupDetail && groupDetailInfo != null) {
+                            if (jObjResult.getString("id").equalsIgnoreCase(groupDetailInfo.getCategory_id()))
+                                bean.setSelect(true);
+                            else {
+                                bean.setSelect(false);
+                            }
+                        } else {
+                            bean.setSelect(false);
+                        }
                         mListTheme.add(bean);
 
                     }
@@ -301,10 +332,18 @@ public class CreateGroupActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Objects... param) {
             try {
-                return RideShareApi.createGroup(mUserBean.getmUserId(),
-                        categoryId,
-                        groupName, groupDescription);
+                if (isEditGroupDetail) {
+                    return RideShareApi.editGroup(mUserBean.getmUserId(),
+                            groupDetailInfo.getId(),
+                            categoryId,
+                            groupName, groupDescription);
+                } else {
+                    return RideShareApi.createGroup(mUserBean.getmUserId(),
+                            categoryId,
+                            groupName, groupDescription);
+                }
             } catch (Exception e) {
+                e.printStackTrace();
                 return null;
             }
         }
@@ -329,9 +368,15 @@ public class CreateGroupActivity extends AppCompatActivity {
 //                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 //                        finish();
 
-                        JSONObject resultJsonObject = jObj.optJSONObject("result");
-                        if (resultJsonObject != null)
-                            CommonDialog.shareInviteLinkDialog(CreateGroupActivity.this, resultJsonObject.optString("share_link"));
+                        Constant.isGroupDataUpdated = true;
+
+                        if (isEditGroupDetail) {
+                            finish();
+                        } else {
+                            JSONObject resultJsonObject = jObj.optJSONObject("result");
+                            if (resultJsonObject != null)
+                                CommonDialog.shareInviteLinkDialog(CreateGroupActivity.this, resultJsonObject.optString("share_link"));
+                        }
                     } else {
                         ToastUtils.showShort(getApplicationContext(), "The Group Name field must contain a unique value.");
                     }

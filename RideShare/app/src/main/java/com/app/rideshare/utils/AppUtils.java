@@ -197,4 +197,8 @@ public class AppUtils {
             context.startActivity(intent);
         }
     }
+
+    public static void showNoInternetAvailable(Activity activity) {
+        Toast.makeText(activity, R.string.txt_msg_no_internet_available, Toast.LENGTH_SHORT).show();
+    }
 }

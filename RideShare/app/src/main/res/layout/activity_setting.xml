@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightGray">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:navigationIcon="@drawable/ic_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineVertical1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/_1sdp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineVertical2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/_1sdp" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/clMain"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineVertical2"
+        app:layout_constraintStart_toStartOf="@+id/guidelineVertical1"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/clTermsOfService"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/ivTermsOfService"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_terms_of_service" />
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:id="@+id/tvTermsOfService"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:text="Terms of Service"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15sdp"
+                app:layout_constraintBottom_toBottomOf="@+id/ivTermsOfService"
+                app:layout_constraintEnd_toStartOf="@+id/ivArrow1"
+                app:layout_constraintStart_toEndOf="@+id/ivTermsOfService"
+                app:layout_constraintTop_toTopOf="@+id/ivTermsOfService" />
+
+            <ImageView
+                android:id="@+id/ivArrow1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_right_arrow" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/clFAQ"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@color/white"
+            android:padding="@dimen/_15sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/clTermsOfService">
+
+            <ImageView
+                android:id="@+id/ivFAQ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_faq" />
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:id="@+id/tvFAQ"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:text="FAQ"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15sdp"
+                app:layout_constraintBottom_toBottomOf="@+id/ivFAQ"
+                app:layout_constraintEnd_toStartOf="@+id/ivArrow2"
+                app:layout_constraintStart_toEndOf="@+id/ivFAQ"
+                app:layout_constraintTop_toTopOf="@+id/ivFAQ" />
+
+            <ImageView
+                android:id="@+id/ivArrow2"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_right_arrow" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/clFeedback"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@color/white"
+            android:padding="@dimen/_15sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/clFAQ">
+
+            <ImageView
+                android:id="@+id/ivFeedback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_feedback" />
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:id="@+id/tvFeedback"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:text="Feedback"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15sdp"
+                app:layout_constraintBottom_toBottomOf="@+id/ivFeedback"
+                app:layout_constraintEnd_toStartOf="@+id/ivArrow3"
+                app:layout_constraintStart_toEndOf="@+id/ivFeedback"
+                app:layout_constraintTop_toTopOf="@+id/ivFeedback" />
+
+            <ImageView
+                android:id="@+id/ivArrow3"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_right_arrow" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/clSignOut"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@color/white"
+            android:padding="@dimen/_15sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/clFeedback">
+
+            <ImageView
+                android:id="@+id/ivSignOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_logout_new" />
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:id="@+id/tvSignOut"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:text="Logout"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15sdp"
+                app:layout_constraintBottom_toBottomOf="@+id/ivSignOut"
+                app:layout_constraintStart_toEndOf="@+id/ivSignOut"
+                app:layout_constraintTop_toTopOf="@+id/ivSignOut" />
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

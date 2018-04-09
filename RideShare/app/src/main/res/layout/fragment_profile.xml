@@ -184,10 +184,10 @@
             android:background="@color/GrayLine" />
 
         <LinearLayout
+            android:id="@+id/llSetting"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
             android:paddingLeft="@dimen/_12sdp"
-            android:layout_marginTop="@dimen/_12sdp"
             android:background="@drawable/group_selector"
             android:paddingRight="@dimen/_12sdp"
             android:gravity="center_vertical"
@@ -230,7 +230,8 @@
             android:background="@drawable/group_selector"
             android:paddingRight="@dimen/_12sdp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="@dimen/_25sdp"

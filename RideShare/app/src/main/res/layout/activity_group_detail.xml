@@ -21,14 +21,33 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:title="Rate Ride" />
 
-        <ImageView
-            android:id="@+id/ivInviteLink"
+        <LinearLayout
+            android:id="@+id/llMyGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_share_invite"
-            android:padding="@dimen/_8sdp"
             android:layout_gravity="end|center_vertical"
-            android:contentDescription="@null"/>
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivInviteLink"
+                android:layout_width="@dimen/_32sdp"
+                android:layout_height="@dimen/_32sdp"
+                android:contentDescription="@null"
+                android:padding="@dimen/_5sdp"
+                android:src="@drawable/ic_share_invite" />
+
+            <ImageView
+                android:id="@+id/ivEditGroup"
+                android:layout_width="@dimen/_32sdp"
+                android:layout_height="@dimen/_32sdp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:contentDescription="@null"
+                android:padding="@dimen/_5sdp"
+                android:src="@drawable/ic_action_edit"
+                android:tint="@color/white" />
+        </LinearLayout>
+
     </FrameLayout>
 
     <com.mikhaellopez.circularimageview.CircularImageView

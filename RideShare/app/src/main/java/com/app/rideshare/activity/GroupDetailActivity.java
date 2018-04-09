@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -108,11 +109,13 @@ public class GroupDetailActivity extends AppCompatActivity {
         mLvGroup = (ListView) findViewById(R.id.mLvGroup);
 
 
+        LinearLayout llMyGroup = (LinearLayout) findViewById(R.id.llMyGroup);
         ImageView ivInviteLink = (ImageView) findViewById(R.id.ivInviteLink);
+        ImageView ivEditGroup = (ImageView) findViewById(R.id.ivEditGroup);
         if (MyGroup){
-            ivInviteLink.setVisibility(View.VISIBLE);
+            llMyGroup.setVisibility(View.VISIBLE);
         } else {
-            ivInviteLink.setVisibility(View.GONE);
+            llMyGroup.setVisibility(View.GONE);
         }
 
         ivInviteLink.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +127,19 @@ public class GroupDetailActivity extends AppCompatActivity {
                 } else {
                     CommonDialog.shareInviteLinkDialog(GroupDetailActivity.this, "Testing data");
                 }
+            }
+        });
+
+        ivEditGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(getApplicationContext(), CreateGroupActivity.class);
+                i.putExtra(Constant.intentKey.isEditGroup, true);
+                i.putExtra(Constant.intentKey.groupDetail, groupDetail);
+                startActivity(i);
+//                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
             }
         });
 
@@ -258,20 +274,20 @@ public class GroupDetailActivity extends AppCompatActivity {
         @Override
         public View getView(final int pos, View vi, ViewGroup parent) {
 
-            final GroupAdapter.ViewHolder holder;
+            final ViewHolder holder;
 
             if (vi == null) {
 
                 vi = mInflater.inflate(R.layout.item_group_user, null);
 
-                holder = new GroupAdapter.ViewHolder();
+                holder = new ViewHolder();
 
                 holder.circularImageView = (CircularImageView) vi.findViewById(R.id.circularImageView);
                 holder.mGroupUserName = (TextView) vi.findViewById(R.id.mGroupUserName);
 
                 vi.setTag(holder);
             } else {
-                holder = (GroupAdapter.ViewHolder) vi.getTag();
+                holder = (ViewHolder) vi.getTag();
             }
 
             final User bean = mListGroupUser.get(pos);

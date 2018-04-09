@@ -145,6 +145,7 @@ public class ExploreFragment extends Fragment {
                         bean.setIs_admin(jObjResult.optString("is_admin"));
                         bean.setStatus(jObjResult.optString("status"));
                         bean.setShareLink(jObjResult.optString("share_link"));
+                        bean.setCategory_id(jObjResult.optString("category_id"));
 
                         if (jObjResult.optString("is_admin").equalsIgnoreCase("0"))
                             mListGroup.add(bean);

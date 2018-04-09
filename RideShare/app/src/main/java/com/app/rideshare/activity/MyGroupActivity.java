@@ -88,7 +88,7 @@ public class MyGroupActivity extends AppCompatActivity {
                 ii.putExtra("mTag", "Profile");
                 ii.putExtra(Constant.intentKey.MyGroup, true);
                 startActivity(ii);
-                finish();
+//                finish();
             }
         });
 
@@ -97,6 +97,7 @@ public class MyGroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), CreateGroupActivity.class);
+                i.putExtra(Constant.intentKey.isEditGroup, false);
                 startActivity(i);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 //                finish();
@@ -127,6 +128,17 @@ public class MyGroupActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (Constant.isGroupDataUpdated) { // IN CREATE GROUP ACTIVITY DATA UPDATED THAN REFRESH THE LIST HERE
+            Constant.isGroupDataUpdated = false;
+            Log.e("MyGroupActivity", "onResume: isGroupDataUpdated");
+            new AsyncAllGroup().execute();
+        }
     }
 
     @Override
@@ -180,6 +192,8 @@ public class MyGroupActivity extends AppCompatActivity {
 
                     JSONArray jArrayResult = new JSONArray(jsonObject.getString("result"));
 
+                    mListGroup = new ArrayList<>();
+
                     for (int i = 0; i < jArrayResult.length(); i++) {
                         JSONObject jObjResult = jArrayResult.getJSONObject(i);
 
@@ -192,6 +206,7 @@ public class MyGroupActivity extends AppCompatActivity {
                         bean.setCategory_image(jObjResult.getString("category_image"));
                         bean.setIs_joined(jObjResult.optString("is_joined"));
                         bean.setShareLink(jObjResult.optString("share_link"));
+                        bean.setCategory_id(jObjResult.optString("category_id"));
 
                         mListGroup.add(bean);
 
@@ -243,13 +258,13 @@ public class MyGroupActivity extends AppCompatActivity {
         @Override
         public View getView(final int pos, View vi, ViewGroup parent) {
 
-            final GroupAdapter.ViewHolder holder;
+            final ViewHolder holder;
 
             if (vi == null) {
 
                 vi = mInflater.inflate(R.layout.item_group, parent, false);
 
-                holder = new GroupAdapter.ViewHolder();
+                holder = new ViewHolder();
 
                 holder.imgGroup = (ImageView) vi.findViewById(R.id.imgGroup);
                 holder.txtGroupName = (TextView) vi.findViewById(R.id.txtGroupName);
@@ -258,7 +273,7 @@ public class MyGroupActivity extends AppCompatActivity {
 
                 vi.setTag(holder);
             } else {
-                holder = (GroupAdapter.ViewHolder) vi.getTag();
+                holder = (ViewHolder) vi.getTag();
             }
 
             final GroupList bean = mSearchListGroup.get(pos);

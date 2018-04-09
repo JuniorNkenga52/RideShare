@@ -122,4 +122,10 @@
     <string name="invite_copy">Copy invite link</string>
     <string name="invite_more">More</string>
     <string name="invite_title">Share Invite Link</string>
+
+    <!--Common Messages-->
+    <string name="txt_msg_no_internet_available">No Internet Available!!</string>
+    <string name="txt_msg_please_try_again">Please Try Again!!</string>
+    <string name="txt_no_email_client_installed">No email client configured in your phone.</string>
+    <string name="txt_msg_warning">Please enter message to send</string>
 </resources>

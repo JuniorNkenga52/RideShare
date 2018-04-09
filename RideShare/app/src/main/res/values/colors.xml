@@ -39,5 +39,9 @@
     <color name="darkGreen">#167c09</color>
 
     <color name="TransGrayColor">#1d000000</color>
+    <color name="lightGray">#d4d4d4</color>
 
+
+    <color name="BlackColor">#000000</color>
+    <color name="GrayDarkColor">#7c7c7c</color>
 </resources>

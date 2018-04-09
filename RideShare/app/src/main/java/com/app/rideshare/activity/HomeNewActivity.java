@@ -28,6 +28,7 @@ public class HomeNewActivity extends AppCompatActivity {
     private static long back_pressed;
     public BottomNavigationView bottomNavigationView;
 
+    public static String currentChat = "";
     ArrayList<Rider> mlist = new ArrayList<>();
 
     @Override
