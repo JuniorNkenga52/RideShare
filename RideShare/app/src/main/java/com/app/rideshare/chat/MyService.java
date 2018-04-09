@@ -8,8 +8,8 @@ import android.os.Messenger;
 import android.os.RemoteException;
 
 import com.app.rideshare.model.User;
+import com.app.rideshare.utils.Constant;
 import com.app.rideshare.utils.PrefUtils;
-
 
 public class MyService extends Service {
 
@@ -31,10 +31,12 @@ public class MyService extends Service {
         User user = PrefUtils.getUserInfo();
 
         try {
-//            xmpp = MyXMPP.getInstance(MyService.this, user.getFacebookId());
-            xmpp = MyXMPP.getInstance(MyService.this, "RideWhiz_"+user.getmUserId());
+            xmpp = MyXMPP.getInstance(MyService.this, user.getmUserId());
+//            xmpp = MyXMPP.getInstance(MyService.this, Constant.intentKey.jabberPrefix + user.getmUserId());
             xmpp.connect("onCreate");
-        } catch (Exception e){}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -22,7 +21,6 @@ import com.app.rideshare.api.response.CancelRequest;
 import com.app.rideshare.model.RideResponse;
 import com.app.rideshare.model.Rider;
 import com.app.rideshare.utils.ToastUtils;
-import com.app.rideshare.utils.TypefaceUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
@@ -38,6 +36,7 @@ import retrofit2.Response;
 
 public class WaitingActivity extends AppCompatActivity {
 
+    private String TAG = WaitingActivity.class.getName();
     private TextView mCancelTv;
     private TextView mWaitTv;
     //private Typeface mRobotoMedium;
@@ -86,21 +85,20 @@ public class WaitingActivity extends AppCompatActivity {
 
         mNameTv = (TextView) findViewById(R.id.name_tv);
         mEmailTv = (TextView) findViewById(R.id.email_tv);
-        mProfilePic=(CircularImageView)findViewById(R.id.user_profile);
+        mProfilePic = (CircularImageView) findViewById(R.id.user_profile);
 
         /*mNameTv.setTypeface(mRobotoMedium);
         mEmailTv.setTypeface(mRobotoMedium);*/
 
         mNameTv.setText(currentRider.getmFirstName());
         mEmailTv.setText(currentRider.getmEmail());
-        try{
-            if(!currentRider.getmProfileImage().equals("")){
+        try {
+            if (!currentRider.getmProfileImage().equals("")) {
                 Picasso.with(this).load(currentRider.getmProfileImage()).into(mProfilePic);
             }
-        }catch (Exception e){
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
 
 
         mCancelTv.setOnClickListener(new View.OnClickListener() {
@@ -157,7 +155,7 @@ public class WaitingActivity extends AppCompatActivity {
 
             try {
                 JSONObject jobj = new JSONObject(info);
-
+                Log.e(TAG, "onReceive: jobj >> " + jobj);
                 if (jobj.getString("request_status").equals("1")) {
                     ToastUtils.showShort(WaitingActivity.this, "Request Accepted");
                     timer.cancel();
@@ -180,8 +178,8 @@ public class WaitingActivity extends AppCompatActivity {
                     rider.setEnd_lati(jRider.getString("end_lati"));
 
 
-                    JSONObject jFromRider=jRider.getJSONObject("from_id");
-                    Rider fromRider=new Rider();
+                    JSONObject jFromRider = jRider.getJSONObject("from_id");
+                    Rider fromRider = new Rider();
                     fromRider.setnUserId(jFromRider.getString("u_id"));
                     fromRider.setmFirstName(jFromRider.getString("u_firstname"));
                     fromRider.setmLastName(jFromRider.getString("u_lastname"));
@@ -192,8 +190,8 @@ public class WaitingActivity extends AppCompatActivity {
                     rider.setFromRider(fromRider);
 
 
-                    JSONObject jToRider=jRider.getJSONObject("to_id");
-                    Rider toRider=new Rider();
+                    JSONObject jToRider = jRider.getJSONObject("to_id");
+                    Rider toRider = new Rider();
                     toRider.setnUserId(jToRider.getString("u_id"));
                     toRider.setmFirstName(jToRider.getString("u_firstname"));
                     toRider.setmLastName(jToRider.getString("u_lastname"));
@@ -205,7 +203,7 @@ public class WaitingActivity extends AppCompatActivity {
 
 
                     Intent i = new Intent(WaitingActivity.this, StartRideActivity.class);
-                    i.putExtra("rideobj",rider);
+                    i.putExtra("rideobj", rider);
                     startActivity(i);
                     finish();
 
@@ -215,7 +213,7 @@ public class WaitingActivity extends AppCompatActivity {
                 }
 
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
 
         }

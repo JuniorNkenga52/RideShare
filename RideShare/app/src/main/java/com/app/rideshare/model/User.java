@@ -88,6 +88,16 @@ public class User implements Serializable {
     @SerializedName("token")
     private String mtoken;
 
+    private String jabberId;
+
+    public String getJabberId() {
+        return jabberId;
+    }
+
+    public void setJabberId(String jabberId) {
+        this.jabberId = jabberId;
+    }
+
     public String getmDescription() {
         return mDescription;
     }

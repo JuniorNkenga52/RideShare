@@ -5,21 +5,16 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
+import android.content.ServiceConnection;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -28,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -36,21 +32,18 @@ import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.AcceptRider;
 import com.app.rideshare.api.response.StartRideResponse;
+import com.app.rideshare.chat.LocalBinder;
+import com.app.rideshare.chat.MyService;
+import com.app.rideshare.chat.MyXMPP;
 import com.app.rideshare.model.Directions;
-import com.app.rideshare.model.Rider;
 import com.app.rideshare.model.Route;
 import com.app.rideshare.model.User;
 import com.app.rideshare.service.LocationService;
-import com.app.rideshare.utils.AppUtils;
+import com.app.rideshare.utils.Constant;
 import com.app.rideshare.utils.MapDirectionAPI;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.ToastUtils;
-import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.view.CustomProgressDialog;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -62,7 +55,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.gson.Gson;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -75,7 +67,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
 import retrofit2.Call;
@@ -95,7 +86,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     //Typeface mRobotoMedium;
     BroadcastReceiver receiver;
     Double Latitude, Longitude;
-    Double PreLatitude = 0.0, PreLongitude = 0.0;
+//    Double PreLatitude = 0.0, PreLongitude = 0.0;
     String Provider;
     User mUserbean;
     RideShareApp mApp;
@@ -127,7 +118,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
         @Override
         public void run() {
-
             try {
                 if (mDriverLocation.distanceTo(mPreDriverLocation) >= 0.5f) {
                     mPreDriverLocation = mDriverLocation;
@@ -152,6 +142,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             mUpdaterHandler.postDelayed(this, updateinterval);
         }
     };
+
     private okhttp3.Callback updateRouteCallback = new okhttp3.Callback() {
         @Override
         public void onFailure(okhttp3.Call call, IOException e) {
@@ -167,6 +158,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             }
         }
     };
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 
         @Override
@@ -272,8 +264,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             startService(intent);
         }
         try {
-
-
             if (mApp.getmUserType().equals("2")) {
                 if (mUserbean.getmUserId().equals(mRider.getFromRider().getnUserId())) {
                     mNameTv.setText(mRider.getToRider().getmFirstName());
@@ -321,9 +311,21 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 mStartRideLi.setVisibility(View.GONE);
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         connectWebSocket();
+
+        ImageView ivStartChat = (ImageView) findViewById(R.id.ivStartChat);
+        ivStartChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                intent.putExtra(Constant.intentKey.SelectedChatUser, mRider);
+                startActivity(intent);
+            }
+        });
+
+        init();
     }
 
     private void requestRoute(LatLng picklng, LatLng droplng) {
@@ -407,7 +409,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                                 CustomerMarker.setPosition(CustomerLocaton);
                             }
                         } catch (Exception e) {
-
+                            e.printStackTrace();
                         }
                     }
                 });
@@ -485,7 +487,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                                             animateMarkerNew(DriverMarker, new LatLng(mlet, mlong));
 
                                         } catch (Exception e) {
-
+                                            e.printStackTrace();
                                         }
                                     }
                                 });
@@ -566,6 +568,12 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         super.onPause();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        doUnbindService();
+    }
+
     private float getBearing(LatLng begin, LatLng end) {
 
         double PI = 3.14159;
@@ -627,7 +635,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-
     private interface LatLngInterpolatorNew {
         LatLng interpolate(float fraction, LatLng a, LatLng b);
 
@@ -646,6 +653,41 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
+    /********************** XMPP **********************/
+    private MyService mService;
+    private MyXMPP xmpp;
+    private boolean mBounded;
 
+    private void init(){
+        doBindService();
+        xmpp = new MyXMPP();
+    }
 
+    void doBindService() {
+        bindService(new Intent(this, MyService.class), mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    void doUnbindService() {
+        if (mConnection != null) {
+            unbindService(mConnection);
+        }
+    }
+
+    private final ServiceConnection mConnection = new ServiceConnection() {
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public void onServiceConnected(final ComponentName name, final IBinder service) {
+            mService = ((LocalBinder<MyService>) service).getService();
+            mBounded = true;
+            Log.w(getString(R.string.app_name), "onServiceConnected");
+        }
+
+        @Override
+        public void onServiceDisconnected(final ComponentName name) {
+            mService = null;
+            mBounded = false;
+            Log.w(getString(R.string.app_name), "onServiceDisconnected");
+        }
+    };
 }

@@ -1,4 +1,4 @@
-package com.app.rideshare.fragment;
+package com.app.rideshare.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,36 +6,34 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.app.rideshare.R;
-import com.app.rideshare.activity.HomeNewActivity;
 import com.app.rideshare.adapter.ChatAdapter;
+import com.app.rideshare.api.response.AcceptRider;
 import com.app.rideshare.api.xmpp.ConnectorApi;
 import com.app.rideshare.chat.CommonMethods;
 import com.app.rideshare.chat.FileUtils;
 import com.app.rideshare.chat.MessageModel;
 import com.app.rideshare.chat.MyService;
-import com.app.rideshare.model.MatchedUser;
+import com.app.rideshare.model.Rider;
 import com.app.rideshare.model.User;
 import com.app.rideshare.utils.AppUtils;
+import com.app.rideshare.utils.Constant;
 import com.app.rideshare.utils.DateUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.TypefaceUtils;
@@ -57,9 +55,7 @@ import java.util.Random;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import static android.app.Activity.RESULT_OK;
-
-public class MessagesFragment extends Fragment {
+public class ChatActivity extends AppCompatActivity {
 
 
     private Random random;
@@ -80,7 +76,7 @@ public class MessagesFragment extends Fragment {
 
     //private ImageView img_chat_attachment;
 
-    private MatchedUser selChatUser;//todo set the data according to my data
+//    private User selChatUser;//todo set the data according to my data
 
     public static Chat newChat;
 
@@ -88,104 +84,107 @@ public class MessagesFragment extends Fragment {
 
     private User user;
 
-
-
-    public static MessagesFragment newInstance() {
-        MessagesFragment fragment = new MessagesFragment();
-        return fragment;
-    }
+    private ActionBar actionBar;
+    private AcceptRider selChatUser;
+    private Rider toRider; // other person detail with whom we are chatting
+    private String toJabberId = "";
+    RideShareApp mApp;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_messages, container,false);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chat);
+        mApp = (RideShareApp) getApplicationContext();
 
-//        String selUser = getArguments().getString("SelectedChatUser");
-//        selChatUser = new Gson().fromJson(selUser, MatchedUser.class);
-////
-////        if(selChatUser.getUser_profile_status().equals("1") && selChatUser.getMatched_profile_status().equals("1"))
-////            FragmentUtils.setActionBarTitle(getActivity(), selChatUser.getName(), true);
-////        else
-////            FragmentUtils.setActionBarTitle(getActivity(), selChatUser.getFname(), true);
-////
-////        ImageView btn_toolbar_right = (ImageView) getActivity().findViewById(R.id.btn_toolbar_right);
-////        btn_toolbar_right.setVisibility(View.VISIBLE);
-////        btn_toolbar_right.setImageResource(R.drawable.user_profile);
-////        btn_toolbar_right.setOnClickListener(new View.OnClickListener() {
-////
-////            @Override
-////            public void onClick(View v) {
-////
-////                Intent ii = new Intent(getActivity(), ProfileDetail.class);
-////                ii.putExtra("Detail",new Gson().toJson(selChatUser));
-////                startActivity(ii);
-////                getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-////            }
-////        });
-//        PrefUtils.initPreference(getActivity());
-//
-//        random = new Random();
-//
-//        user = PrefUtils.getUserInfo();
-//        senderUser = user.getmUserId();
-//
-//        latoBoldFont = TypefaceUtils.getTypefaceRobotoMediam(getActivity());
-//
-//        selChatUser.setFullJid(selChatUser.getMatched_user_fb_id());
-//        HomeNewActivity.currentChat = selChatUser.getMatched_user_fb_id();
-//
-//        if(AppUtils.isInternetAvailable(getActivity()))
-//            new AsyncUserPresence().execute();
-//        else
-//            AppUtils.showNoInternetAvailable(getActivity());
-//
-//        list_messages = (ListView) view.findViewById(R.id.list_messages);
-//
-//        edt_chat_msg = (EditText) view.findViewById(R.id.edt_chat_msg);
-//        edt_chat_msg.setTypeface(latoBoldFont);
-//
-//        btn_chat_send = (ImageView) view.findViewById(R.id.btn_chat_send);
-//        btn_chat_send.setOnClickListener(clickIt);
-//
-//        edt_chat_msg.addTextChangedListener(new TextWatcher() {
-//
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                if (newChat != null) {
-//                    try {
-//                        Message msg = new Message();
-//                        msg.setBody(null);
-//                        msg.addExtension(new ChatStateExtension(ChatState.composing));
-//                        newChat.sendMessage(msg);
-//                    } catch (Exception ignore) {
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {}
-//        });
-//
-////        img_chat_smiley = (ImageView) view.findViewById(R.id.img_chat_smiley);
-////        img_chat_smiley.setOnClickListener(clickIt);
-//        //img_chat_attachment = (ImageView) view.findViewById(R.id.img_chat_attachment);
-//        //img_chat_attachment.setOnClickListener(clickIt);
-//
-//        btn_chat_send = (ImageView) view.findViewById(R.id.btn_chat_send);
-//        btn_chat_send.setOnClickListener(clickIt);
-//
-//        listAllMsg = new ArrayList<MessageModel>();
-//        chatAdapter = new ChatAdapter(getActivity(), listAllMsg);
-//
-//        if (isTableExists(selChatUser.getMatched_user_fb_id()))
-//            loadDataFromLocal(selChatUser.getMatched_user_fb_id());
-//
-//        list_messages.setAdapter(chatAdapter);
+        user = PrefUtils.getUserInfo();
+        senderUser = user.getmUserId();
 
-        return view;
+        Intent intent = getIntent();
+        String selUser = "";
+        if (intent != null)
+            selChatUser = (AcceptRider) intent.getSerializableExtra(Constant.intentKey.SelectedChatUser);
+
+        if (senderUser.equals(selChatUser.getFromRider().getnUserId())) {
+            toRider = selChatUser.getToRider();
+        } else {
+            toRider = selChatUser.getFromRider();
+        }
+
+        Toolbar tbChatHeader = (Toolbar) findViewById(R.id.tbChatHeader);
+        setSupportActionBar(tbChatHeader);
+        actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setTitle(""+toRider.getmFirstName() + " " + toRider.getmLastName());
+
+        tbChatHeader.setTitleTextColor(getResources().getColor(R.color.white));
+        tbChatHeader.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        PrefUtils.initPreference(getApplicationContext());
+
+        random = new Random();
+
+        latoBoldFont = TypefaceUtils.getTypefaceRobotoMediam(getApplicationContext());
+
+        toJabberId = Constant.intentKey.jabberPrefix + toRider.getnUserId();
+        HomeNewActivity.currentChat = toRider.getnUserId();
+
+        if (AppUtils.isInternetAvailable(getApplicationContext()))
+            new AsyncUserPresence().execute();
+        else
+            AppUtils.showNoInternetAvailable(ChatActivity.this);
+
+        list_messages = (ListView) findViewById(R.id.list_messages);
+
+        edt_chat_msg = (EditText) findViewById(R.id.edt_chat_msg);
+        edt_chat_msg.setTypeface(latoBoldFont);
+
+        btn_chat_send = (ImageView) findViewById(R.id.btn_chat_send);
+        btn_chat_send.setOnClickListener(clickIt);
+
+        edt_chat_msg.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (newChat != null) {
+                    try {
+                        Message msg = new Message();
+                        msg.setBody(null);
+                        msg.addExtension(new ChatStateExtension(ChatState.composing));
+                        newChat.sendMessage(msg);
+                    } catch (Exception ignore) {
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+//        img_chat_smiley = (ImageView) findViewById(R.id.img_chat_smiley);
+//        img_chat_smiley.setOnClickListener(clickIt);
+        //img_chat_attachment = (ImageView) findViewById(R.id.img_chat_attachment);
+        //img_chat_attachment.setOnClickListener(clickIt);
+
+        btn_chat_send = (ImageView) findViewById(R.id.btn_chat_send);
+        btn_chat_send.setOnClickListener(clickIt);
+
+        listAllMsg = new ArrayList<MessageModel>();
+        chatAdapter = new ChatAdapter(ChatActivity.this, listAllMsg);
+
+        if (isTableExists(toRider.getnUserId()))
+            loadDataFromLocal(toRider.getnUserId());
+
+        list_messages.setAdapter(chatAdapter);
+
     }
 
     private View.OnClickListener clickIt = new View.OnClickListener() {
@@ -193,19 +192,12 @@ public class MessagesFragment extends Fragment {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-//                case R.id.img_chat_smiley:
-//                    Toast.makeText(getActivity(), "Smiley", Toast.LENGTH_SHORT).show();
-//                    break;
-//                //case R.id.img_chat_attachment:
-//                //  Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                //startActivityForResult(galleryIntent, 123);
-//                //break;
                 case R.id.btn_chat_send:
-                    if(AppUtils.isInternetAvailable(getActivity())) {
+                    if (AppUtils.isInternetAvailable(getApplicationContext())) {
                         sendMessage();
                         btn_chat_send.requestFocus();
-                    }else
-                        AppUtils.showNoInternetAvailable(getActivity());
+                    } else
+                        AppUtils.showNoInternetAvailable(ChatActivity.this);
                     break;
             }
         }
@@ -215,7 +207,7 @@ public class MessagesFragment extends Fragment {
     public void sendMessage() {
 
         if (edt_chat_msg.getText().toString().isEmpty()) {
-            Toast.makeText(getActivity(), R.string.txt_msg_warning, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.txt_msg_warning, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -227,7 +219,7 @@ public class MessagesFragment extends Fragment {
 
             MessageModel msg = new MessageModel();
             msg.setSender(senderUser);
-            msg.setReceiver(selChatUser.getMatched_user_fb_id());
+            msg.setReceiver(toJabberId);
             msg.setMessageText(message);
             msg.setType(MessageModel.MEG_TYPE_TEXT);
             msg.setIsMine(true);
@@ -240,11 +232,11 @@ public class MessagesFragment extends Fragment {
 
             MyService.xmpp.sendMessage(msg);
 
-            CommonMethods commonMethods = new CommonMethods(getActivity());
+            CommonMethods commonMethods = new CommonMethods(getApplicationContext());
 
-            commonMethods.createTable(selChatUser.getMatched_user_fb_id());
+            commonMethods.createTable(toRider.getnUserId());
 
-            commonMethods.insertIntoTable(selChatUser.getMatched_user_fb_id(), senderUser, selChatUser.getMatched_user_fb_id(), message, "m", MessageModel.MEG_TYPE_TEXT, msg.getTime());
+            commonMethods.insertIntoTable(toRider.getnUserId(), senderUser, toRider.getnUserId(), message, "m", MessageModel.MEG_TYPE_TEXT, msg.getTime());
 
             chatAdapter.notifyDataSetChanged();
 
@@ -271,7 +263,7 @@ public class MessagesFragment extends Fragment {
     }
 
     public boolean isTableExists(String tableName) {
-        mydb = getActivity().openOrCreateDatabase(CommonMethods.DB_NAME, Context.MODE_PRIVATE, null);
+        mydb = openOrCreateDatabase(CommonMethods.DB_NAME, Context.MODE_PRIVATE, null);
         Cursor cursor = mydb.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'", null);
         if (cursor != null) {
             if (cursor.getCount() > 0) {
@@ -286,7 +278,7 @@ public class MessagesFragment extends Fragment {
     public void loadDataFromLocal(String tablename) {
         String tblname = "'" + tablename + "'";
         boolean w = false;
-        mydb = getActivity().openOrCreateDatabase(CommonMethods.DB_NAME, Context.MODE_PRIVATE, null);
+        mydb = openOrCreateDatabase(CommonMethods.DB_NAME, Context.MODE_PRIVATE, null);
         Cursor allrows = mydb.rawQuery("SELECT * FROM " + tblname, null);
         System.out.println("COUNT : " + allrows.getCount());
 
@@ -330,7 +322,7 @@ public class MessagesFragment extends Fragment {
 //                final Uri selectedImage = data.getData();
 //                String[] filePathColumn = {MediaStore.Images.Media.DATA};
 //                // Get the cursor
-//                Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+//                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
 //                // Move to first row
 //                cursor.moveToFirst();
 //                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
@@ -349,7 +341,7 @@ public class MessagesFragment extends Fragment {
 //                                chatMessage.setSender(senderUser);
 //                                chatMessage.setIsMine(true);
 //                                chatMessage.setType(MessageModel.MEG_TYPE_IMAGE);
-//                                chatMessage.setReceiver(selChatUser.getMatched_user_fb_id());
+//                                chatMessage.setReceiver(toRider.getnUserId()());
 //                                chatMessage.setMsgIdl(random.nextInt(1000));
 //                                chatMessage.setTime(DateUtils.getCurrentDate("hh:mm a"));
 //
@@ -378,11 +370,11 @@ public class MessagesFragment extends Fragment {
 //                        });
 //
 //            } else {
-//                Toast.makeText(getActivity(), "You haven't picked Image", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), "You haven't picked Image", Toast.LENGTH_LONG).show();
 //            }
 //        } catch (Exception e) {
 //            e.printStackTrace();
-//            Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
 //        }
     }
 
@@ -396,7 +388,7 @@ public class MessagesFragment extends Fragment {
             this.bitmap = bitmap;
             this.uri = uri;
             this.chatMessage = chatMessage;
-            this.commonMethods = new CommonMethods(getActivity());
+            this.commonMethods = new CommonMethods(getApplicationContext());
         }
 
         @Override
@@ -406,17 +398,19 @@ public class MessagesFragment extends Fragment {
 
             try {
 
-                commonMethods.createTable(selChatUser.getMatched_user_fb_id());
-                commonMethods.insertIntoTable(selChatUser.getMatched_user_fb_id(), selChatUser.getMatched_user_fb_id(), senderUser, chatMessage.getMessageText(), "m", MessageModel.MEG_TYPE_IMAGE, chatMessage.getTime());
+                commonMethods.createTable(toRider.getnUserId());
+                commonMethods.insertIntoTable(toRider.getnUserId(), toRider.getnUserId(), senderUser, chatMessage.getMessageText(), "m", MessageModel.MEG_TYPE_IMAGE, chatMessage.getTime());
 
                 String filePath = "";
 
                 try {
-                    filePath = FileUtils.getPath(getActivity(), uri);
+                    filePath = FileUtils.getPath(getApplicationContext(), uri);
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
-                MyService.xmpp.fileTransfer(selChatUser.getFullJid(), FileUtils.getFileName(uri), filePath);
+//                MyService.xmpp.fileTransfer(selChatUser.getJabberId(), FileUtils.getFileName(uri), filePath);
+                MyService.xmpp.fileTransfer(toJabberId, FileUtils.getFileName(uri), filePath);
             } catch (XMPPException e) {
                 e.printStackTrace();
             }
@@ -428,7 +422,7 @@ public class MessagesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        HomeNewActivity.currentChat = selChatUser.getMatched_user_fb_id();
+//        HomeNewActivity.currentChat = toRider.getnUserId()();
     }
 
     @Override
@@ -443,7 +437,7 @@ public class MessagesFragment extends Fragment {
 
             try {
 
-                String presInfo = ConnectorApi.getUserPresence(selChatUser.getMatched_user_fb_id());
+                String presInfo = ConnectorApi.getUserPresence(toRider.getnUserId());
 
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
@@ -459,14 +453,15 @@ public class MessagesFragment extends Fragment {
 
                 return nl.item(0).getAttributes().getNamedItem("from").getNodeValue();
             } catch (Exception e) {
-                return selChatUser.getMatched_user_fb_id();
+                return toRider.getnUserId();
             }
         }
 
         @Override
         protected void onPostExecute(String fullJid) {
             super.onPostExecute(fullJid);
-            selChatUser.setFullJid(fullJid);
+            actionBar.setSubtitle(fullJid);
+//            selChatUser.setJabberId(fullJid);
         }
     }
 }
