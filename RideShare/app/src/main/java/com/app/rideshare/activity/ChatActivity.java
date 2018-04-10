@@ -130,7 +130,8 @@ public class ChatActivity extends AppCompatActivity {
         latoBoldFont = TypefaceUtils.getTypefaceRobotoMediam(getApplicationContext());
 
         toJabberId = Constant.intentKey.jabberPrefix + toRider.getnUserId();
-        HomeNewActivity.currentChat = toRider.getnUserId();
+//        HomeNewActivity.currentChat = toRider.getnUserId();
+        HomeNewActivity.currentChat = toJabberId;
 
         if (AppUtils.isInternetAvailable(getApplicationContext()))
             new AsyncUserPresence().execute();
@@ -177,7 +178,7 @@ public class ChatActivity extends AppCompatActivity {
         btn_chat_send = (ImageView) findViewById(R.id.btn_chat_send);
         btn_chat_send.setOnClickListener(clickIt);
 
-        listAllMsg = new ArrayList<MessageModel>();
+        listAllMsg = new ArrayList<>();
         chatAdapter = new ChatAdapter(ChatActivity.this, listAllMsg);
 
         if (isTableExists(toRider.getnUserId()))

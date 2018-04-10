@@ -34,7 +34,8 @@
             <com.app.rideshare.widget.SquareImageView
                 android:id="@+id/img_msg_media_you"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
         </LinearLayout>
 
@@ -89,7 +90,8 @@
             <com.app.rideshare.widget.SquareImageView
                 android:id="@+id/img_msg_media_me"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

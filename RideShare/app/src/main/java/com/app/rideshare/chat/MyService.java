@@ -31,8 +31,8 @@ public class MyService extends Service {
         User user = PrefUtils.getUserInfo();
 
         try {
-            xmpp = MyXMPP.getInstance(MyService.this, user.getmUserId());
-//            xmpp = MyXMPP.getInstance(MyService.this, Constant.intentKey.jabberPrefix + user.getmUserId());
+//            xmpp = MyXMPP.getInstance(MyService.this, user.getmUserId());
+            xmpp = MyXMPP.getInstance(MyService.this, Constant.intentKey.jabberPrefix + user.getmUserId());
             xmpp.connect("onCreate");
         } catch (Exception e) {
             e.printStackTrace();

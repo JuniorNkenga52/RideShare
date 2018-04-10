@@ -379,8 +379,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     @Override
                     public void onLocationUpdated(Location location) {
                         try {
-
-
                             currentlthg = new LatLng(location.getLatitude(), location.getLongitude());
                             Log.d("Bearing", "" + location.getBearing());
                             if (zoomLevel <= 2.0f) {
@@ -441,8 +439,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         if (mApp.getmUserType().equals("2")) {
             mUpdaterHandler.post(runnable);
         }
-
-
     }
 
     private void connectWebSocket() {

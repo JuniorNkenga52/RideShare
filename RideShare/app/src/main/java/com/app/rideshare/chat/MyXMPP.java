@@ -525,6 +525,7 @@ public class MyXMPP implements PingFailedListener {
 
                     ChatActivity.listAllMsg.add(messageModel);
 
+                    Log.e(TAG,"ChatActivity.listAllMsg >> "+ChatActivity.listAllMsg.size());
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
 
                         @Override
