@@ -118,6 +118,7 @@ public class MyXMPP implements PingFailedListener {
     private MMessageListener mMessageListener;
 
     private User user;
+    private onMessageListener messageListener;
 
     static {
         try {
@@ -500,7 +501,7 @@ public class MyXMPP implements PingFailedListener {
 
             String[] temp = sender1.split(delimiter);
             String[] temp1 = receiver.split(delimiter);
-            final String sender = temp[0];
+            final String sender = temp[0].toLowerCase();
             Log.d("USERS" + sender, temp1[0]);
 
             final MessageModel messageModel = new MessageModel();
@@ -521,7 +522,7 @@ public class MyXMPP implements PingFailedListener {
             try {
 
                 if (HomeNewActivity.currentChat != null && HomeNewActivity.currentChat.length() > 0
-                        && HomeNewActivity.currentChat.equals(messageModel.getSender())) {
+                        && HomeNewActivity.currentChat.equalsIgnoreCase(messageModel.getSender())) {
 
                     ChatActivity.listAllMsg.add(messageModel);
 
@@ -628,7 +629,7 @@ public class MyXMPP implements PingFailedListener {
                 try {
 
                     if (HomeNewActivity.currentChat != null && HomeNewActivity.currentChat.length() > 0
-                            && HomeNewActivity.currentChat.equals(chatMessage.getSender())) {
+                            && HomeNewActivity.currentChat.equalsIgnoreCase(chatMessage.getSender())) {
 
                         ChatActivity.listAllMsg.add(chatMessage);
 

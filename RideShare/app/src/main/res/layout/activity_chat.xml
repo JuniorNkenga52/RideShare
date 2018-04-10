@@ -56,7 +56,7 @@
                 android:background="@android:color/transparent"
                 android:hint="@string/txt_write_a_message"
                 android:imeOptions="actionSend|flagNoEnterAction"
-                android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
+                android:inputType="textCapSentences|textMultiLine"
                 android:padding="@dimen/_8sdp"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12sdp"/>

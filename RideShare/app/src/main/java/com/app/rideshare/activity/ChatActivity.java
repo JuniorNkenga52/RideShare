@@ -130,6 +130,7 @@ public class ChatActivity extends AppCompatActivity {
         latoBoldFont = TypefaceUtils.getTypefaceRobotoMediam(getApplicationContext());
 
         toJabberId = Constant.intentKey.jabberPrefix + toRider.getnUserId();
+        toJabberId = toJabberId.toLowerCase();
 //        HomeNewActivity.currentChat = toRider.getnUserId();
         HomeNewActivity.currentChat = toJabberId;
 
@@ -181,8 +182,8 @@ public class ChatActivity extends AppCompatActivity {
         listAllMsg = new ArrayList<>();
         chatAdapter = new ChatAdapter(ChatActivity.this, listAllMsg);
 
-        if (isTableExists(toRider.getnUserId()))
-            loadDataFromLocal(toRider.getnUserId());
+        if (isTableExists(toJabberId))
+            loadDataFromLocal(toJabberId);
 
         list_messages.setAdapter(chatAdapter);
 
@@ -235,9 +236,9 @@ public class ChatActivity extends AppCompatActivity {
 
             CommonMethods commonMethods = new CommonMethods(getApplicationContext());
 
-            commonMethods.createTable(toRider.getnUserId());
+            commonMethods.createTable(toJabberId);
 
-            commonMethods.insertIntoTable(toRider.getnUserId(), senderUser, toRider.getnUserId(), message, "m", MessageModel.MEG_TYPE_TEXT, msg.getTime());
+            commonMethods.insertIntoTable(toJabberId, senderUser, toJabberId, message, "m", MessageModel.MEG_TYPE_TEXT, msg.getTime());
 
             chatAdapter.notifyDataSetChanged();
 
@@ -399,8 +400,8 @@ public class ChatActivity extends AppCompatActivity {
 
             try {
 
-                commonMethods.createTable(toRider.getnUserId());
-                commonMethods.insertIntoTable(toRider.getnUserId(), toRider.getnUserId(), senderUser, chatMessage.getMessageText(), "m", MessageModel.MEG_TYPE_IMAGE, chatMessage.getTime());
+                commonMethods.createTable(toJabberId);
+                commonMethods.insertIntoTable(toJabberId, toJabberId, senderUser, chatMessage.getMessageText(), "m", MessageModel.MEG_TYPE_IMAGE, chatMessage.getTime());
 
                 String filePath = "";
 
@@ -461,7 +462,7 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String fullJid) {
             super.onPostExecute(fullJid);
-            actionBar.setSubtitle(fullJid);
+//            actionBar.setSubtitle(fullJid);
 //            selChatUser.setJabberId(fullJid);
         }
     }

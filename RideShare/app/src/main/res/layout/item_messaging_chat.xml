@@ -29,6 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/BlackColor"
+                android:layout_gravity="center_vertical"
                 android:textSize="@dimen/_12sdp"/>
 
             <com.app.rideshare.widget.SquareImageView
@@ -73,11 +74,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_chat_me"
-            android:gravity="right"
             android:orientation="vertical"
             android:paddingBottom="@dimen/_3sdp"
-            android:paddingLeft="@dimen/_5sdp"
-            android:paddingRight="@dimen/_16sdp"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingRight="@dimen/_3sdp"
             android:paddingTop="@dimen/_3sdp">
 
             <TextView
@@ -85,6 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/BlackColor"
+                android:layout_gravity="center_vertical"
                 android:textSize="@dimen/_12sdp"/>
 
             <com.app.rideshare.widget.SquareImageView
