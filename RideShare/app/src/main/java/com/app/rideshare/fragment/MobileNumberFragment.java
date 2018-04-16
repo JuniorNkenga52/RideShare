@@ -112,6 +112,7 @@ public class MobileNumberFragment extends Fragment {
         public Object doInBackground(Object... params) {
             try {
                 return RideShareApi.sendTextMessageNew(mobileNumber);
+                //return RideShareApi.sendTextMessageNew("+1"+mobileNumber);
             } catch (Exception e) {
                 return null;
             }
@@ -131,6 +132,8 @@ public class MobileNumberFragment extends Fragment {
                     SignUpActivity.PhoneNumber = mobileNumber;
                     SignUpActivity.mUserId = jsonObjectResult.getString("user_id");
                     SignUpActivity.mViewPager.setCurrentItem(1);
+
+                    OTPFragment.updateTest();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

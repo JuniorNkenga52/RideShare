@@ -1,5 +1,6 @@
 package com.app.rideshare.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,9 +35,11 @@ import retrofit2.Response;
 
 public class OTPFragment extends Fragment {
 
+    static Context context;
+
     private ImageView imgBack;
     private TextView txtNext;
-    private TextView txtPhoneNumberInfo;
+    static TextView txtPhoneNumberInfo;
 
     private PinEntryEditText txtPin;
     private TextView txtResendOTP;
@@ -48,6 +51,8 @@ public class OTPFragment extends Fragment {
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_otp, container,
                 false);
+
+        context = getActivity();
 
         PrefUtils.initPreference(getActivity());
 
@@ -99,7 +104,12 @@ public class OTPFragment extends Fragment {
         return rootView;
     }
 
+    public static void updateTest(){
 
+        String number = "(" + SignUpActivity.PhoneNumber.substring(0,3) + ") " + SignUpActivity.PhoneNumber.substring(3,6) + "-" + SignUpActivity.PhoneNumber.substring(6,10);
+
+        txtPhoneNumberInfo.setText(context.getResources().getString(R.string.txt_enter_the_code) +  " "+number);
+    }
 
     public class AsyncOTP extends AsyncTask<Object, Integer, Object> {
 
