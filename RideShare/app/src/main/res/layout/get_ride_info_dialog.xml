@@ -146,6 +146,7 @@
                         android:background="@drawable/ic_clock_dialog" />
 
                     <com.app.rideshare.widget.TextViewRegular
+                        android:id="@+id/driver_distance_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_3sdp"

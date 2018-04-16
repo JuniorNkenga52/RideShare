@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
-import com.app.rideshare.activity.HomeNewActivity;
+import com.app.rideshare.activity.GroupSelectionActivity;
 import com.app.rideshare.activity.RideTypeActivity;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.api.ApiServiceModule;
@@ -48,7 +48,7 @@ public class OTPFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_otp, container,
                 false);
 
@@ -65,7 +65,7 @@ public class OTPFragment extends Fragment {
         });
 
         txtPhoneNumberInfo = (TextView) rootView.findViewById(R.id.txtPhoneNumberInfo);
-        txtPhoneNumberInfo.setText(getActivity().getResources().getString(R.string.txt_enter_the_code) +  " "+SignUpActivity.PhoneNumber);
+        txtPhoneNumberInfo.setText(getActivity().getResources().getString(R.string.txt_enter_the_code) + " " + SignUpActivity.PhoneNumber);
 
         txtPin = (PinEntryEditText) rootView.findViewById(R.id.txtPin);
 
@@ -87,13 +87,15 @@ public class OTPFragment extends Fragment {
 
                 String otp = txtPin.getText().toString();
 
-                if(otp.length() == 0){
+                if (otp.length() == 0) {
                     ToastUtils.showShort(getActivity(), "Please enter verification code.");
-                } else if(otp.length() != 5){
+                } else if (otp.length() != 5) {
                     ToastUtils.showShort(getActivity(), "Please enter valid verification code.");
                 } else {
                     //sendOTP(otp, MobileNumberFragment.mUserId);
                     new AsyncOTP(otp).execute();
+
+
                 }
 
                 //SignUpActivity.mViewPager.setCurrentItem(2);
@@ -104,11 +106,11 @@ public class OTPFragment extends Fragment {
         return rootView;
     }
 
-    public static void updateTest(){
+    public static void updateTest() {
 
-        String number = "(" + SignUpActivity.PhoneNumber.substring(0,3) + ") " + SignUpActivity.PhoneNumber.substring(3,6) + "-" + SignUpActivity.PhoneNumber.substring(6,10);
+        String number = "(" + SignUpActivity.PhoneNumber.substring(0, 3) + ") " + SignUpActivity.PhoneNumber.substring(3, 6) + "-" + SignUpActivity.PhoneNumber.substring(6, 10);
 
-        txtPhoneNumberInfo.setText(context.getResources().getString(R.string.txt_enter_the_code) +  " "+number);
+        txtPhoneNumberInfo.setText(context.getResources().getString(R.string.txt_enter_the_code) + " " + number);
     }
 
     public class AsyncOTP extends AsyncTask<Object, Integer, Object> {
@@ -148,8 +150,8 @@ public class OTPFragment extends Fragment {
             try {
                 JSONObject jsonObject = new JSONObject(result.toString());
 
-                if(jsonObject.getString("status").equalsIgnoreCase("success")) {
-                    if(jsonObject.getString("result").equalsIgnoreCase("Your mobile number successfully verified"))
+                if (jsonObject.getString("status").equalsIgnoreCase("success")) {
+                    if (jsonObject.getString("result").equalsIgnoreCase("Your mobile number successfully verified"))
                         SignUpActivity.mViewPager.setCurrentItem(2);
                     else {
 
@@ -191,10 +193,19 @@ public class OTPFragment extends Fragment {
                         PrefUtils.putBoolean("islogin", true);
                         PrefUtils.putString("loginwith", "normal");
 
-                        Intent i = new Intent(getActivity(), RideTypeActivity.class);
-                        startActivity(i);
-                        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                        getActivity().finish();
+                        if (PrefUtils.getBoolean("firstTime")) {
+                            Intent i = new Intent(getActivity(), RideTypeActivity.class);
+                            startActivity(i);
+                            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            getActivity().finish();
+                        } else {
+                            Intent i = new Intent(getActivity(), GroupSelectionActivity.class);
+                            startActivity(i);
+                            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            getActivity().finish();
+                            PrefUtils.putBoolean("firstTime", true);
+                        }
+
                     }
                 } else {
                     ToastUtils.showShort(getContext(), "Please try againg..");

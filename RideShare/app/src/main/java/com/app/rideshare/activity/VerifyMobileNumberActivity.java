@@ -142,9 +142,21 @@ public class VerifyMobileNumberActivity extends AppCompatActivity {
                     if (response.body().getmStatus().equals("success")) {
                         mBean.setmIsVerify("1");
                         PrefUtils.addUserInfo(mBean);
-                        Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+                        /*if(PrefUtils.getBoolean("firstTime")){
+                            Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+                            startActivity(i);
+                            finish();
+                        }else {
+                            Intent i = new Intent(getBaseContext(), MyGroupActivity.class);
+                            startActivity(i);
+                            finish();
+                            PrefUtils.putBoolean("firstTime",true);
+                        }*/
+                        Intent i = new Intent(getBaseContext(), MyGroupActivity.class);
                         startActivity(i);
                         finish();
+                        PrefUtils.putBoolean("firstTime",true);
+
                     } else {
                         ToastUtils.showShort(VerifyMobileNumberActivity.this, "Please try againg..");
                     }

@@ -120,10 +120,11 @@ public class SplashActivity extends AppCompatActivity {
                 loginuser(PrefUtils.getString("gemail"), PrefUtils.getString("gId"),PrefUtils.getString("group_id"));
             }*/
 
-            Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
-            startActivity(i);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            finish();
+                Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+                startActivity(i);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+
         }
     }
 

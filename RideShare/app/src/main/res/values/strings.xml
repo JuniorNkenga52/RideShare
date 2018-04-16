@@ -72,7 +72,7 @@
     <string name="vehicle_model">Vehicle Model</string>
     <string name="vehicle_type">Vehicle Type</string>
     <string name="vehicle_passengers">Max passengers</string>
-    
+
     <!--Forgot Password-->
     <string name="forgot_password">Forgot Password ?</string>
     <string name="forgot_password_text">We need your registered EmailId to sent \n you password reset instructions.</string>

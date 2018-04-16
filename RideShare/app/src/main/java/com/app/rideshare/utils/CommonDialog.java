@@ -55,7 +55,12 @@ public class CommonDialog {
                 Intent sendIntent = new Intent(Intent.ACTION_VIEW);
                 sendIntent.putExtra("sms_body", shareData);
                 sendIntent.setType("vnd.android-dir/mms-sms");
-                activity.startActivity(sendIntent);
+                try {
+                    activity.startActivity(sendIntent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -77,7 +82,12 @@ public class CommonDialog {
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, shareData);
                 sendIntent.setType("text/plain");
-                activity.startActivity(sendIntent);
+                try {
+                    activity.startActivity(sendIntent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 

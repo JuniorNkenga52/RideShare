@@ -12,11 +12,14 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,8 +29,15 @@ import com.app.rideshare.R;
 import com.app.rideshare.model.ContactBean;
 import com.app.rideshare.model.Rider;
 import com.app.rideshare.model.User;
+import com.app.rideshare.view.CustomProgressDialog;
 import com.bumptech.glide.Glide;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +45,8 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 public class AppUtils {
 
@@ -200,5 +212,33 @@ public class AppUtils {
 
     public static void showNoInternetAvailable(Activity activity) {
         Toast.makeText(activity, R.string.txt_msg_no_internet_available, Toast.LENGTH_SHORT).show();
+    }
+
+    public static  String downloadUrl(String strUrl,CustomProgressDialog progressDialog) throws IOException {
+        String data = "";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(strUrl);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.connect();
+            iStream = urlConnection.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    iStream));
+            StringBuffer sb = new StringBuffer();
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            data = sb.toString();
+            br.close();
+        } catch (Exception e) {
+            Log.e("Exception", e.toString());
+        } finally {
+            iStream.close();
+            urlConnection.disconnect();
+            progressDialog.dismiss();
+        }
+        return data;
     }
 }

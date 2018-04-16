@@ -31,6 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
+        app:elevation="16dp"
         app:menu="@menu/bottom_navigation_items" />
 
 </RelativeLayout>
+

@@ -77,6 +77,7 @@ public class MobileNumberFragment extends Fragment {
                     //ToastUtils.showShort(getActivity(), "Please check.");
                 } else {
                     result = "+919265094032";
+                    //result="+917435068611";
                     new AsyncSendTextMessage(result).execute();
 
                 }

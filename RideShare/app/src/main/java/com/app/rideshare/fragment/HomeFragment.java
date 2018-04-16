@@ -109,6 +109,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     private Polyline directionLine;
     private TextView mSearchCabTv;
     private ArrayList<Marker> mlistMarker;
+    private String duration;
 
     private okhttp3.Callback updateRouteCallback = new okhttp3.Callback() {
         @Override
@@ -403,7 +404,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         showDialog();
                         //startActivity(new Intent(getContext(), RideRateActivity.class));
                     } else {
-                        if (mlist == null){
+                        if (mlist == null) {
                             mlist = new ArrayList<>();
                         }
                         mlist.clear();
@@ -452,10 +453,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         TextView mVahicalTv = (TextView) dialog.findViewById(R.id.vahical_tv);
         TextView mAddressTv = (TextView) dialog.findViewById(R.id.address_tv);
         LinearLayout mOther_info = (LinearLayout) dialog.findViewById(R.id.ride_other_info);
-        /*mNameTv.setTypeface(mRobotoReguler);
-        mVahicalTv.setTypeface(mRobotoReguler);
-        mAddressTv.setTypeface(mRobotoReguler);*/
-
         try {
             mNameTv.setText(rider.getmFirstName());
             mAddressTv.setText(rider.getmAddress());
@@ -606,7 +603,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     private PopupWindow popupWindow;
     private ImageView mPopupIv;
 
-    private void init(View view){
+    private void init(View view) {
 
         mPopupIv = (ImageView) view.findViewById(R.id.popup_iv);
         mPopupIv.setOnClickListener(new View.OnClickListener() {
