@@ -76,8 +76,9 @@ public class MobileNumberFragment extends Fragment {
                 } else if (!chkIAgree.isChecked()) {
                     //ToastUtils.showShort(getActivity(), "Please check.");
                 } else {
-                    result = "+919265094032";
-                    //result="+917435068611";
+                    //result = "+919265094032";
+                    result="+917435068611";
+                    //result="+917600902008";
                     new AsyncSendTextMessage(result).execute();
 
                 }
