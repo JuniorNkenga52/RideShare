@@ -157,7 +157,6 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text="@string/approve_req"
-                    android:textAllCaps="true"
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 

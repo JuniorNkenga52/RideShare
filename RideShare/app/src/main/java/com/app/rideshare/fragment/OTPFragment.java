@@ -212,7 +212,7 @@ public class OTPFragment extends Fragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                ToastUtils.showShort(getContext(), "Please try againg..");
+                ToastUtils.showShort(getContext(), "Please try again..");
             }
         }
     }

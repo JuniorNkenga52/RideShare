@@ -86,7 +86,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     //Typeface mRobotoMedium;
     BroadcastReceiver receiver;
     Double Latitude, Longitude;
-//    Double PreLatitude = 0.0, PreLongitude = 0.0;
+    //    Double PreLatitude = 0.0, PreLongitude = 0.0;
     String Provider;
     User mUserbean;
     RideShareApp mApp;
@@ -182,7 +182,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_ride_layout);
 
-        activity=this;
+        activity = this;
         application = (RideShareApp) getApplicationContext();
 
         PrefUtils.initPreference(this);
@@ -654,7 +654,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     private MyXMPP xmpp;
     private boolean mBounded;
 
-    private void init(){
+    private void init() {
         doBindService();
         xmpp = new MyXMPP();
     }

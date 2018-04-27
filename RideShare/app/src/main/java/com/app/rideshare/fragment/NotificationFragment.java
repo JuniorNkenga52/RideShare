@@ -13,11 +13,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
-import com.app.rideshare.activity.GroupDetailActivity;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.GroupList;
 import com.app.rideshare.model.NotificationList;
-import com.app.rideshare.model.User;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -27,7 +25,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class NotificationFragment extends Fragment {
 
@@ -44,7 +41,7 @@ public class NotificationFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_notificarion, container,
                 false);
 
@@ -127,6 +124,8 @@ public class NotificationFragment extends Fragment {
                     adapterNotification = new NotificationAdapter();
                     mLvNotification.setAdapter(adapterNotification);
 
+                } else {
+                    mNoUserTv.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -197,14 +196,14 @@ public class NotificationFragment extends Fragment {
             holder.mGroupName.setText(bean.getGroup_name());
 
             Picasso.with(getActivity()).load(bean.getProfile_image()).resize(300, 300)
-                    .centerCrop().error(R.drawable.user_icon).into(holder.circularImageView );
+                    .centerCrop().error(R.drawable.user_icon).into(holder.circularImageView);
 
             //PrefUtils.getUserInfo().getmUserId()
             holder.imgAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    new AsyncJoinGroup(bean.getU_id(), bean.getGroup_id(),"2").execute();
+                    new AsyncJoinGroup(bean.getU_id(), bean.getGroup_id(), "2").execute();
                     mListNotification.remove(pos);
                 }
             });
@@ -212,7 +211,7 @@ public class NotificationFragment extends Fragment {
             holder.imgDecline.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new AsyncJoinGroup(bean.getU_id(), bean.getGroup_id(),"3").execute();
+                    new AsyncJoinGroup(bean.getU_id(), bean.getGroup_id(), "3").execute();
                     mListNotification.remove(pos);
                 }
             });
@@ -246,7 +245,7 @@ public class NotificationFragment extends Fragment {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.joinGroup(user_id, group_id,status);
+                return RideShareApi.joinGroup(user_id, group_id, status);
             } catch (Exception e) {
                 return null;
             }

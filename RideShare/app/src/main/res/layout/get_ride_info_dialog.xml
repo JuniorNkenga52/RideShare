@@ -179,6 +179,7 @@
                         android:background="@drawable/ic_person_dialog" />
 
                     <com.app.rideshare.widget.TextViewRegular
+                        android:id="@+id/txt_maxPerson"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_3sdp"

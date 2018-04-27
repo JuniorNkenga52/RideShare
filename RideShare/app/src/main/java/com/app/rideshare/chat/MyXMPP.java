@@ -14,11 +14,9 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-
 import com.app.rideshare.R;
 import com.app.rideshare.activity.ChatActivity;
 import com.app.rideshare.activity.HomeNewActivity;
-import com.app.rideshare.fragment.MessagesFragment;
 import com.app.rideshare.model.User;
 import com.app.rideshare.utils.DateUtils;
 import com.app.rideshare.utils.PrefUtils;
@@ -87,10 +85,10 @@ import java.util.logging.Logger;
 public class MyXMPP implements PingFailedListener {
 
     private static final String TAG = "MyXMPP";
-    private static final String DOMAIN = "192.168.0.30";
+    private static final String DOMAIN = "13.58.7.10";
     private static final String RESOURCE_NAME = "Connecter";
     private static final int PORT = 5222;
-//    private static final int PORT = 9090;
+    //private static final int PORT = 9090;
 
     private final String delimiter = "\\@";
 
@@ -128,7 +126,8 @@ public class MyXMPP implements PingFailedListener {
         }
     }
 
-    public MyXMPP() {}
+    public MyXMPP() {
+    }
 
     public MyXMPP(MyService context, String logiUser, String password) {
 
@@ -167,7 +166,7 @@ public class MyXMPP implements PingFailedListener {
         config.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
         config.setServiceName(DOMAIN);
         config.setHost(DOMAIN);
-//        config.setPort(PORT);
+        config.setPort(PORT);
         config.setDebuggerEnabled(true);
         config.setResource(RESOURCE_NAME);
 
@@ -251,7 +250,7 @@ public class MyXMPP implements PingFailedListener {
                             }
                         });
 
-                    Log.e(TAG, "(" + caller + ")"+ "IOException: " + e.getMessage());
+                    Log.e(TAG, "(" + caller + ")" + "IOException: " + e.getMessage());
                 } catch (SmackException e) {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
 
@@ -261,7 +260,7 @@ public class MyXMPP implements PingFailedListener {
                         }
                     });
 
-                    Log.e(TAG, "(" + caller + ")"+ "SMACKException: " + e.getMessage());
+                    Log.e(TAG, "(" + caller + ")" + "SMACKException: " + e.getMessage());
                 } catch (XMPPException e) {
                     if (isToasted)
 
@@ -272,7 +271,7 @@ public class MyXMPP implements PingFailedListener {
                                 Toast.makeText(context, "(" + caller + ")" + "XMPPException: ", Toast.LENGTH_SHORT).show();
                             }
                         });
-                    Log.e(TAG, "connect(" + caller + ")"+ "XMPPException: " + e.getMessage());
+                    Log.e(TAG, "connect(" + caller + ")" + "XMPPException: " + e.getMessage());
                 }
 
                 return isConnecting = false;
@@ -339,9 +338,9 @@ public class MyXMPP implements PingFailedListener {
             else
                 login();
         } catch (NotConnectedException e) {
-            Log.e(TAG,"xmpp.SendMessage() msg Not sent!-Not Connected!");
+            Log.e(TAG, "xmpp.SendMessage() msg Not sent!-Not Connected!");
         } catch (Exception e) {
-            Log.e(TAG,"xmpp.SendMessage()-Exception msg Not sent!" + e.getMessage());
+            Log.e(TAG, "xmpp.SendMessage()-Exception msg Not sent!" + e.getMessage());
         }
     }
 
@@ -349,7 +348,7 @@ public class MyXMPP implements PingFailedListener {
         @Override
         public void connected(final XMPPConnection connection) {
 
-            Log.d(TAG,"xmpp Connected!");
+            Log.d(TAG, "xmpp Connected!");
 
             connected = true;
 
@@ -374,7 +373,7 @@ public class MyXMPP implements PingFailedListener {
                     }
                 });
 
-            Log.d(TAG,"xmpp ConnectionClosed!");
+            Log.d(TAG, "xmpp ConnectionClosed!");
 
             connected = false;
             chatCreated = false;
@@ -392,7 +391,7 @@ public class MyXMPP implements PingFailedListener {
                     }
                 });
 
-            Log.d(TAG,"xmpp ConnectionClosedOn Error!");
+            Log.d(TAG, "xmpp ConnectionClosedOn Error!");
 
             connected = false;
 
@@ -402,7 +401,7 @@ public class MyXMPP implements PingFailedListener {
 
         @Override
         public void reconnectingIn(int arg0) {
-            Log.d(TAG,"xmpp Reconnectingin " + arg0);
+            Log.d(TAG, "xmpp Reconnectingin " + arg0);
             loggedIn = false;
         }
 
@@ -417,7 +416,7 @@ public class MyXMPP implements PingFailedListener {
                     }
                 });
 
-            Log.d(TAG,"xmpp ReconnectionFailed!");
+            Log.d(TAG, "xmpp ReconnectionFailed!");
 
             connected = false;
 
@@ -437,7 +436,7 @@ public class MyXMPP implements PingFailedListener {
                     }
                 });
 
-            Log.d(TAG,"xmpp ReconnectionSuccessful");
+            Log.d(TAG, "xmpp ReconnectionSuccessful");
 
             connected = true;
 
@@ -448,7 +447,7 @@ public class MyXMPP implements PingFailedListener {
         @Override
         public void authenticated(XMPPConnection arg0, boolean arg1) {
 
-            Log.d(TAG,"xmpp Authenticated!");
+            Log.d(TAG, "xmpp Authenticated!");
 
             loggedIn = true;
 
@@ -526,7 +525,7 @@ public class MyXMPP implements PingFailedListener {
 
                     ChatActivity.listAllMsg.add(messageModel);
 
-                    Log.e(TAG,"ChatActivity.listAllMsg >> "+ChatActivity.listAllMsg.size());
+                    Log.e(TAG, "ChatActivity.listAllMsg >> " + ChatActivity.listAllMsg.size());
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
 
                         @Override

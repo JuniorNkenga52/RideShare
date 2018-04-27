@@ -1,10 +1,16 @@
 <resources>
+
+
     <string name="app_name">Ride Share</string>
     <string name="title_activity_splash">SplashActivity</string>
     <string name="senderId">237817979464</string>
 
+    <string name="DEEP_LINK">ec2-13-58-7-10.us-east-2.compute.amazonaws.com</string>
+    <string name="PROTOCOL">http</string>
+
     <!-- <string name="google_sign_in_key">237817979464-tr38ehl0emlb8nvvncj4aldp7tb67uho.apps.googleusercontent.com</string>-->
     <string name="google_sign_in_key">237817979464-8r302nr5euouieoqpvg7vlqhrrspuckj.apps.googleusercontent.com</string>
+
 
     <string name="facebook_app_id">258005881343253</string>
     <string name="fb_login_protocol_scheme">fb258005881343253</string>
@@ -21,11 +27,11 @@
     <string name="email">EMAIL</string>
     <string name="confirm_password">CONFIRM PASSWORD</string>
     <string name="mobile">MOBILE NUMBER</string>
-
-    <string name="vhmodel">VEHICLE MODEL</string>
-    <string name="vhtype">VEHICLE TYPE</string>
-    <string name="maxpass">MAX PASSENGERS</string>
-    <string name="reqdriver">REQUEST AS DRIVER</string>
+    VEHICLE MODEL
+    <string name="vhmodel">Vehicle Model</string>
+    <string name="vhtype">Vehicle type</string>
+    <string name="maxpass">Max Passengers</string>
+    <string name="reqdriver">Request as driver</string>
 
     <string name="signup">Sign Up</string>
 
@@ -128,4 +134,6 @@
     <string name="txt_msg_please_try_again">Please Try Again!!</string>
     <string name="txt_no_email_client_installed">No email client configured in your phone.</string>
     <string name="txt_msg_warning">Please enter message to send</string>
+
+
 </resources>

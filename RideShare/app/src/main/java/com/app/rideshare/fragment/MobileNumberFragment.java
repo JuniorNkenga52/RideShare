@@ -1,8 +1,10 @@
 package com.app.rideshare.fragment;
 
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
@@ -53,6 +55,7 @@ public class MobileNumberFragment extends Fragment {
         txtTermsOfService.setText(content);
 
         txtPhoneNumber = (MaskedEditText) rootView.findViewById(R.id.txtPhoneNumber);
+        txtPhoneNumber.setRawInputType(InputType.TYPE_CLASS_NUMBER);
         chkIAgree = (CheckBox) rootView.findViewById(R.id.chkIAgree);
 
         txtTermsOfService.setOnClickListener(new View.OnClickListener() {
@@ -74,19 +77,24 @@ public class MobileNumberFragment extends Fragment {
                 } else if (result.length() != 10) {
                     ToastUtils.showShort(getActivity(), "Please enter valid Mobile Number.");
                 } else if (!chkIAgree.isChecked()) {
-                    //ToastUtils.showShort(getActivity(), "Please check.");
+                    ToastUtils.showShort(getActivity(), "You must agree with the Terms and Conditions");
                 } else {
+                    //String numberMo = "+1"+ result;
+                    String numberMo = "+91"+ result;
+
                     //result = "+919265094032";
-                    result="+917435068611";
+                    //result="+917359371716";
+                    //result="+917435068611";
+                    //result="+919725672270";
+                    //result="+919265762630";
                     //result="+917600902008";
-                    new AsyncSendTextMessage(result).execute();
+                    new AsyncSendTextMessage(numberMo).execute();
 
                 }
 
                 //SignUpActivity.mViewPager.setCurrentItem(3);
             }
         });
-
 
         return rootView;
     }
@@ -131,7 +139,7 @@ public class MobileNumberFragment extends Fragment {
 
                 if (jsonObject.getString("status").equalsIgnoreCase("success")) {
                     JSONObject jsonObjectResult = new JSONObject(jsonObject.getString("result"));
-                    SignUpActivity.PhoneNumber = mobileNumber;
+                    SignUpActivity.PhoneNumber = txtPhoneNumber.getUnmaskedText().toString();
                     SignUpActivity.mUserId = jsonObjectResult.getString("user_id");
                     SignUpActivity.mViewPager.setCurrentItem(1);
 

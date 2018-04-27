@@ -58,6 +58,7 @@
             android:padding="@dimen/_10sdp"
             android:textColor="@color/black"
             android:textColorHint="#aeb1b5"
+            android:lines="5"
             android:textSize="@dimen/_14sdp" />
 
 

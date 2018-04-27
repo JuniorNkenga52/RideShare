@@ -34,7 +34,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-
 public class GroupDetailActivity extends AppCompatActivity {
     private ImageView mBackIv;
 
@@ -133,13 +132,13 @@ public class GroupDetailActivity extends AppCompatActivity {
         ivEditGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                finish();
                 Intent i = new Intent(getApplicationContext(), CreateGroupActivity.class);
                 i.putExtra(Constant.intentKey.isEditGroup, true);
                 i.putExtra(Constant.intentKey.groupDetail, groupDetail);
                 startActivity(i);
 //                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                finish();
+
             }
         });
 

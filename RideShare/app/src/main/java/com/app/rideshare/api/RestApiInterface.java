@@ -44,6 +44,10 @@ public interface RestApiInterface {
     Call<SignupResponse> login(@Field("u_email") String mEmail, @Field("u_password") String mPassword, @Field("deviceToken") String deviceTocken, @Field("group_id") String mGroup_id);
 
     @FormUrlEncoded
+    @POST("user/getUserDetails")
+    Call<SignupResponse> getUserDetails(@Field("user_id") String user_id);
+
+    @FormUrlEncoded
     @POST("group/create")
     Call<GroupResponce> creategroup(@Field("group_name") String group_name, @Field("email") String email);
 

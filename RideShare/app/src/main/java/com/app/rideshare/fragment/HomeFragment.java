@@ -108,6 +108,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     private ImageView mClearLocationIv;
     private Polyline directionLine;
     private TextView mSearchCabTv;
+    private LinearLayout linearLayout;
     private ArrayList<Marker> mlistMarker;
     private String duration;
 
@@ -184,12 +185,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         });
 
         mSearchCabTv = (TextView) rootview.findViewById(R.id.search_cab_iv);
+        linearLayout=rootview.findViewById(R.id.linearLayout);
         //mSearchCabTv.setTypeface(mRobotoReguler);
         if (mUserType.equals("2")) {
             mSearchCabTv.setText("Find Rider");
         }
 
-        mSearchCabTv.setOnClickListener(new View.OnClickListener() {
+        linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -282,7 +284,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                     if (mLocationSearchAtv.getText().toString().isEmpty()) {
                         ToastUtils.showShort(getActivity(), "Please select destination location.");
                     } else {
-                        getRiderInfoDialog(selectedRide);
+                        if(selectedRide!=null){
+                            getRiderInfoDialog(selectedRide);
+                        }
                     }
 
                 }
@@ -453,19 +457,20 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         TextView mVahicalTv = (TextView) dialog.findViewById(R.id.vahical_tv);
         TextView mAddressTv = (TextView) dialog.findViewById(R.id.address_tv);
         LinearLayout mOther_info = (LinearLayout) dialog.findViewById(R.id.ride_other_info);
+        TextView txt_maxPerson=dialog.findViewById(R.id.txt_maxPerson);
+        TextView mGetRideTv = (TextView) dialog.findViewById(R.id.get_ride_tv);
+        TextView mCancelTv = (TextView) dialog.findViewById(R.id.cancel_ride_tv);
+
         try {
             mNameTv.setText(rider.getmFirstName());
             mAddressTv.setText(rider.getmAddress());
+            if (mUserType.equals("2") || !rider.getmType().equals("2")) {
+                mOther_info.setVisibility(View.GONE);
+                mDetails_tv.setText("Rider details");
+                mGetRideTv.setText("Offer Ride");
+            }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        TextView mGetRideTv = (TextView) dialog.findViewById(R.id.get_ride_tv);
-        TextView mCancelTv = (TextView) dialog.findViewById(R.id.cancel_ride_tv);
-        if (mUserType.equals("2")) {
-            mOther_info.setVisibility(View.GONE);
-            mDetails_tv.setText("Rider details");
-            mGetRideTv.setText("Offer Ride");
         }
         /*mGetRideTv.setTypeface(mRobotoReguler);
         mCancelTv.setTypeface(mRobotoReguler);*/
@@ -476,7 +481,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                 dialog.cancel();
             }
         });
-
         mGetRideTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

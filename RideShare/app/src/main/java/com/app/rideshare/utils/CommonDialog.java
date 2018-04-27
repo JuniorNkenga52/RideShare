@@ -8,12 +8,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
+import android.support.v4.content.FileProvider;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
+import com.app.rideshare.BuildConfig;
 import com.app.rideshare.R;
 
 public class CommonDialog {
@@ -52,14 +56,36 @@ public class CommonDialog {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+                    Intent sendIntent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                    sendIntent.putExtra("sms_body", shareData);
+                    sendIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    activity.startActivity(sendIntent);
+                } else {
+                    Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                    sendIntent.putExtra("sms_body", shareData);
+                    sendIntent.setType("vnd.android-dir/mms-sms");
+                    activity.startActivity(sendIntent);
+                }*/
+                try{
+                    Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                    sendIntent.putExtra("sms_body", shareData);
+                    sendIntent.setType("vnd.android-dir/mms-sms");
+                    activity.startActivity(sendIntent);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+
+                /*Intent sendIntent = new Intent(Intent.ACTION_VIEW);
                 sendIntent.putExtra("sms_body", shareData);
                 sendIntent.setType("vnd.android-dir/mms-sms");
                 try {
                     activity.startActivity(sendIntent);
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                }*/
 
             }
         });

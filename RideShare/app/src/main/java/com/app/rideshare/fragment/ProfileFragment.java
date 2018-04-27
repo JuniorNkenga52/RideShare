@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,17 @@ import com.app.rideshare.R;
 import com.app.rideshare.activity.CreateGroupActivity;
 import com.app.rideshare.activity.EditProfileActivity;
 import com.app.rideshare.activity.HistoryActivity;
+import com.app.rideshare.activity.HomeActivity;
 import com.app.rideshare.activity.MyGroupActivity;
 import com.app.rideshare.activity.SettingActivity;
 import com.app.rideshare.activity.SignUpActivity;
+import com.app.rideshare.listner.OnBackPressedListener;
 import com.app.rideshare.utils.PrefUtils;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements  OnBackPressedListener {
 
     CircularImageView imgProfilePhoto;
     TextView txtUserName;
@@ -47,7 +51,7 @@ public class ProfileFragment extends Fragment {
                 false);
 
         PrefUtils.initPreference(getActivity());
-
+        HomeActivity.setOnBackPressedListener(this);
         imgProfilePhoto = (CircularImageView) rootView.findViewById(R.id.imgProfilePhoto);
 
         if (PrefUtils.getUserInfo().getProfile_image().length() != 0) {
@@ -150,7 +154,10 @@ public class ProfileFragment extends Fragment {
 
             }
         });
-
         return rootView;
+    }
+    @Override
+    public void doBack() {
+        getActivity().finish();
     }
 }

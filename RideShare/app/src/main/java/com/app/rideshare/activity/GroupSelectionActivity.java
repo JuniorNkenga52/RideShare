@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
-import com.app.rideshare.fragment.ExploreFragment;
 import com.app.rideshare.model.GroupList;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
@@ -50,7 +49,7 @@ public class GroupSelectionActivity extends AppCompatActivity {
         context = this;
         txtSearchGroup = (EditText) findViewById(R.id.txtSearchGroup);
         mLvGroup = (ListView) findViewById(R.id.mLvGroup);
-        txtHeaderName=findViewById(R.id.txtHeaderName);
+        txtHeaderName = findViewById(R.id.txtHeaderName);
         txtHeaderName.setText("Select Group");
 
         new AsyncAllGroup().execute();
@@ -299,15 +298,9 @@ public class GroupSelectionActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.joinGroup(PrefUtils.getUserInfo().getmUserId(), group_id,status);
+                return RideShareApi.joinGroup(PrefUtils.getUserInfo().getmUserId(), group_id, status);
             } catch (Exception e) {
                 return null;
             }

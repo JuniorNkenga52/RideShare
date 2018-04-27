@@ -1,11 +1,17 @@
 package com.app.rideshare.activity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,6 +31,7 @@ import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.model.User;
+import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
@@ -35,6 +42,8 @@ import com.nguyenhoanglam.imagepicker.activity.ImagePicker;
 import com.nguyenhoanglam.imagepicker.activity.ImagePickerActivity;
 import com.nguyenhoanglam.imagepicker.model.Image;
 import com.squareup.picasso.Picasso;
+import com.tangxiaolv.telegramgallery.GalleryActivity;
+import com.tangxiaolv.telegramgallery.GalleryConfig;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -73,11 +82,18 @@ public class EditProfileActivity extends AppCompatActivity {
     private LinearLayout layout_other_op;
 
     private CircularImageView mProfileIv;
-    ArrayList<Image> images;
+    //ArrayList<Image> images;
 
     private static final int REQUEST_CODE_CHOOSE = 101;
     CustomProgressDialog mProgressDialog;
     private int ch_val = 0;
+    Activity activity;
+
+    Uri imageUri = null;
+
+    private int PICK_CAMERA = 1;
+    private int PICK_GALLERY = 2;
+    String imagePath;
     //Button mprivileges;
 
     @Override
@@ -86,6 +102,8 @@ public class EditProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile_new);
 
         PrefUtils.initPreference(this);
+
+        activity=this;
         mUserBean = PrefUtils.getUserInfo();
         mProgressDialog = new CustomProgressDialog(this);
 
@@ -106,9 +124,21 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //updateProfile();
-                new AsyncUpdateUserProfile().execute();
+                if(mFirstNameEt.getText().toString().isEmpty()){
+                    ToastUtils.showShort(EditProfileActivity.this, "Please enter First Name");
+                }else if(mLastNameEt.getText().toString().isEmpty()){
+                    ToastUtils.showShort(EditProfileActivity.this, "Please enter Last Name");
+                }else if(mAddressEt.getText().toString().isEmpty()){
+                    ToastUtils.showShort(EditProfileActivity.this, "Please enter Home Address");
+                }else if(!AppUtils.isEmail(mEmailEt.getText().toString()) ||mEmailEt.getText().toString().isEmpty()){
+                    ToastUtils.showShort(EditProfileActivity.this, "- Please enter valid Email Address");
+                }else {
+                    new AsyncUpdateUserProfile().execute();
+                }
+
             }
         });
+        // else if (!AppUtils.isEmail(email) || email.isEmpty())
         mUserNameTv = (TextView) findViewById(R.id.username_tv);
         // mUserNameTv.setTypeface(mRobotoMedium);
         mUserNameTv.setText(mUserBean.getmFirstName() + " " + mUserBean.getmLastName());
@@ -327,7 +357,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 new TedPermission(EditProfileActivity.this)
                         .setPermissionListener(permissionlistener)
                         .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                        .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA)
                         .check();
 
             }
@@ -350,14 +380,16 @@ public class EditProfileActivity extends AppCompatActivity {
     PermissionListener permissionlistener = new PermissionListener() {
         @Override
         public void onPermissionGranted() {
-            ImagePicker.create(EditProfileActivity.this)
+            /*ImagePicker.create(EditProfileActivity.this)
                     .folderMode(true)
                     .folderTitle("Folder")
                     .imageTitle("Tap to select")
                     .single()
                     .showCamera(true)
                     .imageDirectory("Camera")
-                    .start(REQUEST_CODE_CHOOSE);
+                    .start(REQUEST_CODE_CHOOSE);*/
+            selectImage();
+
         }
 
         @Override
@@ -366,10 +398,51 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     };
 
+    private void selectImage() {
+        final CharSequence[] items = {"Take Photo", "Choose from Library"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Take Photo")) {
+
+                    String fileName = "Camera_Example.jpg";
+
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.Images.Media.TITLE, fileName);
+                    values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
+
+                    imageUri = activity.getContentResolver().insert(
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                    startActivityForResult(intent, PICK_CAMERA);
+                } else if (items[item].equals("Choose from Library")) {
+                    GalleryConfig config = new GalleryConfig.Build()
+                            .limitPickPhoto(1)
+                            .singlePhoto(false)
+                            .filterMimeTypes(new String[]{"image/gif"})
+                            .hintOfPick("You can select max 1 photos")
+                            .build();
+                    GalleryActivity.openActivity(activity, PICK_GALLERY, config);
+                }
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        builder.show();
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
+        /*if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
             try {
                 images = data.getParcelableArrayListExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES);
                 mProfileIv.setImageURI(Uri.parse(images.get(0).getPath()));
@@ -377,7 +450,60 @@ public class EditProfileActivity extends AppCompatActivity {
             } catch (Exception e) {
 
             }
+        }*/
+        if (PICK_GALLERY == requestCode && resultCode == Activity.RESULT_OK) {
+            ArrayList<String> photos = (ArrayList<String>) data.getSerializableExtra(GalleryActivity.PHOTOS);
+
+            imagePath=photos.get(0);
+            Picasso.with(activity).load(photos.get(0)).into(mProfileIv);
+        } else if (PICK_CAMERA == requestCode && resultCode == Activity.RESULT_OK) {
+
+
+            imagePath =  convertImageUriToFile(imageUri, activity);
+            //SignUpActivity.ProfilePhotoPath =  convertImageUriToFile(imageUri, activity);
+
+            Picasso.with(activity).load("file://" + imagePath).resize(300, 300).centerCrop().into(mProfileIv);
         }
+    }
+
+    public String convertImageUriToFile(Uri imageUri, Activity activity) {
+
+        Cursor cursor = null;
+        String Path = "";
+        try {
+            String[] proj = {
+                    MediaStore.Images.Media.DATA,
+                    MediaStore.Images.Media._ID,
+                    MediaStore.Images.Thumbnails._ID,
+                    MediaStore.Images.ImageColumns.ORIENTATION
+            };
+
+            cursor = activity.getContentResolver().query(
+
+                    imageUri,         //  Get data for specific image URI
+                    proj,             //  Which columns to return
+                    null,             //  WHERE clause; which rows to return (all rows)
+                    null,             //  WHERE clause selection arguments (none)
+                    null              //  Order-by clause (ascending by name)
+
+            );
+
+            int file_ColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+            int size = cursor.getCount();
+
+            if (size == 0) {
+            } else {
+                if (cursor.moveToFirst()) {
+                    Path = cursor.getString(file_ColumnIndex);
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return Path;
     }
 
     private void updateProfile() {
@@ -396,10 +522,10 @@ public class EditProfileActivity extends AppCompatActivity {
         RequestBody requestFile = null;
         MultipartBody.Part body = null;
 
-        if (images != null) {
+        /*if (images != null) {
             requestFile = RequestBody.create(RestApiInterface.MULTIPART, new File(images.get(0).getPath()));
             body = MultipartBody.Part.createFormData("profile_image", images.get(0).getName(), requestFile);
-        }
+        }*/
 
         ApiServiceModule.createService(RestApiInterface.class).updateProfile(mUserId, mfirstname, mlatname, mMobile, body, mEmail, mVh_Model, mVh_Type, mMax_Passengers, mReq_driver, mGroupid).enqueue(new Callback<SignupResponse>() {
             @Override
@@ -424,8 +550,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private class AsyncUpdateUserProfile extends AsyncTask<Objects, Void, String> {
 
         CustomProgressDialog mProgressDialog;
-        String imagePath = "";
-
         String mVh_Model = "";
         String mVh_Type = "";
         String mMax_Passengers = "";
@@ -436,11 +560,11 @@ public class EditProfileActivity extends AppCompatActivity {
             mProgressDialog = new CustomProgressDialog(EditProfileActivity.this);
             mProgressDialog.show();
 
-            if (images != null) {
+            /*if (images != null) {
                 imagePath = images.get(0).getPath();
                 //requestFile = RequestBody.create(RestApiInterface.MULTIPART, new File(images.get(0).getPath()));
                 //body = MultipartBody.Part.createFormData("profile_image", images.get(0).getName(), requestFile);
-            }
+            }*/
 
             if(ch_val == 1) {
                 mVh_Model = mVhmodel_Et.getText().toString();

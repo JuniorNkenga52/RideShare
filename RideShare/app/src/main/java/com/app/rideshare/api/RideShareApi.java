@@ -5,7 +5,9 @@ import java.util.LinkedHashMap;
 
 public class RideShareApi {
 
-    public static final String SERVER_URL = "http://php.rlogical.com/rideshare/api/";
+    //public static final String SERVER_URL = "http://php.rlogical.com/rideshare/api/";
+    //public static final String SERVER_URL = "http://ec2-18-220-69-218.us-east-2.compute.amazonaws.com/rideshare/api/";
+    public static final String SERVER_URL = "http://ec2-13-58-7-10.us-east-2.compute.amazonaws.com/rideshare/api/";
 
     public static String postApiCall(String uid, String type) {
         try {
@@ -89,6 +91,20 @@ public class RideShareApi {
         }
     }
 
+    public static String getGroupDetailFromId(String user_id, String group_id) {
+        try {
+            String URL = SERVER_URL + "group/getGroupDetails";
+
+            LinkedHashMap<String, String> params = new LinkedHashMap<>();
+            params.put("user_id", user_id);
+            params.put("group_id", group_id);
+
+            return RideShareApiCall.postWebserviceCall(URL, params);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static String groupusers(String user_id, String group_id) {
         try {
             String URL = SERVER_URL + "user/groupusers";
@@ -130,7 +146,7 @@ public class RideShareApi {
         }
     }
 
-    public static String createGroup(String UserId,String category_id, String group_name, String group_description) {
+    public static String createGroup(String UserId, String category_id, String group_name, String group_description) {
         try {
             String URL = SERVER_URL + "group/createNew";
 
@@ -146,7 +162,7 @@ public class RideShareApi {
         }
     }
 
-    public static String editGroup(String UserId,String group_id, String category_id, String group_name, String group_description) {
+    public static String editGroup(String UserId, String group_id, String category_id, String group_name, String group_description) {
         try {
             String URL = SERVER_URL + "group/editGroup";
 
@@ -176,10 +192,11 @@ public class RideShareApi {
             multipart.addFormField("address", address);
             multipart.addFormField("u_email", u_email);
 
-            if(profile_image.length() == 0){
-                multipart.addFormField("profile_image", "");
+            File file = new File(profile_image);
+            if (file.exists()) {
+                multipart.addFilePart("profile_image", file);
             } else {
-                multipart.addFilePart("profile_image", new File(profile_image));
+                multipart.addFormField("profile_image", "");
             }
 
             multipart.addFormField("vehicle_model", vehicle_model);

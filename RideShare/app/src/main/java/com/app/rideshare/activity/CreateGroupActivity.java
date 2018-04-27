@@ -1,5 +1,6 @@
 package com.app.rideshare.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -53,6 +54,7 @@ public class CreateGroupActivity extends AppCompatActivity {
     ThemeAdapter mAdapter;
     private boolean isEditGroupDetail;
     GroupList groupDetailInfo;
+    Activity activity;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,7 +69,7 @@ public class CreateGroupActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        activity=this;
         if (isEditGroupDetail) {
             getSupportActionBar().setTitle("Edit Group");
             groupDetailInfo = (GroupList) intent.getSerializableExtra(Constant.intentKey.groupDetail);
@@ -79,6 +81,16 @@ public class CreateGroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+                if (isEditGroupDetail){
+                    Intent ii = new Intent(activity, GroupDetailActivity.class);
+                    ii.putExtra("groupDetail", groupDetailInfo);
+                    ii.putExtra("mTag", "EditGroup");
+                    ii.putExtra(Constant.intentKey.MyGroup, true);
+                    startActivity(ii);
+                    //startActivity(new Intent(activity,GroupDetailActivity.class));
+                    finish();
+                }
+
             }
         });
 
@@ -148,7 +160,20 @@ public class CreateGroupActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
+        /*Intent ii = new Intent(activity, GroupDetailActivity.class);
+        ii.putExtra("groupDetail", groupDetailInfo);
+        ii.putExtra("mTag", "EditGroup");
+        ii.putExtra(Constant.intentKey.MyGroup, true);
+        finish();*/
+        if (isEditGroupDetail){
+            Intent ii = new Intent(activity, GroupDetailActivity.class);
+            ii.putExtra("groupDetail", groupDetailInfo);
+            ii.putExtra("mTag", "EditGroup");
+            ii.putExtra(Constant.intentKey.MyGroup, true);
+            startActivity(ii);
+            //startActivity(new Intent(activity,GroupDetailActivity.class));
+            finish();
+        }
 //        RideShareApp.mHomeTabPos = 3;
 //        Intent i = new Intent(CreateGroupActivity.this, HomeNewActivity.class);
 //        startActivity(i);

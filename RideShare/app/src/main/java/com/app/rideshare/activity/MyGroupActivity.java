@@ -96,6 +96,7 @@ public class MyGroupActivity extends AppCompatActivity {
         ivCreateGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                finish();
                 Intent i = new Intent(getApplicationContext(), CreateGroupActivity.class);
                 i.putExtra(Constant.intentKey.isEditGroup, false);
                 startActivity(i);

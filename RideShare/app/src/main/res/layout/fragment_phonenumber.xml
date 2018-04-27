@@ -47,7 +47,6 @@
             android:background="#00000000"
             android:gravity="center"
             android:hint="(   )    -    "
-            android:inputType="number"
             android:padding="@dimen/_8sdp"
             android:textColor="@color/white"
             android:textColorHighlight="@color/white"
