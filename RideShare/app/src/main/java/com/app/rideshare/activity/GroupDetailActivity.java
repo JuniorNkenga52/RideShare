@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -23,13 +22,10 @@ import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.GroupList;
 import com.app.rideshare.model.User;
 import com.app.rideshare.utils.CommonDialog;
-import com.app.rideshare.utils.Constant;
+import com.app.rideshare.utils.Constants;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -67,7 +63,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         if(getIntent().hasExtra("groupDetail")){
             groupDetail = (GroupList) getIntent().getSerializableExtra("groupDetail");
             mTag = getIntent().getStringExtra("mTag");
-            MyGroup =  getIntent().getBooleanExtra(Constant.intentKey.MyGroup, false);
+            MyGroup =  getIntent().getBooleanExtra(Constants.intentKey.MyGroup, false);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -142,8 +138,8 @@ public class GroupDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 finish();
                 Intent i = new Intent(getApplicationContext(), CreateGroupActivity.class);
-                i.putExtra(Constant.intentKey.isEditGroup, true);
-                i.putExtra(Constant.intentKey.groupDetail, groupDetail);
+                i.putExtra(Constants.intentKey.isEditGroup, true);
+                i.putExtra(Constants.intentKey.groupDetail, groupDetail);
                 startActivity(i);
 //                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 

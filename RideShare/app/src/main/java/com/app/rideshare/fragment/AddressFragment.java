@@ -17,12 +17,11 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.model.SearchPlace;
-import com.app.rideshare.utils.ToastUtils;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.TypefaceUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -33,7 +32,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
-import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -41,7 +39,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-public class AddressFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class AddressFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     Typeface mRobotoRegular;
 
@@ -64,11 +62,11 @@ public class AddressFragment extends Fragment implements GoogleApiClient.Connect
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_address, container,
                 false);
 
-        mRobotoRegular= TypefaceUtils.getOpenSansRegular(getActivity());
+        mRobotoRegular = TypefaceUtils.getOpenSansRegular(getActivity());
 
         imgBack = (ImageView) rootView.findViewById(R.id.imgBack);
         imgBack.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +85,7 @@ public class AddressFragment extends Fragment implements GoogleApiClient.Connect
             public void onClick(View v) {
 
                 if (pickUpText.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(getActivity(), "Please enter Home Address.");
+                    MessageUtils.showFailureMessage(getActivity(), "Please enter Home Address.");
                 } else {
                     SignUpActivity.HomeAddress = pickUpText.getText().toString().trim();
 
@@ -96,7 +94,7 @@ public class AddressFragment extends Fragment implements GoogleApiClient.Connect
             }
         });
 
-        mlist=new ArrayList<>();
+        mlist = new ArrayList<>();
 
         pickUpText = (AutoCompleteTextView) rootView.findViewById(R.id.autoCompleteTextView);
         pickUpText.setTypeface(mRobotoRegular);
@@ -266,7 +264,7 @@ public class AddressFragment extends Fragment implements GoogleApiClient.Connect
 
                 final Status status = autocompletePredictions.getStatus();
                 if (!status.isSuccess()) {
-                    Toast.makeText(getContext(), "Error contacting API: " + status.toString(), Toast.LENGTH_SHORT).show();
+                    MessageUtils.showFailureMessage(getContext(), "Error contacting API: " + status.toString());
 
                     autocompletePredictions.release();
                     return null;

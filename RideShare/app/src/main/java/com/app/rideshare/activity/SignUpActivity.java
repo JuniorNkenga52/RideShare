@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -27,7 +26,6 @@ import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.widget.CustomViewPager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.squareup.picasso.Picasso;
 import com.tangxiaolv.telegramgallery.GalleryActivity;
 
 import java.util.ArrayList;
@@ -35,7 +33,7 @@ import java.util.ArrayList;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    public static String token  = "";
+    public static String token = "";
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     Context context;
 
@@ -100,7 +98,7 @@ public class SignUpActivity extends AppCompatActivity {
         startActivity(i);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();*/
-        if(mViewPager.getCurrentItem() == 0){
+        if (mViewPager.getCurrentItem() == 0) {
             finish();
         } else {
             int pos = mViewPager.getCurrentItem() - 1;
@@ -150,9 +148,9 @@ public class SignUpActivity extends AppCompatActivity {
             } else if (position == 3) {
                 return new AddressFragment();
             } else if (position == 4) {
-                return new EmailFragment()   ;
+                return new EmailFragment();
             } else if (position == 5) {
-                return new ProfilePhotoFragment()   ;
+                return new ProfilePhotoFragment();
             } else
                 return new OTPFragment();
         }

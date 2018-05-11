@@ -1,8 +1,10 @@
 package com.app.rideshare.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,26 +30,24 @@ import java.util.ArrayList;
 
 public class NotificationFragment extends Fragment {
 
-    ArrayList<NotificationList> mListNotification = new ArrayList<>();
-    NotificationAdapter adapterNotification;
+    private ArrayList<NotificationList> mListNotification = new ArrayList<>();
+    private NotificationAdapter adapterNotification;
     private ListView mLvNotification;
 
     private TextView mNoUserTv;
 
     public static NotificationFragment newInstance() {
-        NotificationFragment fragment = new NotificationFragment();
-        return fragment;
+        return new NotificationFragment();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_notificarion, container,
                 false);
 
-        mLvNotification = (ListView) rootView.findViewById(R.id.mLvGroup);
+        mLvNotification = rootView.findViewById(R.id.mLvGroup);
 
-        mNoUserTv = (TextView) rootView.findViewById(R.id.no_user);
+        mNoUserTv = rootView.findViewById(R.id.no_user);
         mNoUserTv.setVisibility(View.GONE);
 
         new AsyncNotification().execute();
@@ -55,20 +55,19 @@ public class NotificationFragment extends Fragment {
         return rootView;
     }
 
+    @SuppressLint("StaticFieldLeak")
     public class AsyncNotification extends AsyncTask<Object, Integer, Object> {
 
-        CustomProgressDialog mProgressDialog;
+        private CustomProgressDialog mProgressDialog;
 
-        public AsyncNotification() {
-
+        AsyncNotification() {
             mProgressDialog = new CustomProgressDialog(getActivity());
-            mProgressDialog.show();
         }
 
         @Override
         public void onPreExecute() {
             super.onPreExecute();
-
+            mProgressDialog.show();
         }
 
         @Override
@@ -87,6 +86,7 @@ public class NotificationFragment extends Fragment {
             mProgressDialog.dismiss();
 
             try {
+
                 JSONObject jsonObject = new JSONObject(result.toString());
 
                 if (jsonObject.getString("status").equalsIgnoreCase("success")) {
@@ -94,6 +94,7 @@ public class NotificationFragment extends Fragment {
                     JSONArray jArrayResult = new JSONArray(jsonObject.getString("message"));
 
                     for (int i = 0; i < jArrayResult.length(); i++) {
+
                         JSONObject jObjResult = jArrayResult.getJSONObject(i);
 
                         NotificationList bean = new NotificationList();
@@ -113,13 +114,10 @@ public class NotificationFragment extends Fragment {
                         bean.setStatus(jObjResult.getString("status"));
 
                         mListNotification.add(bean);
-
                     }
 
-                    if (mListNotification.size() == 0) {
+                    if (mListNotification.size() == 0)
                         mNoUserTv.setVisibility(View.VISIBLE);
-                    }
-
 
                     adapterNotification = new NotificationAdapter();
                     mLvNotification.setAdapter(adapterNotification);
@@ -129,16 +127,15 @@ public class NotificationFragment extends Fragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-
             }
         }
     }
 
     private class NotificationAdapter extends BaseAdapter {
+
         private LayoutInflater mInflater;
 
         private NotificationAdapter() {
-
             mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
@@ -158,15 +155,14 @@ public class NotificationFragment extends Fragment {
         }
 
         private class ViewHolder {
-            CircularImageView circularImageView;
-            TextView mUserName;
-            TextView mGroupName;
-            ImageView imgDecline;
-            ImageView imgAccept;
-
+            private CircularImageView circularImageView;
+            private TextView mUserName;
+            private TextView mGroupName;
+            private ImageView imgDecline;
+            private ImageView imgAccept;
         }
 
-
+        @SuppressLint("InflateParams")
         @Override
         public View getView(final int pos, View vi, ViewGroup parent) {
 
@@ -178,40 +174,42 @@ public class NotificationFragment extends Fragment {
 
                 holder = new ViewHolder();
 
-                holder.circularImageView = (CircularImageView) vi.findViewById(R.id.circularImageView);
-                holder.mUserName = (TextView) vi.findViewById(R.id.mUserName);
-                holder.mGroupName = (TextView) vi.findViewById(R.id.mGroupName);
+                holder.circularImageView = vi.findViewById(R.id.circularImageView);
+                holder.mUserName = vi.findViewById(R.id.mUserName);
+                holder.mGroupName = vi.findViewById(R.id.mGroupName);
 
-                holder.imgDecline = (ImageView) vi.findViewById(R.id.imgDecline);
-                holder.imgAccept = (ImageView) vi.findViewById(R.id.imgAccept);
+                holder.imgDecline = vi.findViewById(R.id.imgDecline);
+                holder.imgAccept = vi.findViewById(R.id.imgAccept);
 
                 vi.setTag(holder);
             } else {
                 holder = (ViewHolder) vi.getTag();
             }
 
-            final NotificationList bean = mListNotification.get(pos);
+            final NotificationList notifBean = mListNotification.get(pos);
 
-            holder.mUserName.setText(bean.getU_firstname() + " " + bean.getU_lastname());
-            holder.mGroupName.setText(bean.getGroup_name());
+            holder.mUserName.setText(String.format("%s %s", notifBean.getU_firstname(), notifBean.getU_lastname()));
+            holder.mGroupName.setText(notifBean.getGroup_name());
 
-            Picasso.with(getActivity()).load(bean.getProfile_image()).resize(300, 300)
+            Picasso.with(getActivity()).load(notifBean.getProfile_image()).resize(300, 300)
                     .centerCrop().error(R.drawable.user_icon).into(holder.circularImageView);
 
-            //PrefUtils.getUserInfo().getmUserId()
+            holder.imgAccept.setTag(notifBean);
             holder.imgAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    new AsyncJoinGroup(bean.getU_id(), bean.getGroup_id(), "2").execute();
+                    final NotificationList selNotif = (NotificationList) v.getTag();
+                    new AsyncJoinGroup(selNotif.getU_id(), selNotif.getGroup_id(), "2").execute();
                     mListNotification.remove(pos);
                 }
             });
 
+            holder.imgDecline.setTag(notifBean);
             holder.imgDecline.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new AsyncJoinGroup(bean.getU_id(), bean.getGroup_id(), "3").execute();
+                    final NotificationList selNotif = (NotificationList) v.getTag();
+                    new AsyncJoinGroup(selNotif.getU_id(), selNotif.getGroup_id(), "3").execute();
                     mListNotification.remove(pos);
                 }
             });
@@ -219,27 +217,28 @@ public class NotificationFragment extends Fragment {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     public class AsyncJoinGroup extends AsyncTask<Object, Integer, Object> {
 
-        String user_id;
-        String group_id;
-        String status;
-        CustomProgressDialog mProgressDialog;
+        private CustomProgressDialog mProgressDialog;
 
-        public AsyncJoinGroup(String user_id, String group_id, String status) {
+        private String user_id;
+        private String group_id;
+        private String status;
+
+        AsyncJoinGroup(String user_id, String group_id, String status) {
 
             this.user_id = user_id;
             this.group_id = group_id;
             this.status = status;
 
             mProgressDialog = new CustomProgressDialog(getActivity());
-            mProgressDialog.show();
         }
 
         @Override
         public void onPreExecute() {
             super.onPreExecute();
-
+            mProgressDialog.show();
         }
 
         @Override
@@ -258,17 +257,16 @@ public class NotificationFragment extends Fragment {
             mProgressDialog.dismiss();
 
             try {
+
                 JSONObject jsonObject = new JSONObject(result.toString());
 
-                if (jsonObject.getString("status").equalsIgnoreCase("success")) {
-
+                if (jsonObject.getString("status").equalsIgnoreCase("success"))
                     adapterNotification.notifyDataSetChanged();
-                }
+
             } catch (Exception e) {
                 e.printStackTrace();
 
             }
         }
     }
-
 }

@@ -1,14 +1,11 @@
 package com.app.rideshare.fragment;
 
+import android.Manifest;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.InputFilter;
 import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +18,15 @@ import com.app.rideshare.R;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.utils.AppUtils;
-import com.app.rideshare.utils.ToastUtils;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.github.pinball83.maskededittext.MaskedEditText;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class MobileNumberFragment extends Fragment {
 
@@ -98,11 +99,11 @@ public class MobileNumberFragment extends Fragment {
                 try {
                     String result = txtPhoneNumber.getUnmaskedText().toString();
                     if (result.length() == 0) {
-                        ToastUtils.showShort(getActivity(), "Please enter Mobile Number.");
-                    } else if (result.replaceAll(" ","").length() != 10) {
-                        ToastUtils.showShort(getActivity(), "Please enter valid Mobile Number.");
+                        MessageUtils.showFailureMessage(getActivity(), "Please enter Mobile Number.");
+                    } else if (result.replaceAll(" ", "").length() != 10) {
+                        MessageUtils.showFailureMessage(getActivity(), "Please enter valid Mobile Number.");
                     } else if (!chkIAgree.isChecked()) {
-                        ToastUtils.showShort(getActivity(), "You must agree with the Terms and Conditions");
+                        MessageUtils.showFailureMessage(getActivity(), "You must agree with the Terms and Conditions");
                     } else {
                         //String numberMo = "+1"+ result;
                         String numberMo = "+91" + result;
@@ -116,19 +117,35 @@ public class MobileNumberFragment extends Fragment {
                         if (AppUtils.isInternetAvailable(getActivity())) {
                             new AsyncSendTextMessage(numberMo).execute();
                         } else {
-                            AppUtils.showNoInternetAvailable(getActivity());
+                            MessageUtils.showNoInternetAvailable(getActivity());
                         }
                     }
-                }catch (Exception e){
-                    ToastUtils.showShort(getActivity(), "Please enter Mobile Number.");
+                } catch (Exception e) {
+                    MessageUtils.showFailureMessage(getActivity(), "Please enter Mobile Number.");
                     e.printStackTrace();
                 }
                 //SignUpActivity.mViewPager.setCurrentItem(3);
             }
         });
 
+        new TedPermission(getActivity())
+                .setPermissionListener(permissionlistener)
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                .setPermissions(Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS)
+                .check();
+
         return rootView;
     }
+
+    PermissionListener permissionlistener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+        }
+
+        @Override
+        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+        }
+    };
 
     public class AsyncSendTextMessage extends AsyncTask<Object, Integer, Object> {
 

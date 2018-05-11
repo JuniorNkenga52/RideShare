@@ -7,23 +7,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
 import com.app.rideshare.adapter.PlaceAutocompleteAdapter;
 import com.app.rideshare.model.SearchPlace;
-import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.utils.TypefaceUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -39,7 +34,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import java.util.ArrayList;
 
 
-public class AutoCompleteLocationActivity extends AppCompatActivity  implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class AutoCompleteLocationActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     AutoCompleteTextView pickUpText;
 
@@ -53,23 +48,24 @@ public class AutoCompleteLocationActivity extends AppCompatActivity  implements 
     ArrayList<SearchPlace> mlist;
 
     private ImageView mBackIv;
-    int postion=0;
+    int postion = 0;
 
     Typeface mRobotoRegular;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auto_complte_location);
 
-        mRobotoRegular= TypefaceUtils.getOpenSansRegular(this);
+        mRobotoRegular = TypefaceUtils.getOpenSansRegular(this);
 
         pickUpText = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         pickUpText.setTypeface(mRobotoRegular);
 
-        mPlaceList=(ListView)findViewById(R.id.place_lv);
-        mlist=new ArrayList<>();
+        mPlaceList = (ListView) findViewById(R.id.place_lv);
+        mlist = new ArrayList<>();
 
-        mBackIv=(ImageView)findViewById(R.id.back_iv);
+        mBackIv = (ImageView) findViewById(R.id.back_iv);
         mBackIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,15 +90,16 @@ public class AutoCompleteLocationActivity extends AppCompatActivity  implements 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                postion=position;
-                    PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
-                            .getPlaceById(googleApiClient, mlist.get(position).getmLocationId());
-                    placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+                postion = position;
+                PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                        .getPlaceById(googleApiClient, mlist.get(position).getmLocationId());
+                placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
             }
         });
 
 
     }
+
     public ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(final PlaceBuffer places) {
@@ -112,24 +109,26 @@ public class AutoCompleteLocationActivity extends AppCompatActivity  implements 
             }
             try {
                 Place _place = places.get(0);
-                String latitude= ""+_place.getLatLng().latitude;
-                String longitude=""+ _place.getLatLng().longitude;
+                String latitude = "" + _place.getLatLng().latitude;
+                String longitude = "" + _place.getLatLng().longitude;
 
-                SearchPlace bean=mlist.get(postion);
+                SearchPlace bean = mlist.get(postion);
                 bean.setmLatitude(latitude);
                 bean.setmLongitude(longitude);
 
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("location",mlist.get(postion));
-                setResult(Activity.RESULT_OK,returnIntent);
+                returnIntent.putExtra("location", mlist.get(postion));
+                setResult(Activity.RESULT_OK, returnIntent);
                 finish();
 
 
-            }catch (Exception e){}
+            } catch (Exception e) {
+            }
             places.release();
         }
     };
-    public void refreshList(ArrayList<SearchPlace> mArrSearchLocation){
+
+    public void refreshList(ArrayList<SearchPlace> mArrSearchLocation) {
         mlist.clear();
         mlist.addAll(mArrSearchLocation);
         mPlaceList.setAdapter(new SearchLocatioAdapter());
@@ -149,6 +148,7 @@ public class AutoCompleteLocationActivity extends AppCompatActivity  implements 
     public void onConnectionSuspended(int i) {
 
     }
+
     private void getLocationFromPlaceId(String placeId, ResultCallback<PlaceBuffer> callback) {
         Places.GeoDataApi.getPlaceById(googleApiClient, placeId).setResultCallback(callback);
     }
@@ -184,15 +184,12 @@ public class AutoCompleteLocationActivity extends AppCompatActivity  implements 
         }
 
         @Override
-        public View getView(final int position, View convertView,
-                            ViewGroup parent) {
-            View row = null;
-            LayoutInflater L = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            row = L.inflate(R.layout.item_search_location, null);
+        public View getView(final int position, View convertView, ViewGroup parent) {
 
+            View row = getLayoutInflater().inflate(R.layout.item_search_location, null);
 
-            TextView lbl_item_searchlocation_address = (TextView) row.findViewById(R.id.lbl_item_searchlocation_address);
-            TextView lbl_item_searchlocation_name = (TextView) row.findViewById(R.id.lbl_item_searchlocation_name);
+            TextView lbl_item_searchlocation_address = row.findViewById(R.id.lbl_item_searchlocation_address);
+            TextView lbl_item_searchlocation_name = row.findViewById(R.id.lbl_item_searchlocation_name);
 
             lbl_item_searchlocation_address.setText(mlist.get(position).getmAddress());
             lbl_item_searchlocation_name.setText(mlist.get(position).getmArea());

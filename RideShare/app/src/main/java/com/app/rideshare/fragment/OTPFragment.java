@@ -22,10 +22,12 @@ import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.api.response.SendOTPResponse;
 import com.app.rideshare.model.User;
 import com.app.rideshare.utils.AppUtils;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.app.rideshare.widget.PinEntryEditText;
+import com.stfalcon.smsverifycatcher.OnSmsCatchListener;
+import com.stfalcon.smsverifycatcher.SmsVerifyCatcher;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,11 +49,11 @@ public class OTPFragment extends Fragment {
 
     //CustomProgressDialog mProgressDialog;
 
+    private SmsVerifyCatcher smsVerifyCatcher;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_otp, container,
-                false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_otp, container, false);
 
         context = getActivity();
 
@@ -70,8 +72,6 @@ public class OTPFragment extends Fragment {
 
         txtPin = (PinEntryEditText) rootView.findViewById(R.id.txtPin);
 
-        txtPin.setText("");
-
         txtResendOTP = (TextView) rootView.findViewById(R.id.txtResendOTP);
 
         txtResendOTP.setOnClickListener(new View.OnClickListener() {
@@ -79,8 +79,8 @@ public class OTPFragment extends Fragment {
             public void onClick(View v) {
                 if (AppUtils.isInternetAvailable(getActivity())) {
                     sendOTP(SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
-                }else {
-                    AppUtils.showNoInternetAvailable(getActivity());
+                } else {
+                    MessageUtils.showNoInternetAvailable(getActivity());
                 }
             }
         });
@@ -93,15 +93,15 @@ public class OTPFragment extends Fragment {
                 String otp = txtPin.getText().toString();
 
                 if (otp.length() == 0) {
-                    ToastUtils.showShort(getActivity(), "Please enter verification code.");
+                    MessageUtils.showFailureMessage(getActivity(), "Please enter verification code.");
                 } else if (otp.length() != 5) {
-                    ToastUtils.showShort(getActivity(), "Please enter valid verification code.");
+                    MessageUtils.showFailureMessage(getActivity(), "Please enter valid verification code.");
                 } else {
                     //sendOTP(otp, MobileNumberFragment.mUserId);
                     if (AppUtils.isInternetAvailable(getActivity())) {
                         new AsyncOTP(otp).execute();
-                    }else {
-                        AppUtils.showNoInternetAvailable(getActivity());
+                    } else {
+                        MessageUtils.showNoInternetAvailable(getActivity());
                     }
                 }
 
@@ -110,13 +110,29 @@ public class OTPFragment extends Fragment {
             }
         });
 
+        smsVerifyCatcher = new SmsVerifyCatcher(getActivity(), new OnSmsCatchListener<String>() {
+
+            @Override
+            public void onSmsCatch(String message) {
+                if (message.contains("RideWhiz")) {
+
+                    final String code = AppUtils.parseOTPFromSms(message);
+
+                    txtPin.setText(code);
+
+                    if (AppUtils.isInternetAvailable(getActivity()))
+                        new AsyncOTP(code).execute();
+                }
+            }
+        });
+
+        smsVerifyCatcher.onStart();
+
         return rootView;
     }
 
     public static void updateTest() {
-
         String number = "(" + SignUpActivity.PhoneNumber.substring(0, 3) + ") " + SignUpActivity.PhoneNumber.substring(3, 6) + "-" + SignUpActivity.PhoneNumber.substring(6, 10);
-
         txtPhoneNumberInfo.setText(context.getResources().getString(R.string.txt_enter_the_code) + " " + number);
     }
 
@@ -200,6 +216,8 @@ public class OTPFragment extends Fragment {
                         PrefUtils.putBoolean("islogin", true);
                         PrefUtils.putString("loginwith", "normal");
 
+                        smsVerifyCatcher.onStop();
+
                         if (PrefUtils.getBoolean("firstTime")) {
                             Intent i = new Intent(getActivity(), RideTypeActivity.class);
                             startActivity(i);
@@ -220,11 +238,11 @@ public class OTPFragment extends Fragment {
 
                     }
                 } else {
-                    ToastUtils.showShort(getContext(), "Please try again..");
+                    MessageUtils.showPleaseTryAgain(context);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                ToastUtils.showShort(getContext(), "Please try again..");
+                MessageUtils.showPleaseTryAgain(context);
             }
         }
     }
@@ -236,9 +254,9 @@ public class OTPFragment extends Fragment {
             @Override
             public void onResponse(Call<SendOTPResponse> call, Response<SendOTPResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    ToastUtils.showShort(getActivity(), "OTP Sent");
+                    MessageUtils.showSuccessMessage(getActivity(), "OTP Sent");
                 } else {
-                    ToastUtils.showShort(getActivity(), "Please try againg..");
+                    MessageUtils.showPleaseTryAgain(getActivity());
                 }
                 mProgressDialog.cancel();
             }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.app.rideshare.R;
 import com.app.rideshare.model.HistoryBean;
 import com.app.rideshare.utils.AppUtils;
+import com.app.rideshare.utils.DateUtils;
 import com.app.rideshare.utils.TypefaceUtils;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class HistoryAdapter extends BaseAdapter {
         this.context = context;
         this.mlist = mlist;
         mUserId = userid;
-        mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(context);
+        mRobotoMedium = TypefaceUtils.getTypefaceRobotoMedium(context);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -110,7 +111,7 @@ public class HistoryAdapter extends BaseAdapter {
 
         holder.mPickupAddressTv.setText(bean.getStarting_address());
         holder.mDropoffAddressTv.setText(bean.getEnding_address());
-        holder.mTimeTv.setText(AppUtils.dateformat(bean.getTime()));
+        holder.mTimeTv.setText(DateUtils.dateformat(bean.getTime()));
 
         return convertView;
     }

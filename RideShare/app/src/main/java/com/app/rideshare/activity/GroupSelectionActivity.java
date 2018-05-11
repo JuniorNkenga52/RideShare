@@ -1,7 +1,8 @@
 package com.app.rideshare.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 
 import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
-import com.app.rideshare.fragment.ExploreFragment;
 import com.app.rideshare.model.GroupList;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
@@ -48,8 +48,10 @@ public class GroupSelectionActivity extends AppCompatActivity {
         PrefUtils.initPreference(this);
 
         context = this;
-        txtSearchGroup = (EditText) findViewById(R.id.txtSearchGroup);
-        mLvGroup = (ListView) findViewById(R.id.mLvGroup);
+
+        txtSearchGroup = findViewById(R.id.txtSearchGroup);
+        mLvGroup = findViewById(R.id.mLvGroup);
+
         txtHeaderName = findViewById(R.id.txtHeaderName);
         txtHeaderName.setText("Select Group");
 
@@ -64,32 +66,28 @@ public class GroupSelectionActivity extends AppCompatActivity {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1,
-                                          int arg2, int arg3) {
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
             }
 
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-                                      int arg3) {
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
             }
         });
     }
 
-
+    @SuppressLint("StaticFieldLeak")
     public class AsyncAllGroup extends AsyncTask<Object, Integer, Object> {
 
-        CustomProgressDialog mProgressDialog;
+        private CustomProgressDialog mProgressDialog;
 
-        public AsyncAllGroup() {
-
+        AsyncAllGroup() {
             mProgressDialog = new CustomProgressDialog(context);
-            mProgressDialog.show();
         }
 
         @Override
         public void onPreExecute() {
             super.onPreExecute();
-
+            mProgressDialog.show();
         }
 
         @Override
@@ -108,6 +106,7 @@ public class GroupSelectionActivity extends AppCompatActivity {
             mProgressDialog.dismiss();
 
             try {
+
                 JSONObject jsonObject = new JSONObject(result.toString());
 
                 if (jsonObject.getString("status").equalsIgnoreCase("success")) {
@@ -178,6 +177,7 @@ public class GroupSelectionActivity extends AppCompatActivity {
         }
 
 
+        @SuppressLint("InflateParams")
         @Override
         public View getView(final int pos, View vi, ViewGroup parent) {
 
@@ -189,10 +189,14 @@ public class GroupSelectionActivity extends AppCompatActivity {
 
                 holder = new GroupAdapter.ViewHolder();
 
-                holder.imgGroup = (ImageView) vi.findViewById(R.id.imgGroup);
-                holder.txtGroupName = (TextView) vi.findViewById(R.id.txtGroupName);
-                holder.txtGroupDescription = (TextView) vi.findViewById(R.id.txtGroupDescription);
-                holder.txtJoin = (TextView) vi.findViewById(R.id.txtJoin);
+                holder.imgGroup = vi.findViewById(R.id.imgGroup);
+
+                holder.txtGroupName = vi.findViewById(R.id.txtGroupName);
+
+                holder.txtGroupDescription = vi.findViewById(R.id.txtGroupDescription);
+
+                holder.txtJoin = vi.findViewById(R.id.txtJoin);
+                holder.txtJoin.setTextColor(Color.WHITE);
 
                 vi.setTag(holder);
             } else {
@@ -212,58 +216,17 @@ public class GroupSelectionActivity extends AppCompatActivity {
             3 = Decline
             4 = Confirm*/
 
-            if (bean.getStatus().equalsIgnoreCase("0")) {
-                holder.txtJoin.setText("Join");
-                holder.txtJoin.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_join));
-                holder.txtJoin.setTextColor(getResources().getColor(R.color.white));
-            }/* else if (bean.getStatus().equalsIgnoreCase("1")) {
+            if (bean.getStatus().equalsIgnoreCase("0"))
+                holder.txtJoin.setVisibility(View.VISIBLE);
+            else
                 holder.txtJoin.setVisibility(View.GONE);
-            }*/ /*else if (bean.getStatus().equalsIgnoreCase("2")) {
-                holder.txtJoin.setText("Accept");
-                holder.txtJoin.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_joined));
-                holder.txtJoin.setTextColor(getResources().getColor(R.color.white));
-            } else if (bean.getStatus().equalsIgnoreCase("3")) {
-                holder.txtJoin.setText("Join");
-                holder.txtJoin.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_join));
-                holder.txtJoin.setTextColor(getResources().getColor(R.color.white));
-            } else {
 
-            }*/
-            /*holder.txtJoin.setText("Join");
-            holder.txtJoin.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_join));
-            holder.txtJoin.setTextColor(getResources().getColor(R.color.white));*/
-
+            holder.txtJoin.setTag(bean.getId());
             holder.txtJoin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /*if (!bean.getStatus().equalsIgnoreCase("1") && !bean.getStatus().equalsIgnoreCase("2")) {
-                        if (bean.getStatus().equalsIgnoreCase("1")) {
-                            bean.setStatus("0");
-                        } else if (bean.getStatus().equalsIgnoreCase("0") || bean.getStatus().equalsIgnoreCase("3")) {
-                            bean.setStatus("1");
-                        }
-
-                        mSearchListGroup.set(pos, bean);
-
-                        new AsyncJoinGroup(bean.getId(), bean.getStatus()).execute();
-                    }*/
-
-                    /*if (!bean.getStatus().equalsIgnoreCase("1") && !bean.getStatus().equalsIgnoreCase("2")) {
-                        if (bean.getStatus().equalsIgnoreCase("1")) {
-                            bean.setStatus("0");
-                        } else if (bean.getStatus().equalsIgnoreCase("0") || bean.getStatus().equalsIgnoreCase("3")) {
-                            bean.setStatus("1");
-                        }
-
-                    }*/
-                    mSearchListGroup.set(pos, bean);
-                    new AsyncJoinGroup(bean.getId(), "1",holder.txtJoin).execute();
-                    //mSearchListGroup.set(pos, bean);
-                    /*Intent i = new Intent(context, RideTypeActivity.class);
-                    startActivity(i);
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();*/
-                    //new AsyncJoinGroup(bean.getId(), bean.getStatus()).execute();
+                    String id = (String) v.getTag();
+                    new AsyncJoinGroup(id, "1", (TextView) v).execute();
                 }
             });
 
@@ -291,6 +254,7 @@ public class GroupSelectionActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     public class AsyncJoinGroup extends AsyncTask<Object, Integer, Object> {
 
         String group_id;
@@ -298,11 +262,11 @@ public class GroupSelectionActivity extends AppCompatActivity {
         CustomProgressDialog mProgressDialog;
         TextView txtJoin;
 
-        public AsyncJoinGroup(String group_id, String status,TextView txtJoin) {
+        AsyncJoinGroup(String group_id, String status, TextView txtJoin) {
 
             this.group_id = group_id;
             this.status = status;
-            this.txtJoin=txtJoin;
+            this.txtJoin = txtJoin;
             mProgressDialog = new CustomProgressDialog(context);
             mProgressDialog.show();
         }
@@ -326,12 +290,6 @@ public class GroupSelectionActivity extends AppCompatActivity {
 
                 if (jsonObject.getString("status").equalsIgnoreCase("success")) {
                     txtJoin.setVisibility(View.GONE);
-                    //PrefUtils.putBoolean("firstTime", true);
-                    /*Intent i = new Intent(context, RideTypeActivity.class);
-                    startActivity(i);
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();*/
-                    //groupAdapter.notifyDataSetChanged();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

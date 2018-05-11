@@ -53,7 +53,7 @@
                 android:layout_below="@+id/squar_re"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:theme="@style/TextLabel"
-                app:hintTextAppearance="@style/TextLabelsize">
+                app:hintTextAppearance="@style/TextLabelSize">
 
                 <com.app.rideshare.widget.EditTextRegular
                     android:id="@+id/first_name_et"
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/first_name_tl"
                 android:theme="@style/TextLabel"
-                app:hintTextAppearance="@style/TextLabelsize">
+                app:hintTextAppearance="@style/TextLabelSize">
 
                 <com.app.rideshare.widget.EditTextRegular
                     android:id="@+id/last_name_et"
@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/last_name_tl"
                 android:theme="@style/TextLabel"
-                app:hintTextAppearance="@style/TextLabelsize">
+                app:hintTextAppearance="@style/TextLabelSize">
 
                 <com.app.rideshare.widget.EditTextRegular
                     android:id="@+id/email_et"
@@ -110,7 +110,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:theme="@style/TextLabel"
-                app:hintTextAppearance="@style/TextLabelsize">
+                app:hintTextAppearance="@style/TextLabelSize">
 
                 <com.app.rideshare.widget.EditTextRegular
                     android:id="@+id/mobile_et"
@@ -162,7 +162,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:theme="@style/TextLabel"
-                    app:hintTextAppearance="@style/TextLabelsize">
+                    app:hintTextAppearance="@style/TextLabelSize">
 
                     <com.app.rideshare.widget.EditTextRegular
                         android:id="@+id/vhmodel_et"
@@ -180,7 +180,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:theme="@style/TextLabel"
-                    app:hintTextAppearance="@style/TextLabelsize">
+                    app:hintTextAppearance="@style/TextLabelSize">
 
                     <com.app.rideshare.widget.EditTextRegular
                         android:id="@+id/vhtype_et"
@@ -198,7 +198,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:theme="@style/TextLabel"
-                    app:hintTextAppearance="@style/TextLabelsize">
+                    app:hintTextAppearance="@style/TextLabelSize">
 
                     <com.app.rideshare.widget.EditTextRegular
                         android:id="@+id/maxpassenger_et"

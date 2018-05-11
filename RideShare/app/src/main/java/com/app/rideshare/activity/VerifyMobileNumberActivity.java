@@ -1,7 +1,6 @@
 package com.app.rideshare.activity;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -14,9 +13,8 @@ import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SendOTPResponse;
 import com.app.rideshare.model.User;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
-import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.dpizarro.pinview.library.PinView;
 import com.dpizarro.pinview.library.PinViewSettings;
@@ -37,6 +35,7 @@ public class VerifyMobileNumberActivity extends AppCompatActivity {
     private TextView mTitleTv;
     //private Typeface mRobotoMeduim;
     private TextView mChangeMobile;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,12 +70,12 @@ public class VerifyMobileNumberActivity extends AppCompatActivity {
         mTitleTv.setTypeface(mRobotoMeduim);*/
 
 
-        mChangeMobile=(TextView)findViewById(R.id.change_mobile_tv);
+        mChangeMobile = (TextView) findViewById(R.id.change_mobile_tv);
         //mChangeMobile.setTypeface(mRobotoMeduim);
         mChangeMobile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(VerifyMobileNumberActivity.this,MobileNumberActivity.class);
+                Intent i = new Intent(VerifyMobileNumberActivity.this, MobileNumberActivity.class);
                 startActivity(i);
                 finish();
             }
@@ -117,9 +116,9 @@ public class VerifyMobileNumberActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SendOTPResponse> call, Response<SendOTPResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    ToastUtils.showShort(VerifyMobileNumberActivity.this, "OTP Sent");
+                    MessageUtils.showSuccessMessage(VerifyMobileNumberActivity.this, "OTP Sent");
                 } else {
-                    ToastUtils.showShort(VerifyMobileNumberActivity.this, "Please try againg..");
+                    MessageUtils.showPleaseTryAgain(VerifyMobileNumberActivity.this);
                 }
                 mProgressDialog.cancel();
             }
@@ -155,13 +154,13 @@ public class VerifyMobileNumberActivity extends AppCompatActivity {
                         Intent i = new Intent(getBaseContext(), MyGroupActivity.class);
                         startActivity(i);
                         finish();
-                        PrefUtils.putBoolean("firstTime",true);
+                        PrefUtils.putBoolean("firstTime", true);
 
                     } else {
-                        ToastUtils.showShort(VerifyMobileNumberActivity.this, "Please try againg..");
+                        MessageUtils.showPleaseTryAgain(VerifyMobileNumberActivity.this);
                     }
                 } else {
-                    ToastUtils.showShort(VerifyMobileNumberActivity.this, "Please try againg..");
+                    MessageUtils.showPleaseTryAgain(VerifyMobileNumberActivity.this);
                 }
                 mProgressDialog.cancel();
             }

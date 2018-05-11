@@ -25,7 +25,7 @@ import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.GroupList;
 import com.app.rideshare.model.User;
-import com.app.rideshare.utils.Constant;
+import com.app.rideshare.utils.Constants;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.squareup.picasso.Picasso;
@@ -86,7 +86,7 @@ public class MyGroupActivity extends AppCompatActivity {
                 Intent ii = new Intent(MyGroupActivity.this, GroupDetailActivity.class);
                 ii.putExtra("groupDetail", mSearchListGroup.get(position));
                 ii.putExtra("mTag", "Profile");
-                ii.putExtra(Constant.intentKey.MyGroup, true);
+                ii.putExtra(Constants.intentKey.MyGroup, true);
                 startActivity(ii);
 //                finish();
             }
@@ -98,7 +98,7 @@ public class MyGroupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 finish();
                 Intent i = new Intent(getApplicationContext(), CreateGroupActivity.class);
-                i.putExtra(Constant.intentKey.isEditGroup, false);
+                i.putExtra(Constants.intentKey.isEditGroup, false);
                 startActivity(i);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 //                finish();
@@ -135,8 +135,8 @@ public class MyGroupActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (Constant.isGroupDataUpdated) { // IN CREATE GROUP ACTIVITY DATA UPDATED THAN REFRESH THE LIST HERE
-            Constant.isGroupDataUpdated = false;
+        if (Constants.isGroupDataUpdated) { // IN CREATE GROUP ACTIVITY DATA UPDATED THAN REFRESH THE LIST HERE
+            Constants.isGroupDataUpdated = false;
             Log.e("MyGroupActivity", "onResume: isGroupDataUpdated");
             new AsyncAllGroup().execute();
         }

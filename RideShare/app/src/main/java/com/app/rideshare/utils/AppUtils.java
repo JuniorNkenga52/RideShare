@@ -24,7 +24,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.model.ContactBean;
@@ -44,6 +43,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -65,6 +65,19 @@ public class AppUtils {
         }
     }
 
+    public static String parseOTPFromSms(String message) {
+
+        Matcher m = Pattern.compile("\\d+(?!\\d+)").matcher(message);
+
+        String code = "";
+
+        while (m.find()) {
+            code = m.group(0);
+        }
+
+        return code;
+    }
+
     public static boolean isInternetAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -81,12 +94,6 @@ public class AppUtils {
         return emailPattern.matcher(mno).find();
     }
 
-
-    public static void showMessage(Activity activity, boolean isSuccess, String message) {
-        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-        //showCustomToast(activity_waiting, message, R.drawable.ic_camera);
-    }
-
     public static int dp2px(int dp, Context ctx) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, ctx.getResources().getDisplayMetrics());
     }
@@ -96,8 +103,7 @@ public class AppUtils {
 
         ContentResolver cr = mContext.getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-        String phone = null;
-
+        String phone;
 
         if (cur.getCount() > 0) {
             while (cur.moveToNext()) {
@@ -121,24 +127,6 @@ public class AppUtils {
             }
         }
         return mlist;
-    }
-
-    public static String dateformat(String time) {
-        String inputPattern = "yyyy-MM-dd hh:mm:ss";
-        String outputPattern = "EEE, dd MMM, yyyy";
-        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
-        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
-
-        Date date = null;
-        String str = null;
-
-        try {
-            date = inputFormat.parse(time);
-            str = outputFormat.format(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return str;
     }
 
     public static Bitmap getMarkerBitmapFromView(Activity activity, String userImage) {
@@ -208,10 +196,6 @@ public class AppUtils {
         if (intent.resolveActivity(context.getPackageManager()) != null) {
             context.startActivity(intent);
         }
-    }
-
-    public static void showNoInternetAvailable(Activity activity) {
-        Toast.makeText(activity, R.string.txt_msg_no_internet_available, Toast.LENGTH_SHORT).show();
     }
 
     public static String downloadUrl(String strUrl, CustomProgressDialog progressDialog) throws IOException {

@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -23,17 +22,14 @@ import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.AcceptRequest;
-import com.app.rideshare.utils.ToastUtils;
-import com.app.rideshare.utils.TypefaceUtils;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.bumptech.glide.Glide;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.mikhaellopez.circularimageview.CircularImageView;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
-import it.sephiroth.android.library.easing.Circ;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,11 +50,9 @@ public class NotificationActivity extends AppCompatActivity {
 
     //private Typeface mRobotoMedium;
 
-
     DonutProgress mCircleProgress;
     private OTPTimer timer;
     PulsatorLayout pulsator;
-
 
     private String mStartingAddress;
     private String mEndingAddress;
@@ -73,8 +67,8 @@ public class NotificationActivity extends AppCompatActivity {
     private TextView mNameTv;
     private TextView mEmailTv;
 
-    private String Email="";
-    private String profilePic="";
+    private String Email = "";
+    private String profilePic = "";
 
     CircularImageView mProfilePicIv;
 
@@ -92,8 +86,8 @@ public class NotificationActivity extends AppCompatActivity {
             mFirstName = jobjRide.getString("u_firstname");
             mStartingAddress = jobjRide.getString("starting_address");
             mEndingAddress = jobjRide.getString("ending_address");
-            Email=jobjRide.getString("u_email");
-            profilePic=jobjRide.getString("profile_image");
+            Email = jobjRide.getString("u_email");
+            profilePic = jobjRide.getString("profile_image");
 
         } catch (Exception e) {
             Log.d("erroe", e.toString());
@@ -120,22 +114,21 @@ public class NotificationActivity extends AppCompatActivity {
 
         mNameTv = (TextView) findViewById(R.id.name_tv);
         mEmailTv = (TextView) findViewById(R.id.email_tv);
-        mProfilePicIv=(CircularImageView)findViewById(R.id.user_profile);
+        mProfilePicIv = (CircularImageView) findViewById(R.id.user_profile);
 
         /*mNameTv.setTypeface(mRobotoMedium);
         mEmailTv.setTypeface(mRobotoMedium);*/
         mNameTv.setText(mFirstName);
         mEmailTv.setText(Email);
 
-        try{
-            if(!profilePic.equals(""))
-            {
+        try {
+            if (!profilePic.equals("")) {
                 //Picasso.with(this).load(profilePic).into(mProfilePicIv);
                 Glide.with(this).load(profilePic)
                         .error(R.drawable.icon_test)
                         .into(mProfilePicIv);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -203,9 +196,9 @@ public class NotificationActivity extends AppCompatActivity {
                 } else {
 
                 }
-                try{
+                try {
                     mProgressDialog.cancel();
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
 
@@ -261,17 +254,18 @@ public class NotificationActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+
             String info = intent.getStringExtra("int_data");
 
             try {
+
                 JSONObject jobj = new JSONObject(info);
 
                 if (jobj.getString("status").equals("success")) {
-                    ToastUtils.showShort(NotificationActivity.this, "Ride Cancel");
+                    MessageUtils.showFailureMessage(NotificationActivity.this, "Ride Cancel");
                     timer.cancel();
                     finish();
                 }
-
             } catch (Exception e) {
 
             }

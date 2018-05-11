@@ -1,7 +1,6 @@
 package com.app.rideshare.activity;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,17 +8,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SendOTPResponse;
-import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.model.User;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
-import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 
 import retrofit2.Call;
@@ -55,41 +51,36 @@ public class MobileNumberActivity extends AppCompatActivity {
         mMobileEt.setTypeface(mRobotoRegular);
         mInfoTv.setTypeface(mRobotoRegular);*/
 
-        mSendOTPTv=(TextView)findViewById(R.id.send_code_tv);
+        mSendOTPTv = (TextView) findViewById(R.id.send_code_tv);
         //mSendOTPTv.setTypeface(mRobotoRegular);
 
         mSendOTPTv.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                if(mMobileEt.getText().toString().isEmpty()){
-                    ToastUtils.showShort(MobileNumberActivity.this,"Please enter mobile number.");
-                }else{
-                    sendOTP(mMobileEt.getText().toString(),PrefUtils.getUserInfo().getmUserId());
+            public void onClick(View v) {
+                if (mMobileEt.getText().toString().isEmpty()) {
+                    MessageUtils.showFailureMessage(MobileNumberActivity.this, "Please enter mobile number.");
+                } else {
+                    sendOTP(mMobileEt.getText().toString(), PrefUtils.getUserInfo().getmUserId());
                 }
-
             }
         });
-
     }
 
-    private void sendOTP(final String mobileNuber, String nUserId)
-    {
+    private void sendOTP(final String mobileNuber, String nUserId) {
         mProgressDialog.show();
         ApiServiceModule.createService(RestApiInterface.class).sendOTP(mobileNuber, nUserId).enqueue(new Callback<SendOTPResponse>() {
             @Override
             public void onResponse(Call<SendOTPResponse> call, Response<SendOTPResponse> response) {
-                if (response.isSuccessful() && response.body() != null)
-                {
-                    User bean=PrefUtils.getUserInfo();
+                if (response.isSuccessful() && response.body() != null) {
+                    User bean = PrefUtils.getUserInfo();
                     bean.setmMobileNo(mobileNuber);
                     PrefUtils.addUserInfo(bean);
 
-                    Intent i=new Intent(MobileNumberActivity.this,VerifyMobileNumberActivity.class);
+                    Intent i = new Intent(MobileNumberActivity.this, VerifyMobileNumberActivity.class);
                     startActivity(i);
                     finish();
                 } else {
-                        ToastUtils.showShort(MobileNumberActivity.this,"Please try againg..");
+                    MessageUtils.showPleaseTryAgain(MobileNumberActivity.this);
                 }
                 mProgressDialog.cancel();
             }

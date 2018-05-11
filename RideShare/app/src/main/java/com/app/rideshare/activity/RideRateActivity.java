@@ -17,8 +17,8 @@ import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.RateRideResponce;
 import com.app.rideshare.model.User;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 
 import retrofit2.Call;
@@ -35,7 +35,7 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
     private TextView btn_submit;
     //btn_cancle
     private EditText edt_comment;
-    private String ride_id="", driver_id="";
+    private String ride_id = "", driver_id = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
 
         mUserbean = PrefUtils.getUserInfo();
 
-        if(getIntent().hasExtra("riderate")){
+        if (getIntent().hasExtra("riderate")) {
             ride_id = getIntent().getStringExtra("riderate");
             driver_id = getIntent().getStringExtra("driverid");
         }
@@ -75,14 +75,13 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
         });
 
 
-
-        for(int i = 0; i < toolbar.getChildCount(); i++){
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
             View view = toolbar.getChildAt(i);
-            if(view instanceof TextView){
+            if (view instanceof TextView) {
                 TextView tv = (TextView) view;
                 Typeface titleFont = Typeface.
                         createFromAsset(context.getAssets(), "OpenSans-Regular.ttf");
-                if(tv.getText().equals(toolbar.getTitle())){
+                if (tv.getText().equals(toolbar.getTitle())) {
                     tv.setTypeface(titleFont);
                     break;
                 }
@@ -102,9 +101,9 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
                 String rates = txt_rate_type.getText().toString();
                 String review = edt_comment.getText().toString();
                 if (rates.equals("")) {
-                    ToastUtils.showShort(context, "Please Rate Your Feed Back.");
-                }else if (review.isEmpty()) {
-                    ToastUtils.showShort(context, "Please Write Comment.");
+                    MessageUtils.showFailureMessage(context, "Please Rate Your Feed Back.");
+                } else if (review.isEmpty()) {
+                    MessageUtils.showFailureMessage(context, "Please Write Comment.");
                 } else {
                     rateride(driver_id, mUserbean.getmUserId(), ride_id, rates, review);
                 }
@@ -155,7 +154,7 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
             public void onResponse(Call<RateRideResponce> call, Response<RateRideResponce> response) {
                 if (response.body() != null || response.body().getResult().size() > 0) {
                     if (response.body().getResult().size() != 0) {
-                        ToastUtils.showShort(context, response.body().getMessage());
+                        MessageUtils.showSuccessMessage(context, response.body().getMessage());
                     }
                 }
                 finish();
@@ -164,7 +163,7 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
 
             @Override
             public void onFailure(Call<RateRideResponce> call, Throwable t) {
-                ToastUtils.showShort(context, "Problem occurs while submitting");
+                MessageUtils.showFailureMessage(context, "Problem occurs while submitting");
                 mProgressDialog.cancel();
             }
         });

@@ -48,8 +48,8 @@ import com.app.rideshare.model.SearchPlace;
 import com.app.rideshare.model.User;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MapDirectionAPI;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -280,7 +280,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                     Rider selectedRide = new Gson().fromJson(marker.getSnippet(), Rider.class);
 
                     if (mLocationSearchAtv.getText().toString().isEmpty()) {
-                        ToastUtils.showShort(getActivity(), "Please select destination location.");
+                        MessageUtils.showFailureMessage(getActivity(), "Please select destination location.");
                     } else {
                         if (selectedRide != null) {
                             if (selectedRide.getU_ride_type().equals("2")) {
@@ -419,7 +419,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
                     }
                 } else {
-                    ToastUtils.showShort(getActivity(), "No any user available.");
+                    MessageUtils.showFailureMessage(getActivity(), "No any user available.");
                 }
                 mProgressDialog.cancel();
             }

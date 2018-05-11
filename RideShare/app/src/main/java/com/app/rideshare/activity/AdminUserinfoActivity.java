@@ -15,8 +15,8 @@ import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.MyGroupsResponce;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 
 import retrofit2.Call;
@@ -42,7 +42,7 @@ public class AdminUserinfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_userinfo);
 
-        context=this;
+        context = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.admin_fun_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Admin Functions");
@@ -55,13 +55,13 @@ public class AdminUserinfoActivity extends AppCompatActivity {
             }
         });
 
-        for(int i = 0; i < toolbar.getChildCount(); i++){
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
             View view = toolbar.getChildAt(i);
-            if(view instanceof TextView){
+            if (view instanceof TextView) {
                 TextView tv = (TextView) view;
                 Typeface titleFont = Typeface.
                         createFromAsset(context.getAssets(), "OpenSans-Regular.ttf");
-                if(tv.getText().equals(toolbar.getTitle())){
+                if (tv.getText().equals(toolbar.getTitle())) {
                     tv.setTypeface(titleFont);
                     break;
                 }
@@ -69,8 +69,8 @@ public class AdminUserinfoActivity extends AppCompatActivity {
         }
 
         PrefUtils.initPreference(this);
-        Intent intent=getIntent();
-        final int pos= 0;
+        Intent intent = getIntent();
+        final int pos = 0;
 
         mProgressDialog = new CustomProgressDialog(this);
         item_user_name_tv = (TextView) findViewById(R.id.item_user_name_tv);
@@ -107,28 +107,27 @@ public class AdminUserinfoActivity extends AppCompatActivity {
                 if (item_ap_priv.isChecked()) {
                     ad_priv = "1";
                 }
-                update_admin_info(PrefUtils.getUserInfo().getmUserId(),dreq , disable,PrefUtils.getAdminData().get(pos).getGroup_id(),ad_priv);
+                update_admin_info(PrefUtils.getUserInfo().getmUserId(), dreq, disable, PrefUtils.getAdminData().get(pos).getGroup_id(), ad_priv);
             }
         });
     }
 
     private void update_admin_info(String user_id, String driver_request, String user_disable, String group_id, String ad_priv_type) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).updateAdminFunction(user_id, driver_request, user_disable,group_id,ad_priv_type).enqueue(new Callback<MyGroupsResponce>() {
+        ApiServiceModule.createService(RestApiInterface.class).updateAdminFunction(user_id, driver_request, user_disable, group_id, ad_priv_type).enqueue(new Callback<MyGroupsResponce>() {
             @Override
             public void onResponse(Call<MyGroupsResponce> call, Response<MyGroupsResponce> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().getResult().size() > 0) {
-                    ToastUtils.showShort(AdminUserinfoActivity.this, response.body().getMessage());
+                    MessageUtils.showSuccessMessage(AdminUserinfoActivity.this, response.body().getMessage());
                 }
                 mProgressDialog.cancel();
             }
 
             @Override
             public void onFailure(Call<MyGroupsResponce> call, Throwable t) {
-                ToastUtils.showShort(AdminUserinfoActivity.this, "Problem in Retrieving data");
+                MessageUtils.showFailureMessage(AdminUserinfoActivity.this, "Problem in Retrieving data");
                 mProgressDialog.cancel();
             }
-
         });
     }
 }

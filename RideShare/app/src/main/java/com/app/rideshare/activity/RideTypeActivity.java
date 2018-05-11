@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
@@ -33,8 +32,8 @@ import com.app.rideshare.model.InProgressRide;
 import com.app.rideshare.model.User;
 import com.app.rideshare.service.LocationService;
 import com.app.rideshare.utils.AppUtils;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -80,7 +79,7 @@ public class RideTypeActivity extends AppCompatActivity {
                 if (AppUtils.isInternetAvailable(activity)) {
                     syncContact();
                 } else {
-                    AppUtils.showNoInternetAvailable(activity);
+                    MessageUtils.showNoInternetAvailable(activity);
                 }
 
             }
@@ -98,7 +97,7 @@ public class RideTypeActivity extends AppCompatActivity {
 
         @Override
         public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-            Toast.makeText(RideTypeActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+            MessageUtils.showFailureMessage(RideTypeActivity.this, "Permission Denied\n" + deniedPermissions.toString());
         }
     };
     private String InprogressRide = "";
@@ -156,7 +155,7 @@ public class RideTypeActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             String Userid = getIntent().getStringExtra("rideUserID");
-                            startRide(mRide.getmRideId(),"4",Userid);
+                            startRide(mRide.getmRideId(), "4", Userid);
                             mMaterialDialog.dismiss();
 
                         }
@@ -218,11 +217,11 @@ public class RideTypeActivity extends AppCompatActivity {
                         if (AppUtils.isInternetAvailable(activity)) {
                             selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
                         } else {
-                            AppUtils.showNoInternetAvailable(activity);
+                            MessageUtils.showNoInternetAvailable(activity);
                         }
 
                     } else {
-                        ToastUtils.showShort(RideTypeActivity.this, "Getting your location.");
+                        MessageUtils.showWarningMessage(RideTypeActivity.this, "Getting your location.");
                     }
                 }
 
@@ -243,10 +242,10 @@ public class RideTypeActivity extends AppCompatActivity {
                         if (AppUtils.isInternetAvailable(activity)) {
                             selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
                         } else {
-                            AppUtils.showNoInternetAvailable(activity);
+                            MessageUtils.showNoInternetAvailable(activity);
                         }
                     } else {
-                        ToastUtils.showShort(RideTypeActivity.this, "Getting your location.");
+                        MessageUtils.showWarningMessage(RideTypeActivity.this, "Getting your location.");
                     }
                 }
             }
@@ -256,7 +255,7 @@ public class RideTypeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (rideType == 0) {
-                    ToastUtils.showShort(RideTypeActivity.this, "Please Select Ride type.");
+                    MessageUtils.showFailureMessage(RideTypeActivity.this, "Please Select Ride type.");
                 } else {
                     application.setmUserType("" + rideType);
                 }
@@ -348,9 +347,9 @@ public class RideTypeActivity extends AppCompatActivity {
                         mUserBean.setContact_sync("1");
                         PrefUtils.addUserInfo(mUserBean);
 
-                        ToastUtils.showShort(RideTypeActivity.this, "Contact Sync");
+                        MessageUtils.showSuccessMessage(RideTypeActivity.this, "Contact Sync");
                     } else {
-                        ToastUtils.showShort(RideTypeActivity.this, "Contact Sync failed");
+                        MessageUtils.showFailureMessage(RideTypeActivity.this, "Contact Sync failed");
                     }
                 }
                 mProgressDialog.cancel();

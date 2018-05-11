@@ -5,7 +5,7 @@ import android.graphics.Typeface;
 
 public class TypefaceUtils {
 
-    private static Typeface mRobotoMediam;
+    private static Typeface mRobotoMedium;
     private static Typeface OpenSansLight;
     private static Typeface OpenSansRegular;
     private static Typeface OpenSansLightItalic;
@@ -17,13 +17,12 @@ public class TypefaceUtils {
     private static Typeface OpenSansExtraBoldItalic;
     private static Typeface OpenSansItalic;
 
-    public static Typeface getTypefaceRobotoMediam(Context context) {
+    public static Typeface getTypefaceRobotoMedium(Context context) {
 
-        if (mRobotoMediam == null)
-            mRobotoMediam = Typeface.createFromAsset(context.getAssets(), "Roboto-Medium.ttf");
-        return mRobotoMediam;
+        if (mRobotoMedium == null)
+            mRobotoMedium = Typeface.createFromAsset(context.getAssets(), "Roboto-Medium.ttf");
+        return mRobotoMedium;
     }
-
 
     public static Typeface getOpenSansLight(Context context) {
 

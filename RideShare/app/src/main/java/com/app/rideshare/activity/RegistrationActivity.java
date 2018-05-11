@@ -22,9 +22,8 @@ import com.app.rideshare.api.response.SendOTPResponse;
 import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.notification.GCMRegistrationIntentService;
 import com.app.rideshare.utils.AppUtils;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
-import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -54,18 +53,18 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        context=this;
+        context = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("Sign Up");
 
-        for(int i = 0; i < toolbar.getChildCount(); i++){
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
             View view = toolbar.getChildAt(i);
-            if(view instanceof TextView){
+            if (view instanceof TextView) {
                 TextView tv = (TextView) view;
                 Typeface titleFont = Typeface.
                         createFromAsset(context.getAssets(), "OpenSans-Regular.ttf");
-                if(tv.getText().equals(toolbar.getTitle())){
+                if (tv.getText().equals(toolbar.getTitle())) {
                     tv.setTypeface(titleFont);
                     break;
                 }
@@ -137,21 +136,21 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mFirstNameEt.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(RegistrationActivity.this, "Please enter First Name.");
+                    MessageUtils.showFailureMessage(RegistrationActivity.this, "Please enter First Name.");
                 } else if (mLastNameEt.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(RegistrationActivity.this, "Please enter Last Name.");
+                    MessageUtils.showFailureMessage(RegistrationActivity.this, "Please enter Last Name.");
                 } else if (mEmailEt.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(RegistrationActivity.this, "Please enter Email.");
+                    MessageUtils.showFailureMessage(RegistrationActivity.this, "Please enter Email.");
                 } else if (mMobileEt.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(RegistrationActivity.this, "Please enter Mobile Number.");
-                } else if (mPasswordEt.getText().toString().isEmpty() || mPasswordEt.getText().toString().length()<8) {
-                    ToastUtils.showShort(RegistrationActivity.this, "Please enter valid Password.");
-                } else if (mConfirmPasswordEt.getText().toString().isEmpty() || mConfirmPasswordEt.getText().toString().length()<8) {
-                    ToastUtils.showShort(RegistrationActivity.this, "Please enter valid Password.");
+                    MessageUtils.showFailureMessage(RegistrationActivity.this, "Please enter Mobile Number.");
+                } else if (mPasswordEt.getText().toString().isEmpty() || mPasswordEt.getText().toString().length() < 8) {
+                    MessageUtils.showFailureMessage(RegistrationActivity.this, "Please enter valid Password.");
+                } else if (mConfirmPasswordEt.getText().toString().isEmpty() || mConfirmPasswordEt.getText().toString().length() < 8) {
+                    MessageUtils.showFailureMessage(RegistrationActivity.this, "Please enter valid Password.");
                 } else if (!mConfirmPasswordEt.getText().toString().equals(mPasswordEt.getText().toString())) {
-                    ToastUtils.showShort(RegistrationActivity.this, "Password and Confirm password must be Same.");
+                    MessageUtils.showFailureMessage(RegistrationActivity.this, "Password and Confirm password must be Same.");
                 } else if (!AppUtils.isEmail(mEmailEt.getText().toString())) {
-                    ToastUtils.showShort(RegistrationActivity.this, "Please enter valid email.");
+                    MessageUtils.showFailureMessage(RegistrationActivity.this, "Please enter valid email.");
                 } else {
                     registerUser(mFirstNameEt.getText().toString(), mLastNameEt.getText().toString(), mEmailEt.getText().toString(), mMobileEt.getText().toString(), mPasswordEt.getText().toString());
                 }
@@ -181,7 +180,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         PrefUtils.putBoolean("islogin", true);
                         sendOTP(response.body().getMlist().get(0).getmMobileNo(), response.body().getMlist().get(0).getmUserId());
                     } else {
-                        ToastUtils.showShort(RegistrationActivity.this, response.body().getmMessage());
+                        MessageUtils.showSuccessMessage(RegistrationActivity.this, response.body().getmMessage());
                     }
                 } else {
 
@@ -207,7 +206,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     startActivity(i);
                     finish();
                 } else {
-                    ToastUtils.showShort(RegistrationActivity.this, "Please try againg..");
+                    MessageUtils.showPleaseTryAgain(context);
                 }
                 mProgressDialog.cancel();
             }

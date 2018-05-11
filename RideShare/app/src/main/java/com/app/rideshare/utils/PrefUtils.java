@@ -15,11 +15,8 @@ public class PrefUtils {
     private static final String PREFS_NAME = "RideShare";
     private static SharedPreferences SETTINGS = null;
     private static Editor EDITOR = null;
+
     public static final String PREF_USER_INFO = "PREF_USER_INFO";
-    public static final String PREF_ADMIN_INFO = "PREF_ADMIN_INFO";
-    public static final String PREF_USER_MEDICINE_LIST = "PREF_USER_MEDICINE_LIST";
-
-
 
     public static void initPreference(Context context) {
         if (SETTINGS == null && EDITOR == null) {

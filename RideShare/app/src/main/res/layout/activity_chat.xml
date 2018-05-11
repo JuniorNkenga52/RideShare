@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/tbChatHeader"
@@ -10,39 +10,38 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         app:navigationIcon="@drawable/ic_back"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <ListView
         android:id="@+id/list_messages"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tbChatHeader"
         android:layout_above="@+id/layout_bottom"
+        android:layout_below="@+id/tbChatHeader"
         android:divider="@null"
         android:padding="@dimen/_5sdp"
-        android:scrollbars="none"/>
+        android:scrollbars="none" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_above="@+id/layout_bottom"
-        android:background="@color/GrayLine"/>
+        android:background="@color/GrayLine" />
 
     <LinearLayout
         android:id="@+id/layout_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:baselineAligned="false"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:background="@color/white"
         android:padding="@dimen/_5sdp">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/TransGrayColor"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -50,16 +49,15 @@
                 android:id="@+id/edt_chat_msg"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_5sdp"
                 android:layout_weight="1"
-                android:maxLines="4"
-                android:background="@android:color/transparent"
+                android:background="@color/TransGrayColor"
                 android:hint="@string/txt_write_a_message"
                 android:imeOptions="actionSend|flagNoEnterAction"
                 android:inputType="textCapSentences|textMultiLine"
+                android:maxLines="4"
                 android:padding="@dimen/_8sdp"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp"/>
+                android:textSize="@dimen/_12sdp" />
 
             <ImageView
                 android:id="@+id/btn_chat_send"
@@ -68,11 +66,10 @@
                 android:layout_marginLeft="@dimen/_8sdp"
                 android:layout_marginRight="@dimen/_8sdp"
                 android:background="@drawable/ic_chat_send"
-                android:padding="@dimen/_10sdp"/>
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/_10sdp" />
 
         </LinearLayout>
-
-
 
     </LinearLayout>
 </RelativeLayout>

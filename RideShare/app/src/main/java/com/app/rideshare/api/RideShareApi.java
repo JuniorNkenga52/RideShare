@@ -227,7 +227,9 @@ public class RideShareApi {
     }
 
     public static String joinGroup(String user_id, String group_id, String status) {
+
         try {
+
             String URL = SERVER_URL + "group/joinGroup";
 
             LinkedHashMap<String, String> params = new LinkedHashMap<>();

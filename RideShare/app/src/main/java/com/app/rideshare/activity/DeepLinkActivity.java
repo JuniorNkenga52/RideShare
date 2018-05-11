@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.GroupList;
-import com.app.rideshare.utils.Constant;
+import com.app.rideshare.utils.Constants;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 
@@ -81,7 +81,7 @@ public class DeepLinkActivity extends AppCompatActivity {
                     Intent ii = new Intent(context, GroupDetailActivity.class);
                     ii.putExtra("groupDetail", bean);
                     ii.putExtra("mTag", "Deeplink");
-                    ii.putExtra(Constant.intentKey.MyGroup, false);
+                    ii.putExtra(Constants.intentKey.MyGroup, false);
                     startActivity(ii);
                 }
             } catch (Exception e) {

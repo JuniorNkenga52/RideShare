@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:baselineAligned="false"
@@ -20,23 +19,19 @@
             android:background="@drawable/bg_chat_you"
             android:orientation="vertical"
             android:paddingBottom="@dimen/_3sdp"
+            android:paddingEnd="@dimen/_3sdp"
             android:paddingLeft="@dimen/_16sdp"
             android:paddingRight="@dimen/_3sdp"
+            android:paddingStart="@dimen/_16sdp"
             android:paddingTop="@dimen/_3sdp">
 
             <TextView
                 android:id="@+id/txt_msg_content_you"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/BlackColor"
                 android:layout_gravity="center_vertical"
-                android:textSize="@dimen/_12sdp"/>
-
-            <com.app.rideshare.widget.SquareImageView
-                android:id="@+id/img_msg_media_you"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:textColor="@color/BlackColor"
+                android:textSize="@dimen/_12sdp" />
 
         </LinearLayout>
 
@@ -48,7 +43,7 @@
             android:layout_marginLeft="@dimen/_5sdp"
             android:text="00:00 PM"
             android:textColor="@color/GrayDarkColor"
-            android:textSize="@dimen/_10sdp"/>
+            android:textSize="@dimen/_10sdp" />
 
     </LinearLayout>
 
@@ -65,10 +60,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:layout_marginEnd="@dimen/_5sdp"
             android:layout_marginRight="@dimen/_5sdp"
             android:text="00:00 PM"
             android:textColor="@color/GrayDarkColor"
-            android:textSize="@dimen/_10sdp"/>
+            android:textSize="@dimen/_10sdp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -76,23 +72,19 @@
             android:background="@drawable/bg_chat_me"
             android:orientation="vertical"
             android:paddingBottom="@dimen/_3sdp"
+            android:paddingEnd="@dimen/_3sdp"
             android:paddingLeft="@dimen/_10sdp"
             android:paddingRight="@dimen/_3sdp"
+            android:paddingStart="@dimen/_10sdp"
             android:paddingTop="@dimen/_3sdp">
 
             <TextView
                 android:id="@+id/txt_msg_content_me"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/BlackColor"
                 android:layout_gravity="center_vertical"
-                android:textSize="@dimen/_12sdp"/>
-
-            <com.app.rideshare.widget.SquareImageView
-                android:id="@+id/img_msg_media_me"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:textColor="@color/BlackColor"
+                android:textSize="@dimen/_12sdp" />
 
         </LinearLayout>
 

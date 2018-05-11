@@ -13,15 +13,14 @@ import android.os.IBinder;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.app.rideshare.activity.LongOperation;
 import com.app.rideshare.activity.StartRideActivity;
 import com.app.rideshare.model.User;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 
-public class LocationService extends Service
-{
+public class LocationService extends Service {
     public static final String BROADCAST_ACTION = "Hello World";
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     public LocationManager locationManager;
@@ -33,22 +32,21 @@ public class LocationService extends Service
     BroadcastReceiver receiver;
 
     User bean;
+
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         super.onCreate();
         PrefUtils.initPreference(this);
         intent = new Intent(BROADCAST_ACTION);
-        bean=PrefUtils.getUserInfo();
+        bean = PrefUtils.getUserInfo();
     }
 
     @Override
-    public void onStart(Intent intent, int startId)
-    {
+    public void onStart(Intent intent, int startId) {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         listener = new MyLocationListener();
-        if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-            Toast.makeText(getApplicationContext(),"Permission Denied",Toast.LENGTH_SHORT).show();
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            MessageUtils.showFailureMessage(getApplicationContext(), "Permission Denied");
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
@@ -56,14 +54,15 @@ public class LocationService extends Service
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-       super.onTaskRemoved(rootIntent);
+        super.onTaskRemoved(rootIntent);
         try {
             new LongOperation().execute(bean.getmUserId(), "0").get();
-        }catch (Exception ignore){}
+        } catch (Exception ignore) {
+        }
     }
+
     @Override
-    public IBinder onBind(Intent intent)
-    {
+    public IBinder onBind(Intent intent) {
         return null;
     }
 
@@ -110,7 +109,9 @@ public class LocationService extends Service
     }
 
 
-    /** Checks whether two providers are the same */
+    /**
+     * Checks whether two providers are the same
+     */
     private boolean isSameProvider(String provider1, String provider2) {
         if (provider1 == null) {
             return provider2 == null;
@@ -123,12 +124,12 @@ public class LocationService extends Service
         // handler.removeCallbacks(sendUpdatesToUI);
         super.onDestroy();
         Log.v("STOP_SERVICE", "DONE");
-        if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-            Toast.makeText(getApplicationContext(),"Permission Denied",Toast.LENGTH_SHORT).show();
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            MessageUtils.showFailureMessage(getApplicationContext(), "Permission Denied");
         }
         try {
             locationManager.removeUpdates(listener);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -148,15 +149,13 @@ public class LocationService extends Service
         return t;
     }
 
-    public class MyLocationListener implements LocationListener
-    {
+    public class MyLocationListener implements LocationListener {
 
-        public void onLocationChanged(final Location loc)
-        {
+        public void onLocationChanged(final Location loc) {
             Log.i("*********************", "Location changed");
-            if(isBetterLocation(loc, previousBestLocation)) {
+            if (isBetterLocation(loc, previousBestLocation)) {
 
-                previousBestLocation=loc;
+                previousBestLocation = loc;
                 loc.getLatitude();
                 loc.getLongitude();
                 intent.putExtra("Latitude", loc.getLatitude());
@@ -169,27 +168,19 @@ public class LocationService extends Service
                 RTReturn.putExtra("Longitude", loc.getLongitude());
                 RTReturn.putExtra("Provider", loc.getProvider());
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(RTReturn);
-
             }
         }
 
-        public void onProviderDisabled(String provider)
-        {
-            Toast.makeText(getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT).show();
+        public void onProviderDisabled(String provider) {
+            MessageUtils.showFailureMessage(getApplicationContext(), "Gps Disabled");
         }
 
-
-        public void onProviderEnabled(String provider)
-        {
-            Toast.makeText( getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
+        public void onProviderEnabled(String provider) {
+            MessageUtils.showFailureMessage(getApplicationContext(), "Gps Enabled");
         }
 
-
-        public void onStatusChanged(String provider, int status, Bundle extras)
-        {
+        public void onStatusChanged(String provider, int status, Bundle extras) {
 
         }
     }
-
-
 }

@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,7 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -33,9 +31,8 @@ import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.model.ChooseGroupModel;
 import com.app.rideshare.notification.GCMRegistrationIntentService;
 import com.app.rideshare.utils.AppUtils;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
-import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -258,16 +255,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onClick(View v) {
                 if (mEmailEt.getText().toString().isEmpty() || (!AppUtils.isEmail(mEmailEt.getText().toString()) && !AppUtils.isMobileNumber(mEmailEt.getText().toString()))) {
-                    ToastUtils.showShort(LoginActivity.this, "Please enter mobile number or email");
+                    MessageUtils.showFailureMessage(LoginActivity.this, "Please enter mobile number or email");
                 } else if (mPasswordEt.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(LoginActivity.this, "Please enter password.");
+                    MessageUtils.showFailureMessage(LoginActivity.this, "Please enter password.");
                 } else {
                     if (AppUtils.isInternetAvailable(context)) {
                         loginuser(mEmailEt.getText().toString(), mPasswordEt.getText().toString(), String.valueOf(listgroup.get((Integer) mchoose_group.getSelectedItem()).getId()));
                     } else {
-                        ToastUtils.showShort(LoginActivity.this, "Please check your Internet connection");
+                        MessageUtils.showNoInternetAvailable(LoginActivity.this);
                     }
-
                 }
             }
         });
@@ -314,49 +310,50 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void loginuser(final String mEmail, final String password, final String group_id) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password, token, group_id).enqueue(new Callback<SignupResponse>() {
-            @Override
-            public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (!response.body().getmStatus().equals("error")) {
-                        PrefUtils.addUserInfo(response.body().getMlist().get(0));
-                        PrefUtils.putBoolean("islogin", true);
-                        PrefUtils.putBoolean("isFriends", true);
+        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password, token, group_id)
+                .enqueue(new Callback<SignupResponse>() {
+                    @Override
+                    public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            if (!response.body().getmStatus().equals("error")) {
+                                PrefUtils.addUserInfo(response.body().getMlist().get(0));
+                                PrefUtils.putBoolean("islogin", true);
+                                PrefUtils.putBoolean("isFriends", true);
 
-                        PrefUtils.putString("loginwith", "normal");
-                        PrefUtils.putString("gemail", mEmail);
-                        PrefUtils.putString("gId", password);
-                        PrefUtils.putString("group_id", group_id);
+                                PrefUtils.putString("loginwith", "normal");
+                                PrefUtils.putString("gemail", mEmail);
+                                PrefUtils.putString("gId", password);
+                                PrefUtils.putString("group_id", group_id);
 
-                        if (PrefUtils.getUserInfo().getmMobileNo().equals("")) {
-                            Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
-                            startActivity(i);
-                            finish();
-                        } else if (PrefUtils.getUserInfo().getmIsVerify().equals("0")) {
-                            Intent i = new Intent(getBaseContext(), VerifyMobileNumberActivity.class);
-                            startActivity(i);
-                            finish();
+                                if (PrefUtils.getUserInfo().getmMobileNo().equals("")) {
+                                    Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
+                                    startActivity(i);
+                                    finish();
+                                } else if (PrefUtils.getUserInfo().getmIsVerify().equals("0")) {
+                                    Intent i = new Intent(getBaseContext(), VerifyMobileNumberActivity.class);
+                                    startActivity(i);
+                                    finish();
+                                } else {
+                                    Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+                                    startActivity(i);
+                                    finish();
+                                }
+                            } else {
+                                MessageUtils.showFailureMessage(LoginActivity.this, response.body().getmMessage());
+                            }
                         } else {
-                            Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
-                            startActivity(i);
-                            finish();
+
                         }
-                    } else {
-                        ToastUtils.showShort(LoginActivity.this, response.body().getmMessage());
+                        mProgressDialog.cancel();
                     }
-                } else {
 
-                }
-                mProgressDialog.cancel();
-            }
-
-            @Override
-            public void onFailure(Call<SignupResponse> call, Throwable t) {
-                t.printStackTrace();
-                Log.d("error", t.toString());
-                mProgressDialog.cancel();
-            }
-        });
+                    @Override
+                    public void onFailure(Call<SignupResponse> call, Throwable t) {
+                        t.printStackTrace();
+                        Log.d("error", t.toString());
+                        mProgressDialog.cancel();
+                    }
+                });
     }
 
 
@@ -392,7 +389,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         }
 
                     } else {
-                        ToastUtils.showShort(LoginActivity.this, response.body().getmMessage());
+                        MessageUtils.showFailureMessage(LoginActivity.this, response.body().getmMessage());
                     }
                 } else {
 
@@ -441,7 +438,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             finish();
                         }
                     } else {
-                        ToastUtils.showShort(LoginActivity.this, response.body().getmMessage());
+                        MessageUtils.showFailureMessage(LoginActivity.this, response.body().getmMessage());
                     }
                 } else {
 
@@ -494,12 +491,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         PrefUtils.putString("group_email", group_email);
                         PrefUtils.putString("group_name", group_name);
                         get_group_list_data();
-                        ToastUtils.showShort(LoginActivity.this, response.body().getMessage());
+                        MessageUtils.showSuccessMessage(LoginActivity.this, response.body().getMessage());
                     } else {
-                        ToastUtils.showShort(LoginActivity.this, response.body().getMessage());
+                        MessageUtils.showFailureMessage(LoginActivity.this, response.body().getMessage());
                     }
                 } else {
-                    ToastUtils.showShort(LoginActivity.this, response.body().getMessage());
+                    MessageUtils.showFailureMessage(LoginActivity.this, response.body().getMessage());
                 }
                 mProgressDialog.cancel();
                 dialog.dismiss();
@@ -509,7 +506,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onFailure(Call<GroupResponce> call, Throwable t) {
                 t.printStackTrace();
                 mProgressDialog.cancel();
-                ToastUtils.showShort(LoginActivity.this, "Requested user is not exist in our record");
+                MessageUtils.showFailureMessage(LoginActivity.this, "Requested user is not exist in our record");
                 Log.d("error", t.toString());
 
             }
@@ -550,19 +547,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 String group_email = edt_group_email_id.getText().toString();
 
                 if (group_email.isEmpty()) {
-                    ToastUtils.showShort(LoginActivity.this, "Please enter Email.");
+                    MessageUtils.showFailureMessage(LoginActivity.this, "Please enter Email.");
                 } else if (!AppUtils.isEmail(group_email)) {
-                    ToastUtils.showShort(LoginActivity.this, "Please enter valid email.");
+                    MessageUtils.showFailureMessage(LoginActivity.this, "Please enter valid email.");
                 } else if (group_name.isEmpty()) {
-                    ToastUtils.showShort(LoginActivity.this, "Please enter Group Name.");
+                    MessageUtils.showFailureMessage(LoginActivity.this, "Please enter Group Name.");
                 } else {
-
                     create_group(group_name, group_email);
-
                 }
-
             }
         });
+
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -581,9 +576,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if (response.isSuccessful() && response.body() != null) {
 
                     if (response.body().getResult().size() == 0) {
-                        ToastUtils.showShort(LoginActivity.this, "Problem in Retrieving data");
+                        MessageUtils.showFailureMessage(LoginActivity.this, "Problem in Retrieving data");
                     } else {
-                        //ToastUtils.showShort(LoginActivity.this, "Data Received.!");
+                        //MessageUtils.showSuccessMessage(LoginActivity.this, "Data Received.!");
                         listgroup.clear();
                         for (int i = 0; i < response.body().getResult().size(); i++) {
                             int groupid = response.body().getResult().get(i).getId();

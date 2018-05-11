@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.app.rideshare.R;
 import com.app.rideshare.activity.RegistrationActivity;
 import com.app.rideshare.activity.SignUpActivity;
-import com.app.rideshare.utils.ToastUtils;
+import com.app.rideshare.utils.MessageUtils;
 
 public class NameFragment extends Fragment {
 
@@ -46,9 +46,9 @@ public class NameFragment extends Fragment {
             public void onClick(View v) {
 
                 if (txtFirstName.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(getActivity(), "Please enter First Name.");
+                    MessageUtils.showFailureMessage(getActivity(), "Please enter First Name.");
                 } else if (txtLastName.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(getActivity(), "Please enter Last Name.");
+                    MessageUtils.showFailureMessage(getActivity(), "Please enter Last Name.");
                 } else {
 
                     SignUpActivity.FirstName = txtFirstName.getText().toString().trim();

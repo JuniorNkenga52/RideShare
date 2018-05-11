@@ -2,7 +2,6 @@ package com.app.rideshare.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,7 +10,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -23,11 +21,9 @@ import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SignupResponse;
-import com.app.rideshare.api.response.UpdateProfileResponse;
 import com.app.rideshare.model.User;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
-import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -47,8 +43,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class ProfileActivity extends AppCompatActivity
-{
+public class ProfileActivity extends AppCompatActivity {
     private ImageView mBackIv;
     private TextView mSaveTv;
     private TextView mUserNameTv;
@@ -72,9 +67,9 @@ public class ProfileActivity extends AppCompatActivity
     private CircularImageView mProfileIv;
     ArrayList<Image> images;
 
-    private static final int REQUEST_CODE_CHOOSE=101;
+    private static final int REQUEST_CODE_CHOOSE = 101;
     CustomProgressDialog mProgressDialog;
-    private int ch_val=0;
+    private int ch_val = 0;
     //Button mprivileges;
 
     @Override
@@ -83,11 +78,11 @@ public class ProfileActivity extends AppCompatActivity
         setContentView(R.layout.activity_profile);
 
         PrefUtils.initPreference(this);
-        mUserBean= PrefUtils.getUserInfo();
-        mProgressDialog=new CustomProgressDialog(this);
+        mUserBean = PrefUtils.getUserInfo();
+        mProgressDialog = new CustomProgressDialog(this);
 
         //mRobotoMedium= TypefaceUtils.getTypefaceRobotoMediam(this);
-        mBackIv=(ImageView)findViewById(R.id.back_iv);
+        mBackIv = (ImageView) findViewById(R.id.back_iv);
         mBackIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity
             }
         });
 
-        mSaveTv=(TextView)findViewById(R.id.save_tv);
+        mSaveTv = (TextView) findViewById(R.id.save_tv);
         //mSaveTv.setTypeface(mRobotoMedium);
         mSaveTv.setVisibility(View.INVISIBLE);
 
@@ -105,21 +100,21 @@ public class ProfileActivity extends AppCompatActivity
                 updateProfile();
             }
         });
-        mUserNameTv=(TextView)findViewById(R.id.username_tv);
-       // mUserNameTv.setTypeface(mRobotoMedium);
+        mUserNameTv = (TextView) findViewById(R.id.username_tv);
+        // mUserNameTv.setTypeface(mRobotoMedium);
         mUserNameTv.setText(mUserBean.getmFirstName());
 
-        mFirstNameEt=(EditText)findViewById(R.id.first_name_et);
-        mLastNameEt=(EditText)findViewById(R.id.last_name_et);
-        mMobileEt=(EditText)findViewById(R.id.mobile_et);
-        mEmailEt=(EditText)findViewById(R.id.email_et);
+        mFirstNameEt = (EditText) findViewById(R.id.first_name_et);
+        mLastNameEt = (EditText) findViewById(R.id.last_name_et);
+        mMobileEt = (EditText) findViewById(R.id.mobile_et);
+        mEmailEt = (EditText) findViewById(R.id.email_et);
 
-        mVhmodel_Et=(EditText)findViewById(R.id.vhmodel_et);
-        mVhtype_Et=(EditText)findViewById(R.id.vhtype_et);
-        mMaxpassenger_Et=(EditText)findViewById(R.id.maxpassenger_et);
-        mReqdriver_Ch= (CheckBox) findViewById(R.id.reqdriver_ch);
-        layout_req_driver= (LinearLayout) findViewById(R.id.layout_req_driver);
-        layout_other_op= (LinearLayout) findViewById(R.id.layout_other_op);
+        mVhmodel_Et = (EditText) findViewById(R.id.vhmodel_et);
+        mVhtype_Et = (EditText) findViewById(R.id.vhtype_et);
+        mMaxpassenger_Et = (EditText) findViewById(R.id.maxpassenger_et);
+        mReqdriver_Ch = (CheckBox) findViewById(R.id.reqdriver_ch);
+        layout_req_driver = (LinearLayout) findViewById(R.id.layout_req_driver);
+        layout_other_op = (LinearLayout) findViewById(R.id.layout_other_op);
 
         /*mFirstNameEt.setTypeface(mRobotoMedium);
         mLastNameEt.setTypeface(mRobotoMedium);
@@ -138,8 +133,8 @@ public class ProfileActivity extends AppCompatActivity
         mVhtype_Et.setText(mUserBean.getMvehicle_type());
         mMaxpassenger_Et.setText(mUserBean.getmMax_passengers());
 
-        if(mUserBean.getMrequested_as_driver()!=null){
-            if(mUserBean.getMrequested_as_driver().equals("1")){
+        if (mUserBean.getMrequested_as_driver() != null) {
+            if (mUserBean.getMrequested_as_driver().equals("1")) {
                 mReqdriver_Ch.setChecked(true);
                 layout_other_op.setVisibility(View.VISIBLE);
             }
@@ -157,17 +152,16 @@ public class ProfileActivity extends AppCompatActivity
         mReqdriver_Ch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
-                    ch_val=1;
+                if (isChecked) {
+                    ch_val = 1;
                     layout_other_op.setVisibility(View.VISIBLE);
-                }else {
-                    ch_val=0;
+                } else {
+                    ch_val = 0;
                     layout_other_op.setVisibility(View.GONE);
                 }
                 mSaveTv.setVisibility(View.VISIBLE);
             }
         });
-
 
 
         mFirstNameEt.addTextChangedListener(new TextWatcher() {
@@ -285,8 +279,8 @@ public class ProfileActivity extends AppCompatActivity
             }
         });
 
-        mProfileIv=(CircularImageView)findViewById(R.id.circularImageView);
-        if(!PrefUtils.getUserInfo().getProfile_image().equals("")){
+        mProfileIv = (CircularImageView) findViewById(R.id.circularImageView);
+        if (!PrefUtils.getUserInfo().getProfile_image().equals("")) {
             Picasso.with(this).load(mUserBean.getProfile_image()).into(mProfileIv);
         }
 
@@ -297,12 +291,13 @@ public class ProfileActivity extends AppCompatActivity
                 new TedPermission(ProfileActivity.this)
                         .setPermissionListener(permissionlistener)
                         .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                        .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .check();
 
             }
         });
     }
+
     PermissionListener permissionlistener = new PermissionListener() {
         @Override
         public void onPermissionGranted() {
@@ -321,49 +316,49 @@ public class ProfileActivity extends AppCompatActivity
 
         }
     };
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
-            try{
+            try {
                 images = data.getParcelableArrayListExtra(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES);
                 mProfileIv.setImageURI(Uri.parse(images.get(0).getPath()));
                 mSaveTv.setVisibility(View.VISIBLE);
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
     }
-    private void updateProfile()
-    {
+
+    private void updateProfile() {
         mProgressDialog.show();
-        RequestBody mfirstname=RequestBody.create(okhttp3.MultipartBody.FORM, mFirstNameEt.getText().toString());
-        RequestBody mlatname=RequestBody.create(okhttp3.MultipartBody.FORM, mLastNameEt.getText().toString());
-        RequestBody mMobile=RequestBody.create(okhttp3.MultipartBody.FORM, mMobileEt.getText().toString());
-        RequestBody mUserId=RequestBody.create(okhttp3.MultipartBody.FORM, mUserBean.getmUserId());
-        RequestBody mEmail=RequestBody.create(okhttp3.MultipartBody.FORM, mEmailEt.getText().toString());
-        RequestBody mVh_Model=RequestBody.create(okhttp3.MultipartBody.FORM, mVhmodel_Et.getText().toString());
-        RequestBody mVh_Type=RequestBody.create(okhttp3.MultipartBody.FORM, mVhtype_Et.getText().toString());
-        RequestBody mMax_Passengers=RequestBody.create(okhttp3.MultipartBody.FORM, mMaxpassenger_Et.getText().toString());
-        RequestBody mGroupid=RequestBody.create(okhttp3.MultipartBody.FORM, mUserBean.getmGroup_id());
-        RequestBody mReq_driver=RequestBody.create(okhttp3.MultipartBody.FORM, String.valueOf(ch_val));
+        RequestBody mfirstname = RequestBody.create(okhttp3.MultipartBody.FORM, mFirstNameEt.getText().toString());
+        RequestBody mlatname = RequestBody.create(okhttp3.MultipartBody.FORM, mLastNameEt.getText().toString());
+        RequestBody mMobile = RequestBody.create(okhttp3.MultipartBody.FORM, mMobileEt.getText().toString());
+        RequestBody mUserId = RequestBody.create(okhttp3.MultipartBody.FORM, mUserBean.getmUserId());
+        RequestBody mEmail = RequestBody.create(okhttp3.MultipartBody.FORM, mEmailEt.getText().toString());
+        RequestBody mVh_Model = RequestBody.create(okhttp3.MultipartBody.FORM, mVhmodel_Et.getText().toString());
+        RequestBody mVh_Type = RequestBody.create(okhttp3.MultipartBody.FORM, mVhtype_Et.getText().toString());
+        RequestBody mMax_Passengers = RequestBody.create(okhttp3.MultipartBody.FORM, mMaxpassenger_Et.getText().toString());
+        RequestBody mGroupid = RequestBody.create(okhttp3.MultipartBody.FORM, mUserBean.getmGroup_id());
+        RequestBody mReq_driver = RequestBody.create(okhttp3.MultipartBody.FORM, String.valueOf(ch_val));
 
-        RequestBody requestFile=null;
-        MultipartBody.Part body=null;
+        RequestBody requestFile = null;
+        MultipartBody.Part body = null;
 
-        if(images!=null)
-        {
+        if (images != null) {
             requestFile = RequestBody.create(RestApiInterface.MULTIPART, new File(images.get(0).getPath()));
             body = MultipartBody.Part.createFormData("profile_image", images.get(0).getName(), requestFile);
         }
 
-        ApiServiceModule.createService(RestApiInterface.class).updateProfile(mUserId, mfirstname,mlatname,mMobile,body,mEmail,mVh_Model,mVh_Type,mMax_Passengers,mReq_driver,mGroupid).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).updateProfile(mUserId, mfirstname, mlatname, mMobile, body, mEmail, mVh_Model, mVh_Type, mMax_Passengers, mReq_driver, mGroupid).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 mProgressDialog.cancel();
                 if (response.isSuccessful() && response.body() != null) {
                     PrefUtils.addUserInfo(response.body().getMlist().get(0));
-                    ToastUtils.showShort(ProfileActivity.this,response.body().getmMessage());
+                    MessageUtils.showSuccessMessage(ProfileActivity.this, response.body().getmMessage());
                     finish();
                 }
             }

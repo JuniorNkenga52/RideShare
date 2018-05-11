@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -23,7 +24,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
@@ -32,8 +32,8 @@ import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.model.User;
 import com.app.rideshare.utils.AppUtils;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -93,7 +93,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private int PICK_CAMERA = 1;
     private int PICK_GALLERY = 2;
-    String imagePath="";
+    String imagePath = "";
     //Button mprivileges;
 
     @Override
@@ -125,13 +125,13 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //updateProfile();
                 if (mFirstNameEt.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(EditProfileActivity.this, "Please enter First Name");
+                    MessageUtils.showFailureMessage(EditProfileActivity.this, "Please enter First Name");
                 } else if (mLastNameEt.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(EditProfileActivity.this, "Please enter Last Name");
+                    MessageUtils.showFailureMessage(EditProfileActivity.this, "Please enter Last Name");
                 } else if (mAddressEt.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(EditProfileActivity.this, "Please enter Home Address");
+                    MessageUtils.showFailureMessage(EditProfileActivity.this, "Please enter Home Address");
                 } else if (!AppUtils.isEmail(mEmailEt.getText().toString()) || mEmailEt.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(EditProfileActivity.this, "Please enter valid Email Address");
+                    MessageUtils.showFailureMessage(EditProfileActivity.this, "Please enter valid Email Address");
                 } else {
                     new AsyncUpdateUserProfile().execute();
                 }
@@ -580,7 +580,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 mProgressDialog.cancel();
                 if (response.isSuccessful() && response.body() != null) {
                     PrefUtils.addUserInfo(response.body().getMlist().get(0));
-                    ToastUtils.showShort(EditProfileActivity.this, response.body().getmMessage());
+                    MessageUtils.showSuccessMessage(EditProfileActivity.this, response.body().getmMessage());
                     finish();
                 }
             }
@@ -695,18 +695,22 @@ public class EditProfileActivity extends AppCompatActivity {
                         startActivity(i);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         finish();
-                        finishAffinity();
+                        try {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                finishAffinity();
+                            }
+                        } catch (Exception e) {
+                        }
 
                     } else {
-                        Toast.makeText(EditProfileActivity.this, "Please try again", Toast.LENGTH_LONG).show();
+                        MessageUtils.showPleaseTryAgain(EditProfileActivity.this);
                     }
                 } else {
-                    Toast.makeText(EditProfileActivity.this, "Please try again", Toast.LENGTH_LONG).show();
+                    MessageUtils.showPleaseTryAgain(EditProfileActivity.this);
                 }
             } catch (Exception e) {
-                Toast.makeText(EditProfileActivity.this, "Please try again", Toast.LENGTH_LONG).show();
+                MessageUtils.showPleaseTryAgain(EditProfileActivity.this);
             }
         }
     }
-
 }

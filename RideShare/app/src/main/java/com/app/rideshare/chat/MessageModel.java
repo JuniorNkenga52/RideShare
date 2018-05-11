@@ -3,7 +3,6 @@ package com.app.rideshare.chat;
 public class MessageModel {
 
     public final static String MEG_TYPE_TEXT = "TEXT";
-    public final static String MEG_TYPE_IMAGE = "IMAGE";
 
     private String Sender;
     private String Receiver;

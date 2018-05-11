@@ -35,6 +35,24 @@ public class DateUtils {
         return sYear + "-" + sMonth + "-" + sDay;
     }
 
+    public static String dateformat(String time) {
+        String inputPattern = "yyyy-MM-dd hh:mm:ss";
+        String outputPattern = "EEE, dd MMM, yyyy";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(time);
+            str = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
     public static long dateToMilli(String pattern, String date_time) {
 
         final SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.getDefault());

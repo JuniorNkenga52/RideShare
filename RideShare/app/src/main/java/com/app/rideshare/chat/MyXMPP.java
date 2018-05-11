@@ -1,24 +1,26 @@
 package com.app.rideshare.chat;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.activity.ChatActivity;
 import com.app.rideshare.activity.HomeNewActivity;
-import com.app.rideshare.model.User;
 import com.app.rideshare.utils.DateUtils;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -45,13 +47,7 @@ import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.provider.DiscoverInfoProvider;
 import org.jivesoftware.smackx.disco.provider.DiscoverItemsProvider;
-import org.jivesoftware.smackx.filetransfer.FileTransfer;
-import org.jivesoftware.smackx.filetransfer.FileTransferListener;
-import org.jivesoftware.smackx.filetransfer.FileTransferManager;
 import org.jivesoftware.smackx.filetransfer.FileTransferNegotiator;
-import org.jivesoftware.smackx.filetransfer.FileTransferRequest;
-import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
-import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 import org.jivesoftware.smackx.iqlast.packet.LastActivity;
 import org.jivesoftware.smackx.iqprivate.PrivateDataManager;
 import org.jivesoftware.smackx.muc.packet.GroupChatInvitation;
@@ -73,20 +69,17 @@ import org.jivesoftware.smackx.vcardtemp.provider.VCardProvider;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.jivesoftware.smackx.xhtmlim.provider.XHTMLExtensionProvider;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MyXMPP implements PingFailedListener {
 
+    private static final String NOTIF_CHANNEL_ID = "practice_chat_channel";
+
     private static final String TAG = "MyXMPP";
     private static final String DOMAIN = "13.58.7.10";
-    private static final String RESOURCE_NAME = "Connecter";
+    private static final String RESOURCE_NAME = "RideShare";
     private static final int PORT = 5222;
     //private static final int PORT = 9090;
 
@@ -97,8 +90,6 @@ public class MyXMPP implements PingFailedListener {
 
     private static MyXMPP instance = null;
     private MyService context;
-
-    private static byte[] dataReceived;
 
     private static boolean instanceCreated = false;
     private static boolean connected = false;
@@ -111,12 +102,8 @@ public class MyXMPP implements PingFailedListener {
     private static String loginUser;
     private static String passwordUser;
 
-    private FileTransferManager manager;
     private ChatManagerListenerImpl mChatManagerListener;
     private MMessageListener mMessageListener;
-
-    private User user;
-    private onMessageListener messageListener;
 
     static {
         try {
@@ -129,19 +116,17 @@ public class MyXMPP implements PingFailedListener {
     public MyXMPP() {
     }
 
-    public MyXMPP(MyService context, String logiUser, String password) {
+    private MyXMPP(MyService context, String lUser, String lpassword) {
 
         this.context = context;
 
-        this.loginUser = logiUser;
-        this.passwordUser = password;
+        loginUser = lUser;
+        passwordUser = lpassword;
 
-        mMessageListener = new MMessageListener(context);
+        mMessageListener = new MMessageListener();
         mChatManagerListener = new ChatManagerListenerImpl();
 
         PrefUtils.initPreference(context);
-
-        user = PrefUtils.getUserInfo();
 
         initConnection();
     }
@@ -186,9 +171,6 @@ public class MyXMPP implements PingFailedListener {
         PingManager pingManager = PingManager.getInstanceFor(connection);
         pingManager.registerPingFailedListener(this);
 
-        manager = FileTransferManager.getInstanceFor(connection);
-        manager.addFileTransferListener(new FileTransferIMPL());
-
         FileTransferNegotiator.getInstanceFor(connection);
     }
 
@@ -218,7 +200,7 @@ public class MyXMPP implements PingFailedListener {
 
                         @Override
                         public void run() {
-                            Toast.makeText(context, caller + "=>connecting....", Toast.LENGTH_LONG).show();
+                            MessageUtils.showSuccessMessage(context, caller + "=>connecting....");
                         }
                     });*/
 
@@ -246,7 +228,7 @@ public class MyXMPP implements PingFailedListener {
 
                             @Override
                             public void run() {
-                                Toast.makeText(context, "(" + caller + ")" + "IOException: ", Toast.LENGTH_SHORT).show();
+                                MessageUtils.showFailureMessage(context, "(" + caller + ")" + "IOException: ");
                             }
                         });
 
@@ -256,7 +238,7 @@ public class MyXMPP implements PingFailedListener {
 
                         @Override
                         public void run() {
-                            Toast.makeText(context, "(" + caller + ")" + "SMACKException: ", Toast.LENGTH_SHORT).show();
+                            MessageUtils.showFailureMessage(context, "(" + caller + ")" + "SMACKException: ");
                         }
                     });
 
@@ -268,7 +250,7 @@ public class MyXMPP implements PingFailedListener {
 
                             @Override
                             public void run() {
-                                Toast.makeText(context, "(" + caller + ")" + "XMPPException: ", Toast.LENGTH_SHORT).show();
+                                MessageUtils.showFailureMessage(context, "(" + caller + ")" + "XMPPException: ");
                             }
                         });
                     Log.e(TAG, "connect(" + caller + ")" + "XMPPException: " + e.getMessage());
@@ -281,7 +263,7 @@ public class MyXMPP implements PingFailedListener {
         connectionThread.execute();
     }
 
-    public void login() throws Exception {
+    private void login() {
 
         try {
 
@@ -369,7 +351,7 @@ public class MyXMPP implements PingFailedListener {
 
                     @Override
                     public void run() {
-                        Toast.makeText(context, "ConnectionCLosed!", Toast.LENGTH_SHORT).show();
+                        MessageUtils.showFailureMessage(context, "Connection Closed!");
                     }
                 });
 
@@ -387,7 +369,7 @@ public class MyXMPP implements PingFailedListener {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, "ConnectionClosedOn Error!!", Toast.LENGTH_SHORT).show();
+                        MessageUtils.showFailureMessage(context, "ConnectionClosedOn Error!!");
                     }
                 });
 
@@ -412,7 +394,7 @@ public class MyXMPP implements PingFailedListener {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, "ReconnectionFailed!", Toast.LENGTH_SHORT).show();
+                        MessageUtils.showFailureMessage(context, "Reconnection Failed!");
                     }
                 });
 
@@ -432,7 +414,7 @@ public class MyXMPP implements PingFailedListener {
 
                     @Override
                     public void run() {
-                        Toast.makeText(context, "REConnected!", Toast.LENGTH_SHORT).show();
+                        MessageUtils.showSuccessMessage(context, "Reconnected!");
                     }
                 });
 
@@ -472,16 +454,13 @@ public class MyXMPP implements PingFailedListener {
 
                     @Override
                     public void run() {
-                        Toast.makeText(context, "Connected!", Toast.LENGTH_SHORT).show();
+                        MessageUtils.showSuccessMessage(context, "Connected!");
                     }
                 });
         }
     }
 
     private class MMessageListener implements ChatMessageListener {
-
-        public MMessageListener(Context context) {
-        }
 
         @Override
         public void processMessage(final Chat chat, final Message message) {
@@ -517,7 +496,6 @@ public class MyXMPP implements PingFailedListener {
             commonMethods.insertIntoTable(messageModel.getSender(), messageModel.getSender(), messageModel.getReceiver(),
                     messageModel.getMessageText(), "r", MessageModel.MEG_TYPE_TEXT, messageModel.getTime());
 
-            // TODO: 4/6/2018  
             try {
 
                 if (HomeNewActivity.currentChat != null && HomeNewActivity.currentChat.length() > 0
@@ -551,175 +529,7 @@ public class MyXMPP implements PingFailedListener {
         }
     }
 
-    public class FileTransferIMPL implements FileTransferListener {
-
-        @Override
-        public void fileTransferRequest(final FileTransferRequest request) {
-
-            final IncomingFileTransfer transfer = request.accept();
-
-            try {
-
-                InputStream is = transfer.recieveFile();
-
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
-
-                int nRead;
-
-                byte[] buf = new byte[1024];
-
-                try {
-                    while ((nRead = is.read(buf, 0, buf.length)) != -1) {
-                        os.write(buf, 0, nRead);
-                    }
-                    os.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                dataReceived = os.toByteArray();
-
-                FileUtils.createRecDirectoryAndSaveFile(dataReceived, request.getFileName());
-
-                Log.i("File Received", transfer.getFileName());
-
-                processMessage(request);
-
-            } catch (XMPPException ex) {
-                Logger.getLogger(MyXMPP.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SmackException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void processMessage(final FileTransferRequest request) {
-
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-            @Override
-            public void run() {
-
-                Log.i("MSG RECE", "LOOPER");
-
-                Random random = new Random();
-
-                int iend = request.getRequestor().lastIndexOf("@");
-                String requester = request.getRequestor().substring(0, iend);
-
-//                String rec = user.getFacebookId();
-                String rec = user.getmUserId();
-
-                final MessageModel chatMessage = new MessageModel();
-                chatMessage.setSender(requester);
-                chatMessage.setType(MessageModel.MEG_TYPE_IMAGE);
-                chatMessage.setReceiver(rec);
-                chatMessage.setMsgIdl(random.nextInt(1000));
-                chatMessage.setIsMine(false);
-                chatMessage.setMessageText(request.getFileName());
-                chatMessage.setTime(DateUtils.getCurrentDate("hh:mm a"));
-
-                CommonMethods commonMethods = new CommonMethods(context);
-                commonMethods.createTable(requester);
-                commonMethods.insertIntoTable(requester, requester, rec, request.getFileName(), "r",
-                        MessageModel.MEG_TYPE_IMAGE, chatMessage.getTime());
-
-                // TODO: 4/6/2018  
-                try {
-
-                    if (HomeNewActivity.currentChat != null && HomeNewActivity.currentChat.length() > 0
-                            && HomeNewActivity.currentChat.equalsIgnoreCase(chatMessage.getSender())) {
-
-                        ChatActivity.listAllMsg.add(chatMessage);
-
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                ChatActivity.chatAdapter.notifyDataSetChanged();
-
-                                ChatActivity.list_messages.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        // Select the last row so it will scroll into view...
-                                        ChatActivity.list_messages.setSelection(ChatActivity.listAllMsg.size() - 1);
-                                    }
-                                });
-                            }
-                        });
-
-                    } else {
-                        sendNotification("Photo: " + chatMessage.getMessageText());
-                    }
-                } catch (Exception e) {
-                    sendNotification("Photo: " + chatMessage.getMessageText());
-                }
-            }
-        });
-    }
-
-    public void fileTransfer(String user, String filename, String file) throws XMPPException {
-
-        //Roster roster = Roster.getInstanceFor(connection);
-        //Presence presence = roster.getPresence(user);
-        //String destination = presence.getFrom() + "@" + connection.getServiceName() + "/" + connection.getConfiguration().getResource();
-        String destination = user;
-
-        // Create the file transfer manager
-        FileTransferManager manager = FileTransferManager.getInstanceFor(connection);
-        // Create the outgoing file transfer
-        final OutgoingFileTransfer transfer = manager.createOutgoingFileTransfer(destination);
-        // Send the file
-
-        try {
-
-            OutgoingFileTransfer.setResponseTimeout(30000);
-
-            transfer.sendFile(new File(file), "This is a Test!");
-
-            System.out.println("Status :: " + transfer.getStatus() + " Error :: " + transfer.getError() + " Exception :: " + transfer.getException());
-
-            while (!transfer.isDone()) {
-
-                try {
-
-                    Thread.sleep(1000);
-
-                    System.out.println("Is it done? " + transfer.isDone());
-
-                    Log.i("transfer file", "sending file status " + transfer.getStatus() + "progress: " + transfer.getProgress());
-
-                    if (transfer.getStatus().equals(FileTransfer.Status.refused))
-                        System.out.println("refused  " + transfer.getError());
-                    else if (transfer.getStatus().equals(FileTransfer.Status.error))
-                        System.out.println(" error " + transfer.getError());
-                    else if (transfer.getStatus().equals(FileTransfer.Status.cancelled))
-                        System.out.println(" cancelled  " + transfer.getError());
-                    else
-                        System.out.println("Success");
-
-                    if (transfer.getStatus() == FileTransfer.Status.error) {
-                        transfer.cancel();
-                        Log.e("", "EEEEEERRRRRRRROOORRRRR");
-                        break;
-                    }
-                } catch (InterruptedException e) {
-                    Log.e("aaaaaaaaaaaaaaa", "aaaa" + e);
-                    e.printStackTrace();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public byte[] convertFileToByte(Bitmap bmp) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
-    }
-
-    public void configure() {
+    private void configure() {
 
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature("http://jabber.org/protocol/disco#info");
@@ -788,23 +598,40 @@ public class MyXMPP implements PingFailedListener {
 
         try {
 
-            Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
+            String title = context.getString(R.string.app_name);
+
+            Bitmap mainIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
             long when = Calendar.getInstance().getTimeInMillis();
-
-            Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-
-            NotificationCompat.Builder noBuilder = new NotificationCompat.Builder(context).setWhen(when)
-                    .setSmallIcon(R.drawable.ic_messaging_normal).setLargeIcon(largeIcon)
-                    .setTicker(context.getResources().getString(R.string.app_name)).setContentTitle(context.getResources().getString(R.string.app_name))
-                    .setContentText(message)
-                    .setOngoing(false).setAutoCancel(true).setSound(sound);
+            Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            notificationManager.notify(0, noBuilder.build()); //0 = ID of notification
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+                // Configure the notification channel.
+                NotificationChannel notifChannel = new NotificationChannel(NOTIF_CHANNEL_ID, title, NotificationManager.IMPORTANCE_DEFAULT);
+                notifChannel.setDescription(message);
+                notifChannel.enableLights(true);
+                notifChannel.setLightColor(Color.MAGENTA);
+                notifChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+                notifChannel.enableVibration(true);
+
+                notificationManager.createNotificationChannel(notifChannel);
+            }
+
+            NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(context, NOTIF_CHANNEL_ID);
+
+            notifBuilder.setTicker(context.getResources().getString(R.string.app_name))
+                    .setContentTitle(title).setContentText(message)
+                    .setSmallIcon(R.drawable.ic_notification).setLargeIcon(mainIcon)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOngoing(false).setAutoCancel(true).setWhen(when).setSound(sound)
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setVibrate(new long[]{0, 100, 100, 100, 100, 100});
+
+            notificationManager.notify(2403, notifBuilder.build()); //0 = ID of notification
 
         } catch (Exception ignore) {
-            ignore.printStackTrace();
         }
     }
 }

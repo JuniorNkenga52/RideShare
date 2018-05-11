@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.fragment.ExploreFragment;
@@ -17,6 +16,7 @@ import com.app.rideshare.fragment.MessagesFragment;
 import com.app.rideshare.fragment.NotificationFragment;
 import com.app.rideshare.fragment.ProfileFragment;
 import com.app.rideshare.model.Rider;
+import com.app.rideshare.utils.MessageUtils;
 
 import java.util.ArrayList;
 
@@ -95,9 +95,8 @@ public class HomeNewActivity extends AppCompatActivity {
         if (back_pressed + 2000 > System.currentTimeMillis()) {
             super.onBackPressed();
         } else {
-            Toast.makeText(getBaseContext(), "Press once again to exit!", Toast.LENGTH_SHORT).show();
+            MessageUtils.showFailureMessage(getBaseContext(), "Press once again to exit!");
             back_pressed = System.currentTimeMillis();
         }
-
     }
 }

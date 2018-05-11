@@ -9,10 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
-import com.app.rideshare.activity.RegistrationActivity;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.utils.AppUtils;
-import com.app.rideshare.utils.ToastUtils;
+import com.app.rideshare.utils.MessageUtils;
 
 public class EmailFragment extends Fragment {
 
@@ -23,7 +22,7 @@ public class EmailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_email, container,
                 false);
 
@@ -43,9 +42,9 @@ public class EmailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (txtEmailId.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(getActivity(), "Please enter email id.");
+                    MessageUtils.showFailureMessage(getActivity(), "Please enter email id.");
                 } else if (!AppUtils.isEmail(txtEmailId.getText().toString())) {
-                    ToastUtils.showShort(getActivity(), "Please enter valid email id.");
+                    MessageUtils.showFailureMessage(getActivity(), "Please enter valid email id.");
                 } else {
 
                     SignUpActivity.EmailId = txtEmailId.getText().toString().trim();

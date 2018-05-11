@@ -20,11 +20,10 @@ import com.app.rideshare.api.response.AcceptRider;
 import com.app.rideshare.api.response.CancelRequest;
 import com.app.rideshare.model.RideResponse;
 import com.app.rideshare.model.Rider;
-import com.app.rideshare.utils.ToastUtils;
+import com.app.rideshare.utils.MessageUtils;
 import com.bumptech.glide.Glide;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.mikhaellopez.circularimageview.CircularImageView;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -163,7 +162,7 @@ public class WaitingActivity extends AppCompatActivity {
                 JSONObject jobj = new JSONObject(info);
                 Log.e(TAG, "onReceive: jobj >> " + jobj);
                 if (jobj.getString("request_status").equals("1")) {
-                    ToastUtils.showShort(WaitingActivity.this, "Request Accepted");
+                    MessageUtils.showSuccessMessage(WaitingActivity.this, "Request Accepted");
                     timer.cancel();
                     pulsator.stop();
 
@@ -214,7 +213,7 @@ public class WaitingActivity extends AppCompatActivity {
                     finish();
 
                 } else if (jobj.getString("request_status").equals("2")) {
-                    ToastUtils.showShort(WaitingActivity.this, "Request Rejected");
+                    MessageUtils.showFailureMessage(WaitingActivity.this, "Request Rejected");
                     finish();
                 }
 

@@ -93,10 +93,10 @@ public class GCMPushReceiverService extends GcmListenerService {
         //NotificationCompat.Builder noBuilder = null;
         NotificationCompat.Builder notifBuilder = null;
         String NOTIF_CHANNEL_ID = "my_notification_channel";
-        if(type.equals("4")){
+        if (type.equals("4")) {
             StartRideActivity.RideStatus = "inProgress";
         }
-        if(type.equals("5")){
+        if (type.equals("5")) {
             StartRideActivity.RideStatus = "finished";
             Intent rateride = new Intent(this, RideRateActivity.class);
             /*rateride.putExtra("riderate", mRider.getRide_id());
@@ -108,7 +108,7 @@ public class GCMPushReceiverService extends GcmListenerService {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_ONE_SHOT);
             notifBuilder = new NotificationCompat.Builder(this, NOTIF_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_notification)
                     .setContentText(message)
                     .setContentTitle("RideShare")
                     .setAutoCancel(true)
@@ -116,7 +116,7 @@ public class GCMPushReceiverService extends GcmListenerService {
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true);
             /*noBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_notification)
                     .setContentText(message)
                     .setContentTitle("RideShare")
                     .setAutoCancel(true)
@@ -126,14 +126,14 @@ public class GCMPushReceiverService extends GcmListenerService {
             PrefUtils.putBoolean("firstTime", true);
         } else {
             notifBuilder = new NotificationCompat.Builder(this, NOTIF_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_notification)
                     .setContentText(message)
                     .setContentTitle("RideShare")
                     .setAutoCancel(true)
                     .setSound(sound)
                     .setAutoCancel(true);
             /*noBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_notification)
                     .setContentText(message)
                     .setContentTitle("RideShare")
                     .setAutoCancel(true)

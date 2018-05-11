@@ -1,10 +1,7 @@
 package com.app.rideshare.activity;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
@@ -15,7 +12,7 @@ import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.utils.AppUtils;
-import com.app.rideshare.utils.ToastUtils;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 
 import retrofit2.Call;
@@ -48,9 +45,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
                 String email = forgot_email_et.getText().toString();
                 if (email.isEmpty()) {
-                    ToastUtils.showShort(context, "Please enter Email.");
+                    MessageUtils.showFailureMessage(context, "Please enter Email.");
                 } else if (!AppUtils.isEmail(email) || email.isEmpty()) {
-                    ToastUtils.showShort(context, "Please enter valid email.");
+                    MessageUtils.showFailureMessage(context, "Please enter valid email.");
                 } else {
                     forgotpassword(email);
                 }
@@ -77,8 +74,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                         finish();
                     }
 
-
-                    ToastUtils.showLong(ForgotPasswordActivity.this, response.body().getmMessage());
+                    MessageUtils.showSuccessMessage(ForgotPasswordActivity.this, response.body().getmMessage());
                 }
                 mProgressDialog.cancel();
 

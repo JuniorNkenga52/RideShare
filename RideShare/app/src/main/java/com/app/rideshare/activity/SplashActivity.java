@@ -20,8 +20,8 @@ import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.notification.GCMRegistrationIntentService;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -193,7 +193,7 @@ public class SplashActivity extends AppCompatActivity {
                             finish();
                         }
                     } else {
-                        ToastUtils.showShort(SplashActivity.this, response.body().getmMessage());
+                        MessageUtils.showFailureMessage(SplashActivity.this, response.body().getmMessage());
                     }
                 } else {
 
@@ -244,7 +244,7 @@ public class SplashActivity extends AppCompatActivity {
                         }
 
                     } else {
-                        ToastUtils.showShort(SplashActivity.this, response.body().getmMessage());
+                        MessageUtils.showFailureMessage(SplashActivity.this, response.body().getmMessage());
                     }
                 } else {
 
@@ -295,7 +295,7 @@ public class SplashActivity extends AppCompatActivity {
                             finish();
                         }
                     } else {
-                        ToastUtils.showShort(SplashActivity.this, response.body().getmMessage());
+                        MessageUtils.showFailureMessage(SplashActivity.this, response.body().getmMessage());
                     }
                 } else {
 
@@ -353,7 +353,7 @@ public class SplashActivity extends AppCompatActivity {
                                 i.putExtra("inprogress", response.body().getMlist().get(0).getmRidestatus());
                                 if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {
                                     i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
-                                    i.putExtra("rideUserID",response.body().getMlist().get(0).getmUserId());
+                                    i.putExtra("rideUserID", response.body().getMlist().get(0).getmUserId());
                                 }
                                 startActivity(i);
                                 finish();
@@ -365,7 +365,7 @@ public class SplashActivity extends AppCompatActivity {
                             }
                         }
                     } else {
-                        ToastUtils.showShort(SplashActivity.this, response.body().getmMessage());
+                        MessageUtils.showFailureMessage(SplashActivity.this, response.body().getmMessage());
                     }
                 } else {
 

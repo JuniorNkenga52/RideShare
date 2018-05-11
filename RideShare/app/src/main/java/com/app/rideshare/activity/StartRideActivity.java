@@ -40,10 +40,10 @@ import com.app.rideshare.model.InProgressRide;
 import com.app.rideshare.model.Route;
 import com.app.rideshare.model.User;
 import com.app.rideshare.service.LocationService;
-import com.app.rideshare.utils.Constant;
+import com.app.rideshare.utils.Constants;
 import com.app.rideshare.utils.MapDirectionAPI;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -125,17 +125,17 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 if (mDriverLocation.distanceTo(mPreDriverLocation) >= 0.5f) {
                     mPreDriverLocation = mDriverLocation;
 
-                    ToastUtils.showShort(StartRideActivity.this, "Send");
+                    // MessageUtils.showSuccessMessage(StartRideActivity.this, "Send");
 
                     animateMarkerNew(DriverMarker, new LatLng(Latitude, Longitude));
 
-                    JSONObject jmessage = new JSONObject();
-                    jmessage.put("chat_message", "" + Latitude + "`" + Longitude);
-                    jmessage.put("chat_user", "RideShare");
-                    jmessage.put("sender_user", mRider.getRide_id());
-                    jmessage.put("message_type", "chat-box-html");
-                    jmessage.put("message_new", "");
-                    mWebSocketClient.send(jmessage.toString());
+                    JSONObject jMessage = new JSONObject();
+                    jMessage.put("chat_message", "" + Latitude + "`" + Longitude);
+                    jMessage.put("chat_user", "RideShare");
+                    jMessage.put("sender_user", mRider.getRide_id());
+                    jMessage.put("message_type", "chat-box-html");
+                    jMessage.put("message_new", "");
+                    mWebSocketClient.send(jMessage.toString());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -168,10 +168,10 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         public void onReceive(Context context, Intent intent) {
             String staus = intent.getStringExtra("int_data");
             if (staus.equals("1")) {
-                ToastUtils.showShort(StartRideActivity.this, "Your Ride Started.");
+                MessageUtils.showSuccessMessage(StartRideActivity.this, "Your Ride Started.");
 
             } else if (staus.equals("2")) {
-                ToastUtils.showShort(StartRideActivity.this, "Your Ride Finish.");
+                MessageUtils.showSuccessMessage(StartRideActivity.this, "Your Ride Finish.");
 
                 Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
                 rateride.putExtra("riderate", mRider.getRide_id());
@@ -327,7 +327,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-                intent.putExtra(Constant.intentKey.SelectedChatUser, mRider);
+                intent.putExtra(Constants.intentKey.SelectedChatUser, mRider);
                 startActivity(intent);
             }
         });
@@ -381,7 +381,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             i.putExtra("inprogress", "busy");
 
             //i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
-            InProgressRide inProgressRide=new InProgressRide();
+            InProgressRide inProgressRide = new InProgressRide();
             inProgressRide.setmRideId(mRider.getRide_id());
             inProgressRide.setmRideType(mRider.getU_ride_type());
 
@@ -509,7 +509,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                                     public void run() {
                                         try {
 
-                                            ToastUtils.showShort(StartRideActivity.this, "received");
+                                            // MessageUtils.showSuccessMessage((StartRideActivity.this, "received");
 
                                             String updatedlocation[] = jobj.getString("chat_message").split("`");
                                             double mlet = Double.parseDouble(updatedlocation[0]);

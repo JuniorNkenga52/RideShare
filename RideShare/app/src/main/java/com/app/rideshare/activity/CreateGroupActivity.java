@@ -25,9 +25,9 @@ import com.app.rideshare.model.Category;
 import com.app.rideshare.model.GroupList;
 import com.app.rideshare.model.User;
 import com.app.rideshare.utils.CommonDialog;
-import com.app.rideshare.utils.Constant;
+import com.app.rideshare.utils.Constants;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
@@ -62,7 +62,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_creategroup);
 
         Intent intent = getIntent();
-        isEditGroupDetail = intent.getBooleanExtra(Constant.intentKey.isEditGroup, false);
+        isEditGroupDetail = intent.getBooleanExtra(Constants.intentKey.isEditGroup, false);
 
         PrefUtils.initPreference(this);
         mUserBean = PrefUtils.getUserInfo();
@@ -72,7 +72,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         activity=this;
         if (isEditGroupDetail) {
             getSupportActionBar().setTitle("Edit Group");
-            groupDetailInfo = (GroupList) intent.getSerializableExtra(Constant.intentKey.groupDetail);
+            groupDetailInfo = (GroupList) intent.getSerializableExtra(Constants.intentKey.groupDetail);
         } else
             getSupportActionBar().setTitle("Create Group");
 
@@ -85,7 +85,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                     Intent ii = new Intent(activity, GroupDetailActivity.class);
                     ii.putExtra("groupDetail", groupDetailInfo);
                     ii.putExtra("mTag", "EditGroup");
-                    ii.putExtra(Constant.intentKey.MyGroup, true);
+                    ii.putExtra(Constants.intentKey.MyGroup, true);
                     startActivity(ii);
                     //startActivity(new Intent(activity,GroupDetailActivity.class));
                     finish();
@@ -131,11 +131,11 @@ public class CreateGroupActivity extends AppCompatActivity {
                 }
 
                 if (txtGroupName.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(getApplicationContext(), "Please enter group name.");
+                    MessageUtils.showFailureMessage(getApplicationContext(), "Please enter group name.");
                 } else if (txtGroupDescription.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(getApplicationContext(), "Please enter description.");
+                    MessageUtils.showFailureMessage(getApplicationContext(), "Please enter description.");
                 } else if (themeId.isEmpty()) {
-                    ToastUtils.showShort(getApplicationContext(), "Please choose theme.");
+                    MessageUtils.showFailureMessage(getApplicationContext(), "Please choose theme.");
                 } else {
                     new AsyncCreateGroup(themeId,
                             txtGroupName.getText().toString().trim(),
@@ -163,13 +163,13 @@ public class CreateGroupActivity extends AppCompatActivity {
         /*Intent ii = new Intent(activity, GroupDetailActivity.class);
         ii.putExtra("groupDetail", groupDetailInfo);
         ii.putExtra("mTag", "EditGroup");
-        ii.putExtra(Constant.intentKey.MyGroup, true);
+        ii.putExtra(Constants.intentKey.MyGroup, true);
         finish();*/
         if (isEditGroupDetail){
             Intent ii = new Intent(activity, GroupDetailActivity.class);
             ii.putExtra("groupDetail", groupDetailInfo);
             ii.putExtra("mTag", "EditGroup");
-            ii.putExtra(Constant.intentKey.MyGroup, true);
+            ii.putExtra(Constants.intentKey.MyGroup, true);
             startActivity(ii);
             //startActivity(new Intent(activity,GroupDetailActivity.class));
             finish();
@@ -386,14 +386,14 @@ public class CreateGroupActivity extends AppCompatActivity {
                     JSONObject jObj = new JSONObject(result);
 
                     if (jObj.getString("status").equals("success")) {
-                        ToastUtils.showShort(getApplicationContext(), "Group Created.");
+                        MessageUtils.showSuccessMessage(getApplicationContext(), "Group Created.");
 //                        RideShareApp.mHomeTabPos = 0;
 //                        Intent i = new Intent(CreateGroupActivity.this, HomeNewActivity.class);
 //                        startActivity(i);
 //                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 //                        finish();
 
-                        Constant.isGroupDataUpdated = true;
+                        Constants.isGroupDataUpdated = true;
 
                         if (isEditGroupDetail) {
                             finish();
@@ -403,13 +403,13 @@ public class CreateGroupActivity extends AppCompatActivity {
                                 CommonDialog.shareInviteLinkDialog(CreateGroupActivity.this, resultJsonObject.optString("share_link"));
                         }
                     } else {
-                        ToastUtils.showShort(getApplicationContext(), "The Group Name field must contain a unique value.");
+                        MessageUtils.showFailureMessage(getApplicationContext(), "The Group Name field must contain a unique value.");
                     }
                 } else {
-                    ToastUtils.showShort(getApplicationContext(), "Please Try Again.");
+                    MessageUtils.showPleaseTryAgain(getApplicationContext());
                 }
             } catch (Exception e) {
-                ToastUtils.showShort(getApplicationContext(), "Please Try Again.");
+                MessageUtils.showPleaseTryAgain(getApplicationContext());
             }
         }
     }

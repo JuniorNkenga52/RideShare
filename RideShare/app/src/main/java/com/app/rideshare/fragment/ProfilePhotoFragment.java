@@ -18,14 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.rideshare.R;
-import com.app.rideshare.activity.HomeNewActivity;
 import com.app.rideshare.activity.RideTypeActivity;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.User;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.gun0912.tedpermission.PermissionListener;
@@ -91,7 +90,7 @@ public class ProfilePhotoFragment extends Fragment {
         imgProfilePhoto = (CircularImageView) rootView.findViewById(R.id.imgProfilePhoto);
 
         if (SignUpActivity.ProfilePhotoPath.length() != 0) {
-            Picasso.with(context).load("file://"+SignUpActivity.ProfilePhotoPath).resize(300, 300).centerCrop().into(imgProfilePhoto);
+            Picasso.with(context).load("file://" + SignUpActivity.ProfilePhotoPath).resize(300, 300).centerCrop().into(imgProfilePhoto);
         }
 
         imgProfilePhoto.setOnClickListener(new View.OnClickListener() {
@@ -126,9 +125,9 @@ public class ProfilePhotoFragment extends Fragment {
         protected String doInBackground(Objects... param) {
             try {
                 return RideShareApi.updateProfileNew(SignUpActivity.mUserId, SignUpActivity.FirstName,
-                        SignUpActivity.LastName,SignUpActivity.HomeAddress,
-                        SignUpActivity.EmailId,SignUpActivity.ProfilePhotoPath,
-                        "","","");
+                        SignUpActivity.LastName, SignUpActivity.HomeAddress,
+                        SignUpActivity.EmailId, SignUpActivity.ProfilePhotoPath,
+                        "", "", "");
             } catch (Exception e) {
                 return null;
             }
@@ -145,7 +144,7 @@ public class ProfilePhotoFragment extends Fragment {
 
                     JSONObject jObj = new JSONObject(result);
 
-                    if(jObj.getString("status").equals("success")){
+                    if (jObj.getString("status").equals("success")) {
 
                         JSONArray jArrayResult = new JSONArray(jObj.getString("result"));
 
@@ -188,13 +187,13 @@ public class ProfilePhotoFragment extends Fragment {
                         getActivity().finish();
 
                     } else {
-                        Toast.makeText(getActivity(), "Please try again", Toast.LENGTH_LONG).show();
+                        MessageUtils.showPleaseTryAgain(getActivity());
                     }
                 } else {
-                    Toast.makeText(getActivity(), "Please try again", Toast.LENGTH_LONG).show();
+                    MessageUtils.showPleaseTryAgain(getActivity());
                 }
             } catch (Exception e) {
-                Toast.makeText(getActivity(), "Please try again", Toast.LENGTH_LONG).show();
+                MessageUtils.showPleaseTryAgain(getActivity());
             }
         }
     }
@@ -265,7 +264,7 @@ public class ProfilePhotoFragment extends Fragment {
     }
 
     public static void setProfilePhoto(String ProfilePhoto) {
-        SignUpActivity.ProfilePhotoPath =  ProfilePhoto;
+        SignUpActivity.ProfilePhotoPath = ProfilePhoto;
         Picasso.with(context).load("file://" + SignUpActivity.ProfilePhotoPath).resize(300, 300).centerCrop().into(imgProfilePhoto);
     }
 
@@ -279,7 +278,7 @@ public class ProfilePhotoFragment extends Fragment {
             Picasso.with(getActivity()).load(photos.get(0)).into(imgProfilePhoto);
         } else if (PICK_CAMERA == requestCode && resultCode == Activity.RESULT_OK) {
             String imagePath = "file://" + convertImageUriToFile(imageUri, getActivity());
-            SignUpActivity.ProfilePhotoPath =  convertImageUriToFile(imageUri, getActivity());
+            SignUpActivity.ProfilePhotoPath = convertImageUriToFile(imageUri, getActivity());
 
             Picasso.with(getActivity()).load("file://" + SignUpActivity.ProfilePhotoPath).resize(300, 300).centerCrop().into(imgProfilePhoto);
         }

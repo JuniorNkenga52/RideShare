@@ -3,18 +3,16 @@ package com.app.rideshare.chat;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.app.rideshare.utils.MessageUtils;
 
 public class CommonMethods {
 
     private SQLiteDatabase mydb;
-    private String INSERT;
 
     public static String DB_NAME = "chat.db";
 
-    private SQLiteStatement insertStmt;
     private Context mContext;
 
     public CommonMethods(Context context) {
@@ -40,7 +38,7 @@ public class CommonMethods {
             mydb.close();
 
         } catch (Exception e) {
-            Toast.makeText(mContext, "Error in creating table", Toast.LENGTH_LONG);
+            MessageUtils.showFailureMessage(mContext, "Error in creating table");
         }
     }
 
