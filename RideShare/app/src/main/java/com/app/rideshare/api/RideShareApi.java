@@ -1,5 +1,7 @@
 package com.app.rideshare.api;
 
+import android.util.Log;
+
 import java.io.File;
 import java.util.LinkedHashMap;
 
@@ -55,6 +57,19 @@ public class RideShareApi {
     public static String groupNew(String user_id) {
         try {
             String URL = SERVER_URL + "group/groupNew";
+
+            LinkedHashMap<String, String> params = new LinkedHashMap<>();
+            params.put("user_id", user_id);
+
+            return RideShareApiCall.postWebserviceCall(URL, params);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static String getFirstLoginGroup(String user_id) {
+        try {
+            String URL = SERVER_URL + "group/getFirstLoginGroup";
 
             LinkedHashMap<String, String> params = new LinkedHashMap<>();
             params.put("user_id", user_id);
@@ -219,6 +234,10 @@ public class RideShareApi {
             params.put("user_id", user_id);
             params.put("group_id", group_id);
             params.put("status", status);
+
+            Log.d("User id",user_id);
+            Log.d("Group Id",group_id);
+            Log.d("Status",status);
 
             return RideShareApiCall.postWebserviceCall(URL, params);
         } catch (Exception e) {

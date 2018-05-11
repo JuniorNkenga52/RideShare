@@ -1,11 +1,14 @@
 package com.app.rideshare.fragment;
 
-import android.content.res.Configuration;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
+import android.text.Editable;
+import android.text.InputFilter;
 import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import com.app.rideshare.R;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.api.RideShareApi;
+import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.github.pinball83.maskededittext.MaskedEditText;
@@ -38,6 +42,7 @@ public class MobileNumberFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_phonenumber, container,
                 false);
 
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         imgBack = (ImageView) rootView.findViewById(R.id.imgBack);
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +60,27 @@ public class MobileNumberFragment extends Fragment {
         txtTermsOfService.setText(content);
 
         txtPhoneNumber = (MaskedEditText) rootView.findViewById(R.id.txtPhoneNumber);
-        txtPhoneNumber.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+
+        //txtPhoneNumber.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+
+        /*try {
+            InputFilter filter = new InputFilter() {
+                public CharSequence filter(CharSequence source, int start, int end,
+                                           Spanned dest, int dstart, int dend) {
+                    for (int i = start; i < end; i++) {
+                        if (Character.isWhitespace(source.charAt(i))) {
+                            return "";
+                        }
+                    }
+                    return null;
+                }
+            };
+            txtPhoneNumber.setFilters(new InputFilter[]{filter});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
+
         chkIAgree = (CheckBox) rootView.findViewById(R.id.chkIAgree);
 
         txtTermsOfService.setOnClickListener(new View.OnClickListener() {
@@ -70,28 +95,34 @@ public class MobileNumberFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                String result = txtPhoneNumber.getUnmaskedText().toString();
+                try {
+                    String result = txtPhoneNumber.getUnmaskedText().toString();
+                    if (result.length() == 0) {
+                        ToastUtils.showShort(getActivity(), "Please enter Mobile Number.");
+                    } else if (result.replaceAll(" ","").length() != 10) {
+                        ToastUtils.showShort(getActivity(), "Please enter valid Mobile Number.");
+                    } else if (!chkIAgree.isChecked()) {
+                        ToastUtils.showShort(getActivity(), "You must agree with the Terms and Conditions");
+                    } else {
+                        //String numberMo = "+1"+ result;
+                        String numberMo = "+91" + result;
 
-                if (result.length() == 0) {
+                        //result = "+919265094032";-nikunj
+                        //result="+917359371716";
+                        //result="+917435068611";-Ajay
+                        //result="+919725672270";
+                        //result="+919265762630";-Darshan
+                        //result="+917600902008";
+                        if (AppUtils.isInternetAvailable(getActivity())) {
+                            new AsyncSendTextMessage(numberMo).execute();
+                        } else {
+                            AppUtils.showNoInternetAvailable(getActivity());
+                        }
+                    }
+                }catch (Exception e){
                     ToastUtils.showShort(getActivity(), "Please enter Mobile Number.");
-                } else if (result.length() != 10) {
-                    ToastUtils.showShort(getActivity(), "Please enter valid Mobile Number.");
-                } else if (!chkIAgree.isChecked()) {
-                    ToastUtils.showShort(getActivity(), "You must agree with the Terms and Conditions");
-                } else {
-                    //String numberMo = "+1"+ result;
-                    String numberMo = "+91"+ result;
-
-                    //result = "+919265094032";
-                    //result="+917359371716";
-                    //result="+917435068611";
-                    //result="+919725672270";
-                    //result="+919265762630";
-                    //result="+917600902008";
-                    new AsyncSendTextMessage(numberMo).execute();
-
+                    e.printStackTrace();
                 }
-
                 //SignUpActivity.mViewPager.setCurrentItem(3);
             }
         });

@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
@@ -19,18 +18,12 @@ import com.app.rideshare.BuildConfig;
 import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
-import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.api.response.SignupResponse;
-import com.app.rideshare.model.User;
 import com.app.rideshare.notification.GCMRegistrationIntentService;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.ToastUtils;
-import com.app.rideshare.view.CustomProgressDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,7 +42,7 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
 
-        activity=this;
+        activity = this;
         TextView textViewVersion = (TextView) findViewById(R.id.textViewVersion);
         textViewVersion.setText("Version " + BuildConfig.VERSION_NAME);
 
@@ -107,11 +100,22 @@ public class SplashActivity extends AppCompatActivity {
                             startActivity(i);
                             finish();
                         }*/
+                        if (PrefUtils.getBoolean("firstTime")) {
+                            Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+                            startActivity(i);
+                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            finish();
+                        } else {
+                            Intent i = new Intent(getBaseContext(), GroupSelectionActivity.class);
+                            startActivity(i);
+                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            finish();
 
-                        Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+                        }
+                        /*Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
                         startActivity(i);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                        finish();
+                        finish();*/
 
                     } else {
                         Intent i = new Intent(getBaseContext(), SignUpActivity.class);
@@ -130,7 +134,7 @@ public class SplashActivity extends AppCompatActivity {
                 loginuser(PrefUtils.getString("gemail"), PrefUtils.getString("gId"),PrefUtils.getString("group_id"));
             }*/
             //PrefUtils.getUserInfo().getmUserId();
-                getUserDetails(PrefUtils.getUserInfo().getmUserId());
+            getUserDetails(PrefUtils.getUserInfo().getmUserId());
                 /*Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
                 startActivity(i);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -344,13 +348,21 @@ public class SplashActivity extends AppCompatActivity {
                             startActivity(i);
                             finish();
                         } else {
-                            Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
-                            i.putExtra("inprogress", response.body().getMlist().get(0).getmRidestatus());
-                            if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {
-                                i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
+                            if (PrefUtils.getBoolean("firstTime")) {
+                                Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+                                i.putExtra("inprogress", response.body().getMlist().get(0).getmRidestatus());
+                                if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {
+                                    i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
+                                    i.putExtra("rideUserID",response.body().getMlist().get(0).getmUserId());
+                                }
+                                startActivity(i);
+                                finish();
+                            } else {
+                                Intent i = new Intent(getBaseContext(), GroupSelectionActivity.class);
+                                startActivity(i);
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                finish();
                             }
-                            startActivity(i);
-                            finish();
                         }
                     } else {
                         ToastUtils.showShort(SplashActivity.this, response.body().getmMessage());

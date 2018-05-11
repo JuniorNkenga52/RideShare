@@ -36,6 +36,7 @@ import com.app.rideshare.chat.LocalBinder;
 import com.app.rideshare.chat.MyService;
 import com.app.rideshare.chat.MyXMPP;
 import com.app.rideshare.model.Directions;
+import com.app.rideshare.model.InProgressRide;
 import com.app.rideshare.model.Route;
 import com.app.rideshare.model.User;
 import com.app.rideshare.service.LocationService;
@@ -114,6 +115,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     private LinearLayout mStartRideLi;
     private Button mStartRideBtn;
     private Button mFinishRideBtn;
+    public static String RideStatus = "";
+
     private Runnable runnable = new Runnable() {
 
         @Override
@@ -166,8 +169,10 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             String staus = intent.getStringExtra("int_data");
             if (staus.equals("1")) {
                 ToastUtils.showShort(StartRideActivity.this, "Your Ride Started.");
+
             } else if (staus.equals("2")) {
                 ToastUtils.showShort(StartRideActivity.this, "Your Ride Finish.");
+
                 Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
                 rateride.putExtra("riderate", mRider.getRide_id());
                 rateride.putExtra("driverid", mRider.getFromRider().getnUserId());
@@ -208,6 +213,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         mStartRideBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                RideStatus = "inProgress";
                 startRide(mRider.getRide_id(), "3", mUserbean.getmUserId());
             }
         });
@@ -215,6 +221,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         mFinishRideBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                RideStatus = "finished";
                 startRide(mRider.getRide_id(), "4", mUserbean.getmUserId());
             }
         });
@@ -368,7 +375,39 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             mWebSocketClient = null;
         }
 
+
+        Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+        if (RideStatus.equals("inProgress")) {
+            i.putExtra("inprogress", "busy");
+
+            //i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
+            InProgressRide inProgressRide=new InProgressRide();
+            inProgressRide.setmRideId(mRider.getRide_id());
+            inProgressRide.setmRideType(mRider.getU_ride_type());
+
+            inProgressRide.setmStartingAddress(mRider.getStarting_address());
+            inProgressRide.setmEndingAddress(mRider.getEnding_address());
+            inProgressRide.setmStartLat(mRider.getStart_lati());
+            inProgressRide.setmStartLang(mRider.getStart_long());
+            inProgressRide.setmEndLat(mRider.getEnd_lati());
+            inProgressRide.setmEndLang(mRider.getEnd_long());
+            inProgressRide.setmRequestStatus("3");
+            inProgressRide.setmFromRider(mRider.getFromRider());
+            inProgressRide.setmToRider(mRider.getToRider());
+
+            i.putExtra("rideprogress", inProgressRide);
+            i.putExtra("rideUserID", mUserbean.getmUserId());
+
+        } else {
+            i.putExtra("inprogress", "free");
+        }
+        startActivity(i);
+        activity.finish();
+
         super.onBackPressed();
+        /*if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {
+            i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
+        }*/
     }
 
     @Override
@@ -521,6 +560,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             public void onResponse(Call<StartRideResponse> call, Response<StartRideResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (mType.equals("3")) {
+
                         mFinishRideBtn.setVisibility(View.VISIBLE);
                         mStartRideBtn.setVisibility(View.GONE);
                     } else if (mType.equals("4")) {

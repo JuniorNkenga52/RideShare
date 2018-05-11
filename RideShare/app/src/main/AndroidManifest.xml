@@ -172,10 +172,21 @@
             android:name="io.fabric.ApiKey"
             android:value="222483a7f0f7bff743470f4112c6de9459fe0141" />
 
-        <activity android:name=".activity.AdminFunctionsActivity" />
-        <activity android:name=".activity.AdminUserinfoActivity" />
-        <activity android:name=".activity.DriverPrivileges" />
-        <activity android:name=".activity.ForgotPasswordActivity" />
+        <activity
+            android:name=".activity.AdminFunctionsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.AdminUserinfoActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.DriverPrivileges"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.ForgotPasswordActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.CreateGroupActivity"
             android:exported="true">
@@ -183,9 +194,18 @@
                 <action android:name="android.intent.action.MAIN"></action>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.HistoryActivity" />
-        <activity android:name=".activity.MyGroupActivity" />
-        <activity android:name=".activity.GroupDetailActivity" />
+        <activity
+            android:name=".activity.HistoryActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.MyGroupActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.GroupDetailActivity"
+            android:screenOrientation="portrait" />
+
         <activity android:name="com.tangxiaolv.telegramgallery.GalleryActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
@@ -203,7 +223,9 @@
                 tools:replace="android:resource" />
         </provider>
 
-        <activity android:name=".activity.GroupSelectionActivity" />
+        <activity
+            android:name=".activity.GroupSelectionActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.DeepLinkActivity"

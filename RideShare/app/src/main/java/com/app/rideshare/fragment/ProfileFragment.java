@@ -2,19 +2,17 @@ package com.app.rideshare.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
-import com.app.rideshare.activity.CreateGroupActivity;
 import com.app.rideshare.activity.EditProfileActivity;
 import com.app.rideshare.activity.HistoryActivity;
 import com.app.rideshare.activity.HomeActivity;
@@ -23,11 +21,15 @@ import com.app.rideshare.activity.SettingActivity;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.listner.OnBackPressedListener;
 import com.app.rideshare.utils.PrefUtils;
-import com.google.android.gms.maps.OnMapReadyCallback;
+import com.app.rideshare.view.CustomProgressDialog;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
-public class ProfileFragment extends Fragment implements  OnBackPressedListener {
+public class ProfileFragment extends Fragment implements OnBackPressedListener {
 
     CircularImageView imgProfilePhoto;
     TextView txtUserName;
@@ -38,6 +40,7 @@ public class ProfileFragment extends Fragment implements  OnBackPressedListener 
     private LinearLayout llHistory;
     private LinearLayout llSetting;
     private LinearLayout llLogout;
+    private CustomProgressDialog mProgressDialog;
 
     public static ProfileFragment newInstance() {
         ProfileFragment fragment = new ProfileFragment();
@@ -55,10 +58,32 @@ public class ProfileFragment extends Fragment implements  OnBackPressedListener 
         imgProfilePhoto = (CircularImageView) rootView.findViewById(R.id.imgProfilePhoto);
 
         if (PrefUtils.getUserInfo().getProfile_image().length() != 0) {
-            Picasso.with(getActivity()).load(PrefUtils.getUserInfo().getProfile_image())
+            /*Picasso.with(getActivity()).load(PrefUtils.getUserInfo().getProfile_image())
                     .resize(300, 300)
                     .centerCrop()
-                    .error(R.drawable.user_icon).into(imgProfilePhoto);
+                    .error(R.drawable.user_icon).into(imgProfilePhoto);*/
+            Glide.with(getActivity()).load(PrefUtils.getUserInfo().getProfile_image())
+                    .crossFade()
+                    .into(imgProfilePhoto);
+            /*mProgressDialog = new CustomProgressDialog(getActivity());
+            mProgressDialog.show();
+            Glide.with(getActivity())
+                    .load(PrefUtils.getUserInfo().getProfile_image())
+                    .crossFade()
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            mProgressDialog.dismiss();
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            mProgressDialog.dismiss();
+                            return false;
+                        }
+                    })
+                    .into(imgProfilePhoto);*/
         }
 
         txtUserName = (TextView) rootView.findViewById(R.id.txtUserName);
@@ -139,7 +164,9 @@ public class ProfileFragment extends Fragment implements  OnBackPressedListener 
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                     getActivity().finish();
-                                    getActivity().finishAffinity();
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                        getActivity().finishAffinity();
+                                    }
 
                                 } catch (Exception e) {
                                 }
@@ -156,6 +183,7 @@ public class ProfileFragment extends Fragment implements  OnBackPressedListener 
         });
         return rootView;
     }
+
     @Override
     public void doBack() {
         getActivity().finish();

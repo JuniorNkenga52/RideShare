@@ -126,8 +126,11 @@ public class LocationService extends Service
         if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
             Toast.makeText(getApplicationContext(),"Permission Denied",Toast.LENGTH_SHORT).show();
         }
-
-        locationManager.removeUpdates(listener);
+        try {
+            locationManager.removeUpdates(listener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static Thread performOnBackgroundThread(final Runnable runnable) {

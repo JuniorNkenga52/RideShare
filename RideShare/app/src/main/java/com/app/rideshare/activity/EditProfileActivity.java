@@ -35,13 +35,13 @@ import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.mikhaellopez.circularimageview.CircularImageView;
-import com.nguyenhoanglam.imagepicker.activity.ImagePicker;
-import com.nguyenhoanglam.imagepicker.activity.ImagePickerActivity;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.squareup.picasso.Picasso;
 import com.tangxiaolv.telegramgallery.GalleryActivity;
 import com.tangxiaolv.telegramgallery.GalleryConfig;
 
@@ -93,7 +93,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private int PICK_CAMERA = 1;
     private int PICK_GALLERY = 2;
-    String imagePath;
+    String imagePath="";
     //Button mprivileges;
 
     @Override
@@ -103,7 +103,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         PrefUtils.initPreference(this);
 
-        activity=this;
+        activity = this;
         mUserBean = PrefUtils.getUserInfo();
         mProgressDialog = new CustomProgressDialog(this);
 
@@ -124,15 +124,15 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //updateProfile();
-                if(mFirstNameEt.getText().toString().isEmpty()){
+                if (mFirstNameEt.getText().toString().isEmpty()) {
                     ToastUtils.showShort(EditProfileActivity.this, "Please enter First Name");
-                }else if(mLastNameEt.getText().toString().isEmpty()){
+                } else if (mLastNameEt.getText().toString().isEmpty()) {
                     ToastUtils.showShort(EditProfileActivity.this, "Please enter Last Name");
-                }else if(mAddressEt.getText().toString().isEmpty()){
+                } else if (mAddressEt.getText().toString().isEmpty()) {
                     ToastUtils.showShort(EditProfileActivity.this, "Please enter Home Address");
-                }else if(!AppUtils.isEmail(mEmailEt.getText().toString()) ||mEmailEt.getText().toString().isEmpty()){
-                    ToastUtils.showShort(EditProfileActivity.this, "- Please enter valid Email Address");
-                }else {
+                } else if (!AppUtils.isEmail(mEmailEt.getText().toString()) || mEmailEt.getText().toString().isEmpty()) {
+                    ToastUtils.showShort(EditProfileActivity.this, "Please enter valid Email Address");
+                } else {
                     new AsyncUpdateUserProfile().execute();
                 }
 
@@ -345,10 +345,33 @@ public class EditProfileActivity extends AppCompatActivity {
         });
 
         mProfileIv = (CircularImageView) findViewById(R.id.circularImageView);
+
         if (!PrefUtils.getUserInfo().getProfile_image().equals("")) {
-            Picasso.with(this).load(mUserBean.getProfile_image()).resize(300, 300)
-                    .centerCrop().into(mProfileIv);
+            /*Picasso.with(this)
+                    .load(mUserBean.getProfile_image())
+                    .resize(300, 300)
+                    .rotate(90)
+                    .centerCrop().into(mProfileIv);*/
+            mProgressDialog.show();
+            Glide.with(activity)
+                    .load(mUserBean.getProfile_image())
+                    .crossFade()
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            mProgressDialog.dismiss();
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            mProgressDialog.dismiss();
+                            return false;
+                        }
+                    })
+                    .into(mProfileIv);
         }
+
 
         mProfileIv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -357,7 +380,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 new TedPermission(EditProfileActivity.this)
                         .setPermissionListener(permissionlistener)
                         .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                        .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA)
+                        .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                         .check();
 
             }
@@ -439,6 +462,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });
         builder.show();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -451,18 +475,41 @@ public class EditProfileActivity extends AppCompatActivity {
 
             }
         }*/
+        mSaveTv.setVisibility(View.VISIBLE);
         if (PICK_GALLERY == requestCode && resultCode == Activity.RESULT_OK) {
             ArrayList<String> photos = (ArrayList<String>) data.getSerializableExtra(GalleryActivity.PHOTOS);
 
-            imagePath=photos.get(0);
-            Picasso.with(activity).load(photos.get(0)).into(mProfileIv);
+            imagePath = photos.get(0);
+            Uri uri = Uri.fromFile(new File(photos.get(0)));
+            /*Picasso.with(activity)
+                    .load(photos.get(0))
+                    .into(mProfileIv);*/
+            Glide.with(this).load(uri)
+                    .error(R.drawable.icon_test)
+                    .into(mProfileIv);
+            /*Picasso.with(activity)
+                    .load( uri)
+                    .resize(300, 300)
+                    .centerCrop()
+                    .rotate(90)
+                    .into(mProfileIv);*/
+
         } else if (PICK_CAMERA == requestCode && resultCode == Activity.RESULT_OK) {
 
 
-            imagePath =  convertImageUriToFile(imageUri, activity);
+            imagePath = convertImageUriToFile(imageUri, activity);
             //SignUpActivity.ProfilePhotoPath =  convertImageUriToFile(imageUri, activity);
+            Glide.with(this)
+                    .load("file://" + imagePath)
+                    .error(R.drawable.icon_test)
+                    .into(mProfileIv);
 
-            Picasso.with(activity).load("file://" + imagePath).resize(300, 300).centerCrop().into(mProfileIv);
+            /*Picasso.with(activity)
+                    .load("file://" + imagePath)
+                    .resize(300, 300)
+                    .centerCrop()
+                    .rotate(90)
+                    .into(mProfileIv);*/
         }
     }
 
@@ -566,7 +613,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 //body = MultipartBody.Part.createFormData("profile_image", images.get(0).getName(), requestFile);
             }*/
 
-            if(ch_val == 1) {
+            if (ch_val == 1) {
                 mVh_Model = mVhmodel_Et.getText().toString();
                 mVh_Type = mVhtype_Et.getText().toString();
                 mMax_Passengers = mMaxpassenger_Et.getText().toString();
@@ -586,8 +633,8 @@ public class EditProfileActivity extends AppCompatActivity {
         protected String doInBackground(Objects... param) {
             try {
                 return RideShareApi.updateProfileNew(mUserBean.getmUserId(), mFirstNameEt.getText().toString(),
-                        mLastNameEt.getText().toString(),mAddressEt.getText().toString(),
-                        mEmailEt.getText().toString(),imagePath,
+                        mLastNameEt.getText().toString(), mAddressEt.getText().toString(),
+                        mEmailEt.getText().toString(), imagePath,
                         mVh_Model, mVh_Type, mMax_Passengers);
             } catch (Exception e) {
                 return null;
@@ -605,7 +652,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                     JSONObject jObj = new JSONObject(result);
 
-                    if(jObj.getString("status").equals("success")){
+                    if (jObj.getString("status").equals("success")) {
 
                         JSONArray jArrayResult = new JSONArray(jObj.getString("result"));
 

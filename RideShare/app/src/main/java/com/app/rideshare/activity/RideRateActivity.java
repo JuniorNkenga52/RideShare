@@ -35,7 +35,7 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
     private TextView btn_submit;
     //btn_cancle
     private EditText edt_comment;
-    private String ride_id, driver_id;
+    private String ride_id="", driver_id="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +46,12 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
         mProgressDialog = new CustomProgressDialog(this);
 
         mUserbean = PrefUtils.getUserInfo();
-        ride_id = getIntent().getStringExtra("riderate");
-        driver_id = getIntent().getStringExtra("driverid");
+
+        if(getIntent().hasExtra("riderate")){
+            ride_id = getIntent().getStringExtra("riderate");
+            driver_id = getIntent().getStringExtra("driverid");
+        }
+
 
         ride_rate = (RatingBar) findViewById(R.id.ride_rate);
         txt_rate_ride = (TextView) findViewById(R.id.txt_rate_ride);

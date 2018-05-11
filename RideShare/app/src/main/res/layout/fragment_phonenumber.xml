@@ -53,6 +53,7 @@
             android:textSize="@dimen/_25sdp"
             app:mask="(***) ***-****"
             app:maskIconColor="@color/white"
+            android:inputType="number"
             app:notMaskedSymbol="*" />
 
         <LinearLayout

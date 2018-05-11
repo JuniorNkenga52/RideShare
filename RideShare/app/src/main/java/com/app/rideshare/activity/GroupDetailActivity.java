@@ -26,6 +26,10 @@ import com.app.rideshare.utils.CommonDialog;
 import com.app.rideshare.utils.Constant;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -100,6 +104,10 @@ public class GroupDetailActivity extends AppCompatActivity {
         if (!PrefUtils.getUserInfo().getProfile_image().equals("")) {
             Picasso.with(this).load(groupDetail.getCategory_image()).resize(300, 300)
                     .centerCrop().into(mGroupIv);
+            /*Glide.with(this).load(groupDetail.getCategory_image())
+                    .error(R.drawable.icon_test)
+                    .placeholder(R.drawable.icon_test)
+                    .into(mGroupIv);*/
         }
 
         mGroupName.setText(groupDetail.getGroup_name());
@@ -293,8 +301,11 @@ public class GroupDetailActivity extends AppCompatActivity {
 
             holder.mGroupUserName.setText(bean.getmFirstName() + " " + bean.getmLastName());
 
-            Picasso.with(GroupDetailActivity.this).load(bean.getProfile_image()).resize(300, 300)
-                    .centerCrop().error(R.drawable.user_icon).into(holder.circularImageView );
+            /*Picasso.with(GroupDetailActivity.this).load(bean.getProfile_image()).resize(300, 300)
+                    .centerCrop().error(R.drawable.user_icon).into(holder.circularImageView );*/
+            Glide.with(GroupDetailActivity.this).load(bean.getProfile_image())
+                    .error(R.drawable.icon_test)
+                    .into(holder.circularImageView);
 
             return vi;
         }

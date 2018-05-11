@@ -21,6 +21,7 @@ import com.app.rideshare.api.response.CancelRequest;
 import com.app.rideshare.model.RideResponse;
 import com.app.rideshare.model.Rider;
 import com.app.rideshare.utils.ToastUtils;
+import com.bumptech.glide.Glide;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
@@ -94,7 +95,12 @@ public class WaitingActivity extends AppCompatActivity {
         mEmailTv.setText(currentRider.getmEmail());
         try {
             if (!currentRider.getmProfileImage().equals("")) {
-                Picasso.with(this).load(currentRider.getmProfileImage()).into(mProfilePic);
+                //Picasso.with(this).load(currentRider.getmProfileImage()).into(mProfilePic);
+
+                Glide.with(this).load(currentRider.getmProfileImage())
+                        .error(R.drawable.icon_test)
+                        .placeholder(R.drawable.icon_test)
+                        .into(mProfilePic);
             }
         } catch (Exception e) {
             e.printStackTrace();

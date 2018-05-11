@@ -7,13 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationManager;
+import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -27,12 +28,13 @@ import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.model.ContactBean;
-import com.app.rideshare.model.Rider;
 import com.app.rideshare.model.User;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.bumptech.glide.Glide;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,8 +47,6 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static android.content.Context.LOCATION_SERVICE;
 
 public class AppUtils {
 
@@ -214,7 +214,7 @@ public class AppUtils {
         Toast.makeText(activity, R.string.txt_msg_no_internet_available, Toast.LENGTH_SHORT).show();
     }
 
-    public static  String downloadUrl(String strUrl,CustomProgressDialog progressDialog) throws IOException {
+    public static String downloadUrl(String strUrl, CustomProgressDialog progressDialog) throws IOException {
         String data = "";
         InputStream iStream = null;
         HttpURLConnection urlConnection = null;
@@ -240,5 +240,94 @@ public class AppUtils {
             progressDialog.dismiss();
         }
         return data;
+    }
+
+
+    public static int getCameraPhotoOrientation(String imageFilePath) {
+        int rotate = 0;
+        try {
+
+            ExifInterface exif;
+
+            exif = new ExifInterface(imageFilePath);
+            String exifOrientation = exif
+                    .getAttribute(ExifInterface.TAG_ORIENTATION);
+            Log.d("exifOrientation", exifOrientation);
+            int orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return rotate;
+    }
+
+    public static Bitmap checkOrientation(String photoPath, Bitmap bitmap) {
+        ExifInterface ei = null;
+        Bitmap rotatedBitmap = null;
+        try {
+            ei = new ExifInterface(photoPath);
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED);
+            switch (orientation) {
+
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotatedBitmap = rotateImage(bitmap, 90);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotatedBitmap = rotateImage(bitmap, 180);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotatedBitmap = rotateImage(bitmap, 270);
+                    break;
+
+                case ExifInterface.ORIENTATION_NORMAL:
+                default:
+                    rotatedBitmap = bitmap;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return rotatedBitmap;
+    }
+
+    public static Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
+    }
+
+    public static Bitmap decodeFile(String f, int WIDTH, int HIGHT) {
+        try {
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
+
+            final int REQUIRED_WIDTH = WIDTH;
+            final int REQUIRED_HIGHT = HIGHT;
+            int scale = 1;
+            while (o.outWidth / scale / 2 >= REQUIRED_WIDTH && o.outHeight / scale / 2 >= REQUIRED_HIGHT)
+                scale *= 2;
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+        } catch (FileNotFoundException e) {
+        }
+        return null;
     }
 }

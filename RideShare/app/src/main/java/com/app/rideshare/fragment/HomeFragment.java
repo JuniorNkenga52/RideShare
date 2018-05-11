@@ -185,7 +185,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         });
 
         mSearchCabTv = (TextView) rootview.findViewById(R.id.search_cab_iv);
-        linearLayout=rootview.findViewById(R.id.linearLayout);
+        linearLayout = rootview.findViewById(R.id.linearLayout);
         //mSearchCabTv.setTypeface(mRobotoReguler);
         if (mUserType.equals("2")) {
             mSearchCabTv.setText("Find Rider");
@@ -194,8 +194,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 if (currentlthg != null) {
                     if (mUserType.equals("1")) {
                         if (PrefUtils.getBoolean("isFriends")) {
@@ -284,8 +282,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                     if (mLocationSearchAtv.getText().toString().isEmpty()) {
                         ToastUtils.showShort(getActivity(), "Please select destination location.");
                     } else {
-                        if(selectedRide!=null){
-                            getRiderInfoDialog(selectedRide);
+                        if (selectedRide != null) {
+                            if (selectedRide.getU_ride_type().equals("2")) {
+                                getRiderInfoDialog(selectedRide);
+                            }
                         }
                     }
 
@@ -317,7 +317,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
                 LatLng currentDriverPos = new LatLng(Double.parseDouble(driver.getmLatitude()), Double.parseDouble(driver.getmLongitude()));
                 builder.include(currentDriverPos);
-
                 /*Marker m = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
                         .position(currentDriverPos).anchor(0.5f, 0.5f)
                         .rotation(0f)
@@ -415,7 +414,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         mlist.addAll(response.body().getMlistUser());
                         builder = new LatLngBounds.Builder();
                         builder.include(currentlthg);
+
                         createMarker();
+
                     }
                 } else {
                     ToastUtils.showShort(getActivity(), "No any user available.");
@@ -457,7 +458,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         TextView mVahicalTv = (TextView) dialog.findViewById(R.id.vahical_tv);
         TextView mAddressTv = (TextView) dialog.findViewById(R.id.address_tv);
         LinearLayout mOther_info = (LinearLayout) dialog.findViewById(R.id.ride_other_info);
-        TextView txt_maxPerson=dialog.findViewById(R.id.txt_maxPerson);
+        TextView txt_maxPerson = dialog.findViewById(R.id.txt_maxPerson);
         TextView mGetRideTv = (TextView) dialog.findViewById(R.id.get_ride_tv);
         TextView mCancelTv = (TextView) dialog.findViewById(R.id.cancel_ride_tv);
 

@@ -21,6 +21,7 @@ import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.api.response.SendOTPResponse;
 import com.app.rideshare.model.User;
+import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.view.CustomProgressDialog;
@@ -76,7 +77,11 @@ public class OTPFragment extends Fragment {
         txtResendOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendOTP(SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
+                if (AppUtils.isInternetAvailable(getActivity())) {
+                    sendOTP(SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
+                }else {
+                    AppUtils.showNoInternetAvailable(getActivity());
+                }
             }
         });
 
@@ -93,9 +98,11 @@ public class OTPFragment extends Fragment {
                     ToastUtils.showShort(getActivity(), "Please enter valid verification code.");
                 } else {
                     //sendOTP(otp, MobileNumberFragment.mUserId);
-                    new AsyncOTP(otp).execute();
-
-
+                    if (AppUtils.isInternetAvailable(getActivity())) {
+                        new AsyncOTP(otp).execute();
+                    }else {
+                        AppUtils.showNoInternetAvailable(getActivity());
+                    }
                 }
 
                 //SignUpActivity.mViewPager.setCurrentItem(2);
@@ -203,8 +210,13 @@ public class OTPFragment extends Fragment {
                             startActivity(i);
                             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             getActivity().finish();
-                            PrefUtils.putBoolean("firstTime", true);
+
                         }
+                        /*Intent i = new Intent(getActivity(), GroupSelectionActivity.class);
+                        startActivity(i);
+                        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        getActivity().finish();
+                        PrefUtils.putBoolean("firstTime", true);*/
 
                     }
                 } else {

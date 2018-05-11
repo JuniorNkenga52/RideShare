@@ -26,6 +26,7 @@ import com.app.rideshare.api.response.AcceptRequest;
 import com.app.rideshare.utils.ToastUtils;
 import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.view.CustomProgressDialog;
+import com.bumptech.glide.Glide;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
@@ -129,7 +130,10 @@ public class NotificationActivity extends AppCompatActivity {
         try{
             if(!profilePic.equals(""))
             {
-                Picasso.with(this).load(profilePic).into(mProfilePicIv);
+                //Picasso.with(this).load(profilePic).into(mProfilePicIv);
+                Glide.with(this).load(profilePic)
+                        .error(R.drawable.icon_test)
+                        .into(mProfilePicIv);
             }
         }catch (Exception e){
 

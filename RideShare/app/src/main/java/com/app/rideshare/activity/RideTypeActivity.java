@@ -1,6 +1,7 @@
 package com.app.rideshare.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import com.app.rideshare.api.request.ContactRequest;
 import com.app.rideshare.api.response.AcceptRider;
 import com.app.rideshare.api.response.ContactResponse;
 import com.app.rideshare.api.response.RideSelect;
+import com.app.rideshare.api.response.StartRideResponse;
 import com.app.rideshare.model.InProgressRide;
 import com.app.rideshare.model.User;
 import com.app.rideshare.service.LocationService;
@@ -55,6 +57,7 @@ public class RideTypeActivity extends AppCompatActivity {
 
     //Typeface mRobotoMediam;
     Context context;
+    Activity activity;
     TextView mNextTv;
     Location currentLocation;
 
@@ -74,9 +77,13 @@ public class RideTypeActivity extends AppCompatActivity {
         public void onPermissionGranted() {
 
             if (mUserBean.getContact_sync().equals("0")) {
-                syncContact();
-            }
+                if (AppUtils.isInternetAvailable(activity)) {
+                    syncContact();
+                } else {
+                    AppUtils.showNoInternetAvailable(activity);
+                }
 
+            }
             Intent intent = new Intent(RideTypeActivity.this, LocationService.class);
             startService(intent);
             SmartLocation.with(RideTypeActivity.this).location()
@@ -102,8 +109,8 @@ public class RideTypeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ride_type);
 
         PrefUtils.initPreference(this);
-        context=this;
-
+        context = this;
+        activity = this;
         application = (RideShareApp) getApplicationContext();
         turnGPSOn();
 
@@ -148,6 +155,8 @@ public class RideTypeActivity extends AppCompatActivity {
                     .setNegativeButton("no Cancel", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            String Userid = getIntent().getStringExtra("rideUserID");
+                            startRide(mRide.getmRideId(),"4",Userid);
                             mMaterialDialog.dismiss();
 
                         }
@@ -176,13 +185,13 @@ public class RideTypeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setTitle("Select Ride");
 
-        for(int i = 0; i < toolbar.getChildCount(); i++){
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
             View view = toolbar.getChildAt(i);
-            if(view instanceof TextView){
+            if (view instanceof TextView) {
                 TextView tv = (TextView) view;
                 Typeface titleFont = Typeface.
                         createFromAsset(context.getAssets(), "OpenSans-Regular.ttf");
-                if(tv.getText().equals(toolbar.getTitle())){
+                if (tv.getText().equals(toolbar.getTitle())) {
                     tv.setTypeface(titleFont);
                     break;
                 }
@@ -205,7 +214,13 @@ public class RideTypeActivity extends AppCompatActivity {
                         mOfferRideLL.setSelected(false);
                         rideType = 1;
                         application.setmUserType("" + rideType);
-                        selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
+
+                        if (AppUtils.isInternetAvailable(activity)) {
+                            selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
+                        } else {
+                            AppUtils.showNoInternetAvailable(activity);
+                        }
+
                     } else {
                         ToastUtils.showShort(RideTypeActivity.this, "Getting your location.");
                     }
@@ -225,7 +240,11 @@ public class RideTypeActivity extends AppCompatActivity {
                         mNeedRideLL.setSelected(false);
                         rideType = 2;
                         application.setmUserType("" + rideType);
-                        selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
+                        if (AppUtils.isInternetAvailable(activity)) {
+                            selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
+                        } else {
+                            AppUtils.showNoInternetAvailable(activity);
+                        }
                     } else {
                         ToastUtils.showShort(RideTypeActivity.this, "Getting your location.");
                     }
@@ -346,4 +365,34 @@ public class RideTypeActivity extends AppCompatActivity {
         });
     }
 
+    private void startRide(String mId, final String mType, String userid) {
+        mProgressDialog.show();
+        ApiServiceModule.createService(RestApiInterface.class).mStartRide(mId, mType, userid).enqueue(new Callback<StartRideResponse>() {
+            @Override
+            public void onResponse(Call<StartRideResponse> call, Response<StartRideResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (mType.equals("3")) {
+
+                    } else if (mType.equals("4")) {
+
+
+                        Intent intent = new Intent(RideTypeActivity.this, LocationService.class);
+                        stopService(intent);
+                        //finish();
+                        // rate & rewie
+                    }
+                } else {
+
+                }
+                mProgressDialog.cancel();
+            }
+
+            @Override
+            public void onFailure(Call<StartRideResponse> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("error", t.toString());
+                mProgressDialog.cancel();
+            }
+        });
+    }
 }
