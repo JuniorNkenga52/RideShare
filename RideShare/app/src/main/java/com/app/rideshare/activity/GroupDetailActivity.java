@@ -1,5 +1,6 @@
 package com.app.rideshare.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -51,12 +52,14 @@ public class GroupDetailActivity extends AppCompatActivity {
 
     private TextView mNoUserTv;
     private boolean MyGroup;
+    Activity activity;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_detail);
 
+        activity=this;
         PrefUtils.initPreference(this);
         mUserBean = PrefUtils.getUserInfo();
 
@@ -73,6 +76,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                activity.finish();
                 onBackPressed();
             }
         });
@@ -126,9 +130,9 @@ public class GroupDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String shareData = groupDetail.getShareLink();
                 if (shareData != null && !shareData.trim().isEmpty()) {
-                    CommonDialog.shareInviteLinkDialog(GroupDetailActivity.this, shareData);
+                    CommonDialog.shareInviteLinkDialog(GroupDetailActivity.this, shareData,1);
                 } else {
-                    CommonDialog.shareInviteLinkDialog(GroupDetailActivity.this, "Testing data");
+                    CommonDialog.shareInviteLinkDialog(GroupDetailActivity.this, "Testing data",1);
                 }
             }
         });
@@ -159,7 +163,8 @@ public class GroupDetailActivity extends AppCompatActivity {
             Intent i = new Intent(GroupDetailActivity.this, HomeNewActivity.class);
             startActivity(i);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            finish();
+            activity.finish();
+            //finish();
         } else {
             RideShareApp.mHomeTabPos = 4;
 
@@ -167,7 +172,8 @@ public class GroupDetailActivity extends AppCompatActivity {
             i.putExtra("", false);
             startActivity(i);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            finish();
+            activity.finish();
+            //finish();
         }
 
 

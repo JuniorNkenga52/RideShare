@@ -1,5 +1,6 @@
 package com.app.rideshare.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -45,14 +46,17 @@ public class MyGroupActivity extends AppCompatActivity {
     private GroupAdapter groupAdapter;
 
     private EditText tvSearchGroup;
+    Activity activity;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mygroup);
 
+        activity=this;
         PrefUtils.initPreference(this);
         mUserBean = PrefUtils.getUserInfo();
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -61,6 +65,7 @@ public class MyGroupActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                activity.finish();
                 onBackPressed();
             }
         });
@@ -150,7 +155,8 @@ public class MyGroupActivity extends AppCompatActivity {
         Intent i = new Intent(MyGroupActivity.this, HomeNewActivity.class);
         startActivity(i);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finish();
+        activity.finish();
+        //finish();
 
     }
 

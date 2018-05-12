@@ -400,7 +400,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                         } else {
                             JSONObject resultJsonObject = jObj.optJSONObject("result");
                             if (resultJsonObject != null)
-                                CommonDialog.shareInviteLinkDialog(CreateGroupActivity.this, resultJsonObject.optString("share_link"));
+                                CommonDialog.shareInviteLinkDialog(CreateGroupActivity.this, resultJsonObject.optString("share_link"),0);
                         }
                     } else {
                         MessageUtils.showFailureMessage(getApplicationContext(), "The Group Name field must contain a unique value.");

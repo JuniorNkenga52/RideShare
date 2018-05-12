@@ -12,13 +12,14 @@ import com.app.rideshare.R;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MessageUtils;
+import com.app.rideshare.utils.PrefUtils;
 
 public class EmailFragment extends Fragment {
 
     private ImageView imgBack;
     private TextView txtNext;
 
-    public static TextView txtEmailId;
+    public  TextView txtEmailId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,7 +49,7 @@ public class EmailFragment extends Fragment {
                 } else {
 
                     SignUpActivity.EmailId = txtEmailId.getText().toString().trim();
-
+                    PrefUtils.putString("UemailID",  SignUpActivity.EmailId);
                     SignUpActivity.mViewPager.setCurrentItem(5);
                 }
 

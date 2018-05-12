@@ -5,24 +5,22 @@ import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.Build;
-import android.support.v4.content.FileProvider;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
-import com.app.rideshare.BuildConfig;
 import com.app.rideshare.R;
+import com.app.rideshare.activity.MyGroupActivity;
 
 public class CommonDialog {
 
-    public static void shareInviteLinkDialog(final Activity activity, final String shareData) {
+    public static void shareInviteLinkDialog(final Activity activity, final String shareData, final int type) {
         final Dialog dialog = new Dialog(activity, R.style.InviteDialogAnimation);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_invite_share);
@@ -68,12 +66,12 @@ public class CommonDialog {
                     sendIntent.setType("vnd.android-dir/mms-sms");
                     activity.startActivity(sendIntent);
                 }*/
-                try{
+                try {
                     Intent sendIntent = new Intent(Intent.ACTION_VIEW);
                     sendIntent.putExtra("sms_body", shareData);
                     sendIntent.setType("vnd.android-dir/mms-sms");
                     activity.startActivity(sendIntent);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -117,6 +115,17 @@ public class CommonDialog {
             }
         });
 
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (type == 0) {
+                    Intent i = new Intent(activity, MyGroupActivity.class);
+                    activity.startActivity(i);
+                    activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    activity.finish();
+                }
+            }
+        });
         dialog.show();
     }
 }

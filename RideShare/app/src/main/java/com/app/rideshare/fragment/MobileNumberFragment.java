@@ -1,12 +1,18 @@
 package com.app.rideshare.fragment;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +23,10 @@ import android.widget.TextView;
 import com.app.rideshare.R;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.api.RideShareApi;
+import com.app.rideshare.notification.GCMRegistrationIntentService;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MessageUtils;
+import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.github.pinball83.maskededittext.MaskedEditText;
 import com.gun0912.tedpermission.PermissionListener;
@@ -37,7 +45,8 @@ public class MobileNumberFragment extends Fragment {
     public MaskedEditText txtPhoneNumber;
 
     private CheckBox chkIAgree;
-
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    String token;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_phonenumber, container,
@@ -133,8 +142,42 @@ public class MobileNumberFragment extends Fragment {
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS)
                 .check();
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
+                    token = intent.getStringExtra("token");
+                    PrefUtils.putString("tokenID",token);
+                    Log.d("token", token);
+                } else if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
+                } else {
+                }
+            }
+        };
+
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.w("MainActivity", "onResume");
+        if (mRegistrationBroadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mRegistrationBroadcastReceiver,
+                    new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mRegistrationBroadcastReceiver,
+                    new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.w("MainActivity", "onPause");
+        if (mRegistrationBroadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
+        }
     }
 
     PermissionListener permissionlistener = new PermissionListener() {

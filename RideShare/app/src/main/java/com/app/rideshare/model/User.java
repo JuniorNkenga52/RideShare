@@ -88,6 +88,9 @@ public class User implements Serializable {
     @SerializedName("token")
     private String mtoken;
 
+    @SerializedName("is_assigned_group")
+    private String m_is_assigned_group;
+
     private String jabberId;
 
     public String getJabberId() {
@@ -352,5 +355,13 @@ public class User implements Serializable {
 
     public void setmMax_passengers(String mMax_passengers) {
         this.mMax_passengers = mMax_passengers;
+    }
+
+    public String getM_is_assigned_group() {
+        return m_is_assigned_group;
+    }
+
+    public void setM_is_assigned_group(String m_is_assigned_group) {
+        this.m_is_assigned_group = m_is_assigned_group;
     }
 }

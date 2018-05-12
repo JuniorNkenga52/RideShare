@@ -1,5 +1,6 @@
 package com.app.rideshare.notification;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -102,6 +103,7 @@ public class GCMPushReceiverService extends GcmListenerService {
             /*rateride.putExtra("riderate", mRider.getRide_id());
             rateride.putExtra("driverid", mRider.getFromRider().getnUserId());*/
             startActivity(rateride);
+
         }
         if (type.equals("6")) {
             intent = new Intent(this, RideTypeActivity.class);

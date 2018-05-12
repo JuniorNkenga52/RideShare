@@ -2,6 +2,7 @@ package com.app.rideshare.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -71,6 +72,8 @@ public class RideTypeActivity extends AppCompatActivity {
     boolean GpsStatus = false;
     MaterialDialog mMaterialDialog;
     InProgressRide mRide;
+    private static long back_pressed;
+
     PermissionListener permissionlistener = new PermissionListener() {
         @Override
         public void onPermissionGranted() {
@@ -393,5 +396,29 @@ public class RideTypeActivity extends AppCompatActivity {
                 mProgressDialog.cancel();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (back_pressed + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+
+            RideShareApp.mHomeTabPos = 0;
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+            System.exit(0);
+        } else {
+            FragmentManager fm = getFragmentManager(); // or 'getSupportFragmentManager();'
+            int count = fm.getBackStackEntryCount();
+            for (int i = 0; i < count; ++i) {
+                fm.popBackStack();
+            }
+            MessageUtils.showFailureMessage(getBaseContext(), "Press once again to exit!");
+            back_pressed = System.currentTimeMillis();
+        }
+        //super.onBackPressed();
     }
 }

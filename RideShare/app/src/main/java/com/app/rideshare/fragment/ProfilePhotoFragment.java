@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
-import com.app.rideshare.activity.RideTypeActivity;
+import com.app.rideshare.activity.GroupSelectionActivity;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.User;
@@ -53,6 +53,8 @@ public class ProfilePhotoFragment extends Fragment {
 
     private int PICK_CAMERA = 1;
     private int PICK_GALLERY = 2;
+    String firstname, lastname, homeaddress, emailid;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,8 +101,17 @@ public class ProfilePhotoFragment extends Fragment {
                 OnitemClick();
             }
         });
-
+        firstname = SignUpActivity.FirstName;
+        lastname = SignUpActivity.LastName;
+        homeaddress = SignUpActivity.HomeAddress;
+        emailid = PrefUtils.getString("UemailID");
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     private class AsyncUpdateUserProfile extends AsyncTask<Objects, Void, String> {
@@ -124,9 +135,13 @@ public class ProfilePhotoFragment extends Fragment {
         @Override
         protected String doInBackground(Objects... param) {
             try {
-                return RideShareApi.updateProfileNew(SignUpActivity.mUserId, SignUpActivity.FirstName,
+                /*return RideShareApi.updateProfileNew(SignUpActivity.mUserId, SignUpActivity.FirstName,
                         SignUpActivity.LastName, SignUpActivity.HomeAddress,
                         SignUpActivity.EmailId, SignUpActivity.ProfilePhotoPath,
+                        "", "", "");*/
+                return RideShareApi.updateProfileNew(SignUpActivity.mUserId, firstname,
+                        lastname, homeaddress,
+                        PrefUtils.getString("UemailID"), SignUpActivity.ProfilePhotoPath,
                         "", "", "");
             } catch (Exception e) {
                 return null;
@@ -181,10 +196,14 @@ public class ProfilePhotoFragment extends Fragment {
 
                         PrefUtils.addUserInfo(beanUser);
 
-                        Intent i = new Intent(getActivity(), RideTypeActivity.class);
+                        Intent i = new Intent(getActivity(), GroupSelectionActivity.class);
                         startActivity(i);
                         getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         getActivity().finish();
+                        /*Intent i = new Intent(getActivity(), RideTypeActivity.class);
+                        startActivity(i);
+                        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        getActivity().finish();*/
 
                     } else {
                         MessageUtils.showPleaseTryAgain(getActivity());
@@ -298,11 +317,11 @@ public class ProfilePhotoFragment extends Fragment {
 
             cursor = activity.getContentResolver().query(
 
-                    imageUri,         //  Get data for specific image URI
-                    proj,             //  Which columns to return
-                    null,             //  WHERE clause; which rows to return (all rows)
-                    null,             //  WHERE clause selection arguments (none)
-                    null              //  Order-by clause (ascending by name)
+                    imageUri,//  Get data for specific image URI
+                    proj,    //  Which columns to return
+                    null,    //  WHERE clause; which rows to return (all rows)
+                    null,    //  WHERE clause selection arguments (none)
+                    null     //  Order-by clause (ascending by name)
 
             );
 

@@ -100,7 +100,14 @@ public class SplashActivity extends AppCompatActivity {
                             startActivity(i);
                             finish();
                         }*/
-                        if (PrefUtils.getBoolean("firstTime")) {
+
+                        Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+                        startActivity(i);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        finish();
+
+                        // New One
+                        /*if (PrefUtils.getBoolean("firstTime")) {
                             Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
                             startActivity(i);
                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -111,7 +118,9 @@ public class SplashActivity extends AppCompatActivity {
                             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             finish();
 
-                        }
+                        }*/
+
+
                         /*Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
                         startActivity(i);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -348,7 +357,18 @@ public class SplashActivity extends AppCompatActivity {
                             startActivity(i);
                             finish();
                         } else {
-                            if (PrefUtils.getBoolean("firstTime")) {
+
+                            /*Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+                            i.putExtra("inprogress", response.body().getMlist().get(0).getmRidestatus());
+                            if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {
+                                i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
+                                i.putExtra("rideUserID", response.body().getMlist().get(0).getmUserId());
+                            }
+                            startActivity(i);
+                            finish();*/
+
+                            //New One
+                            if (response.body().getMlist().get(0).getM_is_assigned_group().equals("1")) {
                                 Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
                                 i.putExtra("inprogress", response.body().getMlist().get(0).getmRidestatus());
                                 if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {

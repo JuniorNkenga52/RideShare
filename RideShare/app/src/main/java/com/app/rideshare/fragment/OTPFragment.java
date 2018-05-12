@@ -1,10 +1,13 @@
 package com.app.rideshare.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
-import com.app.rideshare.activity.GroupSelectionActivity;
 import com.app.rideshare.activity.RideTypeActivity;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.api.ApiServiceModule;
@@ -21,6 +23,7 @@ import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.api.response.SendOTPResponse;
 import com.app.rideshare.model.User;
+import com.app.rideshare.notification.GCMRegistrationIntentService;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
@@ -48,8 +51,9 @@ public class OTPFragment extends Fragment {
     private TextView txtResendOTP;
 
     //CustomProgressDialog mProgressDialog;
-
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
     private SmsVerifyCatcher smsVerifyCatcher;
+    String token;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -128,8 +132,44 @@ public class OTPFragment extends Fragment {
 
         smsVerifyCatcher.onStart();
 
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
+                    token = intent.getStringExtra("token");
+                    Log.d("token", token);
+                } else if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
+                } else {
+                }
+            }
+        };
         return rootView;
     }
+
+
+
+    /* @Override
+    protected void onResume() {
+        super.onResume();
+
+        FirstName = "";
+        LastName = "";
+        HomeAddress = "";
+        EmailId = "";
+
+        Log.w("MainActivity", "onResume");
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.w("MainActivity", "onPause");
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+    }*/
 
     public static void updateTest() {
         String number = "(" + SignUpActivity.PhoneNumber.substring(0, 3) + ") " + SignUpActivity.PhoneNumber.substring(3, 6) + "-" + SignUpActivity.PhoneNumber.substring(6, 10);
@@ -147,6 +187,9 @@ public class OTPFragment extends Fragment {
             mProgressDialog.show();
 
             this.OTP = OTP;
+            /*if(token.equals("")){
+                PrefUtils.getString("tokenID");
+            }*/
         }
 
         @Override
@@ -174,9 +217,10 @@ public class OTPFragment extends Fragment {
                 JSONObject jsonObject = new JSONObject(result.toString());
 
                 if (jsonObject.getString("status").equalsIgnoreCase("success")) {
-                    if (jsonObject.getString("result").equalsIgnoreCase("Your mobile number successfully verified"))
+                    if (jsonObject.getString("result").equalsIgnoreCase("Your mobile number successfully verified")) {
                         SignUpActivity.mViewPager.setCurrentItem(2);
-                    else {
+
+                    } else {
 
                         JSONArray jArrayResult = new JSONArray(jsonObject.getString("result"));
 
@@ -210,6 +254,7 @@ public class OTPFragment extends Fragment {
                         beanUser.setMvehicle_model(jObjResult.optString("vehicle_model"));
                         beanUser.setMvehicle_type(jObjResult.optString("vehicle_type"));
                         beanUser.setmMax_passengers(jObjResult.optString("max_passengers"));
+                        beanUser.setM_is_assigned_group(jObjResult.optString("is_assigned_group"));
 
                         PrefUtils.addUserInfo(beanUser);
 
@@ -218,7 +263,15 @@ public class OTPFragment extends Fragment {
 
                         smsVerifyCatcher.onStop();
 
-                        if (PrefUtils.getBoolean("firstTime")) {
+
+                        if(beanUser.getM_is_assigned_group().equals("1")){
+                            Intent i = new Intent(getActivity(), RideTypeActivity.class);
+                            startActivity(i);
+                            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            getActivity().finish();
+                        }
+
+                        /*if (PrefUtils.getBoolean("firstTime")) {
                             Intent i = new Intent(getActivity(), RideTypeActivity.class);
                             startActivity(i);
                             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -229,7 +282,7 @@ public class OTPFragment extends Fragment {
                             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             getActivity().finish();
 
-                        }
+                        }*/
                         /*Intent i = new Intent(getActivity(), GroupSelectionActivity.class);
                         startActivity(i);
                         getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

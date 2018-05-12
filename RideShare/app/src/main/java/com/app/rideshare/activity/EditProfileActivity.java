@@ -130,7 +130,9 @@ public class EditProfileActivity extends AppCompatActivity {
                     MessageUtils.showFailureMessage(EditProfileActivity.this, "Please enter Last Name");
                 } else if (mAddressEt.getText().toString().isEmpty()) {
                     MessageUtils.showFailureMessage(EditProfileActivity.this, "Please enter Home Address");
-                } else if (!AppUtils.isEmail(mEmailEt.getText().toString()) || mEmailEt.getText().toString().isEmpty()) {
+                } else if (mEmailEt.getText().toString().isEmpty()) {
+                    MessageUtils.showFailureMessage(EditProfileActivity.this, "Please enter Email Address");
+                } else if (!AppUtils.isEmail(mEmailEt.getText().toString())) {
                     MessageUtils.showFailureMessage(EditProfileActivity.this, "Please enter valid Email Address");
                 } else {
                     new AsyncUpdateUserProfile().execute();

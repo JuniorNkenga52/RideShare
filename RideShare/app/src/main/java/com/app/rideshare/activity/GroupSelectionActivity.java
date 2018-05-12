@@ -71,6 +71,7 @@ public class GroupSelectionActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
             }
         });
     }

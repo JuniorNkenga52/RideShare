@@ -1,6 +1,8 @@
 package com.app.rideshare.activity;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -36,12 +38,14 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
     //btn_cancle
     private EditText edt_comment;
     private String ride_id = "", driver_id = "";
+    Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_rate);
         context = this;
+        activity=this;
         PrefUtils.initPreference(this);
         mProgressDialog = new CustomProgressDialog(this);
 
@@ -69,7 +73,6 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 finish();
             }
         });
@@ -157,7 +160,11 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
                         MessageUtils.showSuccessMessage(context, response.body().getMessage());
                     }
                 }
-                finish();
+                //finish();
+                Intent i = new Intent(RideRateActivity.this, HomeNewActivity.class);
+                startActivity(i);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                activity.finish();
                 mProgressDialog.cancel();
             }
 

@@ -1,6 +1,8 @@
 package com.app.rideshare.activity;
 
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -92,11 +94,26 @@ public class HomeNewActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        if (back_pressed + 2000 > System.currentTimeMillis()) {
+        /*if (back_pressed + 2000 > System.currentTimeMillis()) {
             super.onBackPressed();
+            RideShareApp.mHomeTabPos = 0;
+            Intent i = new Intent(this, RideTypeActivity.class);
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
         } else {
+            FragmentManager fm = getFragmentManager(); // or 'getSupportFragmentManager();'
+            int count = fm.getBackStackEntryCount();
+            for(int i = 0; i < count; ++i) {
+                fm.popBackStack();
+            }
             MessageUtils.showFailureMessage(getBaseContext(), "Press once again to exit!");
             back_pressed = System.currentTimeMillis();
-        }
+        }*/
+        RideShareApp.mHomeTabPos = 0;
+        Intent i = new Intent(this, RideTypeActivity.class);
+        startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
     }
 }

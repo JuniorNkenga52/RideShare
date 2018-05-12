@@ -252,6 +252,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                             /*curLocMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker())
                                     .position(currentlthg));*/
                             curLocMarker = setcutommarker(currentlthg, null, mUserBean, 1);
+
                             getMarkerBitmapFromView(getActivity(), null, mUserBean, 1, currentlthg);
 
                         } else {
@@ -285,7 +286,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         if (selectedRide != null) {
                             if (selectedRide.getU_ride_type().equals("2")) {
                                 getRiderInfoDialog(selectedRide);
-                            }
+                            }/*else {
+                                getRiderInfoDialog(selectedRide);
+                            }*/
                         }
                     }
 
@@ -541,61 +544,71 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
     public void getMarkerBitmapFromView(Activity activity, final Rider driver, final User user, final int type, final LatLng currentDriverPos) {
 
-        final View customMarkerView = activity.getLayoutInflater().inflate(R.layout.item_custom_marker, null);
+        try {
+            final View customMarkerView = activity.getLayoutInflater().inflate(R.layout.item_custom_marker, null);
 
-        CircleImageView markerImageView = customMarkerView.findViewById(R.id.user_dp);
-        String userimage = "";
-        if (type == 0) {
-            userimage = driver.getmProfileImage();
-        } else {
-            userimage = user.getProfile_image();
+            CircleImageView markerImageView = customMarkerView.findViewById(R.id.user_dp);
+            String userimage = "";
+            if (type == 0) {
+                userimage = driver.getmProfileImage();
+            } else {
+                userimage = user.getProfile_image();
+            }
+
+            final String finalUserimage = userimage;
+            Glide.with(activity).load(userimage).listener(new RequestListener<String, GlideDrawable>() {
+                @Override
+                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    customMarkerView.setDrawingCacheEnabled(true);
+
+                    customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+                    customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
+                    customMarkerView.buildDrawingCache();
+
+                    Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+
+                    Canvas canvas = new Canvas(returnedBitmap);
+                    canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
+
+                    Drawable drawable = customMarkerView.getBackground();
+
+                    if (drawable != null)
+                        drawable.draw(canvas);
+
+                    customMarkerView.draw(canvas);
+
+                    if (type == 0) {
+                        mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
+                                .position(currentDriverPos).anchor(0.5f, 0.5f)
+                                .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), finalUserimage)))
+                                // Specifies the anchor to be at a particular point in the marker image.
+                                .rotation(0f)
+                                .flat(true));
+                    } else {
+                        try {
+                            mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(user))
+                                    .position(currentDriverPos).anchor(0.5f, 0.5f)
+                                    .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), finalUserimage)))
+                                    // Specifies the anchor to be at a particular point in the marker image.
+                                    .rotation(0f)
+                                    .flat(true));
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                    }
+                    return false;
+                }
+            }).error(R.drawable.ic_user_pin).placeholder(R.drawable.ic_user_pin).into(markerImageView);
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
-        final String finalUserimage = userimage;
-        Glide.with(activity).load(userimage).listener(new RequestListener<String, GlideDrawable>() {
-            @Override
-            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                customMarkerView.setDrawingCacheEnabled(true);
-
-                customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
-                customMarkerView.buildDrawingCache();
-
-                Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-
-                Canvas canvas = new Canvas(returnedBitmap);
-                canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
-
-                Drawable drawable = customMarkerView.getBackground();
-
-                if (drawable != null)
-                    drawable.draw(canvas);
-
-                customMarkerView.draw(canvas);
-
-                if (type == 0) {
-                    mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
-                            .position(currentDriverPos).anchor(0.5f, 0.5f)
-                            .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), finalUserimage)))
-                            // Specifies the anchor to be at a particular point in the marker image.
-                            .rotation(0f)
-                            .flat(true));
-                } else {
-                    mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(user))
-                            .position(currentDriverPos).anchor(0.5f, 0.5f)
-                            .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), finalUserimage)))
-                            // Specifies the anchor to be at a particular point in the marker image.
-                            .rotation(0f)
-                            .flat(true));
-                }
-                return false;
-            }
-        }).error(R.drawable.ic_user_pin).placeholder(R.drawable.ic_user_pin).into(markerImageView);
     }
 
 
