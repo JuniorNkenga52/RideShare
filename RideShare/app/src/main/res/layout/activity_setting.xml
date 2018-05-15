@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/TransGrayColor">
@@ -13,10 +12,10 @@
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:navigationIcon="@drawable/ic_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_back" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guidelineVertical1"
@@ -44,9 +43,9 @@
             android:id="@+id/clTermsOfService"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
             android:background="@color/white"
             android:padding="@dimen/_15sdp"
-            android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -54,18 +53,18 @@
                 android:id="@+id/ivTermsOfService"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_terms_of_service"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:src="@drawable/ic_terms_of_service" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.app.rideshare.widget.TextViewRegular
                 android:id="@+id/tvTermsOfService"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_marginEnd="8dp"
+                android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginStart="8dp"
                 android:text="Terms of Service"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_15sdp"
@@ -99,18 +98,18 @@
                 android:id="@+id/ivFAQ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_faq"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:src="@drawable/ic_faq" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.app.rideshare.widget.TextViewRegular
                 android:id="@+id/tvFAQ"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_marginEnd="8dp"
+                android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginStart="8dp"
                 android:text="FAQ"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_15sdp"
@@ -130,7 +129,7 @@
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/clFeedback"
+            android:id="@+id/clear_chats"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
@@ -141,21 +140,66 @@
             app:layout_constraintTop_toBottomOf="@+id/clFAQ">
 
             <ImageView
+                android:id="@+id/ivchats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_chat_black_24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:id="@+id/tvChats"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginStart="8dp"
+                android:text="@string/clearChats"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15sdp"
+                app:layout_constraintBottom_toBottomOf="@+id/ivchats"
+                app:layout_constraintEnd_toStartOf="@+id/ivArrow4"
+                app:layout_constraintStart_toEndOf="@+id/ivchats"
+                app:layout_constraintTop_toTopOf="@+id/ivchats" />
+
+            <ImageView
+                android:id="@+id/ivArrow4"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_right_arrow" />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/clFeedback"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@color/white"
+            android:padding="@dimen/_15sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/clear_chats">
+
+            <ImageView
                 android:id="@+id/ivFeedback"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_feedback"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:src="@drawable/ic_feedback" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.app.rideshare.widget.TextViewRegular
                 android:id="@+id/tvFeedback"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_marginEnd="8dp"
+                android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginStart="8dp"
                 android:text="Feedback"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_15sdp"
@@ -189,18 +233,18 @@
                 android:id="@+id/ivSignOut"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_logout_new"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:src="@drawable/ic_logout_new" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.app.rideshare.widget.TextViewRegular
                 android:id="@+id/tvSignOut"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_marginEnd="8dp"
+                android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginStart="8dp"
                 android:text="Logout"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_15sdp"

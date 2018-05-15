@@ -32,7 +32,9 @@ import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.AcceptRider;
 import com.app.rideshare.api.response.StartRideResponse;
+import com.app.rideshare.chat.CommonMethods;
 import com.app.rideshare.chat.LocalBinder;
+import com.app.rideshare.chat.MessageModel;
 import com.app.rideshare.chat.MyService;
 import com.app.rideshare.chat.MyXMPP;
 import com.app.rideshare.model.Directions;
@@ -116,6 +118,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     private Button mStartRideBtn;
     private Button mFinishRideBtn;
     public static String RideStatus = "";
+    private String toJabberId = "";
+
 
     private Runnable runnable = new Runnable() {
 
@@ -563,6 +567,16 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
                         mFinishRideBtn.setVisibility(View.VISIBLE);
                         mStartRideBtn.setVisibility(View.GONE);
+
+                        /*toJabberId = Constants.intentKey.jabberPrefix + toRider.getnUserId();
+                        toJabberId = toJabberId.toLowerCase();
+                        //        HomeNewActivity.currentChat = toRider.getnUserId();
+                        HomeNewActivity.currentChat = toJabberId;
+                        CommonMethods commonMethods = new CommonMethods(getApplicationContext());
+
+                        commonMethods.createTable(toJabberId);
+
+                        commonMethods.clearChats(toJabberId, senderUser);*/
                     } else if (mType.equals("4")) {
 
 
@@ -571,8 +585,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                         mUpdaterHandler.removeCallbacks(runnable);
                         mUpdaterHandler.removeCallbacksAndMessages(null);
                         finish();
-
-
                         // rate & rewie
 
 

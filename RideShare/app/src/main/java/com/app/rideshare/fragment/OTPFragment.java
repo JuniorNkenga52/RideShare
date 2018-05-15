@@ -16,8 +16,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
+import com.app.rideshare.activity.GroupSelectionActivity;
 import com.app.rideshare.activity.RideTypeActivity;
 import com.app.rideshare.activity.SignUpActivity;
+import com.app.rideshare.activity.SplashActivity;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.RideShareApi;
@@ -53,7 +55,7 @@ public class OTPFragment extends Fragment {
     //CustomProgressDialog mProgressDialog;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private SmsVerifyCatcher smsVerifyCatcher;
-    String token;
+    //String token;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -132,7 +134,7 @@ public class OTPFragment extends Fragment {
 
         smsVerifyCatcher.onStart();
 
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+       /* mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
@@ -142,7 +144,7 @@ public class OTPFragment extends Fragment {
                 } else {
                 }
             }
-        };
+        };*/
         return rootView;
     }
 
@@ -201,7 +203,8 @@ public class OTPFragment extends Fragment {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.verifyOTP(OTP, SignUpActivity.mUserId, SignUpActivity.token);
+                //return RideShareApi.verifyOTP(OTP, SignUpActivity.mUserId, SignUpActivity.token);
+                return RideShareApi.verifyOTP(OTP, SignUpActivity.mUserId, PrefUtils.getString("TokenID"));
             } catch (Exception e) {
                 return null;
             }
@@ -221,7 +224,7 @@ public class OTPFragment extends Fragment {
                         SignUpActivity.mViewPager.setCurrentItem(2);
 
                     } else {
-
+                        PrefUtils.putString("loginwith", "normal");
                         JSONArray jArrayResult = new JSONArray(jsonObject.getString("result"));
 
                         JSONObject jObjResult = jArrayResult.getJSONObject(0);
@@ -269,7 +272,13 @@ public class OTPFragment extends Fragment {
                             startActivity(i);
                             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             getActivity().finish();
+                        }else {
+                            Intent i = new Intent(getActivity(), GroupSelectionActivity.class);
+                            startActivity(i);
+                            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            getActivity().finish();
                         }
+
 
                         /*if (PrefUtils.getBoolean("firstTime")) {
                             Intent i = new Intent(getActivity(), RideTypeActivity.class);

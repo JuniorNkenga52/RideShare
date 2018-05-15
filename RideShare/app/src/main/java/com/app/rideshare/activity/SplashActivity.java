@@ -32,7 +32,7 @@ import retrofit2.Response;
 public class SplashActivity extends AppCompatActivity {
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    String token;
+    public static String token_splash;
     Activity activity;
 
     @Override
@@ -46,14 +46,15 @@ public class SplashActivity extends AppCompatActivity {
         TextView textViewVersion = (TextView) findViewById(R.id.textViewVersion);
         textViewVersion.setText("Version " + BuildConfig.VERSION_NAME);
 
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+        /*mRegistrationBroadcastReceiver = new BroadcastReceiver() {
 
 
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
-                    token = intent.getStringExtra("token");
-                    Log.d("token", token);
+                    token_splash = intent.getStringExtra("token");
+
+                    Log.d("token", token_splash);
                 } else if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
                 } else {
                 }
@@ -69,7 +70,7 @@ public class SplashActivity extends AppCompatActivity {
         } else {
             Intent itent = new Intent(this, GCMRegistrationIntentService.class);
             startService(itent);
-        }
+        }*/
 
         PrefUtils.initPreference(this);
 
@@ -101,11 +102,15 @@ public class SplashActivity extends AppCompatActivity {
                             finish();
                         }*/
 
+                        /*Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+                        startActivity(i);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        finish();*/
+
                         Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
                         startActivity(i);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         finish();
-
                         // New One
                         /*if (PrefUtils.getBoolean("firstTime")) {
                             Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
@@ -170,7 +175,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
     private void loginuser(final String mEmail, final String password, final String group_id) {
-        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password, token, group_id).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password, token_splash, group_id).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -218,7 +223,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void loginfacebookuser(final String mFacebookId, final String mEmail, final String mFirstName, final String mLastName) {
-        ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token, "4").enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token_splash, "4").enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -271,7 +276,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void logingoogle(final String mGoogleId, final String mEmail, final String mFirstName, final String mLastName) {
 
-        ApiServiceModule.createService(RestApiInterface.class).signGoogleplus(mGoogleId, mEmail, mFirstName, mLastName, token, "4").enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class).signGoogleplus(mGoogleId, mEmail, mFirstName, mLastName, token_splash, "4").enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -319,7 +324,7 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
-    @Override
+    /*@Override
     protected void onResume() {
         super.onResume();
         Log.w("MainActivity", "onResume");
@@ -334,7 +339,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onPause();
         Log.w("MainActivity", "onPause");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-    }
+    }*/
 
     private void getUserDetails(final String userId) {
         ApiServiceModule.createService(RestApiInterface.class).getUserDetails(userId).enqueue(new Callback<SignupResponse>() {
@@ -383,6 +388,8 @@ public class SplashActivity extends AppCompatActivity {
                                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                                 finish();
                             }
+
+
                         }
                     } else {
                         MessageUtils.showFailureMessage(SplashActivity.this, response.body().getmMessage());

@@ -60,4 +60,8 @@ public class CommonMethods {
             Log.i("DBERROR", e.toString());
         }
     }
+
+    public void resetDatabase() {
+        mContext.deleteDatabase(DB_NAME);
+    }
 }

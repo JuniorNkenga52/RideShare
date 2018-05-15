@@ -240,6 +240,8 @@ public class ChatActivity extends AppCompatActivity {
 
         Cursor cursor = myDb.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'", null);
 
+       /* Cursor cursor = myDb.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'"+ " AND sender = '" + senderUser+"'" +" AND receiver = '" + toJabberId+"'", null);*/
+
         if (cursor != null) {
 
             if (cursor.getCount() > 0) {

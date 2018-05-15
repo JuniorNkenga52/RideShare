@@ -527,19 +527,25 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
     private Marker setcutommarker(LatLng currentDriverPos, Rider driver, User user, int type) {
         String userImage;
-        if (type == 0) {
-            userImage = driver.getmProfileImage();
-        } else {
-            userImage = user.getProfile_image();
-        }
-        getMarkerBitmapFromView(getActivity(), driver, user, type, currentDriverPos);
+        Marker marker = null;
+        try {
+            if (type == 0) {
+                userImage = driver.getmProfileImage();
+            } else {
+                userImage = user.getProfile_image();
+            }
+            getMarkerBitmapFromView(getActivity(), driver, user, type, currentDriverPos);
 
-        return mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
-                .position(currentDriverPos).anchor(0.5f, 0.5f)
-                .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), userImage)))
-                // Specifies the anchor to be at a particular point in the marker image.
-                .rotation(0f)
-                .flat(true));
+            marker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
+                    .position(currentDriverPos).anchor(0.5f, 0.5f)
+                    .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), userImage)))
+                    // Specifies the anchor to be at a particular point in the marker image.
+                    .rotation(0f)
+                    .flat(true));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return marker;
     }
 
     public void getMarkerBitmapFromView(Activity activity, final Rider driver, final User user, final int type, final LatLng currentDriverPos) {
@@ -597,7 +603,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                                     // Specifies the anchor to be at a particular point in the marker image.
                                     .rotation(0f)
                                     .flat(true));
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
@@ -605,7 +611,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                     return false;
                 }
             }).error(R.drawable.ic_user_pin).placeholder(R.drawable.ic_user_pin).into(markerImageView);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

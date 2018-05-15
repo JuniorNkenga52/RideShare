@@ -45,7 +45,7 @@ public class MobileNumberFragment extends Fragment {
     public MaskedEditText txtPhoneNumber;
 
     private CheckBox chkIAgree;
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    //private BroadcastReceiver mRegistrationBroadcastReceiver;
     String token;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -142,7 +142,7 @@ public class MobileNumberFragment extends Fragment {
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS)
                 .check();
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+        /*mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
@@ -153,13 +153,13 @@ public class MobileNumberFragment extends Fragment {
                 } else {
                 }
             }
-        };
+        };*/
 
 
         return rootView;
     }
 
-    @Override
+    /*@Override
     public void onResume() {
         super.onResume();
         Log.w("MainActivity", "onResume");
@@ -178,7 +178,7 @@ public class MobileNumberFragment extends Fragment {
         if (mRegistrationBroadcastReceiver != null) {
             LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
         }
-    }
+    }*/
 
     PermissionListener permissionlistener = new PermissionListener() {
         @Override

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.GroupList;
+import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.squareup.picasso.Picasso;
@@ -63,6 +64,7 @@ public class GroupSelectionActivity extends AppCompatActivity {
             public void afterTextChanged(Editable arg0) {
                 String text = txtSearchGroup.getText().toString().toLowerCase(Locale.getDefault());
                 groupAdapter.filter(text.trim());
+
             }
 
             @Override
@@ -222,12 +224,12 @@ public class GroupSelectionActivity extends AppCompatActivity {
             else
                 holder.txtJoin.setVisibility(View.GONE);
 
-            holder.txtJoin.setTag(bean.getId());
+            holder.txtJoin.setTag(pos);
             holder.txtJoin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String id = (String) v.getTag();
-                    new AsyncJoinGroup(id, "1", (TextView) v).execute();
+                    int poss = (int) v.getTag();
+                    new AsyncJoinGroup(poss).execute();
                 }
             });
 
@@ -258,24 +260,25 @@ public class GroupSelectionActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public class AsyncJoinGroup extends AsyncTask<Object, Integer, Object> {
 
-        String group_id;
-        String status;
-        CustomProgressDialog mProgressDialog;
+        private CustomProgressDialog mProgressDialog;
+        int poss;
         TextView txtJoin;
 
-        AsyncJoinGroup(String group_id, String status, TextView txtJoin) {
-
-            this.group_id = group_id;
-            this.status = status;
-            this.txtJoin = txtJoin;
+        AsyncJoinGroup(int poss) {
             mProgressDialog = new CustomProgressDialog(context);
+            this.poss = poss;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
             mProgressDialog.show();
         }
 
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.joinGroup(PrefUtils.getUserInfo().getmUserId(), group_id, status);
+                return RideShareApi.joinGroup(PrefUtils.getUserInfo().getmUserId(), mSearchListGroup.get(poss).getId(), "1");
             } catch (Exception e) {
                 return null;
             }
@@ -290,7 +293,11 @@ public class GroupSelectionActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(result.toString());
 
                 if (jsonObject.getString("status").equalsIgnoreCase("success")) {
-                    txtJoin.setVisibility(View.GONE);
+                    //mListGroup.get(poss).setStatus("1");
+                    mSearchListGroup.get(poss).setStatus("1");
+                    MessageUtils.showSuccessMessage(context,"Your request to join Group has been sent. You will see further messages in your notification tab.");
+                    groupAdapter.notifyDataSetChanged();
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();

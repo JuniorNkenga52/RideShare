@@ -79,11 +79,11 @@
             android:gravity="top"
             android:hint="@string/ride_rate_comment"
             android:inputType="textEmailAddress|textMultiLine"
-            android:lines="20"
             android:minLines="5"
             android:padding="@dimen/_7sdp"
             android:scrollHorizontally="false"
             android:scrollbars="vertical"
+            android:maxLines="5"
             android:textColorHint="@color/colorPrimary" />
 
 

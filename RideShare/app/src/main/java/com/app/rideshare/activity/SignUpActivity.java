@@ -67,6 +67,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
                     token = intent.getStringExtra("token");
+                    PrefUtils.putString("TokenID",token);
                     Log.d("token", token);
                 } else if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
                 } else {

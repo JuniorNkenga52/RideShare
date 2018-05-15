@@ -599,7 +599,7 @@ public class MyXMPP implements PingFailedListener {
         try {
 
             String title = context.getString(R.string.app_name);
-
+            int currenttime = (int) System.currentTimeMillis();
             Bitmap mainIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
             long when = Calendar.getInstance().getTimeInMillis();
             Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -629,6 +629,7 @@ public class MyXMPP implements PingFailedListener {
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setVibrate(new long[]{0, 100, 100, 100, 100, 100});
 
+            //notificationManager.notify(2403, notifBuilder.build()); //0 = ID of notification
             notificationManager.notify(2403, notifBuilder.build()); //0 = ID of notification
 
         } catch (Exception ignore) {

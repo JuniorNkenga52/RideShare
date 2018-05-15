@@ -115,25 +115,18 @@ public class GCMPushReceiverService extends GcmListenerService {
                     .setContentTitle("RideShare")
                     .setAutoCancel(true)
                     .setSound(sound)
-                    .setContentIntent(pendingIntent)
-                    .setAutoCancel(true);
-            /*noBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.ic_notification)
-                    .setContentText(message)
-                    .setContentTitle("RideShare")
-                    .setAutoCancel(true)
-                    .setSound(sound)
-                    .setContentIntent(pendingIntent)
-                    .setAutoCancel(true);*/
+                    .setContentIntent(pendingIntent);
+
             PrefUtils.putBoolean("firstTime", true);
         } else {
-            notifBuilder = new NotificationCompat.Builder(this, NOTIF_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_notification)
-                    .setContentText(message)
-                    .setContentTitle("RideShare")
-                    .setAutoCancel(true)
-                    .setSound(sound)
-                    .setAutoCancel(true);
+            if (PrefUtils.getBoolean("islogin")){
+                notifBuilder = new NotificationCompat.Builder(this, NOTIF_CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification)
+                        .setContentText(message)
+                        .setContentTitle("RideShare")
+                        .setAutoCancel(true)
+                        .setSound(sound);
+            }
             /*noBuilder = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.ic_notification)
                     .setContentText(message)
@@ -158,6 +151,12 @@ public class GCMPushReceiverService extends GcmListenerService {
             notificationManager.createNotificationChannel(notifChannel);
         }
 
-        notificationManager.notify(0, notifBuilder.build());
+        notificationManager.notify(currenttime, notifBuilder.build());
+    }
+
+    public static void cancelNotification(Context ctx, int notifyId) {
+        String ns = Context.NOTIFICATION_SERVICE;
+        NotificationManager nMgr = (NotificationManager) ctx.getSystemService(ns);
+        nMgr.cancel(notifyId);
     }
 }

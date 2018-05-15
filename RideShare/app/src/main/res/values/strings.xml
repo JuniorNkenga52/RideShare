@@ -122,6 +122,8 @@
     <string name="logout">Logout</string>
     <string name="logout_message">Are you sure you want to logout?</string>
 
+    <string name="clearChats">Clear Chat</string>
+    <string name="clearChats_msg">Are you sure you want to clear chats?</string>
     // INVITE DIALOG STRINGS
     <string name="invite_email">Invite by email</string>
     <string name="invite_sms">Invite by text message</string>

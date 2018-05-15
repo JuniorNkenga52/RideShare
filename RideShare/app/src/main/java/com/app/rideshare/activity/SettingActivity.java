@@ -11,16 +11,25 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.app.rideshare.R;
+import com.app.rideshare.chat.CommonMethods;
+import com.app.rideshare.model.Rider;
+import com.app.rideshare.model.User;
+import com.app.rideshare.utils.Constants;
 import com.app.rideshare.utils.PrefUtils;
 
 public class SettingActivity extends AppCompatActivity {
 
     ConstraintLayout clSignOut;
+    ConstraintLayout clear_chats;
+    User mUserBean;
+    private String toJabberId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+
+        mUserBean = PrefUtils.getUserInfo();
         init();
     }
 
@@ -36,6 +45,38 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
         clSignOut = (ConstraintLayout) findViewById(R.id.clSignOut);
+        clear_chats = findViewById(R.id.clear_chats);
+
+
+        clear_chats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder;
+                builder = new AlertDialog.Builder(SettingActivity.this);
+                builder.setTitle(getResources().getString(R.string.clearChats))
+                        .setMessage(getResources().getString(R.string.clearChats_msg))
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    toJabberId = Constants.intentKey.jabberPrefix + mUserBean.getmUserId();
+                                    toJabberId = toJabberId.toLowerCase();
+                                    CommonMethods commonMethods = new CommonMethods(getApplicationContext());
+                                    commonMethods.resetDatabase();
+                                    dialog.dismiss();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }
+        });
+
         clSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,7 +91,7 @@ public class SettingActivity extends AppCompatActivity {
                                     PrefUtils.putBoolean("islogin", false);
                                     PrefUtils.putString("loginwith", "");
                                     Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
                                     finish();
                                 } catch (Exception e) {

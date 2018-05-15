@@ -259,9 +259,7 @@ public class ExploreFragment extends Fragment {
                         } else if (bean.getStatus().equalsIgnoreCase("0") || bean.getStatus().equalsIgnoreCase("3")) {
                             bean.setStatus("1");
                         }
-
                         mSearchListGroup.set(pos, bean);
-
                         new AsyncJoinGroup(bean.getId(), bean.getStatus()).execute();
                     }
 
