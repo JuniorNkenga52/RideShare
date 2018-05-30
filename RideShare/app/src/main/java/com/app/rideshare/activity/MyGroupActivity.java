@@ -53,7 +53,7 @@ public class MyGroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mygroup);
 
-        activity=this;
+        activity = this;
         PrefUtils.initPreference(this);
         mUserBean = PrefUtils.getUserInfo();
 
@@ -200,7 +200,9 @@ public class MyGroupActivity extends AppCompatActivity {
                     JSONArray jArrayResult = new JSONArray(jsonObject.getString("result"));
 
                     mListGroup = new ArrayList<>();
-
+                    if (jArrayResult.length() > 0) {
+                        PrefUtils.putString("isBlank", "false");
+                    }
                     for (int i = 0; i < jArrayResult.length(); i++) {
                         JSONObject jObjResult = jArrayResult.getJSONObject(i);
 
@@ -214,7 +216,7 @@ public class MyGroupActivity extends AppCompatActivity {
                         bean.setIs_joined(jObjResult.optString("is_joined"));
                         bean.setShareLink(jObjResult.optString("share_link"));
                         bean.setCategory_id(jObjResult.optString("category_id"));
-
+                        bean.setUser_id(jObjResult.optString("user_id"));
                         mListGroup.add(bean);
 
                     }
@@ -290,7 +292,17 @@ public class MyGroupActivity extends AppCompatActivity {
 
             Picasso.with(MyGroupActivity.this).load(bean.getCategory_image()).error(R.drawable.user_icon).into(holder.imgGroup);
 
-            holder.txtJoin.setVisibility(View.GONE);
+            if (bean.getUser_id().equals(PrefUtils.getUserInfo().getmUserId())) {
+                holder.txtJoin.setVisibility(View.VISIBLE);
+                holder.txtJoin.setBackgroundColor(activity.getResources().getColor(R.color.white));
+                holder.txtJoin.setTextColor(activity.getResources().getColor(R.color.colorPrimary));
+                holder.txtJoin.setText("Admin");
+                holder.txtJoin.setTextSize(15);
+                //holder.txtJoin.setBackground(R.color.white);
+            } else {
+                holder.txtJoin.setVisibility(View.GONE);
+            }
+
 
             return vi;
         }

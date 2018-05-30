@@ -40,6 +40,7 @@ public class ExploreFragment extends Fragment {
     GroupAdapter groupAdapter;
 
     EditText txtSearchGroup;
+    TextView txtgroupinfo;
 
     public static ExploreFragment newInstance() {
         ExploreFragment fragment = new ExploreFragment();
@@ -56,7 +57,9 @@ public class ExploreFragment extends Fragment {
 
         txtSearchGroup = (EditText) rootView.findViewById(R.id.txtSearchGroup);
         mLvGroup = (ListView) rootView.findViewById(R.id.mLvGroup);
+        txtgroupinfo=rootView.findViewById(R.id.txtgroupinfo);
 
+        txtgroupinfo.setVisibility(View.GONE);
         new AsyncAllGroup().execute();
 
         txtSearchGroup.addTextChangedListener(new TextWatcher() {

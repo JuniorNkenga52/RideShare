@@ -47,7 +47,7 @@ public class GroupSelectionActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_explore);
 
         PrefUtils.initPreference(this);
-
+        PrefUtils.putString("loginwith", "normal");
         context = this;
 
         txtSearchGroup = findViewById(R.id.txtSearchGroup);
@@ -293,8 +293,11 @@ public class GroupSelectionActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(result.toString());
 
                 if (jsonObject.getString("status").equalsIgnoreCase("success")) {
-                    //mListGroup.get(poss).setStatus("1");
-                    mSearchListGroup.get(poss).setStatus("1");
+                    mListGroup.get(poss).setStatus("1");
+                    /*for(int i=0;i<mSearchListGroup.size();i++){
+                        mSearchListGroup.get(i).setStatus("1");
+                    }*/
+                    //mSearchListGroup.get(poss).setStatus("1");
                     MessageUtils.showSuccessMessage(context,"Your request to join Group has been sent. You will see further messages in your notification tab.");
                     groupAdapter.notifyDataSetChanged();
 

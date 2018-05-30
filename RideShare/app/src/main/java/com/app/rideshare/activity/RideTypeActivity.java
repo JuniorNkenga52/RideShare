@@ -404,9 +404,15 @@ public class RideTypeActivity extends AppCompatActivity {
             super.onBackPressed();
 
             RideShareApp.mHomeTabPos = 0;
-            Intent intent = new Intent(Intent.ACTION_MAIN);
+            /*Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+            System.exit(0);*/
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
             System.exit(0);

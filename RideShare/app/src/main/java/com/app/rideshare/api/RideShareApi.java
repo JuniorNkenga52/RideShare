@@ -47,6 +47,7 @@ public class RideShareApi {
 
             LinkedHashMap<String, String> params = new LinkedHashMap<>();
             params.put("mobile_number", mobile_number);
+            params.put("type", "android");
 
             return RideShareApiCall.postWebserviceCall(URL, params);
         } catch (Exception e) {
@@ -93,6 +94,21 @@ public class RideShareApi {
         }
     }
 
+
+    public static String mygroupsForLogin(String user_id,String adminID) {
+        try {
+            String URL = SERVER_URL + "user/mygroupsForLogin";
+
+            LinkedHashMap<String, String> params = new LinkedHashMap<>();
+            params.put("user_id", user_id);
+            params.put("login_user_id", adminID);
+
+            return RideShareApiCall.postWebserviceCall(URL, params);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static String groupJoinRequestList(String user_id) {
         try {
             String URL = SERVER_URL + "joinGroup/groupJoinRequestList";
@@ -109,6 +125,20 @@ public class RideShareApi {
     public static String getGroupDetailFromId(String user_id, String group_id) {
         try {
             String URL = SERVER_URL + "group/getGroupDetails";
+
+            LinkedHashMap<String, String> params = new LinkedHashMap<>();
+            params.put("user_id", user_id);
+            params.put("group_id", group_id);
+
+            return RideShareApiCall.postWebserviceCall(URL, params);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static String getUpdateUserGroup(String user_id, String group_id) {
+        try {
+            String URL = SERVER_URL + "user/updateUserGroup";
 
             LinkedHashMap<String, String> params = new LinkedHashMap<>();
             params.put("user_id", user_id);

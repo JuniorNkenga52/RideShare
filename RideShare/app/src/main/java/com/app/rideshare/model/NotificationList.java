@@ -19,6 +19,7 @@ public class NotificationList {
     private String group_name;
 
     private String status;
+    private String is_admin_accept;
 
     public String getStatus() {
         return status;
@@ -98,5 +99,13 @@ public class NotificationList {
 
     public void setCategory_id(String category_id) {
         this.category_id = category_id;
+    }
+
+    public String getIs_admin_accept() {
+        return is_admin_accept;
+    }
+
+    public void setIs_admin_accept(String is_admin_accept) {
+        this.is_admin_accept = is_admin_accept;
     }
 }

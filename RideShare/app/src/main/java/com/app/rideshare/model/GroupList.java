@@ -18,6 +18,8 @@ public class GroupList implements Serializable {
     private String status;
     private String shareLink;
     private String category_id;
+    private String is_assigned;
+    private String user_id;
 
     public String getStatus() {
         return status;
@@ -97,5 +99,21 @@ public class GroupList implements Serializable {
 
     public void setCategory_id(String category_id) {
         this.category_id = category_id;
+    }
+
+    public String getIs_assigned() {
+        return is_assigned;
+    }
+
+    public void setIs_assigned(String is_assigned) {
+        this.is_assigned = is_assigned;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 }

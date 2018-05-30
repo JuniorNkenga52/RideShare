@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.app.rideshare.R;
 import com.app.rideshare.activity.GroupSelectionActivity;
+import com.app.rideshare.activity.MyGroupSelectionActivity;
 import com.app.rideshare.activity.RideTypeActivity;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.activity.SplashActivity;
@@ -221,6 +222,7 @@ public class OTPFragment extends Fragment {
 
                 if (jsonObject.getString("status").equalsIgnoreCase("success")) {
                     if (jsonObject.getString("result").equalsIgnoreCase("Your mobile number successfully verified")) {
+
                         SignUpActivity.mViewPager.setCurrentItem(2);
 
                     } else {
@@ -268,10 +270,14 @@ public class OTPFragment extends Fragment {
 
 
                         if(beanUser.getM_is_assigned_group().equals("1")){
-                            Intent i = new Intent(getActivity(), RideTypeActivity.class);
+
+                            Intent i = new Intent(context, MyGroupSelectionActivity.class);
+                            startActivity(i);
+                            getActivity().finish();
+                            /*Intent i = new Intent(getActivity(), RideTypeActivity.class);
                             startActivity(i);
                             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                            getActivity().finish();
+                            getActivity().finish();*/
                         }else {
                             Intent i = new Intent(getActivity(), GroupSelectionActivity.class);
                             startActivity(i);

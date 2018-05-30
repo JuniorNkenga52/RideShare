@@ -1,6 +1,5 @@
 package com.app.rideshare.activity;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +17,7 @@ import com.app.rideshare.fragment.MessagesFragment;
 import com.app.rideshare.fragment.NotificationFragment;
 import com.app.rideshare.fragment.ProfileFragment;
 import com.app.rideshare.model.Rider;
-import com.app.rideshare.utils.MessageUtils;
+import com.app.rideshare.utils.PrefUtils;
 
 import java.util.ArrayList;
 
@@ -42,7 +41,12 @@ public class HomeNewActivity extends AppCompatActivity {
 
         mlist = (ArrayList<Rider>) getIntent().getSerializableExtra("list");
 
+
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
+        if (PrefUtils.getString("isBlank").equals("true")) {
+            RideShareApp.mHomeTabPos = 1;
+            bottomNavigationView.getMenu().removeItem(R.id.action_home);
+        }
 
         bottomNavigationView.setOnNavigationItemSelectedListener
                 (new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -110,10 +114,21 @@ public class HomeNewActivity extends AppCompatActivity {
             MessageUtils.showFailureMessage(getBaseContext(), "Press once again to exit!");
             back_pressed = System.currentTimeMillis();
         }*/
-        RideShareApp.mHomeTabPos = 0;
-        Intent i = new Intent(this, RideTypeActivity.class);
-        startActivity(i);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finish();
+        if (PrefUtils.getString("isBlank").equals("true")) {
+            RideShareApp.mHomeTabPos = 0;
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+            System.exit(0);
+        } else {
+            RideShareApp.mHomeTabPos = 0;
+            Intent i = new Intent(this, RideTypeActivity.class);
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }
+
     }
 }

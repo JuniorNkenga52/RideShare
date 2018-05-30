@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/_10sdp"
         android:paddingLeft="@dimen/_5sdp"
         android:paddingRight="@dimen/_5sdp"
-        android:paddingTop="@dimen/_8sdp"
-        android:paddingBottom="@dimen/_8sdp"
-        android:orientation="horizontal">
+        android:paddingTop="@dimen/_10sdp">
 
-    <com.mikhaellopez.circularimageview.CircularImageView
-        android:id="@+id/circularImageView"
-        android:layout_width="@dimen/_45sdp"
-        android:layout_height="@dimen/_45sdp"
-        android:layout_below="@+id/linearLayout3"
-        android:layout_gravity="center_horizontal"
-        app:civ_border_width="1dp"
-        android:layout_marginRight="@dimen/_5sdp"
-        app:civ_border_color="@color/black"
-        android:src="@drawable/banner" />
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/circularImageView"
+            android:layout_width="@dimen/_45sdp"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_below="@+id/linearLayout3"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:src="@drawable/banner"
+            app:civ_border_color="@color/black"
+            app:civ_border_width="1dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/_2sdp"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -38,27 +38,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textSize="@dimen/_15sdp"
-                android:singleLine="true"
-                android:textColor="@color/black"
                 android:gravity="center_vertical"
-                android:text="Create Group"/>
+                android:singleLine="true"
+                android:text="Create Group"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15sdp" />
 
             <com.app.rideshare.widget.TextViewRegular
                 android:id="@+id/mGroupName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:maxLines="1"
                 android:layout_gravity="center_vertical"
-                android:textSize="@dimen/_11sdp"
-                android:textColor="@color/GrayLine"
                 android:gravity="center_vertical"
-                android:text="Group Name"/>
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Group Name"
+                android:textColor="@color/GrayLine"
+                android:textSize="@dimen/_11sdp" />
 
+            <com.app.rideshare.widget.TextViewBold
+                android:id="@+id/mGroupStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:textColor="@color/GrayLine"
+                android:text="Group Name"
+                android:textSize="@dimen/_11sdp" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_req"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
@@ -69,13 +80,13 @@
                 android:layout_width="@dimen/_32sdp"
                 android:layout_height="@dimen/_32sdp"
                 android:layout_marginRight="@dimen/_8sdp"
-                android:src="@drawable/ic_decline"/>
+                android:src="@drawable/ic_decline" />
 
             <ImageView
                 android:id="@+id/imgAccept"
                 android:layout_width="@dimen/_32sdp"
                 android:layout_height="@dimen/_32sdp"
-                android:src="@drawable/ic_accept"/>
+                android:src="@drawable/ic_accept" />
 
         </LinearLayout>
 

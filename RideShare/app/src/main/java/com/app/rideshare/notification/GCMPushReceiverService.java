@@ -1,6 +1,5 @@
 package com.app.rideshare.notification;
 
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -16,9 +15,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.app.rideshare.R;
+import com.app.rideshare.activity.MyGroupSelectionActivity;
 import com.app.rideshare.activity.NotificationActivity;
 import com.app.rideshare.activity.RideRateActivity;
-import com.app.rideshare.activity.RideTypeActivity;
 import com.app.rideshare.activity.StartRideActivity;
 import com.app.rideshare.utils.PrefUtils;
 import com.google.android.gms.gcm.GcmListenerService;
@@ -58,7 +57,11 @@ public class GCMPushReceiverService extends GcmListenerService {
                 intent.putExtra("int_data", "2");
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 sendNotification("Your Ride Finish", "5");
+
             } else if (jobj.getString("type").equals("6")) {
+
+                //JSONObject jObjUser = jobj.getJSONObject("result");
+                PrefUtils.putString("AdminID", jobj.getJSONObject("result").getString("admin_id"));
                 Intent intent = new Intent("new_user");
                 intent.putExtra("int_data", "2");
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -100,14 +103,13 @@ public class GCMPushReceiverService extends GcmListenerService {
         if (type.equals("5")) {
             StartRideActivity.RideStatus = "finished";
             Intent rateride = new Intent(this, RideRateActivity.class);
-            /*rateride.putExtra("riderate", mRider.getRide_id());
-            rateride.putExtra("driverid", mRider.getFromRider().getnUserId());*/
             startActivity(rateride);
 
         }
         if (type.equals("6")) {
-            intent = new Intent(this, RideTypeActivity.class);
+            intent = new Intent(this, MyGroupSelectionActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
             PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_ONE_SHOT);
             notifBuilder = new NotificationCompat.Builder(this, NOTIF_CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_notification)
@@ -119,7 +121,7 @@ public class GCMPushReceiverService extends GcmListenerService {
 
             PrefUtils.putBoolean("firstTime", true);
         } else {
-            if (PrefUtils.getBoolean("islogin")){
+            if (PrefUtils.getBoolean("islogin")) {
                 notifBuilder = new NotificationCompat.Builder(this, NOTIF_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setContentText(message)

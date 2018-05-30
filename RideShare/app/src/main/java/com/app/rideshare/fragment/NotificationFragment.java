@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -112,6 +113,7 @@ public class NotificationFragment extends Fragment {
                         bean.setGroup_name(jObjResult.getString("group_name"));
 
                         bean.setStatus(jObjResult.getString("status"));
+                        bean.setIs_admin_accept(jObjResult.optString("is_admin_accept"));
 
                         mListNotification.add(bean);
                     }
@@ -158,8 +160,10 @@ public class NotificationFragment extends Fragment {
             private CircularImageView circularImageView;
             private TextView mUserName;
             private TextView mGroupName;
+            private TextView mGroupStatus;
             private ImageView imgDecline;
             private ImageView imgAccept;
+            private LinearLayout layout_req;
         }
 
         @SuppressLint("InflateParams")
@@ -177,9 +181,11 @@ public class NotificationFragment extends Fragment {
                 holder.circularImageView = vi.findViewById(R.id.circularImageView);
                 holder.mUserName = vi.findViewById(R.id.mUserName);
                 holder.mGroupName = vi.findViewById(R.id.mGroupName);
+                holder.mGroupStatus=vi.findViewById(R.id.mGroupStatus);
 
                 holder.imgDecline = vi.findViewById(R.id.imgDecline);
                 holder.imgAccept = vi.findViewById(R.id.imgAccept);
+                holder.layout_req=vi.findViewById(R.id.layout_req);
 
                 vi.setTag(holder);
             } else {
@@ -193,6 +199,20 @@ public class NotificationFragment extends Fragment {
 
             Picasso.with(getActivity()).load(notifBean.getProfile_image()).resize(300, 300)
                     .centerCrop().error(R.drawable.user_icon).into(holder.circularImageView);
+
+            if(notifBean.getIs_admin_accept().equals("1")){
+                holder.layout_req.setVisibility(View.VISIBLE);
+                holder.mGroupStatus.setText("");
+            }else {
+                if(notifBean.getIs_admin_accept().equals("2")){
+                    holder.mGroupStatus.setText("Your Request is Accepted");
+                    holder.mGroupStatus.setTextColor(getResources().getColor(R.color.accept_btn_color));
+                }else {
+                    holder.mGroupStatus.setText("Your Request is Declined");
+                    holder.mGroupStatus.setTextColor(getResources().getColor(R.color.reject_btn_color));
+                }
+                holder.layout_req.setVisibility(View.GONE);
+            }
 
             holder.imgAccept.setTag(notifBean);
             holder.imgAccept.setOnClickListener(new View.OnClickListener() {
