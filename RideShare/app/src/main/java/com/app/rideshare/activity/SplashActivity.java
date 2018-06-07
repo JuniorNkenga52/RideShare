@@ -1,18 +1,24 @@
 package com.app.rideshare.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.rideshare.BuildConfig;
 import com.app.rideshare.R;
@@ -24,6 +30,10 @@ import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +45,8 @@ public class SplashActivity extends AppCompatActivity {
     Activity activity;
     public static String token = "";
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+    String wantPermission = Manifest.permission.READ_PHONE_STATE;
+    private static final int PERMISSION_REQUEST_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,23 +70,13 @@ public class SplashActivity extends AppCompatActivity {
                     Log.d("token", token);
 
                     if (PrefUtils.getString("loginwith").equals("")) {
-                        if (PrefUtils.getBoolean("islogin")) {
-                            Intent i = new Intent(getBaseContext(), MyGroupSelectionActivity.class);
-                            i.putExtra("MyUserID",PrefUtils.getUserInfo().getmUserId());
-                            startActivity(i);
-                            finish();
 
-                            /*Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
-                            startActivity(i);
-                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                            finish();*/
+                        new TedPermission(context)
+                                .setPermissionListener(permissionlistener)
+                                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                                .setPermissions(Manifest.permission.READ_PHONE_STATE)
+                                .check();
 
-                        } else {
-                            Intent i = new Intent(getBaseContext(), SignUpActivity.class);
-                            startActivity(i);
-                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                            finish();
-                        }
                     }
                 } else if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
                 } else {
@@ -446,4 +448,47 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
+    private boolean checkPermission(String permission){
+        if (Build.VERSION.SDK_INT >= 23) {
+            int result = ContextCompat.checkSelfPermission(getApplicationContext(), permission);
+            if (result == PackageManager.PERMISSION_GRANTED){
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    private void requestPermission(String permission){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)){
+
+            Toast.makeText(getApplicationContext(), "Phone state permission allows us to get phone number. Please allow it for additional functionality.", Toast.LENGTH_LONG).show();
+        }else {
+
+        }
+        ActivityCompat.requestPermissions(this, new String[]{permission},PERMISSION_REQUEST_CODE);
+    }
+    PermissionListener permissionlistener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+            if (PrefUtils.getBoolean("islogin")) {
+                Intent i = new Intent(getBaseContext(), MyGroupSelectionActivity.class);
+                i.putExtra("MyUserID",PrefUtils.getUserInfo().getmUserId());
+                startActivity(i);
+                finish();
+
+            } else {
+                Intent i = new Intent(getBaseContext(), SignUpActivity.class);
+                startActivity(i);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+            }
+        }
+
+        @Override
+        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+        }
+    };
 }

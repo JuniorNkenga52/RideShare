@@ -31,6 +31,7 @@
             android:textSize="@dimen/_18sdp" />
 
         <com.app.rideshare.widget.TextViewRegular
+            android:id="@+id/txt_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"
@@ -51,7 +52,7 @@
             android:textColor="@color/white"
             android:textColorHighlight="@color/white"
             android:textSize="@dimen/_25sdp"
-            app:mask="(***) ***-****"
+            app:mask="(***) ***-*******"
             app:maskIconColor="@color/white"
             android:inputType="number"
             app:notMaskedSymbol="*" />

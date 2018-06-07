@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.app.rideshare.R;
 import com.app.rideshare.activity.GroupDetailActivity;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.GroupList;
+import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.Constants;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
@@ -41,6 +43,7 @@ public class ExploreFragment extends Fragment {
 
     EditText txtSearchGroup;
     TextView txtgroupinfo;
+    private SwipeRefreshLayout swipeRefreshRequests;
 
     public static ExploreFragment newInstance() {
         ExploreFragment fragment = new ExploreFragment();
@@ -57,8 +60,8 @@ public class ExploreFragment extends Fragment {
 
         txtSearchGroup = (EditText) rootView.findViewById(R.id.txtSearchGroup);
         mLvGroup = (ListView) rootView.findViewById(R.id.mLvGroup);
-        txtgroupinfo=rootView.findViewById(R.id.txtgroupinfo);
-
+        txtgroupinfo = rootView.findViewById(R.id.txtgroupinfo);
+        swipeRefreshRequests = rootView.findViewById(R.id.swipeRefreshRequests);
         txtgroupinfo.setVisibility(View.GONE);
         new AsyncAllGroup().execute();
 
@@ -93,6 +96,18 @@ public class ExploreFragment extends Fragment {
             }
         });
 
+        swipeRefreshRequests.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (AppUtils.isInternetAvailable(getActivity())) {
+                    new AsyncAllGroup().execute();
+                } else {
+                    swipeRefreshRequests.setRefreshing(false);
+                }
+            }
+        });
+        swipeRefreshRequests.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+
         return rootView;
     }
 
@@ -103,6 +118,7 @@ public class ExploreFragment extends Fragment {
         public AsyncAllGroup() {
 
             mProgressDialog = new CustomProgressDialog(getActivity());
+            swipeRefreshRequests.setRefreshing(false);
             mProgressDialog.show();
         }
 
@@ -134,6 +150,7 @@ public class ExploreFragment extends Fragment {
 
                     JSONArray jArrayResult = new JSONArray(jsonObject.getString("result"));
 
+                    mListGroup.clear();
                     for (int i = 0; i < jArrayResult.length(); i++) {
                         JSONObject jObjResult = jArrayResult.getJSONObject(i);
 
@@ -317,7 +334,7 @@ public class ExploreFragment extends Fragment {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.joinGroup(PrefUtils.getUserInfo().getmUserId(), group_id,status);
+                return RideShareApi.joinGroup(PrefUtils.getUserInfo().getmUserId(), group_id, status);
             } catch (Exception e) {
                 return null;
             }

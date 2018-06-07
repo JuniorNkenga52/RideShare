@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.GroupList;
 import com.app.rideshare.model.NotificationList;
+import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -36,6 +38,7 @@ public class NotificationFragment extends Fragment {
     private ListView mLvNotification;
 
     private TextView mNoUserTv;
+    SwipeRefreshLayout swipeRefreshRequests;
 
     public static NotificationFragment newInstance() {
         return new NotificationFragment();
@@ -49,9 +52,24 @@ public class NotificationFragment extends Fragment {
         mLvNotification = rootView.findViewById(R.id.mLvGroup);
 
         mNoUserTv = rootView.findViewById(R.id.no_user);
+        swipeRefreshRequests=rootView.findViewById(R.id.swipeRefreshRequests);
+
+
         mNoUserTv.setVisibility(View.GONE);
 
         new AsyncNotification().execute();
+
+        swipeRefreshRequests.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (AppUtils.isInternetAvailable(getActivity())) {
+                    new AsyncNotification().execute();
+                } else {
+                    swipeRefreshRequests.setRefreshing(false);
+                }
+            }
+        });
+        swipeRefreshRequests.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
 
         return rootView;
     }
@@ -63,6 +81,7 @@ public class NotificationFragment extends Fragment {
 
         AsyncNotification() {
             mProgressDialog = new CustomProgressDialog(getActivity());
+            swipeRefreshRequests.setRefreshing(false);
         }
 
         @Override
@@ -93,7 +112,7 @@ public class NotificationFragment extends Fragment {
                 if (jsonObject.getString("status").equalsIgnoreCase("success")) {
 
                     JSONArray jArrayResult = new JSONArray(jsonObject.getString("message"));
-
+                    mListNotification.clear();
                     for (int i = 0; i < jArrayResult.length(); i++) {
 
                         JSONObject jObjResult = jArrayResult.getJSONObject(i);
@@ -205,10 +224,10 @@ public class NotificationFragment extends Fragment {
                 holder.mGroupStatus.setText("");
             }else {
                 if(notifBean.getIs_admin_accept().equals("2")){
-                    holder.mGroupStatus.setText("Your Request is Accepted");
+                    holder.mGroupStatus.setText(notifBean.getU_firstname()+"'s Request is Accepted");
                     holder.mGroupStatus.setTextColor(getResources().getColor(R.color.accept_btn_color));
                 }else {
-                    holder.mGroupStatus.setText("Your Request is Declined");
+                    holder.mGroupStatus.setText(notifBean.getU_firstname()+"'s Request is Declined");
                     holder.mGroupStatus.setTextColor(getResources().getColor(R.color.reject_btn_color));
                 }
                 holder.layout_req.setVisibility(View.GONE);

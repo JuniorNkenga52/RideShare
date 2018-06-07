@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:focusableInTouchMode="true"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
 
     <com.app.rideshare.widget.TextViewBold
         android:id="@+id/txtHeaderName"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
-        android:textSize="@dimen/_18sdp"
-        android:textColor="@color/white"
         android:gravity="center"
-        android:text="Explore"/>
+        android:text="Explore"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_18sdp" />
 
     <LinearLayout
         android:id="@+id/llSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:layout_below="@+id/txtHeaderName"
+        android:background="@color/white"
         android:orientation="vertical"
         android:padding="@dimen/_5sdp">
 
@@ -28,10 +28,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edittext_bg_gray_border"
-            android:ems="10"
-            android:hint="Search group"
             android:drawableLeft="@drawable/ic_search_cab"
             android:drawablePadding="@dimen/_6sdp"
+            android:ems="10"
+            android:hint="Search group"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences"
             android:padding="@dimen/_8sdp"
@@ -47,14 +47,14 @@
         android:id="@+id/txtgroupinfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingRight="@dimen/_12sdp"
-        android:paddingLeft="@dimen/_12sdp"
-        android:paddingTop="@dimen/_5sdp"
-        android:paddingBottom="@dimen/_5sdp"
         android:layout_below="@+id/llSearch"
+        android:paddingBottom="@dimen/_5sdp"
+        android:paddingLeft="@dimen/_12sdp"
+        android:paddingRight="@dimen/_12sdp"
+        android:paddingTop="@dimen/_5sdp"
         android:text="You are not joined any group currently! please select any group to join in"
         android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/_12sdp"/>
+        android:textSize="@dimen/_12sdp" />
     <!--<LinearLayout
         android:id="@+id/llgroupinfo"
         android:layout_width="match_parent"
@@ -80,14 +80,19 @@
             android:textSize="@dimen/_12sdp" />
 
     </LinearLayout>-->
-
-    <ListView
-        android:id="@+id/mLvGroup"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeRefreshRequests"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="#00000000"
-        android:layout_below="@+id/txtgroupinfo"
-        android:paddingTop="@dimen/_5sdp"
-        android:listSelector="#00000000"/>
+        android:layout_below="@+id/txtgroupinfo">
+
+        <ListView
+            android:id="@+id/mLvGroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="#00000000"
+            android:listSelector="#00000000"
+            android:paddingTop="@dimen/_5sdp" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

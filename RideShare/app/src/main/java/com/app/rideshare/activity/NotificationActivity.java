@@ -199,7 +199,7 @@ public class NotificationActivity extends AppCompatActivity {
                 try {
                     mProgressDialog.cancel();
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
 
                 finish();

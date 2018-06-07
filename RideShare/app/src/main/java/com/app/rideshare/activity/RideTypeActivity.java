@@ -410,6 +410,12 @@ public class RideTypeActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
             System.exit(0);*/
+            if(!InprogressRide.equals("busy")){
+                Intent intentLocation = new Intent(RideTypeActivity.this, LocationService.class);
+                stopService(intentLocation);
+            }
+
+
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -426,5 +432,14 @@ public class RideTypeActivity extends AppCompatActivity {
             back_pressed = System.currentTimeMillis();
         }
         //super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //if(!InprogressRide.equals("busy")){
+            Intent intentLocation = new Intent(RideTypeActivity.this, LocationService.class);
+            stopService(intentLocation);
+        //}
     }
 }

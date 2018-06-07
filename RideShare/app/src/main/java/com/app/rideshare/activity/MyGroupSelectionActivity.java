@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.GroupList;
+import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.squareup.picasso.Picasso;
@@ -43,6 +45,7 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
     //String adminid;
     CustomProgressDialog mProgressDialog;
     TextView txtskip;
+    SwipeRefreshLayout swipeRefreshRequests;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,8 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
 
         mLvMyGroup = findViewById(R.id.mLvMyGroup);
         txtskip = findViewById(R.id.txtskip);
+        swipeRefreshRequests = findViewById(R.id.swipeRefreshRequests);
+
         new AsyncMyGroup().execute();
 
         tvSearchGroup = (EditText) findViewById(R.id.txtSearchGroup);
@@ -88,6 +93,18 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        swipeRefreshRequests.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (AppUtils.isInternetAvailable(context)) {
+                    new AsyncMyGroup().execute();
+                } else {
+                    swipeRefreshRequests.setRefreshing(false);
+                }
+            }
+        });
+        swipeRefreshRequests.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
     }
 
     public class AsyncMyGroup extends AsyncTask<Object, Integer, Object> {
@@ -98,6 +115,7 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
 
             //mProgressDialog = new CustomProgressDialog(context);
             mProgressDialog.show();
+            swipeRefreshRequests.setRefreshing(false);
         }
 
         @Override
@@ -131,11 +149,11 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
 
                     mListGroup = new ArrayList<>();
 
-                    if(jArrayResult.length()==0){
-                        PrefUtils.putString("isBlank","true");
+                    if (jArrayResult.length() == 0) {
+                        PrefUtils.putString("isBlank", "true");
                         Intent i = new Intent(MyGroupSelectionActivity.this, HomeNewActivity.class);
                         startActivity(i);
-                    }else {
+                    } else {
                         for (int i = 0; i < jArrayResult.length(); i++) {
                             JSONObject jObjResult = jArrayResult.getJSONObject(i);
 
@@ -152,6 +170,10 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
                             bean.setIs_assigned(jObjResult.optString("is_assigned"));
 
                             mListGroup.add(bean);
+                            if (bean.getIs_assigned().equals("1")) {
+                                mListGroup.remove(i);
+                                mListGroup.add(0, bean);
+                            }
                         }
                         mSearchListGroup.clear();
                         mSearchListGroup.addAll(mListGroup);

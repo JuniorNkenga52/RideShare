@@ -1,18 +1,24 @@
 package com.app.rideshare.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.fragment.AddressFragment;
@@ -29,6 +35,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.tangxiaolv.telegramgallery.GalleryActivity;
 
 import java.util.ArrayList;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class SignUpActivity extends AppCompatActivity {
@@ -50,6 +58,8 @@ public class SignUpActivity extends AppCompatActivity {
 
     private int PICK_CAMERA = 1;
     private int PICK_GALLERY = 2;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -179,4 +189,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         }
     }
+
+
 }
