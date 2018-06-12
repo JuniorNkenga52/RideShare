@@ -3,11 +3,9 @@ package com.app.rideshare.fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,17 +14,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
-import com.app.rideshare.activity.GroupSelectionActivity;
+import com.app.rideshare.activity.HomeNewActivity;
 import com.app.rideshare.activity.MyGroupSelectionActivity;
-import com.app.rideshare.activity.RideTypeActivity;
 import com.app.rideshare.activity.SignUpActivity;
-import com.app.rideshare.activity.SplashActivity;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.api.response.SendOTPResponse;
 import com.app.rideshare.model.User;
-import com.app.rideshare.notification.GCMRegistrationIntentService;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
@@ -222,7 +217,6 @@ public class OTPFragment extends Fragment {
 
                 if (jsonObject.getString("status").equalsIgnoreCase("success")) {
                     if (jsonObject.getString("result").equalsIgnoreCase("Your mobile number successfully verified")) {
-
                         SignUpActivity.mViewPager.setCurrentItem(2);
 
                     } else {
@@ -271,6 +265,7 @@ public class OTPFragment extends Fragment {
 
                         if(beanUser.getM_is_assigned_group().equals("1")){
 
+                            PrefUtils.putString("isBlank", "false");
                             Intent i = new Intent(context, MyGroupSelectionActivity.class);
                             startActivity(i);
                             getActivity().finish();
@@ -279,7 +274,12 @@ public class OTPFragment extends Fragment {
                             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             getActivity().finish();*/
                         }else {
-                            Intent i = new Intent(getActivity(), GroupSelectionActivity.class);
+                            /*Intent i = new Intent(getActivity(), GroupSelectionFragment.class);
+                            startActivity(i);
+                            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            getActivity().finish();*/
+                            PrefUtils.putString("isBlank", "true");
+                            Intent i = new Intent(getActivity(), HomeNewActivity.class);
                             startActivity(i);
                             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             getActivity().finish();
@@ -292,13 +292,13 @@ public class OTPFragment extends Fragment {
                             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             getActivity().finish();
                         } else {
-                            Intent i = new Intent(getActivity(), GroupSelectionActivity.class);
+                            Intent i = new Intent(getActivity(), GroupSelectionFragment.class);
                             startActivity(i);
                             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             getActivity().finish();
 
                         }*/
-                        /*Intent i = new Intent(getActivity(), GroupSelectionActivity.class);
+                        /*Intent i = new Intent(getActivity(), GroupSelectionFragment.class);
                         startActivity(i);
                         getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         getActivity().finish();

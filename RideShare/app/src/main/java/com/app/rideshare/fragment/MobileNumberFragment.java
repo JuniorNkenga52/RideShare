@@ -113,8 +113,8 @@ public class MobileNumberFragment extends Fragment {
                     } else if (!chkIAgree.isChecked()) {
                         MessageUtils.showFailureMessage(getActivity(), "You must agree with the Terms and Conditions");
                     } else {
-                        String numberMo = "+1"+ result;
-                        //String numberMo = "+91" + result;
+                        //String numberMo = "+1"+ result;
+                        String numberMo = "+91" + result;
                         //result = "+919265094032";-nikunj
                         //result="+917359371716";
                         //result="+917435068611";-Ajay
@@ -259,7 +259,8 @@ public class MobileNumberFragment extends Fragment {
             if (phno.length() == 11) {
                 phno = phoneMgr.getLine1Number().substring(1, 11);
             } else if (phno.length() == 12) {
-                phno = phoneMgr.getLine1Number().substring(2, 12);
+                phno = phoneMgr.getLine1Number().substring(2
+                        , 12);
             }else if (phno.length() == 13) {
                 phno = phoneMgr.getLine1Number().substring(3, 13);
             } else {

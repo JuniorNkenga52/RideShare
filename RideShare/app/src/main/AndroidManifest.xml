@@ -221,7 +221,7 @@
         </provider>
 
         <activity
-            android:name=".activity.GroupSelectionActivity"
+            android:name=".activity.GroupSelectionFragment"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.DeepLinkActivity"

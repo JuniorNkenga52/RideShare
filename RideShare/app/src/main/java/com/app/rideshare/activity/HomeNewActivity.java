@@ -45,7 +45,6 @@ public class HomeNewActivity extends AppCompatActivity {
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         if (PrefUtils.getString("isBlank").equals("true")) {
             RideShareApp.mHomeTabPos = 1;
-            bottomNavigationView.getMenu().removeItem(R.id.action_home);
         }
 
         bottomNavigationView.setOnNavigationItemSelectedListener
@@ -60,7 +59,11 @@ public class HomeNewActivity extends AppCompatActivity {
                                 break;
                             case R.id.action_item1:
                                 RideShareApp.mHomeTabPos = 1;
-                                selectedFragment = ExploreFragment.newInstance();
+                                if (PrefUtils.getString("isBlank").equals("true")) {
+                                    selectedFragment = GroupSelectionFragment.newInstance();
+                                }else {
+                                    selectedFragment = ExploreFragment.newInstance();
+                                }
                                 break;
                             case R.id.action_item2:
                                 RideShareApp.mHomeTabPos = 2;
@@ -75,9 +78,11 @@ public class HomeNewActivity extends AppCompatActivity {
                                 selectedFragment = ProfileFragment.newInstance();
                                 break;
                         }
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frame_layout, selectedFragment);
-                        transaction.commit();
+
+
+                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.frame_layout, selectedFragment);
+                            transaction.commit();
                         return true;
                     }
                 });

@@ -420,16 +420,22 @@ public class SplashActivity extends AppCompatActivity {
                                     startActivity(i);
                                     finish();
                                 }*/
+                                PrefUtils.putString("isBlank", "false");
                                 Intent i = new Intent(getBaseContext(), MyGroupSelectionActivity.class);
                                 startActivity(i);
                                 finish();
 
 
                             } else {
-                                Intent i = new Intent(getBaseContext(), GroupSelectionActivity.class);
+                                PrefUtils.putString("isBlank", "true");
+                                Intent i = new Intent(getBaseContext(), HomeNewActivity.class);
                                 startActivity(i);
                                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                                 finish();
+                               /* Intent i = new Intent(getBaseContext(), GroupSelectionFragment.class);
+                                startActivity(i);
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                finish();*/
                             }
                         }
                     } else {

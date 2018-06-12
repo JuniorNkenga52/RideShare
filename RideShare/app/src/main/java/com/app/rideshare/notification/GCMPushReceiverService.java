@@ -107,6 +107,7 @@ public class GCMPushReceiverService extends GcmListenerService {
 
         }
         if (type.equals("6")) {
+            PrefUtils.putString("isBlank", "false");
             intent = new Intent(this, MyGroupSelectionActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 

@@ -1,11 +1,13 @@
 package com.app.rideshare.activity;
 
 import android.annotation.SuppressLint;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.GroupList;
+import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
@@ -31,7 +34,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class GroupSelectionActivity extends AppCompatActivity {
+public class GroupSelectionFragment extends Fragment {
 
     private ListView mLvGroup;
     ArrayList<GroupList> mListGroup = new ArrayList<>();
@@ -40,8 +43,9 @@ public class GroupSelectionActivity extends AppCompatActivity {
     Context context;
     GroupAdapter groupAdapter;
     TextView txtHeaderName;
+    SwipeRefreshLayout swipeRefreshRequests;
 
-    @Override
+    /*@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_explore);
@@ -55,6 +59,8 @@ public class GroupSelectionActivity extends AppCompatActivity {
 
         txtHeaderName = findViewById(R.id.txtHeaderName);
         txtHeaderName.setText("Select Group");
+
+        swipeRefreshRequests = findViewById(R.id.swipeRefreshRequests);
 
         new AsyncAllGroup().execute();
 
@@ -76,6 +82,78 @@ public class GroupSelectionActivity extends AppCompatActivity {
 
             }
         });
+
+        swipeRefreshRequests.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (AppUtils.isInternetAvailable(context)) {
+                    new AsyncAllGroup().execute();
+                } else {
+                    swipeRefreshRequests.setRefreshing(false);
+                }
+            }
+        });
+        swipeRefreshRequests.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+    }*/
+
+    public static GroupSelectionFragment newInstance() {
+        GroupSelectionFragment fragment = new GroupSelectionFragment();
+        return fragment;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_explore, container,
+                false);
+
+        PrefUtils.initPreference(getActivity());
+        PrefUtils.putString("loginwith", "normal");
+        context = getActivity();
+
+        txtSearchGroup = rootView.findViewById(R.id.txtSearchGroup);
+        mLvGroup = rootView.findViewById(R.id.mLvGroup);
+
+        txtHeaderName = rootView.findViewById(R.id.txtHeaderName);
+        txtHeaderName.setText("Select Group");
+
+        swipeRefreshRequests = rootView.findViewById(R.id.swipeRefreshRequests);
+
+        new AsyncAllGroup().execute();
+
+        txtSearchGroup.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                String text = txtSearchGroup.getText().toString().toLowerCase(Locale.getDefault());
+                groupAdapter.filter(text.trim());
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+            }
+        });
+
+        swipeRefreshRequests.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (AppUtils.isInternetAvailable(context)) {
+                    new AsyncAllGroup().execute();
+                } else {
+                    swipeRefreshRequests.setRefreshing(false);
+                }
+            }
+        });
+        swipeRefreshRequests.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+
+        return rootView;
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -85,6 +163,7 @@ public class GroupSelectionActivity extends AppCompatActivity {
 
         AsyncAllGroup() {
             mProgressDialog = new CustomProgressDialog(context);
+            swipeRefreshRequests.setRefreshing(false);
         }
 
         @Override
@@ -116,6 +195,7 @@ public class GroupSelectionActivity extends AppCompatActivity {
 
                     JSONArray jArrayResult = new JSONArray(jsonObject.getString("result"));
 
+                    mListGroup.clear();
                     for (int i = 0; i < jArrayResult.length(); i++) {
                         JSONObject jObjResult = jArrayResult.getJSONObject(i);
 
@@ -154,7 +234,7 @@ public class GroupSelectionActivity extends AppCompatActivity {
 
         private GroupAdapter() {
 
-            mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         @Override
@@ -298,7 +378,7 @@ public class GroupSelectionActivity extends AppCompatActivity {
                         mSearchListGroup.get(i).setStatus("1");
                     }*/
                     //mSearchListGroup.get(poss).setStatus("1");
-                    MessageUtils.showSuccessMessage(context,"Your request to join Group has been sent. You will see further messages in your notification tab.");
+                    MessageUtils.showSuccessMessage(context, "Your request to join Group has been sent. You will see further messages in your notification tab.");
                     groupAdapter.notifyDataSetChanged();
 
                 }

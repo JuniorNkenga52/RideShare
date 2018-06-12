@@ -158,6 +158,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
         builder = new LatLngBounds.Builder();
 
+
         //mRobotoReguler = TypefaceUtils.getTypefaceRobotoMediam(getActivity());
 
         mLocationSearchAtv = (EditText) rootview.findViewById(R.id.location_search);
@@ -212,6 +213,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
             }
         });
+
+        if (PrefUtils.getString("isBlank").equals("true")) {
+            CardView card_view_pin = (CardView) rootview.findViewById(R.id.card_view_pin);
+            mPopupIv = (ImageView) rootview.findViewById(R.id.popup_iv);
+            card_view_pin.setVisibility(View.GONE);
+            mPopupIv.setVisibility(View.GONE);
+            linearLayout.setVisibility(View.GONE);
+        }
 
         init(rootview);
 
