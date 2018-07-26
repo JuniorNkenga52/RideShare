@@ -357,12 +357,13 @@ public class RideTypeActivity extends AppCompatActivity {
                         mUserBean.setContact_sync("1");
                         PrefUtils.addUserInfo(mUserBean);
 
+
                         MessageUtils.showSuccessMessage(RideTypeActivity.this, "Contact Sync");
                     } else {
                         MessageUtils.showFailureMessage(RideTypeActivity.this, "Contact Sync failed");
                     }
                 }
-                mProgressDialog.cancel();
+                 mProgressDialog.cancel();
             }
 
             @Override
