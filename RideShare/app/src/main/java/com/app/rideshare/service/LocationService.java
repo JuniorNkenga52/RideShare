@@ -1,5 +1,6 @@
 package com.app.rideshare.service;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -36,6 +37,7 @@ public class LocationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        startForeground(1,new Notification());
         PrefUtils.initPreference(this);
         intent = new Intent(BROADCAST_ACTION);
         bean = PrefUtils.getUserInfo();

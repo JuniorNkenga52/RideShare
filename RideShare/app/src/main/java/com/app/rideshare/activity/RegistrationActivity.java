@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +23,7 @@ import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SendOTPResponse;
 import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.notification.GCMRegistrationIntentService;
+import com.app.rideshare.service.LocationService;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
@@ -94,8 +97,14 @@ public class RegistrationActivity extends AppCompatActivity {
             } else {
             }
         } else {
-            Intent itent = new Intent(this, GCMRegistrationIntentService.class);
-            startService(itent);
+            /*Intent itent = new Intent(this, GCMRegistrationIntentService.class);
+            startService(itent);*/
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                ContextCompat.startForegroundService(this,new Intent(getBaseContext(), GCMRegistrationIntentService.class));
+            } else {
+                startService(new Intent(getBaseContext(), GCMRegistrationIntentService.class));
+            }
         }
 
         mProgressDialog = new CustomProgressDialog(this);

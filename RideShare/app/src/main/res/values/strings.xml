@@ -97,7 +97,7 @@
     <string name="resend_code">Resend Code</string>
 
     <string name="whats_your_name">What\'s your name?</string>
-    <string name="being_real_persion">Being a real persion is important on </string>
+    <string name="being_real_persion">Being a real person is important on </string>
 
     <string name="where_do_you_live">Where do you live?</string>
     <string name="essential_find_address">Essential to find matches for you. We don\'t show anyone your exact address.</string>
@@ -137,4 +137,45 @@
     <string name="txt_no_email_client_installed">No email client configured in your phone.</string>
     <string name="txt_msg_warning">Please enter message to send</string>
 
+    <!--BrandCarlist-->
+    <string name="Volkswagen">Volkswagen</string>
+    <string name="Audi">Audi</string>
+    <string name="Mercedes">Mercedes</string>
+    <string name="Bmw">Bmw</string>
+    <string name="Volvo">Volvo</string>
+    <string name="Toyota">Toyota</string>
+    <string name="Opel">Opel</string>
+    <string name="Renault">Renault</string>
+    <string name="Peugeot">Peugeot</string>
+    <string name="Jeep">Jeep</string>
+    <string name="RangeRover">Range Rover</string>
+    <string name="Chevrolet">Chevrolet</string>
+    <string name="Suzuki">Suzuki</string>
+    <string name="Honda">Honda</string>
+
+    <!--Monthlist-->
+    <string name="January">January</string>
+    <string name="February">February</string>
+    <string name="March">March</string>
+    <string name="April">April</string>
+    <string name="May">May</string>
+    <string name="June">June</string>
+    <string name="July">July</string>
+    <string name="August">August</string>
+    <string name="September">September</string>
+    <string name="October">October</string>
+    <string name="November">November</string>
+    <string name="December">December</string>
+
+    <string name="entercarmake">Please enter car make.</string>
+    <string name="entercaryear">Please select car year.</string>
+    <string name="entercarMonth">Please select car month.</string>
+    <string name="entercarlicenseplate">Please enter licenseplate.</string>
+    <string name="entercarlicenseplate1">Please enter licenseplate with letter &amp; numbers</string>
+    <string name="entercarbrand">Please select car brand.</string>
+    <string name="entercartype">Please select car type.</string>
+    <string name="entercarseatingcapacity">Please enter car seating capacity.</string>
+    <string name="entermodelofthecar">Please enter model of the car.</string>
+    <string name="entercartranssiontype">Please select transsion type.</string>
+    <string name="entercarcolor">Please select car numberplat color.</string>
 </resources>

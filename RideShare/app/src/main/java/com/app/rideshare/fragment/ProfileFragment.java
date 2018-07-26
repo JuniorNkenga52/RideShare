@@ -16,6 +16,7 @@ import com.app.rideshare.R;
 import com.app.rideshare.activity.EditProfileActivity;
 import com.app.rideshare.activity.HistoryActivity;
 import com.app.rideshare.activity.HomeActivity;
+import com.app.rideshare.activity.ManageCarActivity;
 import com.app.rideshare.activity.MyGroupActivity;
 import com.app.rideshare.activity.SettingActivity;
 import com.app.rideshare.activity.SignUpActivity;
@@ -36,7 +37,7 @@ public class ProfileFragment extends Fragment implements OnBackPressedListener {
 
     private LinearLayout llMyProfile;
     private LinearLayout llMyGroup;
-    private LinearLayout llCreateGroup;
+    private LinearLayout llManageCar;
     private LinearLayout llHistory;
     private LinearLayout llSetting;
     private LinearLayout llLogout;
@@ -111,14 +112,14 @@ public class ProfileFragment extends Fragment implements OnBackPressedListener {
             }
         });
 
-        llCreateGroup = (LinearLayout) rootView.findViewById(R.id.llCreateGroup);
-        llCreateGroup.setOnClickListener(new View.OnClickListener() {
+        llManageCar = (LinearLayout) rootView.findViewById(R.id.llManageCar);
+        llManageCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent i = new Intent(getActivity(), CreateGroupActivity.class);
-//                startActivity(i);
-//                getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//                getActivity().finish();
+                Intent i = new Intent(getActivity(), ManageCarActivity.class);
+                startActivity(i);
+                getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                getActivity().finish();
             }
         });
 

@@ -7,6 +7,7 @@ import com.app.rideshare.api.response.ContactResponse;
 import com.app.rideshare.api.response.GroupListResponce;
 import com.app.rideshare.api.response.GroupResponce;
 import com.app.rideshare.api.response.HistoryResponse;
+import com.app.rideshare.api.response.ManageCarResponce;
 import com.app.rideshare.api.response.MyGroupsResponce;
 import com.app.rideshare.api.response.RateRideResponce;
 import com.app.rideshare.api.response.RideSelect;
@@ -132,4 +133,10 @@ public interface RestApiInterface {
     @POST("user/rideRate")
     Call<RateRideResponce> rateride(@Field("driver_id") String mDriver_id,@Field("rider_id") String mRider_id, @Field("ride_id") String mRideId, @Field("ride_rate") String mRideRate, @Field("ride_review") String mRideReview);
 
+    @FormUrlEncoded
+    @POST("user/manageCar")
+    Call<ManageCarResponce> manageCar(@Field("user_id") String m_user_id, @Field("car_make") String m_car_make, @Field("car_month") String m_car_month, @Field("car_year") String m_car_year, @Field("license_plate") String m_license_plate, @Field("brand") String m_brand, @Field("car_type") String m_car_type, @Field("seating_capacity") String m_seating_capacity, @Field("car_model") String m_car_model);
+    /*
+    ec2-13-58-7-10.us-east-2.compute.amazonaws.com/rideshare/api/user/manageCar
+    * */
 }

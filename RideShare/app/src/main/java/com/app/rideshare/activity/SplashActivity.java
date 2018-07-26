@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +27,7 @@ import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.notification.GCMRegistrationIntentService;
+import com.app.rideshare.service.LocationService;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.google.android.gms.common.ConnectionResult;
@@ -35,6 +37,8 @@ import com.gun0912.tedpermission.TedPermission;
 
 import java.util.ArrayList;
 
+import io.nlopez.smartlocation.OnLocationUpdatedListener;
+import io.nlopez.smartlocation.SmartLocation;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,6 +51,8 @@ public class SplashActivity extends AppCompatActivity {
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     String wantPermission = Manifest.permission.READ_PHONE_STATE;
     private static final int PERMISSION_REQUEST_CODE = 1;
+    Location currentLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +80,7 @@ public class SplashActivity extends AppCompatActivity {
                         new TedPermission(context)
                                 .setPermissionListener(permissionlistener)
                                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                                .setPermissions(Manifest.permission.READ_PHONE_STATE)
+                                .setPermissions(Manifest.permission.READ_PHONE_STATE,Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
                                 .check();
 
                     }
@@ -91,34 +97,14 @@ public class SplashActivity extends AppCompatActivity {
             } else {
             }
         } else {
-            Intent itent = new Intent(this, GCMRegistrationIntentService.class);
-            startService(itent);
-        }
-        /*mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
-                    token_splash = intent.getStringExtra("token");
-
-                    Log.d("token", token_splash);
-                } else if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
-                } else {
-                }
-            }
-        };
-
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
-        if (ConnectionResult.SUCCESS != resultCode) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.showErrorNotification(resultCode, getApplicationContext());
+            /*Intent itent = new Intent(this, GCMRegistrationIntentService.class);
+            startService(itent);*/
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                ContextCompat.startForegroundService(this,new Intent(this, GCMRegistrationIntentService.class));
             } else {
+                startService(new Intent(this, GCMRegistrationIntentService.class));
             }
-        } else {
-            Intent itent = new Intent(this, GCMRegistrationIntentService.class);
-            startService(itent);
-        }*/
+        }
 
         PrefUtils.initPreference(this);
 
@@ -152,19 +138,7 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }, 3000);*/
         } else {
-            /*if (PrefUtils.getString("loginwith").equals("google")) {
-                logingoogle(PrefUtils.getString("gId"), PrefUtils.getString("gemail"), PrefUtils.getString("gfname"), PrefUtils.getString("glast"));
-            } else if (PrefUtils.getString("loginwith").equals("facebook")) {
-                loginfacebookuser(PrefUtils.getString("gId"), PrefUtils.getString("gemail"), PrefUtils.getString("gfname"), PrefUtils.getString("glast"));
-            } else if (PrefUtils.getString("loginwith").equals("normal")) {
-                loginuser(PrefUtils.getString("gemail"), PrefUtils.getString("gId"),PrefUtils.getString("group_id"));
-            }*/
-            //PrefUtils.getUserInfo().getmUserId();
             getUserDetails(PrefUtils.getUserInfo().getmUserId());
-                /*Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
-                startActivity(i);
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                finish();*/
 
         }
     }
@@ -179,162 +153,13 @@ public class SplashActivity extends AppCompatActivity {
         Intent addIntent = new Intent();
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "RideShare");
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher));
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.ic_launcher));
         addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         addIntent.putExtra("duplicate", false);
         getApplicationContext().sendBroadcast(addIntent);
     }
 
 
-    private void loginuser(final String mEmail, final String password, final String group_id) {
-        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password, token_splash, group_id).enqueue(new Callback<SignupResponse>() {
-            @Override
-            public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (!response.body().getmStatus().equals("error")) {
-                        PrefUtils.addUserInfo(response.body().getMlist().get(0));
-                        PrefUtils.putBoolean("islogin", true);
-                        PrefUtils.putBoolean("isFriends", true);
-
-                        PrefUtils.putString("loginwith", "normal");
-                        PrefUtils.putString("gemail", mEmail);
-                        PrefUtils.putString("gId", password);
-                        PrefUtils.putString("group_id", group_id);
-
-                        if (PrefUtils.getUserInfo().getmMobileNo().equals("")) {
-                            Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
-                            startActivity(i);
-                            finish();
-                        } else if (PrefUtils.getUserInfo().getmIsVerify().equals("0")) {
-                            Intent i = new Intent(getBaseContext(), VerifyMobileNumberActivity.class);
-                            startActivity(i);
-                            finish();
-                        } else {
-                            Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
-                            i.putExtra("inprogress", response.body().getMlist().get(0).getmRidestatus());
-                            if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {
-                                i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
-                            }
-                            startActivity(i);
-                            finish();
-                        }
-                    } else {
-                        MessageUtils.showFailureMessage(SplashActivity.this, response.body().getmMessage());
-                    }
-                } else {
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SignupResponse> call, Throwable t) {
-                t.printStackTrace();
-                Log.d("error", t.toString());
-            }
-        });
-    }
-
-    private void loginfacebookuser(final String mFacebookId, final String mEmail, final String mFirstName, final String mLastName) {
-        ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token_splash, "4").enqueue(new Callback<SignupResponse>() {
-            @Override
-            public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (!response.body().getmStatus().equals("error")) {
-                        PrefUtils.addUserInfo(response.body().getMlist().get(0));
-                        PrefUtils.putBoolean("isFriends", true);
-                        PrefUtils.putBoolean("islogin", true);
-
-                        PrefUtils.putString("loginwith", "facebook");
-                        PrefUtils.putString("gemail", mEmail);
-                        PrefUtils.putString("gId", mFacebookId);
-                        PrefUtils.putString("gfname", mFirstName);
-                        PrefUtils.putString("glast", mLastName);
-
-                        if (PrefUtils.getUserInfo().getmMobileNo().equals("")) {
-                            Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
-                            startActivity(i);
-                            finish();
-                        } else if (PrefUtils.getUserInfo().getmIsVerify().equals("0")) {
-                            Intent i = new Intent(getBaseContext(), VerifyMobileNumberActivity.class);
-                            startActivity(i);
-                            finish();
-                        } else {
-                            Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
-                            i.putExtra("inprogress", response.body().getMlist().get(0).getmRidestatus());
-                            if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {
-                                i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
-
-                            }
-                            startActivity(i);
-                            finish();
-                        }
-
-                    } else {
-                        MessageUtils.showFailureMessage(SplashActivity.this, response.body().getmMessage());
-                    }
-                } else {
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SignupResponse> call, Throwable t) {
-                t.printStackTrace();
-                Log.d("error", t.toString());
-            }
-        });
-    }
-
-
-    private void logingoogle(final String mGoogleId, final String mEmail, final String mFirstName, final String mLastName) {
-
-        ApiServiceModule.createService(RestApiInterface.class).signGoogleplus(mGoogleId, mEmail, mFirstName, mLastName, token_splash, "4").enqueue(new Callback<SignupResponse>() {
-            @Override
-            public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (!response.body().getmStatus().equals("error")) {
-                        PrefUtils.addUserInfo(response.body().getMlist().get(0));
-                        PrefUtils.putBoolean("islogin", true);
-                        PrefUtils.putBoolean("isFriends", true);
-
-                        PrefUtils.putString("loginwith", "google");
-                        PrefUtils.putString("gemail", mEmail);
-                        PrefUtils.putString("gId", mGoogleId);
-                        PrefUtils.putString("gfname", mFirstName);
-                        PrefUtils.putString("glast", mLastName);
-
-                        if (PrefUtils.getUserInfo().getmMobileNo().equals("")) {
-                            Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
-                            startActivity(i);
-                            finish();
-                        } else if (PrefUtils.getUserInfo().getmIsVerify().equals("0")) {
-                            Intent i = new Intent(getBaseContext(), VerifyMobileNumberActivity.class);
-                            startActivity(i);
-                            finish();
-                        } else {
-                            Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
-                            i.putExtra("inprogress", response.body().getMlist().get(0).getmRidestatus());
-                            if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {
-                                i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
-                            }
-                            startActivity(i);
-                            finish();
-                        }
-                    } else {
-                        MessageUtils.showFailureMessage(SplashActivity.this, response.body().getmMessage());
-                    }
-                } else {
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SignupResponse> call, Throwable t) {
-                t.printStackTrace();
-                Log.d("error", t.toString());
-            }
-        });
-    }
 
     @Override
     protected void onResume() {
@@ -355,6 +180,7 @@ public class SplashActivity extends AppCompatActivity {
         Log.w("MainActivity", "onPause");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
+
     private void getUserDetails(final String userId) {
         ApiServiceModule.createService(RestApiInterface.class).getUserDetails(userId).enqueue(new Callback<SignupResponse>() {
             @Override
@@ -371,11 +197,11 @@ public class SplashActivity extends AppCompatActivity {
                             Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
                             startActivity(i);
                             finish();
-                        } else if (PrefUtils.getUserInfo().getmIsVerify().equals("0")) {
+                        } /*else if (PrefUtils.getUserInfo().getmIsVerify().equals("0")) {
                             Intent i = new Intent(getBaseContext(), VerifyMobileNumberActivity.class);
                             startActivity(i);
                             finish();
-                        } else {
+                        } */else {
 
                             /*Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
                             i.putExtra("inprogress", response.body().getMlist().get(0).getmRidestatus());
@@ -425,13 +251,30 @@ public class SplashActivity extends AppCompatActivity {
                                 startActivity(i);
                                 finish();
 
-
                             } else {
                                 PrefUtils.putString("isBlank", "true");
                                 Intent i = new Intent(getBaseContext(), HomeNewActivity.class);
                                 startActivity(i);
                                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                                 finish();
+
+                                /*Intent intent = new Intent(getBaseContext(), LocationService.class);
+                                startService(intent);*/
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    ContextCompat.startForegroundService(getApplicationContext(),new Intent(getBaseContext(), LocationService.class));
+                                } else {
+                                    startService(new Intent(getBaseContext(), LocationService.class));
+                                }
+
+                                SmartLocation.with(getBaseContext()).location()
+                                        .oneFix()
+                                        .start(new OnLocationUpdatedListener() {
+                                            @Override
+                                            public void onLocationUpdated(Location location) {
+                                                currentLocation = location;
+                                            }
+                                        });
+
                                /* Intent i = new Intent(getBaseContext(), GroupSelectionFragment.class);
                                 startActivity(i);
                                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -454,28 +297,6 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
-    private boolean checkPermission(String permission){
-        if (Build.VERSION.SDK_INT >= 23) {
-            int result = ContextCompat.checkSelfPermission(getApplicationContext(), permission);
-            if (result == PackageManager.PERMISSION_GRANTED){
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return true;
-        }
-    }
-
-    private void requestPermission(String permission){
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)){
-
-            Toast.makeText(getApplicationContext(), "Phone state permission allows us to get phone number. Please allow it for additional functionality.", Toast.LENGTH_LONG).show();
-        }else {
-
-        }
-        ActivityCompat.requestPermissions(this, new String[]{permission},PERMISSION_REQUEST_CODE);
-    }
     PermissionListener permissionlistener = new PermissionListener() {
         @Override
         public void onPermissionGranted() {

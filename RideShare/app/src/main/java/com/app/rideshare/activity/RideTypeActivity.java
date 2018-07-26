@@ -12,6 +12,8 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -86,8 +88,14 @@ public class RideTypeActivity extends AppCompatActivity {
                 }
 
             }
-            Intent intent = new Intent(RideTypeActivity.this, LocationService.class);
-            startService(intent);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                ContextCompat.startForegroundService(context,new Intent(context, LocationService.class));
+            } else {
+                context.startService(new Intent(context, LocationService.class));
+            }
+            /*Intent intent = new Intent(RideTypeActivity.this, LocationService.class);
+            startService(intent);*/
             SmartLocation.with(RideTypeActivity.this).location()
                     .oneFix()
                     .start(new OnLocationUpdatedListener() {
@@ -202,7 +210,6 @@ public class RideTypeActivity extends AppCompatActivity {
 
         mNeedRideLL = (LinearLayout) findViewById(R.id.need_ride_ll);
         mOfferRideLL = (LinearLayout) findViewById(R.id.offer_ride_ll);
-
 
         mNeedRideLL.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -398,6 +405,7 @@ public class RideTypeActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
         if (back_pressed + 2000 > System.currentTimeMillis()) {
@@ -420,6 +428,8 @@ public class RideTypeActivity extends AppCompatActivity {
             intent.addCategory(Intent.CATEGORY_HOME);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+            finishAndRemoveTask();
+            finishAffinity();
             finish();
             System.exit(0);
         } else {

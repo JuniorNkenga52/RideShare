@@ -299,7 +299,7 @@ public class GroupSelectionFragment extends Fragment {
             3 = Decline
             4 = Confirm*/
 
-            if (bean.getStatus().equalsIgnoreCase("0"))
+            if (bean.getStatus().equalsIgnoreCase("0") || bean.getStatus().equalsIgnoreCase("3"))
                 holder.txtJoin.setVisibility(View.VISIBLE);
             else
                 holder.txtJoin.setVisibility(View.GONE);

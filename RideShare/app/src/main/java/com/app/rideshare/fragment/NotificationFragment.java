@@ -260,7 +260,7 @@ public class NotificationFragment extends Fragment {
     public class AsyncJoinGroup extends AsyncTask<Object, Integer, Object> {
 
         private CustomProgressDialog mProgressDialog;
- 
+
         private String user_id;
         private String group_id;
         private String status;

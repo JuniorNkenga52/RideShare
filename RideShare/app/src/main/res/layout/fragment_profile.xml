@@ -104,7 +104,7 @@
             android:background="@color/GrayLine" />
 
         <LinearLayout
-            android:id="@+id/llCreateGroup"
+            android:id="@+id/llManageCar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
             android:paddingLeft="@dimen/_12sdp"
@@ -128,7 +128,7 @@
                 android:textSize="@dimen/_13sdp"
                 android:textColor="@color/black"
                 android:gravity="center_vertical"
-                android:text="Create Group"/>
+                android:text="Manage Car"/>
 
             <ImageView
                 android:layout_width="wrap_content"

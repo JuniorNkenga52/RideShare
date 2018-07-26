@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -271,8 +272,14 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         bManager.registerReceiver(receiver, intentFilter);
 
         if (mApp.getmUserType().equals("2")) {
-            Intent intent = new Intent(StartRideActivity.this, LocationService.class);
-            startService(intent);
+            /*Intent intent = new Intent(StartRideActivity.this, LocationService.class);
+            startService(intent);*/
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                ContextCompat.startForegroundService(this,new Intent(getBaseContext(), LocationService.class));
+            } else {
+                startService(new Intent(getBaseContext(), LocationService.class));
+            }
         }
         try {
             if (mApp.getmUserType().equals("2")) {

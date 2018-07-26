@@ -9,7 +9,9 @@ public class RideShareApi {
 
     //public static final String SERVER_URL = "http://php.rlogical.com/rideshare/api/";
     //public static final String SERVER_URL = "http://ec2-18-220-69-218.us-east-2.compute.amazonaws.com/rideshare/api/";
-    public static final String SERVER_URL = "http://ec2-13-58-7-10.us-east-2.compute.amazonaws.com/rideshare/api/";
+
+    //public static final String SERVER_URL = "http://ec2-13-58-7-10.us-east-2.compute.amazonaws.com/rideshare/api/";// OLD URL
+    public static final String SERVER_URL = "http://ec2-18-222-137-245.us-east-2.compute.amazonaws.com/rideshare/api/";// NEW URL
 
     public static String postApiCall(String uid, String type) {
         try {

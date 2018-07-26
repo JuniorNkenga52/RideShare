@@ -153,6 +153,7 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
                         PrefUtils.putString("isBlank", "true");
                         Intent i = new Intent(MyGroupSelectionActivity.this, HomeNewActivity.class);
                         startActivity(i);
+
                     } else {
                         for (int i = 0; i < jArrayResult.length(); i++) {
                             JSONObject jObjResult = jArrayResult.getJSONObject(i);

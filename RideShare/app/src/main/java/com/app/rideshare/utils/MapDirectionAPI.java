@@ -30,9 +30,4 @@ public class MapDirectionAPI {
         return client.newCall(request);
     }
 
-
-
-
-
-
 }

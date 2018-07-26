@@ -65,12 +65,12 @@ public class GCMPushReceiverService extends GcmListenerService {
                 Intent intent = new Intent("new_user");
                 intent.putExtra("int_data", "2");
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-                sendNotification("Request Approved", "6");
+                sendNotification(jobj.getString("msg"), "6");
             } else if (jobj.getString("type").equals("7")) {
                 Intent intent = new Intent("new_user_req");
                 intent.putExtra("int_data", "2");
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-                sendNotification("Request Received", "7");
+                sendNotification(jobj.getString("msg"), "7");
             }
 
         } catch (Exception e) {
@@ -107,7 +107,9 @@ public class GCMPushReceiverService extends GcmListenerService {
 
         }
         if (type.equals("6")) {
-            PrefUtils.putString("isBlank", "false");
+            if(!message.equals("Group Request Decline")){
+                PrefUtils.putString("isBlank", "false");
+            }
             intent = new Intent(this, MyGroupSelectionActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -33,6 +34,7 @@
 
     <com.app.rideshare.widget.EditTextRegular
         android:id="@+id/tvSearchGroup"
+        android:layout_below="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/edittext_bg_gray_border"
@@ -50,12 +52,25 @@
         android:textColorHint="#aeb1b5"
         android:textSize="@dimen/_12sdp" />
 
+    <com.app.rideshare.widget.TextViewRegular
+        android:id="@+id/txt_no_grp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Group available to display"
+        android:textColor="@color/colorPrimary"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
     <ListView
         android:id="@+id/mLvGroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="#00000000"
         android:listSelector="#00000000"
-        android:paddingTop="@dimen/_5sdp" />
+        android:paddingTop="@dimen/_5sdp"
+        android:visibility="visible"
+        android:layout_below="@+id/tvSearchGroup"/>
 
-</LinearLayout>
+
+
+</RelativeLayout>

@@ -337,7 +337,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                 Marker m;
                 if (mUserType.equals("1")) {
                     m = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
-                            .position(currentDriverPos).anchor(0.5f, 0.5f)
+                            //.position(currentDriverPos).anchor(0.5f, 0.5f)
+                            .position(currentDriverPos).anchor(0.5f, 1f)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin))
                             // Specifies the anchor to be at a particular point in the marker image.
                             .rotation(0f)
@@ -512,6 +513,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             @Override
             public void onResponse(Call<SendResponse> call, Response<SendResponse> response) {
 
+
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getmStatus().equals("success")) {
                         Intent i = new Intent(getActivity(), WaitingActivity.class);
@@ -546,7 +548,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             getMarkerBitmapFromView(getActivity(), driver, user, type, currentDriverPos);
 
             marker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
-                    .position(currentDriverPos).anchor(0.5f, 0.5f)
+                    .position(currentDriverPos).anchor(0.5f, 1f)
                     .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), userImage)))
                     // Specifies the anchor to be at a particular point in the marker image.
                     .rotation(0f)
@@ -599,7 +601,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
                     if (type == 0) {
                         mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
-                                .position(currentDriverPos).anchor(0.5f, 0.5f)
+                                //.position(currentDriverPos).anchor(0.5f, 0.5f)
+                                .position(currentDriverPos).anchor(0.5f, 1f)
                                 .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), finalUserimage)))
                                 // Specifies the anchor to be at a particular point in the marker image.
                                 .rotation(0f)
@@ -607,7 +610,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                     } else {
                         try {
                             mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(user))
-                                    .position(currentDriverPos).anchor(0.5f, 0.5f)
+                                    //.position(currentDriverPos).anchor(0.5f, 0.5f)
+                                    .position(currentDriverPos).anchor(0.5f, 1f)
                                     .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), finalUserimage)))
                                     // Specifies the anchor to be at a particular point in the marker image.
                                     .rotation(0f)

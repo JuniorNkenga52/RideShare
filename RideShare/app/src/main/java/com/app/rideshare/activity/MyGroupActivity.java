@@ -47,6 +47,7 @@ public class MyGroupActivity extends AppCompatActivity {
 
     private EditText tvSearchGroup;
     Activity activity;
+    private TextView txt_no_grp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,6 +115,7 @@ public class MyGroupActivity extends AppCompatActivity {
 
 
         tvSearchGroup = (EditText) findViewById(R.id.tvSearchGroup);
+        txt_no_grp = findViewById(R.id.txt_no_grp);
         tvSearchGroup.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -226,6 +228,11 @@ public class MyGroupActivity extends AppCompatActivity {
 
                     groupAdapter = new GroupAdapter();
                     mLvGroup.setAdapter(groupAdapter);
+                    if(mSearchListGroup.size()==0){
+                        txt_no_grp.setVisibility(View.VISIBLE);
+                    }else {
+                        txt_no_grp.setVisibility(View.GONE);
+                    }
 
                 }
             } catch (Exception e) {

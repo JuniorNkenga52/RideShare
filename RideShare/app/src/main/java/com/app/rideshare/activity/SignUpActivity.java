@@ -28,6 +28,7 @@ import com.app.rideshare.fragment.NameFragment;
 import com.app.rideshare.fragment.OTPFragment;
 import com.app.rideshare.fragment.ProfilePhotoFragment;
 import com.app.rideshare.notification.GCMRegistrationIntentService;
+import com.app.rideshare.service.LocationService;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.widget.CustomViewPager;
 import com.google.android.gms.common.ConnectionResult;
@@ -92,8 +93,14 @@ public class SignUpActivity extends AppCompatActivity {
             } else {
             }
         } else {
-            Intent itent = new Intent(this, GCMRegistrationIntentService.class);
-            startService(itent);
+            /*Intent itent = new Intent(this, GCMRegistrationIntentService.class);
+            startService(itent);*/
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                ContextCompat.startForegroundService(context,new Intent(context, GCMRegistrationIntentService.class));
+            } else {
+                startService(new Intent(context, GCMRegistrationIntentService.class));
+            }
         }
 
 

@@ -1,6 +1,7 @@
 package com.app.rideshare.notification;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -23,6 +24,7 @@ public class GCMRegistrationIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         //Registering gcm to the device
+        startForeground(1,new Notification());
         registerGCM();
     }
  
