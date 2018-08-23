@@ -120,11 +120,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         } else {
             /*Intent itent = new Intent(this, GCMRegistrationIntentService.class);
             startService(itent);*/
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 ContextCompat.startForegroundService(this,new Intent(getBaseContext(), GCMRegistrationIntentService.class));
             } else {
                 startService(new Intent(getBaseContext(), GCMRegistrationIntentService.class));
-            }
+            }*/
+            startService(new Intent(getBaseContext(), GCMRegistrationIntentService.class));
         }
 
         mProgressDialog = new CustomProgressDialog(this);

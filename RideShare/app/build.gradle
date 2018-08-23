@@ -15,19 +15,18 @@ repositories {
     google()
 }
 
-apply plugin: 'com.google.gms.google-services'
-
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 27
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.app.rideshare"
         minSdkVersion 15
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         multiDexEnabled true
         versionName "1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        renderscriptSupportModeEnabled true
     }
     buildTypes {
         release {
@@ -38,30 +37,39 @@ android {
     lintOptions {
         checkReleaseBuilds false
     }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    useLibrary 'org.apache.http.legacy'
 }
 
 
 dependencies {
 
-    compile 'com.android.support:design:26.0.2'
-    compile 'com.android.support:appcompat-v7:26.0.2'
+    compile 'com.android.support:design:27.0.2'
+    compile 'com.android.support:appcompat-v7:27.0.2'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.intuit.sdp:sdp-android:1.0.2'
     compile 'com.google.code.gson:gson:2.4'
-    compile 'com.android.support:cardview-v7:26.0.2'
+    compile 'com.android.support:cardview-v7:27.0.2'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-    compile 'com.google.android.gms:play-services-auth:10.2.0'
-    compile 'com.google.android.gms:play-services-maps:10.2.0'
-    compile 'com.google.android.gms:play-services-gcm:10.2.0'
-    compile 'com.google.android.gms:play-services-places:10.2.0'
+    compile 'com.google.android.gms:play-services-auth:11.4.2'
+    compile 'com.google.android.gms:play-services-maps:11.4.2'
+    compile 'com.google.android.gms:play-services-gcm:11.4.2'
+    compile 'com.google.android.gms:play-services-places:11.4.2'
+
+
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
     compile 'com.github.vlad1m1r990:Lemniscate:1.2.0'
     compile 'gun0912.ted:tedpermission:1.0.3'
-    compile 'io.nlopez.smartlocation:library:3.3.1'
+    compile 'io.nlopez.smartlocation:library:3.3.3'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.github.davidpizarro:pinview:1.0.0'
-    compile 'org.java-websocket:Java-WebSocket:1.3.0'
+    compile 'org.java-websocket:Java-WebSocket:1.3.9'
     compile 'pl.bclogic:pulsator4droid:1.0.3'
     compile 'com.github.lzyzsd:circleprogress:1.2.1'
     compile 'com.mikhaellopez:circularimageview:3.0.2'
@@ -69,7 +77,7 @@ dependencies {
     compile 'com.github.nguyenhoanglam:ImagePicker:1.1.3'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'me.drakeet.materialdialog:library:1.3.1'
-    compile 'com.android.support:recyclerview-v7:26.0.2'
+    compile 'com.android.support:recyclerview-v7:27.0.2'
     compile 'com.github.sd6352051:NiftyDialogEffects:1.0.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
 
@@ -94,4 +102,11 @@ dependencies {
     }
 
     compile 'com.github.stfalcon:smsverifycatcher:0.3.1'
+
+    /* socket */
+    compile ('io.socket:engine.io-client:1.0.0') {
+        // excluding org.json which is provided by Android
+        exclude group: 'org.json', module: 'json'
+    }
 }
+apply plugin: 'com.google.gms.google-services'

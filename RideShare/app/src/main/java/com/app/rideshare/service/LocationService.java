@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.ContextCompat;
@@ -37,7 +38,8 @@ public class LocationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        startForeground(1,new Notification());
+        /*if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
+            startForeground(1, new Notification());*/
         PrefUtils.initPreference(this);
         intent = new Intent(BROADCAST_ACTION);
         bean = PrefUtils.getUserInfo();

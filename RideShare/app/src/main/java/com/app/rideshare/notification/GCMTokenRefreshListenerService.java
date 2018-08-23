@@ -15,10 +15,11 @@ public class GCMTokenRefreshListenerService extends InstanceIDListenerService {
        /* Intent intent = new Intent(this, GCMRegistrationIntentService.class);
         startService(intent);*/
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             ContextCompat.startForegroundService(this,new Intent(getBaseContext(), GCMRegistrationIntentService.class));
         } else {
             startService(new Intent(getBaseContext(), GCMRegistrationIntentService.class));
-        }
+        }*/
+        startService(new Intent(getBaseContext(), GCMRegistrationIntentService.class));
     }
 }

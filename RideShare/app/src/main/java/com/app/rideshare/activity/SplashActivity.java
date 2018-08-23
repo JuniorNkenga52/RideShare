@@ -2,6 +2,7 @@ package com.app.rideshare.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -99,11 +100,12 @@ public class SplashActivity extends AppCompatActivity {
         } else {
             /*Intent itent = new Intent(this, GCMRegistrationIntentService.class);
             startService(itent);*/
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 ContextCompat.startForegroundService(this,new Intent(this, GCMRegistrationIntentService.class));
             } else {
                 startService(new Intent(this, GCMRegistrationIntentService.class));
-            }
+            }*/
+            startService(new Intent(this, GCMRegistrationIntentService.class));
         }
 
         PrefUtils.initPreference(this);
@@ -189,7 +191,7 @@ public class SplashActivity extends AppCompatActivity {
                     if (!response.body().getmStatus().equals("error")) {
                         PrefUtils.addUserInfo(response.body().getMlist().get(0));
                         PrefUtils.putBoolean("islogin", true);
-                        PrefUtils.putBoolean("isFriends", true);
+                        PrefUtils.putBoolean("isAll", true);
 
                         PrefUtils.putString("loginwith", "normal");
 
@@ -260,11 +262,12 @@ public class SplashActivity extends AppCompatActivity {
 
                                 /*Intent intent = new Intent(getBaseContext(), LocationService.class);
                                 startService(intent);*/
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     ContextCompat.startForegroundService(getApplicationContext(),new Intent(getBaseContext(), LocationService.class));
                                 } else {
                                     startService(new Intent(getBaseContext(), LocationService.class));
-                                }
+                                }*/
+                                startService(new Intent(getBaseContext(), LocationService.class));
 
                                 SmartLocation.with(getBaseContext()).location()
                                         .oneFix()

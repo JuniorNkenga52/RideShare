@@ -35,6 +35,7 @@ import com.gun0912.tedpermission.TedPermission;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -107,14 +108,17 @@ public class MobileNumberFragment extends Fragment {
             public void onClick(View v) {
 
                 try {
+                    /*getUserCountry(getContext());
+                    GetCountryZipCode();*/
                     String result = txtPhoneNumber.getUnmaskedText().toString();
                     if (result.length() == 0) {
                         MessageUtils.showFailureMessage(getActivity(), "Please enter Mobile Number.");
                     } else if (!chkIAgree.isChecked()) {
                         MessageUtils.showFailureMessage(getActivity(), "You must agree with the Terms and Conditions");
                     } else {
-                        //String numberMo = "+1"+ result;
-                        String numberMo = "+91" + result;
+
+                        String numberMo = "+91"+ result;
+                        //String numberMo = "+91" + result;
                         //result = "+919265094032";-nikunj
                         //result="+917359371716";
                         //result="+917435068611";-Ajay
@@ -304,5 +308,43 @@ public class MobileNumberFragment extends Fragment {
         } else {
             return true;
         }
+    }
+
+    public String GetCountryZipCode(){
+        String CountryID="";
+        String CountryZipCode="";
+
+        TelephonyManager manager = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
+        //getNetworkCountryIso
+        CountryID= manager.getSimCountryIso().toUpperCase();
+        String[] rl=getContext().getResources().getStringArray(R.array.CountryCodes);
+        for(int i=0;i<rl.length;i++){
+            String[] g=rl[i].split(",");
+            if(g[1].trim().equals(CountryID.trim())){
+                CountryZipCode=g[0];
+                break;
+            }
+        }
+        return CountryZipCode;
+    }
+
+    public static String getUserCountry(Context context) {
+        try {
+            final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            final String simCountry = tm.getSimCountryIso();
+            if (simCountry != null && simCountry.length() == 2) { // SIM country code is available
+                return simCountry.toLowerCase(Locale.US);
+            }
+            else if (tm.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA) { // device is not 3G (would be unreliable)
+                String networkCountry = tm.getNetworkCountryIso();
+                if (networkCountry != null && networkCountry.length() == 2) { // network country code is available
+                    return networkCountry.toLowerCase(Locale.US);
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -96,11 +96,12 @@ public class SignUpActivity extends AppCompatActivity {
             /*Intent itent = new Intent(this, GCMRegistrationIntentService.class);
             startService(itent);*/
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 ContextCompat.startForegroundService(context,new Intent(context, GCMRegistrationIntentService.class));
             } else {
                 startService(new Intent(context, GCMRegistrationIntentService.class));
-            }
+            }*/
+            startService(new Intent(context, GCMRegistrationIntentService.class));
         }
 
 

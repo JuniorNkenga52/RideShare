@@ -19,9 +19,12 @@ public class ApiServiceModule {
 
     //public static final String API_ENDPOINT="http://ec2-13-58-7-10.us-east-2.compute.amazonaws.com/rideshare/api/"; OLD URL
 
-    public static final String API_ENDPOINT="http://ec2-18-222-137-245.us-east-2.compute.amazonaws.com/rideshare/api/";//NEW URL
+    //public static final String API_ENDPOINT="http://ec2-18-222-137-245.us-east-2.compute.amazonaws.com/rideshare/api/";//OLD 2 URL
+    public static final String API_ENDPOINT="https://www.myridewhiz.com/rideshare/api/";//NEW URL
     //http://ec2-18-222-137-245.us-east-2.compute.amazonaws.com/rideshare/
-    public static final String WEBSOCKET_ENDPOINT="ws://ec2-18-220-69-218.us-east-2.compute.amazonaws.com:8090/ride-share-websocket/php-socket.php";
+
+    /*public static final String WEBSOCKET_ENDPOINT="ws://ec2-18-220-69-218.us-east-2.compute.amazonaws.com:8090/ride-share-websocket/php-socket.php";*/
+    public static final String WEBSOCKET_ENDPOINT="ws://www.myridewhiz.com/ride-share-websocket/php-socket.php";
     //public static final String API_ENDPOINT = "http://php.rlogical.com/rideshare/api/";
 
     private static OkHttpClient.Builder okHttpClient() {

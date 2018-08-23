@@ -78,11 +78,14 @@ public class MyXMPP implements PingFailedListener {
     private static final String NOTIF_CHANNEL_ID = "practice_chat_channel";
 
     private static final String TAG = "MyXMPP";
-     private static final String DOMAIN = "13.58.7.10";
+    //http://chat.myridewhiz.com:9090
+     //private static final String DOMAIN = "13.58.7.10";
+    private static final String DOMAIN = "chat.myridewhiz.com";
+    //private static final String DOMAIN = " http://18.222.137.245";
     //private static final String DOMAIN = "192.168.0.30";
     private static final String RESOURCE_NAME = "RideShare";
-    private static final int PORT = 5222;
-    //private static final int PORT = 9090;
+    //private static final int PORT = 5222;
+    private static final int PORT = 9090;
 
     private final String delimiter = "\\@";
 
@@ -155,7 +158,6 @@ public class MyXMPP implements PingFailedListener {
         config.setPort(PORT);
         config.setDebuggerEnabled(true);
         config.setResource(RESOURCE_NAME);
-
         config.setUsernameAndPassword(loginUser, passwordUser);
         config.setCompressionEnabled(false);
 

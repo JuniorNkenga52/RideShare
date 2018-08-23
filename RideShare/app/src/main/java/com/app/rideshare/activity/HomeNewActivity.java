@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import com.app.rideshare.R;
 import com.app.rideshare.fragment.ExploreFragment;
 import com.app.rideshare.fragment.HomeFragment;
-import com.app.rideshare.fragment.MessagesFragment;
 import com.app.rideshare.fragment.NotificationFragment;
 import com.app.rideshare.fragment.ProfileFragment;
 import com.app.rideshare.model.Rider;
@@ -71,7 +70,8 @@ public class HomeNewActivity extends AppCompatActivity {
                                 break;
                             case R.id.action_item2:
                                 RideShareApp.mHomeTabPos = 2;
-                                selectedFragment = MessagesFragment.newInstance();
+                                //selectedFragment = MessagesFragment.newInstance();
+                                startActivity(new Intent(context, WebSocketActivity.class));
                                 break;
                             case R.id.action_item3:
                                 RideShareApp.mHomeTabPos = 3;
@@ -83,10 +83,11 @@ public class HomeNewActivity extends AppCompatActivity {
                                 break;
                         }
 
-
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frame_layout, selectedFragment);
-                        transaction.commit();
+                        if (RideShareApp.mHomeTabPos != 2) {
+                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.frame_layout, selectedFragment);
+                            transaction.commit();
+                        }
                         return true;
                     }
                 });

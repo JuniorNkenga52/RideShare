@@ -74,8 +74,6 @@ public class CommonDialog {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
                 /*Intent sendIntent = new Intent(Intent.ACTION_VIEW);
                 sendIntent.putExtra("sms_body", shareData);
                 sendIntent.setType("vnd.android-dir/mms-sms");

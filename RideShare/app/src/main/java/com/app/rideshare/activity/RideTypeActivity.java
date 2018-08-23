@@ -89,11 +89,12 @@ public class RideTypeActivity extends AppCompatActivity {
 
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 ContextCompat.startForegroundService(context,new Intent(context, LocationService.class));
             } else {
                 context.startService(new Intent(context, LocationService.class));
-            }
+            }*/
+            startService(new Intent(getBaseContext(), LocationService.class));
             /*Intent intent = new Intent(RideTypeActivity.this, LocationService.class);
             startService(intent);*/
             SmartLocation.with(RideTypeActivity.this).location()
