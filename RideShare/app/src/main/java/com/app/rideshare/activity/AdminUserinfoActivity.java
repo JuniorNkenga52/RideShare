@@ -114,7 +114,7 @@ public class AdminUserinfoActivity extends AppCompatActivity {
 
     private void update_admin_info(String user_id, String driver_request, String user_disable, String group_id, String ad_priv_type) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).updateAdminFunction(user_id, driver_request, user_disable, group_id, ad_priv_type).enqueue(new Callback<MyGroupsResponce>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).updateAdminFunction(user_id, driver_request, user_disable, group_id, ad_priv_type).enqueue(new Callback<MyGroupsResponce>() {
             @Override
             public void onResponse(Call<MyGroupsResponce> call, Response<MyGroupsResponce> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().getResult().size() > 0) {

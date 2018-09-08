@@ -216,7 +216,7 @@ public class AddressFragment extends Fragment implements GoogleApiClient.Connect
                     FilterResults results = new FilterResults();
                     if (constraint != null) {
                         mResultList = getAutocomplete(constraint);
-                        if (mResultList != null) {
+                        if (mResultList != null && mResultList.size()>0) {
                             results.values = mResultList;
                             results.count = mResultList.size();
                         }

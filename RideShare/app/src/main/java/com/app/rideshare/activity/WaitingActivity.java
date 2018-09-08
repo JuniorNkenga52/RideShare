@@ -52,6 +52,7 @@ public class WaitingActivity extends AppCompatActivity {
 
     RideResponse mRideResponse;
     CircularImageView mProfilePic;
+    Context context;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class WaitingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_waiting);
 
         //mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
-
+        context=this;
         currentRider = (Rider) getIntent().getExtras().getSerializable("rider");
         mRideResponse = (RideResponse) getIntent().getExtras().getSerializable("rider_data");
 
@@ -231,7 +232,7 @@ public class WaitingActivity extends AppCompatActivity {
     }
 
     public void cancelRequst(String mRideId) {
-        ApiServiceModule.createService(RestApiInterface.class).cancelRequest(mRideId).enqueue(new Callback<CancelRequest>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).cancelRequest(mRideId).enqueue(new Callback<CancelRequest>() {
             @Override
             public void onResponse(Call<CancelRequest> call, Response<CancelRequest> response) {
 

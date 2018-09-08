@@ -47,6 +47,7 @@ public class MyGroupActivity extends AppCompatActivity {
 
     private EditText tvSearchGroup;
     Activity activity;
+    Context context;
     private TextView txt_no_grp;
 
     @Override
@@ -55,6 +56,7 @@ public class MyGroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mygroup);
 
         activity = this;
+        context=this;
         PrefUtils.initPreference(this);
         mUserBean = PrefUtils.getUserInfo();
 
@@ -181,7 +183,7 @@ public class MyGroupActivity extends AppCompatActivity {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.mygroups(PrefUtils.getUserInfo().getmUserId());
+                return RideShareApi.mygroups(PrefUtils.getUserInfo().getmUserId(),context);
             } catch (Exception e) {
                 return null;
             }

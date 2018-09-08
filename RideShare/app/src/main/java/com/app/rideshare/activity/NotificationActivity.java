@@ -71,13 +71,13 @@ public class NotificationActivity extends AppCompatActivity {
     private String profilePic = "";
 
     CircularImageView mProfilePicIv;
-
+    Context context;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
         mProgressDialog = new CustomProgressDialog(this);
-
+        context=this;
         try {
             jobjRide = new JSONObject(getIntent().getExtras().getString("data"));
             Log.d("erroe", "" + jobjRide);
@@ -141,7 +141,7 @@ public class NotificationActivity extends AppCompatActivity {
                     BG.stop();
                     vibration.cancel();
                 }
-                acceptOrRejectRequest(mRideId, "1");
+                acceptOrRejectRequest(mRideId, "1",context);
 
             }
         });
@@ -152,7 +152,7 @@ public class NotificationActivity extends AppCompatActivity {
                     BG.stop();
                     vibration.cancel();
                 }
-                acceptOrRejectRequest(mRideId, "0");
+                acceptOrRejectRequest(mRideId, "0",context);
             }
         });
 
@@ -178,9 +178,9 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
 
-    public void acceptOrRejectRequest(String mRideId, String acceptOrreject) {
+    public void acceptOrRejectRequest(String mRideId, String acceptOrreject,Context context) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).acceptRequest(mRideId, acceptOrreject).enqueue(new Callback<AcceptRequest>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).acceptRequest(mRideId, acceptOrreject).enqueue(new Callback<AcceptRequest>() {
             @Override
             public void onResponse(Call<AcceptRequest> call, Response<AcceptRequest> response) {
 

@@ -131,7 +131,7 @@ public class ExploreFragment extends Fragment {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.groupNew(PrefUtils.getUserInfo().getmUserId());
+                return RideShareApi.groupNew(PrefUtils.getUserInfo().getmUserId(), getContext());
             } catch (Exception e) {
                 return null;
             }
@@ -266,8 +266,6 @@ public class ExploreFragment extends Fragment {
                 holder.txtJoin.setText("Join");
                 holder.txtJoin.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.btn_join));
                 holder.txtJoin.setTextColor(getActivity().getResources().getColor(R.color.white));
-            } else {
-
             }
 
             holder.txtJoin.setOnClickListener(new View.OnClickListener() {
@@ -287,6 +285,16 @@ public class ExploreFragment extends Fragment {
             });
 
             return vi;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return getCount();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
         }
 
         // Filter Class
@@ -334,7 +342,7 @@ public class ExploreFragment extends Fragment {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.joinGroup(PrefUtils.getUserInfo().getmUserId(), group_id, status);
+                return RideShareApi.joinGroup(PrefUtils.getUserInfo().getmUserId(), group_id, status, getContext());
             } catch (Exception e) {
                 return null;
             }

@@ -653,7 +653,7 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
     private void manageCar(String m_user_id, String m_car_make, String m_car_month, String m_car_year, String m_license_plate, String m_brand, String m_car_type, String m_seating_capacity, String m_car_model) {
         mProgressDialog.show();
 
-        ApiServiceModule.createService(RestApiInterface.class).manageCar(m_user_id, m_car_make, m_car_month, m_car_year, m_license_plate, m_brand, m_car_type, m_seating_capacity, m_car_model).enqueue(new Callback<ManageCarResponce>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).manageCar(m_user_id, m_car_make, m_car_month, m_car_year, m_license_plate, m_brand, m_car_type, m_seating_capacity, m_car_model).enqueue(new Callback<ManageCarResponce>() {
             @Override
             public void onResponse(Call<ManageCarResponce> call, Response<ManageCarResponce> response) {
                 if (response.body() != null || response.body().getResult().size() > 0) {

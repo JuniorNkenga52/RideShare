@@ -127,7 +127,7 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.mygroups(PrefUtils.getUserInfo().getmUserId());
+                return RideShareApi.mygroups(PrefUtils.getUserInfo().getmUserId(),context);
             } catch (Exception e) {
                 return null;
             }
@@ -327,7 +327,7 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.getUpdateUserGroup(PrefUtils.getUserInfo().getmUserId(), mSearchListGroup.get(poss).getId());
+                return RideShareApi.getUpdateUserGroup(PrefUtils.getUserInfo().getmUserId(), mSearchListGroup.get(poss).getId(),context);
             } catch (Exception e) {
                 return null;
             }

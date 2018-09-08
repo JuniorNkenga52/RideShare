@@ -90,7 +90,7 @@ public class SettingActivity extends AppCompatActivity {
                                     dialog.dismiss();
                                     PrefUtils.putBoolean("islogin", false);
                                     PrefUtils.putString("loginwith", "");
-                                    PrefUtils.putString("TokenID","");
+                                    //PrefUtils.putString("TokenID","");
                                     Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);

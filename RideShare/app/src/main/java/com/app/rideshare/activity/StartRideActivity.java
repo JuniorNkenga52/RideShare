@@ -82,6 +82,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     private final Handler mUpdaterHandler = new Handler();
 
     Activity activity;
+    Context context;
     LatLng currentlthg;
     AcceptRider mRider;
     LatLng pickuplocation;
@@ -192,6 +193,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         setContentView(R.layout.start_ride_layout);
 
         activity = this;
+        context=this;
         application = (RideShareApp) getApplicationContext();
 
         PrefUtils.initPreference(this);
@@ -560,7 +562,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 Log.i("Websocket", "Error " + e.getMessage());
             }
         };
-        //mWebSocketClient.connect();
         mWebSocketClient.connect();
 
 
@@ -569,7 +570,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
     private void startRide(String mId, final String mType, String userid) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).mStartRide(mId, mType, userid).enqueue(new Callback<StartRideResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).mStartRide(mId, mType, userid).enqueue(new Callback<StartRideResponse>() {
             @Override
             public void onResponse(Call<StartRideResponse> call, Response<StartRideResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -748,92 +749,4 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             Log.w(getString(R.string.app_name), "onServiceDisconnected");
         }
     };
-
-
-    private void initSocket() {
-        try {
-            final Socket socket = new Socket(ApiServiceModule.WEBSOCKET_ENDPOINT);
-            socket.on(Socket.EVENT_OPEN, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                      runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                if (mDriverLocation.distanceTo(mPreDriverLocation) >= 0.5f) {
-                                    mPreDriverLocation = mDriverLocation;
-                                    animateMarkerNew(DriverMarker, new LatLng(Latitude, Longitude));
-
-                                    JSONObject jMessage = new JSONObject();
-                                    jMessage.put("chat_message", "" + Latitude + "`" + Longitude);
-                                    jMessage.put("chat_user", "RideShare");
-                                    jMessage.put("sender_user", mRider.getRide_id());
-                                    jMessage.put("message_type", "chat-box-html");
-                                    jMessage.put("message_new", " ");
-                                    socket.send(jMessage.toString());
-                                    socket.close();
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                mPreDriverLocation = mDriverLocation;
-                            }
-
-                            mUpdaterHandler.postDelayed(this, updateinterval);
-                        }
-                    };
-                    /*socket.send("hi");
-                    socket.close();*/
-                }
-            });
-            socket.open();
-
-            socket.on(Socket.EVENT_MESSAGE, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    String data = (String) args[0];
-                    try {
-
-                        final JSONObject jobj = new JSONObject(data);
-                        if (mApp.getmUserType().equals("1")) {
-
-                            if (!jobj.getString("message_type").equals("chat-connection-ack")) {
-                                if (!jobj.getString("chat_message").equals("null") && jobj.getString("sender_user").equals(mRider.getRide_id())) {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                String updatedlocation[] = jobj.getString("chat_message").split("`");
-                                                double mlet = Double.parseDouble(updatedlocation[0]);
-                                                double mlong = Double.parseDouble(updatedlocation[1]);
-
-                                                mDriverLocation = new Location("");
-                                                mDriverLocation.setLatitude(mlet);
-                                                mDriverLocation.setLongitude(mlong);
-
-                                                animateMarkerNew(DriverMarker, new LatLng(mlet, mlong));
-
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    });
-
-                                }
-                            }
-                        }
-
-                    } catch (Exception e) {
-                        Log.d("error", e.toString());
-                    }
-                }
-            }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    Exception err = (Exception) args[0];
-                }
-            });
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
 }

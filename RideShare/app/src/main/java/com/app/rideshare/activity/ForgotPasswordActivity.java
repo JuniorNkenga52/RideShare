@@ -66,7 +66,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     private void forgotpassword(String email) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).forgotpassword(email).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).forgotpassword(email).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

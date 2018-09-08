@@ -1,5 +1,6 @@
 package com.app.rideshare.api;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.File;
@@ -15,7 +16,7 @@ public class RideShareApi {
     public static final String SERVER_URL = "https://www.myridewhiz.com/rideshare/api/";// NEW URL
     //https://www.myridewhiz.com/
 
-    public static String postApiCall(String uid, String type) {
+    public static String postApiCall(String uid, String type, Context context) {
         try {
             String URL = SERVER_URL + "auth/select_ride";
 
@@ -26,7 +27,7 @@ public class RideShareApi {
             params.put("u_long", "");
 
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }
@@ -45,7 +46,7 @@ public class RideShareApi {
         }
     }
 
-    public static String sendTextMessageNew(String mobile_number) {
+    public static String sendTextMessageNew(String mobile_number, Context context) {
         try {
             String URL = SERVER_URL + "user/sendTextMessageNew";
 
@@ -53,53 +54,53 @@ public class RideShareApi {
             params.put("mobile_number", mobile_number);
             params.put("type", "android");
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }
     }
 
-    public static String groupNew(String user_id) {
+    public static String groupNew(String user_id, Context context) {
         try {
             String URL = SERVER_URL + "group/groupNew";
 
             LinkedHashMap<String, String> params = new LinkedHashMap<>();
             params.put("user_id", user_id);
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }
     }
 
-    public static String getFirstLoginGroup(String user_id) {
+    public static String getFirstLoginGroup(String user_id, Context context) {
         try {
             String URL = SERVER_URL + "group/getFirstLoginGroup";
 
             LinkedHashMap<String, String> params = new LinkedHashMap<>();
             params.put("user_id", user_id);
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }
     }
 
-    public static String mygroups(String user_id) {
+    public static String mygroups(String user_id, Context context) {
         try {
             String URL = SERVER_URL + "user/mygroups";
 
             LinkedHashMap<String, String> params = new LinkedHashMap<>();
             params.put("user_id", user_id);
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }
     }
 
 
-    public static String mygroupsForLogin(String user_id,String adminID) {
+    /*public static String mygroupsForLogin(String user_id,String adminID) {
         try {
             String URL = SERVER_URL + "user/mygroupsForLogin";
 
@@ -111,22 +112,22 @@ public class RideShareApi {
         } catch (Exception e) {
             return null;
         }
-    }
+    }*/
 
-    public static String groupJoinRequestList(String user_id) {
+    public static String groupJoinRequestList(String user_id, Context context) {
         try {
             String URL = SERVER_URL + "joinGroup/groupJoinRequestList";
 
             LinkedHashMap<String, String> params = new LinkedHashMap<>();
             params.put("user_id", user_id);
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }
     }
 
-    public static String getGroupDetailFromId(String user_id, String group_id) {
+    public static String getGroupDetailFromId(String user_id, String group_id, Context context) {
         try {
             String URL = SERVER_URL + "group/getGroupDetails";
 
@@ -134,13 +135,13 @@ public class RideShareApi {
             params.put("user_id", user_id);
             params.put("group_id", group_id);
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }
     }
 
-    public static String getUpdateUserGroup(String user_id, String group_id) {
+    public static String getUpdateUserGroup(String user_id, String group_id, Context context) {
         try {
             String URL = SERVER_URL + "user/updateUserGroup";
 
@@ -148,13 +149,13 @@ public class RideShareApi {
             params.put("user_id", user_id);
             params.put("group_id", group_id);
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }
     }
 
-    public static String groupusers(String user_id, String group_id) {
+    public static String groupusers(String user_id, String group_id, Context context) {
         try {
             String URL = SERVER_URL + "user/groupusers";
 
@@ -162,25 +163,25 @@ public class RideShareApi {
             params.put("user_id", user_id);
             params.put("group_id", group_id);
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }
     }
 
-    public static String category() {
+    public static String category(Context context) {
         try {
             String URL = SERVER_URL + "group/category";
 
             LinkedHashMap<String, String> params = new LinkedHashMap<>();
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }
     }
 
-    public static String verifyOTP(String OTP, String UserId, String mobile_token) {
+    public static String verifyOTP(String OTP, String UserId, String mobile_token, Context context) {
         try {
             String URL = SERVER_URL + "user/verifyMobileNew";
 
@@ -189,13 +190,13 @@ public class RideShareApi {
             params.put("token_number", OTP);
             params.put("mobile_token", mobile_token);
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }
     }
 
-    public static String createGroup(String UserId, String category_id, String group_name, String group_description) {
+    public static String createGroup(String UserId, String category_id, String group_name, String group_description, Context context) {
         try {
             String URL = SERVER_URL + "group/createNew";
 
@@ -205,13 +206,13 @@ public class RideShareApi {
             params.put("group_name", group_name);
             params.put("group_description", group_description);
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }
     }
 
-    public static String editGroup(String UserId, String group_id, String category_id, String group_name, String group_description) {
+    public static String editGroup(String UserId, String group_id, String category_id, String group_name, String group_description, Context context) {
         try {
             String URL = SERVER_URL + "group/editGroup";
 
@@ -222,7 +223,7 @@ public class RideShareApi {
             params.put("group_name", group_name);
             params.put("group_description", group_description);
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }
@@ -260,7 +261,7 @@ public class RideShareApi {
         }
     }
 
-    public static String joinGroup(String user_id, String group_id, String status) {
+    public static String joinGroup(String user_id, String group_id, String status, Context context) {
 
         try {
 
@@ -271,11 +272,11 @@ public class RideShareApi {
             params.put("group_id", group_id);
             params.put("status", status);
 
-            Log.d("User id",user_id);
-            Log.d("Group Id",group_id);
-            Log.d("Status",status);
+            Log.d("User id", user_id);
+            Log.d("Group Id", group_id);
+            Log.d("Status", status);
 
-            return RideShareApiCall.postWebserviceCall(URL, params);
+            return RideShareApiCall.postWebserviceCall(URL, params, context);
         } catch (Exception e) {
             return null;
         }

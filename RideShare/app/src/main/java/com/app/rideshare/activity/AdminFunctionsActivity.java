@@ -88,7 +88,7 @@ public class AdminFunctionsActivity extends AppCompatActivity {
 
     private void my_group_data(final String user_id) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).mygroups(user_id).enqueue(new Callback<GroupListResponce>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).mygroups(user_id).enqueue(new Callback<GroupListResponce>() {
             @Override
             public void onResponse(Call<GroupListResponce> call, Response<GroupListResponce> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -121,7 +121,7 @@ public class AdminFunctionsActivity extends AppCompatActivity {
     private void group_data(String group_id, String user_id) {
         mProgressDialog.show();
         PrefUtils.listAdminData = new ArrayList<>();
-        ApiServiceModule.createService(RestApiInterface.class).groupusers(group_id, user_id).enqueue(new Callback<MyGroupsResponce>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).groupusers(group_id, user_id).enqueue(new Callback<MyGroupsResponce>() {
             @Override
             public void onResponse(Call<MyGroupsResponce> call, Response<MyGroupsResponce> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().getResult().size() > 0) {

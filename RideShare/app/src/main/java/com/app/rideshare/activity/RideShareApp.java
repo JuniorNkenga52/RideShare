@@ -4,25 +4,24 @@ import android.app.Application;
 import android.support.multidex.MultiDex;
 
 import com.app.rideshare.utils.PrefUtils;
-import com.facebook.FacebookSdk;
 import com.crashlytics.android.Crashlytics;
+
 import io.fabric.sdk.android.Fabric;
 
-public class RideShareApp extends Application
-{
-    private String mUserType="";
+public class RideShareApp extends Application {
+    public static String mUserType = "";
     public static int mHomeTabPos = 0;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        FacebookSdk.sdkInitialize(getApplicationContext());
+        //FacebookSdk.sdkInitialize(getApplicationContext());
         MultiDex.install(this);
         PrefUtils.initPreference(this);
     }
 
-    public String getmUserType() {
+    public static String getmUserType() {
         return mUserType;
     }
 

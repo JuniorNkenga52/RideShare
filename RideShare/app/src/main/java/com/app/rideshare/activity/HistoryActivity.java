@@ -1,5 +1,6 @@
 package com.app.rideshare.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -33,13 +34,14 @@ public class HistoryActivity extends AppCompatActivity {
     private ListView mHistoryLv;
     private HistoryAdapter mHistoryAdapter;
     private TextView mNoHistoryTv;
-
+    Context context;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_history);
 
+        context=this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("History");
@@ -93,7 +95,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     private void getHistory(final String mId) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).getHistory(mId).enqueue(new Callback<HistoryResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).getHistory(mId).enqueue(new Callback<HistoryResponse>() {
             @Override
             public void onResponse(Call<HistoryResponse> call, Response<HistoryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

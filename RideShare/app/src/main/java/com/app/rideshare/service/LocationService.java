@@ -60,7 +60,7 @@ public class LocationService extends Service {
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
         try {
-            new LongOperation().execute(bean.getmUserId(), "0").get();
+            new LongOperation(getApplicationContext()).execute(bean.getmUserId(), "0").get();
         } catch (Exception ignore) {
         }
     }

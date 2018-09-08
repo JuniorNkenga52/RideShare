@@ -1,7 +1,9 @@
 package com.app.rideshare.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.ConditionVariable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -32,7 +34,7 @@ public class MobileNumberActivity extends AppCompatActivity {
 
     //private Typeface mRobotoRegular;
     CustomProgressDialog mProgressDialog;
-
+    Context context;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class MobileNumberActivity extends AppCompatActivity {
         setContentView(R.layout.mobile_number_activity);
         mProgressDialog = new CustomProgressDialog(this);
 
+        context=this;
         PrefUtils.initPreference(this);
 
         //mRobotoRegular = TypefaceUtils.getOpenSansRegular(this);
@@ -47,9 +50,6 @@ public class MobileNumberActivity extends AppCompatActivity {
         mMobileEt = (EditText) findViewById(R.id.mobile_et);
         mInfoTv = (TextView) findViewById(R.id.title_number_tv);
 
-        /*mTitleTv.setTypeface(mRobotoRegular);
-        mMobileEt.setTypeface(mRobotoRegular);
-        mInfoTv.setTypeface(mRobotoRegular);*/
 
         mSendOTPTv = (TextView) findViewById(R.id.send_code_tv);
         //mSendOTPTv.setTypeface(mRobotoRegular);
@@ -68,7 +68,7 @@ public class MobileNumberActivity extends AppCompatActivity {
 
     private void sendOTP(final String mobileNuber, String nUserId) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).sendOTP(mobileNuber, nUserId).enqueue(new Callback<SendOTPResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).sendOTP(mobileNuber, nUserId).enqueue(new Callback<SendOTPResponse>() {
             @Override
             public void onResponse(Call<SendOTPResponse> call, Response<SendOTPResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

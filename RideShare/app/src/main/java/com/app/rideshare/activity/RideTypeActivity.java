@@ -275,8 +275,10 @@ public class RideTypeActivity extends AppCompatActivity {
 
         new TedPermission(this)
                 .setPermissionListener(permissionlistener)
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                .setPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_CONTACTS)
+                .setDeniedMessage("If you reject permission,you can not use this service\n\n" +
+                        "Please turn on permissions at [Setting] > [Permission]")
+                .setPermissions(Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_CONTACTS)
                 .check();
 
 
@@ -315,7 +317,7 @@ public class RideTypeActivity extends AppCompatActivity {
     private void selectRide(String mId, String mType, String latitude, String longitude) {
 
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).selectRide(mId, mType, latitude, longitude).enqueue(new Callback<RideSelect>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).selectRide(mId, mType, latitude, longitude).enqueue(new Callback<RideSelect>() {
             @Override
             public void onResponse(Call<RideSelect> call, Response<RideSelect> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -348,7 +350,7 @@ public class RideTypeActivity extends AppCompatActivity {
         request.setUser_id(mUserBean.getmUserId());
         request.setContact(AppUtils.readContacts(RideTypeActivity.this));
 
-        ApiServiceModule.createService(RestApiInterface.class).syncContact(request).enqueue(new Callback<ContactResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).syncContact(request).enqueue(new Callback<ContactResponse>() {
             @Override
             public void onResponse(Call<ContactResponse> call, Response<ContactResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -378,7 +380,7 @@ public class RideTypeActivity extends AppCompatActivity {
 
     private void startRide(String mId, final String mType, String userid) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).mStartRide(mId, mType, userid).enqueue(new Callback<StartRideResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).mStartRide(mId, mType, userid).enqueue(new Callback<StartRideResponse>() {
             @Override
             public void onResponse(Call<StartRideResponse> call, Response<StartRideResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

@@ -55,6 +55,7 @@ public class CreateGroupActivity extends AppCompatActivity {
     private boolean isEditGroupDetail;
     GroupList groupDetailInfo;
     Activity activity;
+    Context context;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +71,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         activity=this;
+        context=this;
         if (isEditGroupDetail) {
             getSupportActionBar().setTitle("Edit Group");
             groupDetailInfo = (GroupList) intent.getSerializableExtra(Constants.intentKey.groupDetail);
@@ -201,7 +203,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.category();
+                return RideShareApi.category(context);
             } catch (Exception e) {
                 return null;
             }
@@ -361,11 +363,11 @@ public class CreateGroupActivity extends AppCompatActivity {
                     return RideShareApi.editGroup(mUserBean.getmUserId(),
                             groupDetailInfo.getId(),
                             categoryId,
-                            groupName, groupDescription);
+                            groupName, groupDescription,context);
                 } else {
                     return RideShareApi.createGroup(mUserBean.getmUserId(),
                             categoryId,
-                            groupName, groupDescription);
+                            groupName, groupDescription,context);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -386,6 +388,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                     JSONObject jObj = new JSONObject(result);
 
                     if (jObj.getString("status").equals("success")) {
+
                         MessageUtils.showSuccessMessage(getApplicationContext(), "Group Created.");
 //                        RideShareApp.mHomeTabPos = 0;
 //                        Intent i = new Intent(CreateGroupActivity.this, HomeNewActivity.class);
@@ -399,8 +402,10 @@ public class CreateGroupActivity extends AppCompatActivity {
                             finish();
                         } else {
                             JSONObject resultJsonObject = jObj.optJSONObject("result");
-                            if (resultJsonObject != null)
+                            if (resultJsonObject != null){
                                 CommonDialog.shareInviteLinkDialog(CreateGroupActivity.this, resultJsonObject.optString("share_link"),0);
+                                PrefUtils.putString("isBlank", "false");
+                            }
                         }
                     } else {
                         MessageUtils.showFailureMessage(getApplicationContext(), "The Group Name field must contain a unique value.");

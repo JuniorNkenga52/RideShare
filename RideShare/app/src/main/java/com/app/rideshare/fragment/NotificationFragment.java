@@ -1,12 +1,17 @@
 package com.app.rideshare.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,6 +79,40 @@ public class NotificationFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(myNotificationReceiver, new IntentFilter("new_user_req"));
+
+    }
+
+
+    private BroadcastReceiver myNotificationReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            try {
+                if (AppUtils.isInternetAvailable(getActivity())) {
+                    new AsyncNotification().execute();
+                } else {
+                    swipeRefreshRequests.setRefreshing(false);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    };
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(myNotificationReceiver);
+    }
+
     @SuppressLint("StaticFieldLeak")
     public class AsyncNotification extends AsyncTask<Object, Integer, Object> {
 
@@ -93,7 +132,7 @@ public class NotificationFragment extends Fragment {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.groupJoinRequestList(PrefUtils.getUserInfo().getmUserId());
+                return RideShareApi.groupJoinRequestList(PrefUtils.getUserInfo().getmUserId(),getContext());
             } catch (Exception e) {
                 return null;
             }
@@ -283,7 +322,7 @@ public class NotificationFragment extends Fragment {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.joinGroup(user_id, group_id, status);
+                return RideShareApi.joinGroup(user_id, group_id, status,getContext());
             } catch (Exception e) {
                 return null;
             }

@@ -75,6 +75,7 @@ public class GCMRegistrationIntentService extends IntentService {
             registrationComplete.putExtra("token", token);
         } catch (Exception e) {
             //If any error occurred
+            e.printStackTrace();
             Log.w("GCMRegIntentService", "Registration error");
             registrationComplete = new Intent(REGISTRATION_ERROR);
         }

@@ -1,12 +1,16 @@
 package com.app.rideshare.activity;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -45,56 +49,7 @@ public class GroupSelectionFragment extends Fragment {
     TextView txtHeaderName;
     SwipeRefreshLayout swipeRefreshRequests;
 
-    /*@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_explore);
 
-        PrefUtils.initPreference(this);
-        PrefUtils.putString("loginwith", "normal");
-        context = this;
-
-        txtSearchGroup = findViewById(R.id.txtSearchGroup);
-        mLvGroup = findViewById(R.id.mLvGroup);
-
-        txtHeaderName = findViewById(R.id.txtHeaderName);
-        txtHeaderName.setText("Select Group");
-
-        swipeRefreshRequests = findViewById(R.id.swipeRefreshRequests);
-
-        new AsyncAllGroup().execute();
-
-        txtSearchGroup.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                String text = txtSearchGroup.getText().toString().toLowerCase(Locale.getDefault());
-                groupAdapter.filter(text.trim());
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
-            }
-        });
-
-        swipeRefreshRequests.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (AppUtils.isInternetAvailable(context)) {
-                    new AsyncAllGroup().execute();
-                } else {
-                    swipeRefreshRequests.setRefreshing(false);
-                }
-            }
-        });
-        swipeRefreshRequests.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
-    }*/
 
     public static GroupSelectionFragment newInstance() {
         GroupSelectionFragment fragment = new GroupSelectionFragment();
@@ -156,6 +111,36 @@ public class GroupSelectionFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(myNotificationReceiver, new IntentFilter("new_user"));
+    }
+
+    private BroadcastReceiver myNotificationReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            try {
+                if (AppUtils.isInternetAvailable(context)) {
+                    new AsyncAllGroup().execute();
+                } else {
+                    swipeRefreshRequests.setRefreshing(false);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    };
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(myNotificationReceiver);
+    }
+
     @SuppressLint("StaticFieldLeak")
     public class AsyncAllGroup extends AsyncTask<Object, Integer, Object> {
 
@@ -175,7 +160,7 @@ public class GroupSelectionFragment extends Fragment {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.getFirstLoginGroup(PrefUtils.getUserInfo().getmUserId());
+                return RideShareApi.getFirstLoginGroup(PrefUtils.getUserInfo().getmUserId(),context);
             } catch (Exception e) {
                 return null;
             }
@@ -299,8 +284,14 @@ public class GroupSelectionFragment extends Fragment {
             3 = Decline
             4 = Confirm*/
 
-            if (bean.getStatus().equalsIgnoreCase("0") || bean.getStatus().equalsIgnoreCase("3"))
+            if (bean.getStatus().equalsIgnoreCase("0") || bean.getStatus().equalsIgnoreCase("3")) {
                 holder.txtJoin.setVisibility(View.VISIBLE);
+            }else if(bean.getStatus().equalsIgnoreCase("1")){
+                holder.txtJoin.setVisibility(View.VISIBLE);
+                holder.txtJoin.setText("Requested");
+                holder.txtJoin.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.btn_requested));
+                holder.txtJoin.setTextColor(getActivity().getResources().getColor(R.color.white));
+            }
             else
                 holder.txtJoin.setVisibility(View.GONE);
 
@@ -309,13 +300,26 @@ public class GroupSelectionFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     int poss = (int) v.getTag();
-                    new AsyncJoinGroup(poss).execute();
+                    holder.txtJoin.setText("Requested");
+                    holder.txtJoin.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.btn_requested));
+                    holder.txtJoin.setTextColor(getActivity().getResources().getColor(R.color.white));
+                    if(!bean.getStatus().equalsIgnoreCase("1")){
+                        new AsyncJoinGroup(poss).execute();
+                    }
                 }
             });
 
             return vi;
         }
+        @Override
+        public int getViewTypeCount() {
+            return getCount();
+        }
+        @Override
+        public int getItemViewType(int position) {
 
+            return position;
+        }
         // Filter Class
         public void filter(String charText) {
             try {
@@ -358,7 +362,7 @@ public class GroupSelectionFragment extends Fragment {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.joinGroup(PrefUtils.getUserInfo().getmUserId(), mSearchListGroup.get(poss).getId(), "1");
+                return RideShareApi.joinGroup(PrefUtils.getUserInfo().getmUserId(), mSearchListGroup.get(poss).getId(), "1",getContext());
             } catch (Exception e) {
                 return null;
             }

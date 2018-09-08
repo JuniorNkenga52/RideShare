@@ -46,7 +46,7 @@ public class DeepLinkActivity extends AppCompatActivity {
         @Override
         public String doInBackground(String... params) {
             try {
-                return RideShareApi.getGroupDetailFromId(PrefUtils.getUserInfo().getmUserId(), params[0]);
+                return RideShareApi.getGroupDetailFromId(PrefUtils.getUserInfo().getmUserId(), params[0],context);
             } catch (Exception e) {
                 return null;
             }

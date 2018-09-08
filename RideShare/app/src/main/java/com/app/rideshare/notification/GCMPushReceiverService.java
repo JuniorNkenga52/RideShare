@@ -107,7 +107,7 @@ public class GCMPushReceiverService extends GcmListenerService {
 
         }
         if (type.equals("6")) {
-            if(!message.equals("Group Request Decline")){
+            if(!message.equals("Request Declined")){
                 PrefUtils.putString("isBlank", "false");
             }
             intent = new Intent(this, MyGroupSelectionActivity.class);

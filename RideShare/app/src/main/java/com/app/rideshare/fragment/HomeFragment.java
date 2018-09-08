@@ -83,13 +83,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBackPressedListener {
 
     private static final int REQUEST_LOCATION = 11;
-    RideShareApp application;
+    //RideShareApp application;
     ArrayList<Rider> mlist = new ArrayList<>();
     // ArrayList<Marker> mlistMarker;
     //Typeface mRobotoReguler;
@@ -111,7 +109,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     private LinearLayout linearLayout;
     private ArrayList<Marker> mlistMarker;
     private String duration;
-
+    Context context;
     private okhttp3.Callback updateRouteCallback = new okhttp3.Callback() {
         @Override
         public void onFailure(okhttp3.Call call, IOException e) {
@@ -141,13 +139,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.fragment_home, null);
 
+        context = getContext();
         mProgressDialog = new CustomProgressDialog(getActivity());
         PrefUtils.initPreference(getActivity());
         mUserBean = PrefUtils.getUserInfo();
         HomeActivity.setOnBackPressedListener(this);
 
-        application = (RideShareApp) getApplicationContext();
-        mUserType = application.getmUserType();
+        //application = (RideShareApp) getApplicationContext();
+        mUserType = RideShareApp.getmUserType();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.rideCar_mapView);
@@ -295,9 +294,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         if (selectedRide != null) {
                             if (selectedRide.getU_ride_type().equals("2")) {
                                 getRiderInfoDialog(selectedRide);
-                            }/*else {
+                            } else {
                                 getRiderInfoDialog(selectedRide);
-                            }*/
+                            }
                         }
                     }
 
@@ -412,7 +411,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
     private void selectRide(String mId, String mType, String latitude, String longitude, String mRideType) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).getUser(mId, mType, latitude, longitude, mRideType).enqueue(new Callback<RideSelect>() {
+        ApiServiceModule.createService(RestApiInterface.class, context).getUser(mId, mType, latitude, longitude, mRideType).enqueue(new Callback<RideSelect>() {
             @Override
             public void onResponse(Call<RideSelect> call, Response<RideSelect> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -458,8 +457,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
         dialog.setContentView(R.layout.get_ride_info_dialog);
-
-
         CardView mllCustomDialogError = (CardView) dialog.findViewById(R.id.card_view_pin);
 
         mllCustomDialogError.setLayoutParams(new LinearLayout.LayoutParams(
@@ -474,20 +471,47 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         TextView txt_maxPerson = dialog.findViewById(R.id.txt_maxPerson);
         TextView mGetRideTv = (TextView) dialog.findViewById(R.id.get_ride_tv);
         TextView mCancelTv = (TextView) dialog.findViewById(R.id.cancel_ride_tv);
+        TextView cancel_driver_tv = (TextView) dialog.findViewById(R.id.cancel_driver_tv);
+        ImageView userImage=dialog.findViewById(R.id.userImage);
+        //cancel_driver_tv
+        LinearLayout rider_layout = dialog.findViewById(R.id.rider_layout);
+        LinearLayout driver_layout = dialog.findViewById(R.id.driver_layout);
 
         try {
             mNameTv.setText(rider.getmFirstName());
             mAddressTv.setText(rider.getmAddress());
             if (mUserType.equals("2") || !rider.getmType().equals("2")) {
-                mOther_info.setVisibility(View.GONE);
+
                 mDetails_tv.setText("Rider details");
                 mGetRideTv.setText("Offer Ride");
+                mVahicalTv.setText(rider.getmLastName());
+                mOther_info.setVisibility(View.GONE);
+                driver_layout.setVisibility(View.VISIBLE);
+                rider_layout.setVisibility(View.GONE);
+                try {
+                    Glide.with(this).load(rider.getmProfileImage())
+                            .error(R.drawable.icon_test)
+                            .into(userImage);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                // mVahicalTv
+            } else {
+                driver_layout.setVisibility(View.GONE);
+                rider_layout.setVisibility(View.VISIBLE);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         /*mGetRideTv.setTypeface(mRobotoReguler);
         mCancelTv.setTypeface(mRobotoReguler);*/
+
+        driver_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
 
         mCancelTv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -509,7 +533,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     public void SendRideRequest(String userid, String fromuserid, final Rider rider) {
         mProgressDialog.show();
 
-        ApiServiceModule.createService(RestApiInterface.class).sendRequest(userid, fromuserid, "" + currentlthg.latitude, "" + currentlthg.longitude, "" + destinationLatLang.latitude, "" + destinationLatLang.longitude, mUserType, "", "", "").enqueue(new Callback<SendResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class, context).sendRequest(userid, fromuserid, "" + currentlthg.latitude, "" + currentlthg.longitude, "" + destinationLatLang.latitude, "" + destinationLatLang.longitude, mUserType, "", "", "").enqueue(new Callback<SendResponse>() {
             @Override
             public void onResponse(Call<SendResponse> call, Response<SendResponse> response) {
 

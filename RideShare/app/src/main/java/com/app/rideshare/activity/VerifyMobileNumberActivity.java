@@ -1,8 +1,11 @@
 package com.app.rideshare.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.ConditionVariable;
 import android.support.annotation.Nullable;
+import android.support.constraint.solver.widgets.ConstraintWidget;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -35,7 +38,7 @@ public class VerifyMobileNumberActivity extends AppCompatActivity {
     private TextView mTitleTv;
     //private Typeface mRobotoMeduim;
     private TextView mChangeMobile;
-
+    Context context;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +46,7 @@ public class VerifyMobileNumberActivity extends AppCompatActivity {
 
         mProgressDialog = new CustomProgressDialog(this);
 
-
+        context=this;
         PrefUtils.initPreference(this);
         mBean = PrefUtils.getUserInfo();
 
@@ -112,7 +115,7 @@ public class VerifyMobileNumberActivity extends AppCompatActivity {
 
     private void sendOTP(final String mobileNuber, String nUserId) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).sendOTP(mobileNuber, nUserId).enqueue(new Callback<SendOTPResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).sendOTP(mobileNuber, nUserId).enqueue(new Callback<SendOTPResponse>() {
             @Override
             public void onResponse(Call<SendOTPResponse> call, Response<SendOTPResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -134,7 +137,7 @@ public class VerifyMobileNumberActivity extends AppCompatActivity {
 
     private void VerifyOTP(String otp, String nUserId) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).verifyOTP(nUserId, otp).enqueue(new Callback<SendOTPResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).verifyOTP(nUserId, otp).enqueue(new Callback<SendOTPResponse>() {
             @Override
             public void onResponse(Call<SendOTPResponse> call, Response<SendOTPResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

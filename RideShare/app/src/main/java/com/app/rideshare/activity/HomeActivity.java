@@ -41,7 +41,6 @@ import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.utils.TypefaceUtils;
 import com.app.rideshare.widget.CustomTypefaceSpan;
-import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -345,11 +344,11 @@ public class HomeActivity extends AppCompatActivity
 
     private void selectRide(String mId, String mType, String latitude, String longitude) {
 
-        ApiServiceModule.createService(RestApiInterface.class).selectRide(mId, mType, latitude, longitude).enqueue(new Callback<RideSelect>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).selectRide(mId, mType, latitude, longitude).enqueue(new Callback<RideSelect>() {
             @Override
             public void onResponse(Call<RideSelect> call, Response<RideSelect> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    LoginManager.getInstance().logOut();
+                    //LoginManager.getInstance().logOut();
                     Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                             new ResultCallback<Status>() {
                                 @Override

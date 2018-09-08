@@ -37,14 +37,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 public class MobileNumberFragment extends Fragment {
 
     private ImageView imgBack;
     private TextView txtTermsOfService;
     private TextView txtNext;
-    private TextView txt_info;
 
     public MaskedEditText txtPhoneNumber;
 
@@ -62,7 +59,6 @@ public class MobileNumberFragment extends Fragment {
 
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         imgBack = (ImageView) rootView.findViewById(R.id.imgBack);
-        txt_info = rootView.findViewById(R.id.txt_info);
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,7 +113,9 @@ public class MobileNumberFragment extends Fragment {
                         MessageUtils.showFailureMessage(getActivity(), "You must agree with the Terms and Conditions");
                     } else {
 
-                        String numberMo = "+91"+ result;
+                        String numberMo = "+91" + result;
+                        //String numberMo = "+1"+ result;
+                        //String numberMo = "+" + AppUtils.getCountryTelephoneCode(getApplicationContext()) + result;
                         //String numberMo = "+91" + result;
                         //result = "+919265094032";-nikunj
                         //result="+917359371716";
@@ -141,23 +139,10 @@ public class MobileNumberFragment extends Fragment {
 
         new TedPermission(getActivity())
                 .setPermissionListener(permissionlistener)
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                .setDeniedMessage("If you reject permission,you can not use this service" +
+                        "\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS)
                 .check();
-        /*mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
-                    token = intent.getStringExtra("token");
-                    PrefUtils.putString("tokenID",token);
-                    Log.d("token", token);
-                } else if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
-                } else {
-                }
-            }
-        };*/
-
-
         return rootView;
     }
 
@@ -215,7 +200,7 @@ public class MobileNumberFragment extends Fragment {
         public Object doInBackground(Object... params) {
             try {
                 //return RideShareApi.sendTextMessageNew(mobileNumber);
-                return RideShareApi.sendTextMessageNew(mobileNumber);
+                return RideShareApi.sendTextMessageNew(mobileNumber,getContext());
             } catch (Exception e) {
                 return null;
             }
@@ -247,8 +232,8 @@ public class MobileNumberFragment extends Fragment {
 
     private String getPhone() {
         String phno = "";
-        TelephonyManager phoneMgr = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), wantPermission) != PackageManager.PERMISSION_GRANTED) {
+        TelephonyManager phoneMgr = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(getActivity(), wantPermission) != PackageManager.PERMISSION_GRANTED) {
             return "";
         }
         if (phoneMgr.getLine1Number() != null) {
@@ -265,7 +250,7 @@ public class MobileNumberFragment extends Fragment {
             } else if (phno.length() == 12) {
                 phno = phoneMgr.getLine1Number().substring(2
                         , 12);
-            }else if (phno.length() == 13) {
+            } else if (phno.length() == 13) {
                 phno = phoneMgr.getLine1Number().substring(3, 13);
             } else {
                 phno = phoneMgr.getLine1Number();
@@ -279,7 +264,7 @@ public class MobileNumberFragment extends Fragment {
 
     private void requestPermission(String permission) {
         if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), permission)) {
-            Toast.makeText(getApplicationContext(), "Phone state permission allows us to get phone number. Please allow it for additional functionality.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Phone state permission allows us to get phone number. Please allow it for additional functionality.", Toast.LENGTH_LONG).show();
         }
         ActivityCompat.requestPermissions(getActivity(), new String[]{permission}, PERMISSION_REQUEST_CODE);
     }
@@ -299,7 +284,7 @@ public class MobileNumberFragment extends Fragment {
 
     private boolean checkPermission(String permission) {
         if (Build.VERSION.SDK_INT >= 23) {
-            int result = ContextCompat.checkSelfPermission(getApplicationContext(), permission);
+            int result = ContextCompat.checkSelfPermission(getActivity(), permission);
             if (result == PackageManager.PERMISSION_GRANTED) {
                 return true;
             } else {
@@ -310,18 +295,18 @@ public class MobileNumberFragment extends Fragment {
         }
     }
 
-    public String GetCountryZipCode(){
-        String CountryID="";
-        String CountryZipCode="";
+    public String GetCountryZipCode() {
+        String CountryID = "";
+        String CountryZipCode = "";
 
         TelephonyManager manager = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
         //getNetworkCountryIso
-        CountryID= manager.getSimCountryIso().toUpperCase();
-        String[] rl=getContext().getResources().getStringArray(R.array.CountryCodes);
-        for(int i=0;i<rl.length;i++){
-            String[] g=rl[i].split(",");
-            if(g[1].trim().equals(CountryID.trim())){
-                CountryZipCode=g[0];
+        CountryID = manager.getSimCountryIso().toUpperCase();
+        String[] rl = getContext().getResources().getStringArray(R.array.CountryCodes);
+        for (int i = 0; i < rl.length; i++) {
+            String[] g = rl[i].split(",");
+            if (g[1].trim().equals(CountryID.trim())) {
+                CountryZipCode = g[0];
                 break;
             }
         }
@@ -334,15 +319,13 @@ public class MobileNumberFragment extends Fragment {
             final String simCountry = tm.getSimCountryIso();
             if (simCountry != null && simCountry.length() == 2) { // SIM country code is available
                 return simCountry.toLowerCase(Locale.US);
-            }
-            else if (tm.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA) { // device is not 3G (would be unreliable)
+            } else if (tm.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA) { // device is not 3G (would be unreliable)
                 String networkCountry = tm.getNetworkCountryIso();
                 if (networkCountry != null && networkCountry.length() == 2) { // network country code is available
                     return networkCountry.toLowerCase(Locale.US);
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

@@ -152,7 +152,7 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
 
     private void rateride(String driver_id, String rider_id, String ride_id, String ride_rate, String ride_review) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).rateride(driver_id, rider_id, ride_id, ride_rate, ride_review).enqueue(new Callback<RateRideResponce>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).rateride(driver_id, rider_id, ride_id, ride_rate, ride_review).enqueue(new Callback<RateRideResponce>() {
             @Override
             public void onResponse(Call<RateRideResponce> call, Response<RateRideResponce> response) {
                 if (response.body() != null || response.body().getResult().size() > 0) {

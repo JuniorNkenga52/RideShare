@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,7 +55,7 @@ public class OTPFragment extends Fragment {
     //String token;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_otp, container, false);
 
         context = getActivity();
@@ -80,7 +81,9 @@ public class OTPFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (AppUtils.isInternetAvailable(getActivity())) {
-                    sendOTP(SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
+                    sendOTP("+" + AppUtils.getCountryTelephoneCode(context) + SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
+                    //sendOTP("+1" +SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
+                    //sendOTP("+91" +SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
                 } else {
                     MessageUtils.showNoInternetAvailable(getActivity());
                 }
@@ -106,7 +109,6 @@ public class OTPFragment extends Fragment {
                         MessageUtils.showNoInternetAvailable(getActivity());
                     }
                 }
-
                 //SignUpActivity.mViewPager.setCurrentItem(2);
 
             }
@@ -144,8 +146,6 @@ public class OTPFragment extends Fragment {
         return rootView;
     }
 
-
-
     /* @Override
     protected void onResume() {
         super.onResume();
@@ -168,6 +168,24 @@ public class OTPFragment extends Fragment {
         Log.w("MainActivity", "onPause");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
     }*/
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        smsVerifyCatcher.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Called",">>>>>>>");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        smsVerifyCatcher.onStop();
+    }
 
     public static void updateTest() {
         String number = "(" + SignUpActivity.PhoneNumber.substring(0, 3) + ") " + SignUpActivity.PhoneNumber.substring(3, 6) + "-" + SignUpActivity.PhoneNumber.substring(6, 10);
@@ -200,7 +218,7 @@ public class OTPFragment extends Fragment {
         public Object doInBackground(Object... params) {
             try {
                 //return RideShareApi.verifyOTP(OTP, SignUpActivity.mUserId, SignUpActivity.token);
-                return RideShareApi.verifyOTP(OTP, SignUpActivity.mUserId, PrefUtils.getString("TokenID"));
+                return RideShareApi.verifyOTP(OTP, SignUpActivity.mUserId, PrefUtils.getString("TokenID"),getContext());
             } catch (Exception e) {
                 return null;
             }
@@ -263,7 +281,7 @@ public class OTPFragment extends Fragment {
                         smsVerifyCatcher.onStop();
 
 
-                        if(beanUser.getM_is_assigned_group().equals("1")){
+                        if (beanUser.getM_is_assigned_group().equals("1")) {
 
                             PrefUtils.putString("isBlank", "false");
                             Intent i = new Intent(context, MyGroupSelectionActivity.class);
@@ -273,7 +291,7 @@ public class OTPFragment extends Fragment {
                             startActivity(i);
                             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             getActivity().finish();*/
-                        }else {
+                        } else {
                             /*Intent i = new Intent(getActivity(), GroupSelectionFragment.class);
                             startActivity(i);
                             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -318,7 +336,7 @@ public class OTPFragment extends Fragment {
     private void sendOTP(final String mobileNuber, String nUserId) {
         final CustomProgressDialog mProgressDialog = new CustomProgressDialog(getActivity());
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).sendOTP(mobileNuber, nUserId).enqueue(new Callback<SendOTPResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).sendOTP(mobileNuber, nUserId).enqueue(new Callback<SendOTPResponse>() {
             @Override
             public void onResponse(Call<SendOTPResponse> call, Response<SendOTPResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -339,4 +357,9 @@ public class OTPFragment extends Fragment {
     }
 
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        smsVerifyCatcher.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }

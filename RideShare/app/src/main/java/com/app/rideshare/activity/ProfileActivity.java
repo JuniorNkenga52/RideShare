@@ -1,6 +1,7 @@
 package com.app.rideshare.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -70,6 +71,7 @@ public class ProfileActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_CHOOSE = 101;
     CustomProgressDialog mProgressDialog;
     private int ch_val = 0;
+    Context context;
     //Button mprivileges;
 
     @Override
@@ -78,6 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         PrefUtils.initPreference(this);
+        context=this;
         mUserBean = PrefUtils.getUserInfo();
         mProgressDialog = new CustomProgressDialog(this);
 
@@ -290,7 +293,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                 new TedPermission(ProfileActivity.this)
                         .setPermissionListener(permissionlistener)
-                        .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                        .setDeniedMessage("If you reject permission,you can not use this service\n\n" +
+                                "Please turn on permissions at [Setting] > [Permission]")
                         .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .check();
 
@@ -352,7 +356,7 @@ public class ProfileActivity extends AppCompatActivity {
             body = MultipartBody.Part.createFormData("profile_image", images.get(0).getName(), requestFile);
         }
 
-        ApiServiceModule.createService(RestApiInterface.class).updateProfile(mUserId, mfirstname, mlatname, mMobile, body, mEmail, mVh_Model, mVh_Type, mMax_Passengers, mReq_driver, mGroupid).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).updateProfile(mUserId, mfirstname, mlatname, mMobile, body, mEmail, mVh_Model, mVh_Type, mMax_Passengers, mReq_driver, mGroupid).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 mProgressDialog.cancel();

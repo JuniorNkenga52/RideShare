@@ -37,7 +37,6 @@ import com.tangxiaolv.telegramgallery.GalleryActivity;
 
 import java.util.ArrayList;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class SignUpActivity extends AppCompatActivity {
@@ -158,9 +157,16 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             /** Show a Fragment based on the position of the current screen */
+            boolean mbfrag=false;
             if (position == 0) {
                 return new MobileNumberFragment();
             } else if (position == 1) {
+               /* if(PrefUtils.getString("FragVal").equals("true")){
+                    PrefUtils.putString("FragVal","false");
+                    return new MobileNumberFragment();
+                }else {
+                    return new OTPFragment();
+                }*/
                 return new OTPFragment();
             } else if (position == 2) {
                 return new NameFragment();
@@ -170,8 +176,11 @@ public class SignUpActivity extends AppCompatActivity {
                 return new EmailFragment();
             } else if (position == 5) {
                 return new ProfilePhotoFragment();
-            } else
-                return new OTPFragment();
+            } else{
+                PrefUtils.putString("FragVal","true");
+                mViewPager.setCurrentItem(0);
+                return new MobileNumberFragment();
+            }
         }
 
         @Override

@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -36,13 +34,6 @@ import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyDialogBuilder;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -64,8 +55,8 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private static final int RC_SIGN_IN = 101;
-    LoginButton loginButton;
-    CallbackManager callbackManager;
+   /* LoginButton loginButton;
+    CallbackManager callbackManager;*/
     CustomProgressDialog mProgressDialog;
     String token;
     Spinner mchoose_group;
@@ -75,7 +66,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     TextView create_group;
     PopupWindow popupWindow;
     String[] groupname = {"Choose Group", "Abc", "Pqr"};
-    private CardView mFacebookCv;
+    //private CardView mFacebookCv;
     private CardView mGoogleCv;
     private GoogleApiClient mGoogleApiClient;
     //private Typeface mRobotoMediam;
@@ -177,15 +168,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
-        mFacebookCv = (CardView) findViewById(R.id.facebook_card);
+        //mFacebookCv = (CardView) findViewById(R.id.facebook_card);
         mGoogleCv = (CardView) findViewById(R.id.google_cv);
 
-        mFacebookCv.setOnClickListener(new View.OnClickListener() {
+        /*mFacebookCv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loginButton.performClick();
             }
-        });
+        });*/
 
         mGoogleCv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,7 +195,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        callbackManager = CallbackManager.Factory.create();
+        /*callbackManager = CallbackManager.Factory.create();
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -257,7 +248,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onError(FacebookException error) {
                 Log.d("error", "" + error);
             }
-        });
+        });*/
 
         mLoginTv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,7 +272,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        //callbackManager.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
@@ -318,7 +309,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void loginuser(final String mEmail, final String password, final String group_id) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).login(mEmail, password, token, group_id)
+        ApiServiceModule.createService(RestApiInterface.class,context).login(mEmail, password, token, group_id)
                 .enqueue(new Callback<SignupResponse>() {
                     @Override
                     public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
@@ -367,7 +358,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void loginfacebookuser(final String mFacebookId, final String mEmail, final String mFirstName, final String mLastName, final String group_id) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token, group_id).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).signfacebook(mFacebookId, mEmail, mFirstName, mLastName, token, group_id).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -417,7 +408,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void logingoogle(final String mGoogleId, final String mEmail, final String mFirstName, final String mLastName, final String group_id) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).signGoogleplus(mGoogleId, mEmail, mFirstName, mLastName, token, group_id).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).signGoogleplus(mGoogleId, mEmail, mFirstName, mLastName, token, group_id).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -490,7 +481,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void create_group(final String group_name, final String group_email) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).creategroup(group_name, group_email).enqueue(new Callback<GroupResponce>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).creategroup(group_name, group_email).enqueue(new Callback<GroupResponce>() {
             @Override
             public void onResponse(Call<GroupResponce> call, Response<GroupResponce> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -578,7 +569,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private void get_group_list_data() {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).getgrouplist().enqueue(new Callback<GroupListResponce>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).getgrouplist().enqueue(new Callback<GroupListResponce>() {
             @Override
             public void onResponse(Call<GroupListResponce> call, Response<GroupListResponce> response) {
                 if (response.isSuccessful() && response.body() != null) {

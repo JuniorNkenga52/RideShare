@@ -59,7 +59,9 @@ public class WebSocketActivity extends AppCompatActivity {
         URI uri;
         try {
             //"ws://192.168.0.30:8090/websocketnew/php-socket.php"
-                uri = new URI("ws://www.myridewhiz.com:8090/ride-share-websocket/php-socket.php");
+            //ws://18.218.151.202:8090/ride-share-websocket/php-socket.php
+                //uri = new URI("ws://www.myridewhiz.com:8090/ride-share-websocket/php-socket.php");
+            uri = new URI("ws://18.218.151.202:8090/ride-share-websocket/php-socket.php");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;

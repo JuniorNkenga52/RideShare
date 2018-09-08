@@ -20,6 +20,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -43,6 +44,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -320,5 +322,36 @@ public class AppUtils {
         } catch (FileNotFoundException e) {
         }
         return null;
+    }
+
+    public static String getCountryTelephoneCode(Context context) {
+        String countryID;
+        String countryPhoneCode = "";
+
+        countryID = getCurrentISO(context).toUpperCase();
+        String[] rl = context.getResources().getStringArray(R.array.countryCodes);
+        for (int i = 0; i < rl.length; i++) {
+            String[] g = rl[i].split(",");
+            if (g[1].trim().equals(countryID.trim())) {
+                countryPhoneCode = g[0];
+                break;
+            }
+        }
+        return countryPhoneCode;
+    }
+
+    public static String getCurrentISO(Context context) {
+        String countryIsoCode = "";
+
+        TelephonyManager telephonyManager =
+                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        if (telephonyManager != null && !(telephonyManager.getSimState() == TelephonyManager.SIM_STATE_ABSENT)) {
+            countryIsoCode = telephonyManager.getNetworkCountryIso();
+        } else {
+            countryIsoCode = Locale.getDefault().getCountry();
+        }
+
+        return countryIsoCode;
     }
 }

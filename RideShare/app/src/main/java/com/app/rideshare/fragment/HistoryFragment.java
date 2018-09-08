@@ -1,5 +1,6 @@
 package com.app.rideshare.fragment;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,7 +33,7 @@ public class HistoryFragment extends Fragment {
     private HistoryAdapter mHistoryAdapter;
     private TextView mNoHistoryTv;
     //private Typeface mRobotoMeduim;
-
+    Context context;
     public static HistoryFragment newInstance() {
         Bundle bundle = new Bundle();
         HistoryFragment fragment = new HistoryFragment();
@@ -45,6 +46,7 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.fragment_history, null);
 
+        context=getContext();
         mHistoryLv = (ListView) rootview.findViewById(R.id.history_lv);
 
         mProgressDialog = new CustomProgressDialog(getActivity());
@@ -64,7 +66,7 @@ public class HistoryFragment extends Fragment {
 
     private void getHistory(final String mId) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).getHistory(mId).enqueue(new Callback<HistoryResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).getHistory(mId).enqueue(new Callback<HistoryResponse>() {
             @Override
             public void onResponse(Call<HistoryResponse> call, Response<HistoryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

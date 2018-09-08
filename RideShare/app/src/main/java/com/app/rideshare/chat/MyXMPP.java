@@ -79,13 +79,18 @@ public class MyXMPP implements PingFailedListener {
 
     private static final String TAG = "MyXMPP";
     //http://chat.myridewhiz.com:9090
-     //private static final String DOMAIN = "13.58.7.10";
-    private static final String DOMAIN = "chat.myridewhiz.com";
+    //private static final String DOMAIN = "13.58.7.10";
+    //private static final String DOMAIN = "chat.myridewhiz.com";
+    //private static final String DOMAIN = "ec2-18-218-151-202.us-east-2.compute.amazonaws.com";
+    //private static final String DOMAIN = "win-2i67mca8hqp";
+    //private static final String DOMAIN = "http://192.168.0.30";
+    //http://ec2-18-218-151-202.us-east-2.compute.amazonaws.com:9090
+    private static final String DOMAIN = "ec2-18-218-151-202.us-east-2.compute.amazonaws.com";
     //private static final String DOMAIN = " http://18.222.137.245";
     //private static final String DOMAIN = "192.168.0.30";
     private static final String RESOURCE_NAME = "RideShare";
-    //private static final int PORT = 5222;
-    private static final int PORT = 9090;
+    private static final int PORT = 5222;
+    //private static final int PORT = 9090;
 
     private final String delimiter = "\\@";
 
@@ -193,11 +198,10 @@ public class MyXMPP implements PingFailedListener {
             @Override
             protected synchronized Boolean doInBackground(Void... arg0) {
 
-                if (connection.isConnected())
+                if (connection.isConnected()) {
                     return false;
-
+                }
                 isConnecting = true;
-
                 /*if (isToasted)
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
 
@@ -215,11 +219,12 @@ public class MyXMPP implements PingFailedListener {
 
                     DeliveryReceiptManager dm = DeliveryReceiptManager.getInstanceFor(connection);
                     dm.setAutoReceiptMode(AutoReceiptMode.always);
+                    dm.autoAddDeliveryReceiptRequests();
                     dm.addReceiptReceivedListener(new ReceiptReceivedListener() {
 
                         @Override
                         public void onReceiptReceived(final String fromid, final String toid, final String msgid, final Stanza packet) {
-
+                            Log.d("Delivered", ">>>>>>>>>>>>");
                         }
                     });
 
@@ -279,6 +284,9 @@ public class MyXMPP implements PingFailedListener {
                 presence.setPriority(1);
                 presence.setStatus("Online");
                 connection.sendPacket(presence);
+                /*ReadReceipt read = new ReadReceipt(messagePacketID);
+                message.addExtension(read);
+                connection.sendPacket(sendReadStatus);*/
             } catch (NotConnectedException e) {
                 e.printStackTrace();
             }
@@ -313,6 +321,8 @@ public class MyXMPP implements PingFailedListener {
         }
 
         final Message message = new Message();
+
+
         message.setBody(chatMessage.getMessageText());
         message.setStanzaId(String.valueOf(chatMessage.getMsgIdl()));
         message.setType(Message.Type.chat);

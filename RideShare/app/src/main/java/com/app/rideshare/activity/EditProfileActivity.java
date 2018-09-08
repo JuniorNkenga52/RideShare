@@ -3,6 +3,7 @@ package com.app.rideshare.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -88,7 +89,7 @@ public class EditProfileActivity extends AppCompatActivity {
     CustomProgressDialog mProgressDialog;
     private int ch_val = 0;
     Activity activity;
-
+    Context context;
     Uri imageUri = null;
 
     private int PICK_CAMERA = 1;
@@ -104,6 +105,7 @@ public class EditProfileActivity extends AppCompatActivity {
         PrefUtils.initPreference(this);
 
         activity = this;
+        context=this;
         mUserBean = PrefUtils.getUserInfo();
         mProgressDialog = new CustomProgressDialog(this);
 
@@ -366,7 +368,9 @@ public class EditProfileActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        public boolean onResourceReady(GlideDrawable resource, String model,
+                                                       Target<GlideDrawable> target,
+                                                       boolean isFromMemoryCache, boolean isFirstResource) {
                             mProgressDialog.dismiss();
                             return false;
                         }
@@ -381,8 +385,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 new TedPermission(EditProfileActivity.this)
                         .setPermissionListener(permissionlistener)
-                        .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                        .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                        .setDeniedMessage("If you reject permission,you can not use this service" +
+                                "\n\nPlease turn on permissions at [Setting] > [Permission]")
+                        .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                         .check();
 
             }
@@ -576,7 +582,7 @@ public class EditProfileActivity extends AppCompatActivity {
             body = MultipartBody.Part.createFormData("profile_image", images.get(0).getName(), requestFile);
         }*/
 
-        ApiServiceModule.createService(RestApiInterface.class).updateProfile(mUserId, mfirstname, mlatname, mMobile, body, mEmail, mVh_Model, mVh_Type, mMax_Passengers, mReq_driver, mGroupid).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).updateProfile(mUserId, mfirstname, mlatname, mMobile, body, mEmail, mVh_Model, mVh_Type, mMax_Passengers, mReq_driver, mGroupid).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 mProgressDialog.cancel();

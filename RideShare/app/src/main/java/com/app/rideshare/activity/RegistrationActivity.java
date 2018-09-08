@@ -179,7 +179,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private void registerUser(String mFirstName, String mLastName, String mEmail, String mMobile, String password) {
 
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).signup(mFirstName, mLastName, mEmail, mMobile, password, token).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).signup(mFirstName, mLastName, mEmail, mMobile, password, token).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 mProgressDialog.cancel();
@@ -208,7 +208,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void sendOTP(final String mobileNuber, String nUserId) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class).sendOTP(mobileNuber, nUserId).enqueue(new Callback<SendOTPResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).sendOTP(mobileNuber, nUserId).enqueue(new Callback<SendOTPResponse>() {
             @Override
             public void onResponse(Call<SendOTPResponse> call, Response<SendOTPResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

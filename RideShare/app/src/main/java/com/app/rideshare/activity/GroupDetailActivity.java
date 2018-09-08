@@ -53,6 +53,7 @@ public class GroupDetailActivity extends AppCompatActivity {
     private TextView mNoUserTv;
     private boolean MyGroup;
     Activity activity;
+    Context context;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group_detail);
 
         activity=this;
+        context=this;
         PrefUtils.initPreference(this);
         mUserBean = PrefUtils.getUserInfo();
 
@@ -137,6 +139,11 @@ public class GroupDetailActivity extends AppCompatActivity {
             }
         });
 
+        if( !groupDetail.getUser_id().equals(PrefUtils.getUserInfo().getmUserId())){
+            ivEditGroup.setVisibility(View.GONE);
+        }else {
+            ivEditGroup.setVisibility(View.VISIBLE);
+        }
         ivEditGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -201,7 +208,7 @@ public class GroupDetailActivity extends AppCompatActivity {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.groupusers(PrefUtils.getUserInfo().getmUserId(), group_id);
+                return RideShareApi.groupusers(PrefUtils.getUserInfo().getmUserId(), group_id,context);
                 //return RideShareApi.groupusers("30", group_id);
             } catch (Exception e) {
                 return null;
