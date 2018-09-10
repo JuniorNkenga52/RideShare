@@ -56,6 +56,7 @@
                 android:textSize="@dimen/_14sdp" />
         </LinearLayout>
 
+
         <ImageView
             android:id="@+id/ivStartChat"
             android:layout_width="@dimen/_32sdp"
@@ -65,6 +66,35 @@
             android:padding="@dimen/_5sdp"
             android:src="@drawable/ic_chat" />
 
+        <RelativeLayout
+            android:id="@+id/layout_unreadmsgs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/image_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/notifiaciton_font"
+                android:paddingBottom="@dimen/_10sdp"
+                android:paddingLeft="@dimen/_10sdp"
+                android:paddingRight="@dimen/_10sdp"
+                android:paddingTop="@dimen/_10sdp"
+                />
+
+            <com.app.rideshare.widget.TextViewSemiBold
+                android:id="@+id/item_txt_counts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="12"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_11sdp" />
+
+        </RelativeLayout>
+
     </LinearLayout>
 
 
@@ -72,9 +102,9 @@
         android:id="@+id/li1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
         android:background="#66000000"
         android:orientation="vertical">
 

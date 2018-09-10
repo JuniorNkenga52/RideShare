@@ -59,7 +59,6 @@ public class GCMPushReceiverService extends GcmListenerService {
                 sendNotification("Your Ride Finish", "5");
 
             } else if (jobj.getString("type").equals("6")) {
-
                 //JSONObject jObjUser = jobj.getJSONObject("result");
                 PrefUtils.putString("AdminID", jobj.getJSONObject("result").getString("admin_id"));
                 Intent intent = new Intent("new_user");
@@ -94,7 +93,6 @@ public class GCMPushReceiverService extends GcmListenerService {
         int requestCode = 0;
 
         Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        //NotificationCompat.Builder noBuilder = null;
         NotificationCompat.Builder notifBuilder = null;
         String NOTIF_CHANNEL_ID = "my_notification_channel";
         if (type.equals("4")) {

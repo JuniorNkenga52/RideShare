@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
@@ -32,11 +35,13 @@ import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.AcceptRider;
 import com.app.rideshare.api.response.StartRideResponse;
+import com.app.rideshare.chat.CommonMethods;
 import com.app.rideshare.chat.LocalBinder;
 import com.app.rideshare.chat.MyService;
 import com.app.rideshare.chat.MyXMPP;
 import com.app.rideshare.model.Directions;
 import com.app.rideshare.model.InProgressRide;
+import com.app.rideshare.model.Rider;
 import com.app.rideshare.model.Route;
 import com.app.rideshare.model.User;
 import com.app.rideshare.service.LocationService;
@@ -70,8 +75,6 @@ import java.util.List;
 
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
-import io.socket.emitter.Emitter;
-import io.socket.engineio.client.Socket;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -87,10 +90,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     AcceptRider mRider;
     LatLng pickuplocation;
     LatLng droppfflocation;
-    //Typeface mRobotoMedium;
     BroadcastReceiver receiver;
     Double Latitude, Longitude;
-    //    Double PreLatitude = 0.0, PreLongitude = 0.0;
     String Provider;
     User mUserbean;
     RideShareApp mApp;
@@ -119,8 +120,9 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     private Button mStartRideBtn;
     private Button mFinishRideBtn;
     public static String RideStatus = "";
-    private String toJabberId = "";
-    //private Runnable runnable;
+    private String TabelName;
+    private TextView item_txt_counts;
+    private RelativeLayout layout_unreadmsgs;
 
     private Runnable runnable = new Runnable() {
 
@@ -187,13 +189,33 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         }
     };
 
+    private BroadcastReceiver mUpdateMessageReciver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            /*String staus = intent.getStringExtra("int_data");
+            if (staus.equals("1")) {
+                MessageUtils.showSuccessMessage(StartRideActivity.this, "Your Ride Started.");
+
+            } else if (staus.equals("2")) {
+                MessageUtils.showSuccessMessage(StartRideActivity.this, "Your Ride Finish.");
+
+                Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
+                rateride.putExtra("riderate", mRider.getRide_id());
+                rateride.putExtra("driverid", mRider.getFromRider().getnUserId());
+                startActivity(rateride);
+                finish();
+            }*/
+            getMessages();
+        }
+    };
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start_ride_layout);
 
         activity = this;
-        context=this;
+        context = this;
         application = (RideShareApp) getApplicationContext();
 
         PrefUtils.initPreference(this);
@@ -206,6 +228,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         mEmailTv = (TextView) findViewById(R.id.email_tv);
         mProfileIv = (CircularImageView) findViewById(R.id.user_profile);
         mStartRideLi = (LinearLayout) findViewById(R.id.li1);
+        item_txt_counts = findViewById(R.id.item_txt_counts);
+        layout_unreadmsgs = findViewById(R.id.layout_unreadmsgs);
         mStartRideLi.setVisibility(View.GONE);
         //mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
         /*mNameTv.setTypeface(mRobotoMedium);
@@ -267,6 +291,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 }
             }
         };
+
         LocalBroadcastManager bManager = LocalBroadcastManager.getInstance(this);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(RECEIVE_JSON);
@@ -347,8 +372,10 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
+
         init();
     }
+
 
     private void requestRoute(LatLng picklng, LatLng droplng) {
         if (picklng != null && droplng != null) {
@@ -418,7 +445,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         }
         startActivity(i);
         activity.finish();
-
+        MyXMPP.disconnect();
         super.onBackPressed();
         /*if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {
             i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
@@ -570,7 +597,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
     private void startRide(String mId, final String mType, String userid) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class,context).mStartRide(mId, mType, userid).enqueue(new Callback<StartRideResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class, context).mStartRide(mId, mType, userid).enqueue(new Callback<StartRideResponse>() {
             @Override
             public void onResponse(Call<StartRideResponse> call, Response<StartRideResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -619,11 +646,38 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     protected void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(StartRideActivity.this).registerReceiver(mMessageReceiver, new IntentFilter("start_ride"));
+
+        LocalBroadcastManager.getInstance(StartRideActivity.this).registerReceiver(mUpdateMessageReciver, new IntentFilter("update_message"));
+        getMessages();
+    }
+
+    private void getMessages() {
+        CommonMethods commonMethods = new CommonMethods(getApplicationContext());
+        Rider toRider;
+
+        if (PrefUtils.getUserInfo().getmUserId().equals(mRider.getFromRider().getnUserId()))
+            toRider = mRider.getToRider();
+        else
+            toRider = mRider.getFromRider();
+
+        TabelName = Constants.intentKey.jabberPrefix + toRider.getnUserId();
+
+        if (commonMethods.isTableExists(TabelName.toLowerCase())) {
+            String unreadCount = getUnreadMessages(TabelName.toLowerCase());
+            if (!unreadCount.equals("") && !unreadCount.equals("0")) {
+                layout_unreadmsgs.setVisibility(View.VISIBLE);
+                item_txt_counts.setText(unreadCount);
+            } else {
+                layout_unreadmsgs.setVisibility(View.GONE);
+            }
+
+        }
     }
 
     @Override
     public void onPause() {
         LocalBroadcastManager.getInstance(StartRideActivity.this).unregisterReceiver(mMessageReceiver);
+        LocalBroadcastManager.getInstance(StartRideActivity.this).unregisterReceiver(mUpdateMessageReciver);
         super.onPause();
     }
 
@@ -749,4 +803,13 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             Log.w(getString(R.string.app_name), "onServiceDisconnected");
         }
     };
+
+    public String getUnreadMessages(String tableName) {
+        String tblName = "'" + tableName + "'";
+        SQLiteDatabase myDb;
+        myDb = openOrCreateDatabase(CommonMethods.DB_NAME, Context.MODE_PRIVATE, null);
+        Cursor allRows = myDb.rawQuery("SELECT * FROM " + tblName + " WHERE msgtype = 'false' AND who = 'r'", null);
+        System.out.println("COUNT : " + allRows.getCount());
+        return String.valueOf(allRows.getCount());
+    }
 }

@@ -1,9 +1,11 @@
 package com.app.rideshare.chat;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -14,11 +16,15 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.View;
 
 import com.app.rideshare.R;
 import com.app.rideshare.activity.ChatActivity;
 import com.app.rideshare.activity.HomeNewActivity;
+import com.app.rideshare.model.Rider;
+import com.app.rideshare.utils.Constants;
 import com.app.rideshare.utils.DateUtils;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
@@ -182,11 +188,12 @@ public class MyXMPP implements PingFailedListener {
         FileTransferNegotiator.getInstanceFor(connection);
     }
 
-    public void disconnect() {
+    public static void disconnect() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                connection.disconnect();
+                if(connection!=null)
+                    connection.disconnect();
             }
         }).start();
     }
@@ -506,8 +513,24 @@ public class MyXMPP implements PingFailedListener {
 
             CommonMethods commonMethods = new CommonMethods(context);
             commonMethods.createTable(sender);
-            commonMethods.insertIntoTable(messageModel.getSender(), messageModel.getSender(), messageModel.getReceiver(),
-                    messageModel.getMessageText(), "r", MessageModel.MEG_TYPE_TEXT, messageModel.getTime());
+
+            ActivityManager am = (ActivityManager) context
+                    .getSystemService(Context.ACTIVITY_SERVICE);
+            String packageName = "com.app.rideshare";
+
+
+            if(am.getRunningTasks(1).get(0).topActivity.getClassName().equals(
+                    packageName + ".activity.ChatActivity")){
+                commonMethods.insertIntoTable(messageModel.getSender(), messageModel.getSender(), messageModel.getReceiver(),
+                        messageModel.getMessageText(), "r", MessageModel.MEG_TYPE_TEXT, messageModel.getTime(),"true");
+            }else {
+                commonMethods.insertIntoTable(messageModel.getSender(), messageModel.getSender(), messageModel.getReceiver(),
+                        messageModel.getMessageText(), "r", MessageModel.MEG_TYPE_TEXT, messageModel.getTime(),"false");
+
+                Intent intent = new Intent("update_message");
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            }
+
 
             try {
 
@@ -541,6 +564,7 @@ public class MyXMPP implements PingFailedListener {
             }
         }
     }
+
 
     private void configure() {
 

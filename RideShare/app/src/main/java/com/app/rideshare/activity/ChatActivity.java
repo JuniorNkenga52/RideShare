@@ -1,6 +1,7 @@
 package com.app.rideshare.activity;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -164,11 +165,22 @@ public class ChatActivity extends AppCompatActivity {
         listAllMsg = new ArrayList<>();
         chatAdapter = new ChatAdapter(this, listAllMsg);
 
-        if (isTableExists(toJabberId))
-            loadDataFromLocal(toJabberId);
 
+        if (isTableExists(toJabberId)) {
+            loadDataFromLocal(toJabberId);
+            CommonMethods commonMethods = new CommonMethods(getApplicationContext());
+            commonMethods.updateMessages(toJabberId, listAllMsg, "r");
+        }
         list_messages.setAdapter(chatAdapter);
 
+        try {
+            NotificationManager notificationManager = (NotificationManager)
+                    getSystemService(Context.
+                            NOTIFICATION_SERVICE);
+            notificationManager.cancelAll();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private View.OnClickListener clickIt = new View.OnClickListener() {
@@ -220,7 +232,7 @@ public class ChatActivity extends AppCompatActivity {
 
             commonMethods.createTable(toJabberId);
 
-            commonMethods.insertIntoTable(toJabberId, senderUser, toJabberId, message, "m", MessageModel.MEG_TYPE_TEXT, msg.getTime());
+            commonMethods.insertIntoTable(toJabberId, senderUser, toJabberId, message, "m", MessageModel.MEG_TYPE_TEXT, msg.getTime(), "true");
 
             chatAdapter.notifyDataSetChanged();
 
@@ -240,7 +252,7 @@ public class ChatActivity extends AppCompatActivity {
 
         Cursor cursor = myDb.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'", null);
 
-       /* Cursor cursor = myDb.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'"+ " AND sender = '" + senderUser+"'" +" AND receiver = '" + toJabberId+"'", null);*/
+        /* Cursor cursor = myDb.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'"+ " AND sender = '" + senderUser+"'" +" AND receiver = '" + toJabberId+"'", null);*/
 
         if (cursor != null) {
 
@@ -341,5 +353,9 @@ public class ChatActivity extends AppCompatActivity {
 //            actionBar.setSubtitle(fullJid);
 //            selChatUser.setJabberId(fullJid);
         }
+    }
+
+    private void ClearNotification(){
+
     }
 }

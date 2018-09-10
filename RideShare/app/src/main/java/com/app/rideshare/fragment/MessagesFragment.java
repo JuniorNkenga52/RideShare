@@ -218,7 +218,7 @@ public class MessagesFragment extends Fragment {
 
             commonMethods.createTable(selChatUser.getMatched_user_fb_id());
 
-            commonMethods.insertIntoTable(selChatUser.getMatched_user_fb_id(), senderUser, selChatUser.getMatched_user_fb_id(), message, "m", MessageModel.MEG_TYPE_TEXT, msg.getTime());
+            commonMethods.insertIntoTable(selChatUser.getMatched_user_fb_id(), senderUser, selChatUser.getMatched_user_fb_id(), message, "m", MessageModel.MEG_TYPE_TEXT, msg.getTime(),"false");
 
             chatAdapter.notifyDataSetChanged();
 
