@@ -65,21 +65,10 @@ public class CommonMethods {
         }
     }
 
-    public void updateMessages(String tablename, List<MessageModel> messageModelList, String who) {
+    public void updateMessages(String tablename) {
         mydb = mContext.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
 
         try {
-//            for (MessageModel messageModel : messageModelList) {
-//
-//                /*//values.put("ID", messageModel.getMsgIdl());
-//                values.put("sender", Constants.intentKey.jabberPrefix.toLowerCase() + messageModel.getSender());
-//                values.put("receiver", messageModel.getReceiver());
-//                values.put("msg", messageModel.getMessageText());
-//                values.put("who", who);
-//                values.put("type", messageModel.getType());
-//                values.put("time", messageModel.getTime());*/
-//
-//            }
             ContentValues values = new ContentValues();
             values.put("msgtype", "true");
             mydb.update(tablename, values, null, null);

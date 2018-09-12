@@ -169,7 +169,7 @@ public class ChatActivity extends AppCompatActivity {
         if (isTableExists(toJabberId)) {
             loadDataFromLocal(toJabberId);
             CommonMethods commonMethods = new CommonMethods(getApplicationContext());
-            commonMethods.updateMessages(toJabberId, listAllMsg, "r");
+            commonMethods.updateMessages(toJabberId);
         }
         list_messages.setAdapter(chatAdapter);
 
@@ -251,8 +251,6 @@ public class ChatActivity extends AppCompatActivity {
         myDb = openOrCreateDatabase(CommonMethods.DB_NAME, Context.MODE_PRIVATE, null);
 
         Cursor cursor = myDb.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'", null);
-
-        /* Cursor cursor = myDb.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'"+ " AND sender = '" + senderUser+"'" +" AND receiver = '" + toJabberId+"'", null);*/
 
         if (cursor != null) {
 

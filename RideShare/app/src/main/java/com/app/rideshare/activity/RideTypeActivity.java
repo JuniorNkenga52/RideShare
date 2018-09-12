@@ -380,7 +380,7 @@ public class RideTypeActivity extends AppCompatActivity {
 
     private void startRide(String mId, final String mType, String userid) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class,context).mStartRide(mId, mType, userid).enqueue(new Callback<StartRideResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class,context).mStartRide(mId, mType, userid,""+ currentLocation.getLatitude(), "" + currentLocation.getLongitude()).enqueue(new Callback<StartRideResponse>() {
             @Override
             public void onResponse(Call<StartRideResponse> call, Response<StartRideResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

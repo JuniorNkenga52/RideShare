@@ -204,11 +204,11 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 rateride.putExtra("riderate", mRider.getRide_id());
                 rateride.putExtra("driverid", mRider.getFromRider().getnUserId());
                 startActivity(rateride);
-                finish();
             }*/
             getMessages();
         }
     };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -379,7 +379,14 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
     private void requestRoute(LatLng picklng, LatLng droplng) {
         if (picklng != null && droplng != null) {
-            MapDirectionAPI.getDirection(picklng, droplng).enqueue(updateRouteCallback);
+            if (mApp.getmUserType().equals("2")) {
+                final Location driverlatlon = new Location(LocationManager.GPS_PROVIDER);
+                LatLng driverlatlng = new LatLng(Double.parseDouble(mRider.getStart_lati()), Double.parseDouble(mRider.getStart_long()));
+                MapDirectionAPI.getDirection(driverlatlng, droplng).enqueue(updateRouteCallback);
+            } else {
+                MapDirectionAPI.getDirection(picklng, droplng).enqueue(updateRouteCallback);
+            }
+
         }
     }
 
@@ -480,6 +487,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                             }
 
                             if (CustomerMarker == null) {
+                                //CustomerMarker
+                                //mGoogleMap.clear();
                                 CustomerMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
                                         .position(CustomerLocaton));
                                 //curLocMarker=setcutommarker(CustomerLocaton,mRider);
@@ -597,7 +606,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
     private void startRide(String mId, final String mType, String userid) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class, context).mStartRide(mId, mType, userid).enqueue(new Callback<StartRideResponse>() {
+        //destinationLatLang = new LatLng(Double.parseDouble(location.getmLatitude()), Double.parseDouble(location.getmLongitude()));
+        ApiServiceModule.createService(RestApiInterface.class, context).mStartRide(mId, mType, userid, "" + currentlthg.latitude, "" + currentlthg.longitude).enqueue(new Callback<StartRideResponse>() {
             @Override
             public void onResponse(Call<StartRideResponse> call, Response<StartRideResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -624,8 +634,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                         mUpdaterHandler.removeCallbacksAndMessages(null);
                         finish();
                         // rate & rewie
-
-
                     }
                 } else {
 

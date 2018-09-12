@@ -264,6 +264,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                             getMarkerBitmapFromView(getActivity(), null, mUserBean, 1, currentlthg);
 
                         } else {
+                            //curLocMarker.remove();
                             curLocMarker.setPosition(currentlthg);
                         }
                         builder.include(currentlthg);
@@ -567,6 +568,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             if (type == 0) {
                 userImage = driver.getmProfileImage();
             } else {
+                //mGoogleMap.clear();
                 userImage = user.getProfile_image();
             }
             getMarkerBitmapFromView(getActivity(), driver, user, type, currentDriverPos);
