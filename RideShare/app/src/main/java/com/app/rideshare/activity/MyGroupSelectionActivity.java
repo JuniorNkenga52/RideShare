@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.GroupList;
+import com.app.rideshare.model.InProgressRide;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
@@ -46,6 +47,7 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
     CustomProgressDialog mProgressDialog;
     TextView txtskip;
     SwipeRefreshLayout swipeRefreshRequests;
+    String InprogressRide;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,14 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(context, RideTypeActivity.class);
+                if (getIntent().hasExtra("inprogress")) {
+                    InprogressRide = getIntent().getExtras().getString("inprogress");
+                    i.putExtra("inprogress", "busy");
+                    i.putExtra("rideprogress", (InProgressRide) getIntent().getExtras().getSerializable("rideprogress"));
+                    i.putExtra("rideUserID", PrefUtils.getUserInfo().getmUserId());
+                    i.putExtra("Is_driver",  getIntent().getExtras().getString("Is_driver"));
+                }
+
                 startActivity(i);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();

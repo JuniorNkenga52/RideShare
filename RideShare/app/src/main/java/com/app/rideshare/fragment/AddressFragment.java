@@ -11,6 +11,7 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Filter;
@@ -66,6 +67,7 @@ public class AddressFragment extends Fragment implements GoogleApiClient.Connect
         View rootView = inflater.inflate(R.layout.fragment_address, container,
                 false);
 
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         mRobotoRegular = TypefaceUtils.getOpenSansRegular(getActivity());
 
         imgBack = (ImageView) rootView.findViewById(R.id.imgBack);

@@ -113,8 +113,8 @@ public class MobileNumberFragment extends Fragment {
                         MessageUtils.showFailureMessage(getActivity(), "You must agree with the Terms and Conditions");
                     } else {
 
-                        //String numberMo = "+91" + result;
-                        String numberMo = "+1"+ result;
+                        String numberMo = "+1" + result;
+                        //String numberMo = "+91"+ result;
                         //String numberMo = "+" + AppUtils.getCountryTelephoneCode(getApplicationContext()) + result;
                         //String numberMo = "+91" + result;
                         //result = "+919265094032";-nikunj

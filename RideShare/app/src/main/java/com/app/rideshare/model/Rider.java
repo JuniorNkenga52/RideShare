@@ -51,6 +51,9 @@ public class Rider implements Serializable {
     @SerializedName("group_id")
     private String mGroup_id;
 
+    @SerializedName("is_driver")
+    private String is_driver;
+
     public String getU_ride_type() {
         return u_ride_type;
     }
@@ -161,5 +164,13 @@ public class Rider implements Serializable {
 
     public void setmGroup_id(String mGroup_id) {
         this.mGroup_id = mGroup_id;
+    }
+
+    public String getIs_driver() {
+        return is_driver;
+    }
+
+    public void setIs_driver(String is_driver) {
+        this.is_driver = is_driver;
     }
 }

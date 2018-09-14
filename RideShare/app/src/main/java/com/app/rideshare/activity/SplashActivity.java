@@ -2,25 +2,18 @@ package com.app.rideshare.activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.app.rideshare.BuildConfig;
 import com.app.rideshare.R;
@@ -51,6 +44,7 @@ public class SplashActivity extends AppCompatActivity {
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     Location currentLocation;
     Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +53,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         activity = this;
-        context=this;
+        context = this;
         TextView textViewVersion = (TextView) findViewById(R.id.textViewVersion);
         textViewVersion.setText("Version " + BuildConfig.VERSION_NAME);
 
@@ -71,7 +65,7 @@ public class SplashActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
                     token = intent.getStringExtra("token");
-                    PrefUtils.putString("TokenID",token);
+                    PrefUtils.putString("TokenID", token);
                     Log.d("token", token);
 
                     if (PrefUtils.getString("loginwith").equals("")) {
@@ -110,7 +104,7 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         if (!PrefUtils.getString("loginwith").equals("")) {
-            if(PrefUtils.getUserInfo()!=null)
+            if (PrefUtils.getUserInfo() != null)
                 getUserDetails(PrefUtils.getUserInfo().getmUserId());
         }
     }
@@ -146,7 +140,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void getUserDetails(final String userId) {
-        ApiServiceModule.createService(RestApiInterface.class,context).getUserDetails(userId).enqueue(new Callback<SignupResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class, context).getUserDetails(userId).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -154,7 +148,6 @@ public class SplashActivity extends AppCompatActivity {
                         PrefUtils.addUserInfo(response.body().getMlist().get(0));
                         PrefUtils.putBoolean("islogin", true);
                         PrefUtils.putBoolean("isAll", true);
-
                         PrefUtils.putString("loginwith", "normal");
 
                         if (PrefUtils.getUserInfo().getmMobileNo().equals("")) {
@@ -162,10 +155,16 @@ public class SplashActivity extends AppCompatActivity {
                             startActivity(i);
                             finish();
                         } else {
-                            if (response.body().getMlist().get(0).getM_is_assigned_group().equals("1")) {
-
+                            if (response.body().getMlist().get(0).getM_is_assigned_group().equals("1") ) {
+                                //response.body().getMlist().get(0).getmRidestatus();
                                 PrefUtils.putString("isBlank", "false");
                                 Intent i = new Intent(getBaseContext(), MyGroupSelectionActivity.class);
+                                if (response.body().getMlist().get(0).getmRidestatus().equals("busy")&&  response.body().getmProgressRide().size()>0) {
+                                    i.putExtra("inprogress", "busy");
+                                    i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
+                                    i.putExtra("rideUserID", response.body().getMlist().get(0).getmUserId());
+                                    i.putExtra("Is_driver", response.body().getMlist().get(0).getmIs_driver());
+                                }
                                 startActivity(i);
                                 finish();
 
@@ -207,7 +206,7 @@ public class SplashActivity extends AppCompatActivity {
         public void onPermissionGranted() {
             if (PrefUtils.getBoolean("islogin")) {
                 Intent i = new Intent(getBaseContext(), MyGroupSelectionActivity.class);
-                i.putExtra("MyUserID",PrefUtils.getUserInfo().getmUserId());
+                i.putExtra("MyUserID", PrefUtils.getUserInfo().getmUserId());
                 startActivity(i);
                 finish();
 

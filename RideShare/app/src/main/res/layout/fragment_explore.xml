@@ -14,6 +14,13 @@
         android:textColor="@color/white"
         android:textSize="@dimen/_18sdp" />
 
+    <FrameLayout
+        android:id="@+id/frame_layout_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+    </FrameLayout>
+
     <LinearLayout
         android:id="@+id/llSearch"
         android:layout_width="match_parent"

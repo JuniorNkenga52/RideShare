@@ -691,6 +691,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setOutsideTouchable(true);
 
+
         final RadioButton mFriendRb = (RadioButton) popupView.findViewById(R.id.fridnds_rb);
         final RadioButton mAllRb = (RadioButton) popupView.findViewById(R.id.all_rb);
 
@@ -739,4 +740,25 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         popupWindow.showAsDropDown(v);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            popupWindow.dismiss();
+        }catch (Exception e){
+
+        }
+
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        try {
+            popupWindow.dismiss();
+        }catch (Exception e){
+
+        }
+    }
 }

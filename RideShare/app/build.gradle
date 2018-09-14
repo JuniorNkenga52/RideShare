@@ -22,9 +22,9 @@ android {
         applicationId "com.app.rideshare"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 5
+        versionCode 6
         multiDexEnabled true
-        versionName "1.6"
+        versionName "1.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         renderscriptSupportModeEnabled true
     }

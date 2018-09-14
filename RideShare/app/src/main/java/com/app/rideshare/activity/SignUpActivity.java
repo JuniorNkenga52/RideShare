@@ -161,13 +161,13 @@ public class SignUpActivity extends AppCompatActivity {
             if (position == 0) {
                 return new MobileNumberFragment();
             } else if (position == 1) {
-               /* if(PrefUtils.getString("FragVal").equals("true")){
+                if(PrefUtils.getString("FragVal").equals("true")){
                     PrefUtils.putString("FragVal","false");
                     return new MobileNumberFragment();
                 }else {
                     return new OTPFragment();
-                }*/
-                return new OTPFragment();
+                }
+                //return new OTPFragment();
             } else if (position == 2) {
                 return new NameFragment();
             } else if (position == 3) {
@@ -181,6 +181,7 @@ public class SignUpActivity extends AppCompatActivity {
                 mViewPager.setCurrentItem(0);
                 return new MobileNumberFragment();
             }
+            //return new AddressFragment();
         }
 
         @Override

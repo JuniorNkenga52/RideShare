@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -159,6 +158,9 @@ public class RideTypeActivity extends AppCompatActivity {
 
                             Intent i = new Intent(RideTypeActivity.this, StartRideActivity.class);
                             i.putExtra("rideobj", ride);
+                            if( getIntent().hasExtra("Is_driver")){
+                                i.putExtra("Is_driver", getIntent().getExtras().getString("Is_driver"));
+                            }
                             startActivity(i);
 
                         }
@@ -167,7 +169,12 @@ public class RideTypeActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             String Userid = getIntent().getStringExtra("rideUserID");
-                            startRide(mRide.getmRideId(), "4", Userid);
+                            if(getIntent().getExtras().getString("Is_driver").equals("1")){
+                                startRide(mRide.getmRideId(),"1", mRide.getmRideType(), Userid);
+                            }else {
+                                startRide(mRide.getmRideId(),"0", mRide.getmRideType(), Userid);
+                            }
+
                             mMaterialDialog.dismiss();
 
                         }
@@ -317,7 +324,7 @@ public class RideTypeActivity extends AppCompatActivity {
     private void selectRide(String mId, String mType, String latitude, String longitude) {
 
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class,context).selectRide(mId, mType, latitude, longitude).enqueue(new Callback<RideSelect>() {
+        ApiServiceModule.createService(RestApiInterface.class, context).selectRide(mId, mType, latitude, longitude).enqueue(new Callback<RideSelect>() {
             @Override
             public void onResponse(Call<RideSelect> call, Response<RideSelect> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -350,7 +357,7 @@ public class RideTypeActivity extends AppCompatActivity {
         request.setUser_id(mUserBean.getmUserId());
         request.setContact(AppUtils.readContacts(RideTypeActivity.this));
 
-        ApiServiceModule.createService(RestApiInterface.class,context).syncContact(request).enqueue(new Callback<ContactResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class, context).syncContact(request).enqueue(new Callback<ContactResponse>() {
             @Override
             public void onResponse(Call<ContactResponse> call, Response<ContactResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -366,7 +373,7 @@ public class RideTypeActivity extends AppCompatActivity {
                         MessageUtils.showFailureMessage(RideTypeActivity.this, "Contact Sync failed");
                     }
                 }
-                 mProgressDialog.cancel();
+                mProgressDialog.cancel();
             }
 
             @Override
@@ -378,17 +385,15 @@ public class RideTypeActivity extends AppCompatActivity {
         });
     }
 
-    private void startRide(String mId, final String mType, String userid) {
+    private void startRide(String mId,String check_driver, final String mType, String userid) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class,context).mStartRide(mId, mType, userid,""+ currentLocation.getLatitude(), "" + currentLocation.getLongitude()).enqueue(new Callback<StartRideResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class, context).mStartRide(mId, check_driver, mType, userid, "" + mRide.getmEndLat(), "" + mRide.getmEndLang()).enqueue(new Callback<StartRideResponse>() {
             @Override
             public void onResponse(Call<StartRideResponse> call, Response<StartRideResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (mType.equals("3")) {
 
                     } else if (mType.equals("4")) {
-
-
                         Intent intent = new Intent(RideTypeActivity.this, LocationService.class);
                         stopService(intent);
                         //finish();
@@ -422,7 +427,7 @@ public class RideTypeActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
             System.exit(0);*/
-            if(!InprogressRide.equals("busy")){
+            if (!InprogressRide.equals("busy")) {
                 Intent intentLocation = new Intent(RideTypeActivity.this, LocationService.class);
                 stopService(intentLocation);
             }
@@ -452,8 +457,8 @@ public class RideTypeActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         //if(!InprogressRide.equals("busy")){
-            Intent intentLocation = new Intent(RideTypeActivity.this, LocationService.class);
-            stopService(intentLocation);
+        Intent intentLocation = new Intent(RideTypeActivity.this, LocationService.class);
+        stopService(intentLocation);
         //}
     }
 }

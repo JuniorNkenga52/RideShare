@@ -10,6 +10,8 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
@@ -25,6 +27,7 @@ import android.widget.TextView;
 
 import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
+import com.app.rideshare.fragment.ExploreFragment;
 import com.app.rideshare.model.GroupList;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MessageUtils;
@@ -115,6 +118,9 @@ public class GroupSelectionFragment extends Fragment {
     public void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(myNotificationReceiver, new IntentFilter("new_user"));
+
+
+
     }
 
     private BroadcastReceiver myNotificationReceiver = new BroadcastReceiver() {
@@ -124,7 +130,15 @@ public class GroupSelectionFragment extends Fragment {
 
             try {
                 if (AppUtils.isInternetAvailable(context)) {
-                    new AsyncAllGroup().execute();
+                    Fragment selectedFragment = null;
+                    if (PrefUtils.getString("isBlank").equals("true")) {
+                        selectedFragment = ExploreFragment.newInstance();
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+                        transaction.replace(R.id.frame_layout_group, selectedFragment);
+                        transaction.commit();
+                    }
+                    //new AsyncAllGroup().execute();
                 } else {
                     swipeRefreshRequests.setRefreshing(false);
                 }

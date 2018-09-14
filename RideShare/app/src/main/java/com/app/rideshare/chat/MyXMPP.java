@@ -18,13 +18,10 @@ import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
 
 import com.app.rideshare.R;
 import com.app.rideshare.activity.ChatActivity;
 import com.app.rideshare.activity.HomeNewActivity;
-import com.app.rideshare.model.Rider;
-import com.app.rideshare.utils.Constants;
 import com.app.rideshare.utils.DateUtils;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
@@ -192,7 +189,7 @@ public class MyXMPP implements PingFailedListener {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if(connection!=null)
+                if (connection != null)
                     connection.disconnect();
             }
         }).start();
@@ -519,13 +516,13 @@ public class MyXMPP implements PingFailedListener {
             String packageName = "com.app.rideshare";
 
 
-            if(am.getRunningTasks(1).get(0).topActivity.getClassName().equals(
-                    packageName + ".activity.ChatActivity")){
+            if (am.getRunningTasks(1).get(0).topActivity.getClassName().equals(
+                    packageName + ".activity.ChatActivity")) {
                 commonMethods.insertIntoTable(messageModel.getSender(), messageModel.getSender(), messageModel.getReceiver(),
-                        messageModel.getMessageText(), "r", MessageModel.MEG_TYPE_TEXT, messageModel.getTime(),"true");
-            }else {
+                        messageModel.getMessageText(), "r", MessageModel.MEG_TYPE_TEXT, messageModel.getTime(), "true");
+            } else {
                 commonMethods.insertIntoTable(messageModel.getSender(), messageModel.getSender(), messageModel.getReceiver(),
-                        messageModel.getMessageText(), "r", MessageModel.MEG_TYPE_TEXT, messageModel.getTime(),"false");
+                        messageModel.getMessageText(), "r", MessageModel.MEG_TYPE_TEXT, messageModel.getTime(), "false");
 
                 Intent intent = new Intent("update_message");
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
