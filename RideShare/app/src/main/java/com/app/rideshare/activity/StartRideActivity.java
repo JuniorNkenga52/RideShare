@@ -175,12 +175,13 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 MessageUtils.showSuccessMessage(StartRideActivity.this, "Your Ride Started.");
                 mRider.setRequest_status("3");
             } else if (staus.equals("2")) {
-                MessageUtils.showSuccessMessage(StartRideActivity.this, "Your Ride Finish.");
-
-                Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
-                rateride.putExtra("riderate", mRider.getRide_id());
-                rateride.putExtra("driverid", mRider.getFromRider().getnUserId());
-                startActivity(rateride);
+                if(mUserbean.getmIs_driver().equals("1")){
+                    MessageUtils.showSuccessMessage(StartRideActivity.this, "Your Ride Finish.");
+                    Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
+                    rateride.putExtra("riderate", mRider.getRide_id());
+                    rateride.putExtra("driverid", mRider.getFromRider().getnUserId());
+                    startActivity(rateride);
+                }
                 finish();
             }
         }
@@ -434,11 +435,9 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             i.putExtra("rideprogress", inProgressRide);
             i.putExtra("rideUserID", mUserbean.getmUserId());
             i.putExtra("u_ride_type", mUserbean.getmRideType());
-            if(RideStatus.equals("inProgress")){
+            if(mUserbean.getmIs_driver().equals("1")){
                 i.putExtra("Is_driver","1");
             }
-            // application.setmUserType("" + rideType);
-
         } else {
             i.putExtra("inprogress", "free");
         }

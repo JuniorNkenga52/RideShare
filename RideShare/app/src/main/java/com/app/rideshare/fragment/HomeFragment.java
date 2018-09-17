@@ -89,8 +89,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     private static final int REQUEST_LOCATION = 11;
     //RideShareApp application;
     ArrayList<Rider> mlist = new ArrayList<>();
-    // ArrayList<Marker> mlistMarker;
-    //Typeface mRobotoReguler;
     LatLng currentlthg;
     LatLng destinationLatLang;
     CustomProgressDialog mProgressDialog;
@@ -111,14 +109,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     private String duration;
     Context context;
     private okhttp3.Callback updateRouteCallback = new okhttp3.Callback() {
+
         @Override
         public void onFailure(okhttp3.Call call, IOException e) {
-
+            mProgressDialog.dismiss();
         }
 
         @Override
         public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
             if (response.isSuccessful()) {
+                mProgressDialog.dismiss();
                 final String json = response.body().string();
                 updateLineDestination(json);
             }
@@ -376,14 +376,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             }
             destinationLocationMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker())
                     .position(destinationLatLang).title("destination"));
-
-
             requestRoute();
         }
     }
 
     private void requestRoute() {
         if (currentlthg != null && destinationLatLang != null) {
+            mProgressDialog.show();
             MapDirectionAPI.getDirection(currentlthg, destinationLatLang).enqueue(updateRouteCallback);
         }
     }

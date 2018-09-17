@@ -158,7 +158,7 @@ public class RideTypeActivity extends AppCompatActivity {
 
                             Intent i = new Intent(RideTypeActivity.this, StartRideActivity.class);
                             i.putExtra("rideobj", ride);
-                            if( getIntent().hasExtra("Is_driver")){
+                            if (getIntent().hasExtra("Is_driver")) {
                                 i.putExtra("Is_driver", getIntent().getExtras().getString("Is_driver"));
                             }
                             startActivity(i);
@@ -169,10 +169,19 @@ public class RideTypeActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             String Userid = getIntent().getStringExtra("rideUserID");
-                            if(getIntent().getExtras().getString("Is_driver").equals("1")){
+                            /*if(getIntent().getExtras().getString("Is_driver").equals("1")){
                                 startRide(mRide.getmRideId(),"1", mRide.getmRideType(), Userid);
                             }else {
                                 startRide(mRide.getmRideId(),"0", mRide.getmRideType(), Userid);
+                            }*/
+                            if (getIntent().hasExtra("Is_driver")) {
+                                if (getIntent().getExtras().getString("Is_driver").equals("1")) {
+                                    startRide(mRide.getmRideId(), "1", "4", Userid);
+                                } else {
+                                    startRide(mRide.getmRideId(), "0", "4", Userid);
+                                }
+                            } else {
+                                startRide(mRide.getmRideId(), "0", "4", Userid);
                             }
 
                             mMaterialDialog.dismiss();
@@ -385,7 +394,7 @@ public class RideTypeActivity extends AppCompatActivity {
         });
     }
 
-    private void startRide(String mId,String check_driver, final String mType, String userid) {
+    private void startRide(String mId, String check_driver, final String mType, String userid) {
         mProgressDialog.show();
         ApiServiceModule.createService(RestApiInterface.class, context).mStartRide(mId, check_driver, mType, userid, "" + mRide.getmEndLat(), "" + mRide.getmEndLang()).enqueue(new Callback<StartRideResponse>() {
             @Override

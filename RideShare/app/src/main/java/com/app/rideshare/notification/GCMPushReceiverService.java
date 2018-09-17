@@ -100,8 +100,8 @@ public class GCMPushReceiverService extends GcmListenerService {
         }
         if (type.equals("5")) {
             StartRideActivity.RideStatus = "finished";
-            Intent rateride = new Intent(this, RideRateActivity.class);
-            startActivity(rateride);
+            /*Intent rateride = new Intent(this, RideRateActivity.class);
+            startActivity(rateride);*/
 
         }
         if (type.equals("6")) {

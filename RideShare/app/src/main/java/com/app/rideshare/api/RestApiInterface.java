@@ -127,11 +127,11 @@ public interface RestApiInterface {
 
     @FormUrlEncoded
     @POST("user/startOrEndRide")
-    Call<StartRideResponse> mStartRide(@Field("ride_id") String mRideId, @Field("check_driver") String check_driver, @Field("ride_status") String mRideStatus, @Field("user_id") String mUserId, @Field("end_lati")String endlat, @Field("end_long")String endlong);
+    Call<StartRideResponse> mStartRide(@Field("ride_id") String mRideId, @Field("check_driver") String check_driver, @Field("ride_status") String mRideStatus, @Field("user_id") String mUserId, @Field("end_lati") String endlat, @Field("end_long") String endlong);
 
     @FormUrlEncoded
     @POST("user/rideRate")
-    Call<RateRideResponce> rateride(@Field("driver_id") String mDriver_id,@Field("rider_id") String mRider_id, @Field("ride_id") String mRideId, @Field("ride_rate") String mRideRate, @Field("ride_review") String mRideReview);
+    Call<RateRideResponce> rateride(@Field("driver_id") String mDriver_id, @Field("rider_id") String mRider_id, @Field("ride_id") String mRideId, @Field("ride_rate") String mRideRate, @Field("ride_review") String mRideReview);
 
     @FormUrlEncoded
     @POST("user/manageCar")

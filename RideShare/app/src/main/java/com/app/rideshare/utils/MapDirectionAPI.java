@@ -9,7 +9,7 @@ import okhttp3.Request;
 public class MapDirectionAPI {
 
     public static Call getDirection(LatLng pickUp, LatLng destination) {
-        OkHttpClient client = new OkHttpClient();
+         OkHttpClient client = new OkHttpClient();
         GMapDirection gMapDirection = new GMapDirection();
 
         Request request = new Request.Builder()
