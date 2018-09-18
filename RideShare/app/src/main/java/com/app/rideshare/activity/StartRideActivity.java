@@ -175,12 +175,16 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 MessageUtils.showSuccessMessage(StartRideActivity.this, "Your Ride Started.");
                 mRider.setRequest_status("3");
             } else if (staus.equals("2")) {
-                if(mUserbean.getmIs_driver().equals("1")){
-                    MessageUtils.showSuccessMessage(StartRideActivity.this, "Your Ride Finish.");
-                    Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
-                    rateride.putExtra("riderate", mRider.getRide_id());
-                    rateride.putExtra("driverid", mRider.getFromRider().getnUserId());
-                    startActivity(rateride);
+                try {
+                    if (mUserbean.getmIs_rider().equals("1")) {
+                        MessageUtils.showSuccessMessage(StartRideActivity.this, "Your Ride Finish.");
+                        Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
+                        rateride.putExtra("riderate", mRider.getRide_id());
+                        rateride.putExtra("driverid", mRider.getFromRider().getnUserId());
+                        startActivity(rateride);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 finish();
             }
@@ -225,7 +229,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 RideStatus = "inProgress";
-                startRide(mRider.getRide_id(),"1", "3", mUserbean.getmUserId());
+                startRide(mRider.getRide_id(), "1", "3", mUserbean.getmUserId());
                 mRider.setRequest_status("3");
             }
         });
@@ -234,7 +238,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 RideStatus = "finished";
-                startRide(mRider.getRide_id(),"1", "4", mUserbean.getmUserId());
+                startRide(mRider.getRide_id(), "1", "4", mUserbean.getmUserId());
             }
         });
 
@@ -251,18 +255,11 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             Log.d("Error", e.toString());
         }
 
-        /*if (mRider.getRequest_status().equals("3")) {
-            mFinishRideBtn.setVisibility(View.VISIBLE);
-            mStartRideBtn.setVisibility(View.GONE);
-        } else {
-            mStartRideBtn.setVisibility(View.VISIBLE);
-            mFinishRideBtn.setVisibility(View.GONE);
-        }*/
-        if( getIntent().hasExtra("Is_driver")) {
-            if(getIntent().getStringExtra("Is_driver").equals("1")){
+        if (getIntent().hasExtra("Is_driver")) {
+            if (getIntent().getStringExtra("Is_driver").equals("1")) {
                 mFinishRideBtn.setVisibility(View.VISIBLE);
                 mStartRideBtn.setVisibility(View.GONE);
-            }else {
+            } else {
                 mStartRideBtn.setVisibility(View.VISIBLE);
                 mFinishRideBtn.setVisibility(View.GONE);
             }
@@ -387,7 +384,9 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 try {
                     Directions directions = new Directions(StartRideActivity.this);
                     routes = directions.parse(json);
-                    if (directionLine != null) directionLine.remove();
+                    if (directionLine != null) {
+                        directionLine.remove();
+                    }
                     if (routes.size() > 0) {
                         directionLine = mGoogleMap.addPolyline((new PolylineOptions())
                                 .addAll(routes.get(0).getOverviewPolyLine())
@@ -435,8 +434,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             i.putExtra("rideprogress", inProgressRide);
             i.putExtra("rideUserID", mUserbean.getmUserId());
             i.putExtra("u_ride_type", mUserbean.getmRideType());
-            if(mUserbean.getmIs_driver().equals("1")){
-                i.putExtra("Is_driver","1");
+            if (mUserbean.getmIs_driver().equals("1")) {
+                i.putExtra("Is_driver", "1");
             }
         } else {
             i.putExtra("inprogress", "free");
@@ -460,7 +459,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                         try {
                             currentlthg = new LatLng(location.getLatitude(), location.getLongitude());
                             Log.d("Bearing", "" + location.getBearing());
-                            if (zoomLevel <= 2.0f) {
+                            if (zoomLevel <= 4.0f) {
                                 zoomLevel = 16.0f;
                             }
                             cameraPosition = new CameraPosition.Builder().target(currentlthg).zoom(zoomLevel).build();
@@ -595,10 +594,10 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
 
-    private void startRide(String mId,String check_driver, final String mType, String userid) {
+    private void startRide(String mId, String check_driver, final String mType, String userid) {
         mProgressDialog.show();
         //destinationLatLang = new LatLng(Double.parseDouble(location.getmLatitude()), Double.parseDouble(location.getmLongitude()));
-        ApiServiceModule.createService(RestApiInterface.class, context).mStartRide(mId,check_driver, mType, userid, "" + mRider.getEnd_lati(), "" +mRider.getEnd_long()).enqueue(new Callback<StartRideResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class, context).mStartRide(mId, check_driver, mType, userid, "" + mRider.getEnd_lati(), "" + mRider.getEnd_long()).enqueue(new Callback<StartRideResponse>() {
             @Override
             public void onResponse(Call<StartRideResponse> call, Response<StartRideResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

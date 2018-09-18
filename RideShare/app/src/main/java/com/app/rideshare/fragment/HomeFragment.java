@@ -33,7 +33,6 @@ import android.widget.TextView;
 
 import com.app.rideshare.R;
 import com.app.rideshare.activity.AutoCompleteLocationActivity;
-import com.app.rideshare.activity.HomeActivity;
 import com.app.rideshare.activity.RideShareApp;
 import com.app.rideshare.activity.WaitingActivity;
 import com.app.rideshare.api.ApiServiceModule;
@@ -143,7 +142,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         mProgressDialog = new CustomProgressDialog(getActivity());
         PrefUtils.initPreference(getActivity());
         mUserBean = PrefUtils.getUserInfo();
-        HomeActivity.setOnBackPressedListener(this);
+        //HomeActivity.setOnBackPressedListener(this);
 
         //application = (RideShareApp) getApplicationContext();
         mUserType = RideShareApp.getmUserType();
@@ -472,7 +471,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         TextView mGetRideTv = (TextView) dialog.findViewById(R.id.get_ride_tv);
         TextView mCancelTv = (TextView) dialog.findViewById(R.id.cancel_ride_tv);
         TextView cancel_driver_tv = (TextView) dialog.findViewById(R.id.cancel_driver_tv);
-        ImageView userImage=dialog.findViewById(R.id.userImage);
+        ImageView userImage = dialog.findViewById(R.id.userImage);
         //cancel_driver_tv
         LinearLayout rider_layout = dialog.findViewById(R.id.rider_layout);
         LinearLayout driver_layout = dialog.findViewById(R.id.driver_layout);
@@ -492,7 +491,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                     Glide.with(this).load(rider.getmProfileImage())
                             .error(R.drawable.icon_test)
                             .into(userImage);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 // mVahicalTv
@@ -744,7 +743,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         super.onResume();
         try {
             popupWindow.dismiss();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -756,7 +755,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         super.onPause();
         try {
             popupWindow.dismiss();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }

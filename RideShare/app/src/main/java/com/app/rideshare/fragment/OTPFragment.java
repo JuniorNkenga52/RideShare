@@ -239,6 +239,7 @@ public class OTPFragment extends Fragment {
 
                     } else {
                         PrefUtils.putString("loginwith", "normal");
+                        PrefUtils.putBoolean("islogin", true);
                         JSONArray jArrayResult = new JSONArray(jsonObject.getString("result"));
 
                         JSONObject jObjResult = jArrayResult.getJSONObject(0);
@@ -274,10 +275,6 @@ public class OTPFragment extends Fragment {
                         beanUser.setM_is_assigned_group(jObjResult.optString("is_assigned_group"));
 
                         PrefUtils.addUserInfo(beanUser);
-
-                        PrefUtils.putBoolean("islogin", true);
-                        PrefUtils.putString("loginwith", "normal");
-
                         smsVerifyCatcher.onStop();
 
 

@@ -23,21 +23,13 @@
           }
         },
         {
-          "client_id": "389180617160-co8ir0tj718t926abfql1fpjjjsl54ti.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.app.rideshare",
-            "certificate_hash": "2f49c1254ca63ecd1362b0225ba4cfe69ca19923"
-          }
-        },
-        {
           "client_id": "389180617160-fhdmml1ack4ok0ou90v7vnff676g5iep.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBCrFvoShrRmrVkZ6VRPH5qb0LCLSLDJIo"
+          "current_key": "AIzaSyBu-VfZxG4IwUxHdon3LLLRhsNqZQx2h2k"
         }
       ],
       "services": {

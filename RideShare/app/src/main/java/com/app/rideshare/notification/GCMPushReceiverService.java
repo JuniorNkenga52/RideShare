@@ -130,13 +130,6 @@ public class GCMPushReceiverService extends GcmListenerService {
                         .setAutoCancel(true)
                         .setSound(sound);
             }
-            /*noBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.ic_notification)
-                    .setContentText(message)
-                    .setContentTitle("RideShare")
-                    .setAutoCancel(true)
-                    .setSound(sound)
-                    .setAutoCancel(true);*/
         }
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
