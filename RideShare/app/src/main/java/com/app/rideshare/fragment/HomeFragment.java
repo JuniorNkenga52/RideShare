@@ -151,6 +151,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                 .findFragmentById(R.id.rideCar_mapView);
         mapFragment.getMapAsync(this);
 
+
         mlist = (ArrayList<Rider>) getArguments().getSerializable("list");
         mlistMarker = new ArrayList<>();
 
