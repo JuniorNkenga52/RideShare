@@ -69,6 +69,7 @@ public class DeepLinkActivity extends AppCompatActivity {
                     GroupList bean = new GroupList();
 
                     bean.setId(jObjResult.getString("id"));
+                    bean.setUser_id(jObjResult.getString("user_id"));
                     bean.setGroup_name(jObjResult.getString("group_name"));
                     bean.setGroup_description(jObjResult.getString("group_description"));
                     bean.setCategory_name(jObjResult.getString("name"));

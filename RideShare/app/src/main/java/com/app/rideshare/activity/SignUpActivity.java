@@ -1,24 +1,18 @@
 package com.app.rideshare.activity;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.fragment.AddressFragment;
@@ -27,8 +21,7 @@ import com.app.rideshare.fragment.MobileNumberFragment;
 import com.app.rideshare.fragment.NameFragment;
 import com.app.rideshare.fragment.OTPFragment;
 import com.app.rideshare.fragment.ProfilePhotoFragment;
-import com.app.rideshare.notification.GCMRegistrationIntentService;
-import com.app.rideshare.service.LocationService;
+import com.app.rideshare.notificationservice.MyFirebaseInstanceIDService;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.widget.CustomViewPager;
 import com.google.android.gms.common.ConnectionResult;
@@ -36,7 +29,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.tangxiaolv.telegramgallery.GalleryActivity;
 
 import java.util.ArrayList;
-
 
 
 public class SignUpActivity extends AppCompatActivity {
@@ -60,7 +52,6 @@ public class SignUpActivity extends AppCompatActivity {
     private int PICK_GALLERY = 2;
 
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,11 +66,11 @@ public class SignUpActivity extends AppCompatActivity {
 
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
+                if (intent.getAction().equals(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS)) {
                     token = intent.getStringExtra("token");
-                    PrefUtils.putString("TokenID",token);
+                    PrefUtils.putString("TokenID", token);
                     Log.d("token", token);
-                } else if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
+                } else if (intent.getAction().equals(MyFirebaseInstanceIDService.REGISTRATION_ERROR)) {
                 } else {
                 }
             }
@@ -92,15 +83,15 @@ public class SignUpActivity extends AppCompatActivity {
             } else {
             }
         } else {
-            /*Intent itent = new Intent(this, GCMRegistrationIntentService.class);
+            /*Intent itent = new Intent(this, MyFirebaseInstanceIDService.class);
             startService(itent);*/
 
             /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                ContextCompat.startForegroundService(context,new Intent(context, GCMRegistrationIntentService.class));
+                ContextCompat.startForegroundService(context,new Intent(context, MyFirebaseInstanceIDService.class));
             } else {
-                startService(new Intent(context, GCMRegistrationIntentService.class));
+                startService(new Intent(context, MyFirebaseInstanceIDService.class));
             }*/
-            startService(new Intent(context, GCMRegistrationIntentService.class));
+            startService(new Intent(context, MyFirebaseInstanceIDService.class));
         }
 
 
@@ -136,9 +127,9 @@ public class SignUpActivity extends AppCompatActivity {
 
         Log.w("MainActivity", "onResume");
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
+                new IntentFilter(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS));
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
+                new IntentFilter(MyFirebaseInstanceIDService.REGISTRATION_ERROR));
     }
 
     @Override
@@ -157,14 +148,14 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             /** Show a Fragment based on the position of the current screen */
-            boolean mbfrag=false;
+            boolean mbfrag = false;
             if (position == 0) {
                 return new MobileNumberFragment();
             } else if (position == 1) {
-                if(PrefUtils.getString("FragVal").equals("true")){
-                    PrefUtils.putString("FragVal","false");
+                if (PrefUtils.getString("FragVal").equals("true")) {
+                    PrefUtils.putString("FragVal", "false");
                     return new MobileNumberFragment();
-                }else {
+                } else {
                     return new OTPFragment();
                 }
                 //return new OTPFragment();
@@ -176,8 +167,8 @@ public class SignUpActivity extends AppCompatActivity {
                 return new EmailFragment();
             } else if (position == 5) {
                 return new ProfilePhotoFragment();
-            } else{
-                PrefUtils.putString("FragVal","true");
+            } else {
+                PrefUtils.putString("FragVal", "true");
                 mViewPager.setCurrentItem(0);
                 return new MobileNumberFragment();
             }

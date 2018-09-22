@@ -1,6 +1,7 @@
 package com.app.rideshare.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -77,6 +78,7 @@ public class ChatActivity extends AppCompatActivity {
     private Rider toRider; // other person detail with whom we are chatting
     private String toJabberId = "";
     RideShareApp mApp;
+    public static Activity activity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,12 +87,14 @@ public class ChatActivity extends AppCompatActivity {
 
         mApp = (RideShareApp) getApplicationContext();
 
+        activity=this;
         senderUser = PrefUtils.getUserInfo().getmUserId();
 
         Intent intent = getIntent();
 
         if (intent != null)
             selChatUser = (AcceptRider) intent.getSerializableExtra(Constants.intentKey.SelectedChatUser);
+
 
         if (senderUser.equals(selChatUser.getFromRider().getnUserId()))
             toRider = selChatUser.getToRider();

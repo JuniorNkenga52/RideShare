@@ -26,11 +26,12 @@ public class GMapDirection {
 
     public String getUrl(LatLng start, LatLng end, String mode, boolean isAlternative) {
 
-        String url = "http://maps.googleapis.com/maps/api/directions/json?"
+        String str_key = "key="+"AIzaSyBtvwSjFgg8VOhn9H7JZLS-jT1SXivcaDU";
+        String url = "https://maps.googleapis.com/maps/api/directions/json?"
                 + "origin=" + start.latitude + "," + start.longitude
                 + "&destination=" + end.latitude + "," + end.longitude
-                + "&sensor=false&units=metric&mode="+mode;
-
+                + "&sensor=false&units=metric&mode="+mode+ "&" +str_key;
+                //+ "&" +str_key
         if (isAlternative)
             url += "&alternatives=true";
 

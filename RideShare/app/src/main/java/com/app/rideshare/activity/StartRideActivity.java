@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
@@ -160,6 +161,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
             if (response.isSuccessful()) {
                 final String json = response.body().string();
+                Log.d("Response for Json",">>>>>>>>>>>>> \n\n"+json);
                 updateLineDestination(json);
 
             }
@@ -387,11 +389,14 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     if (directionLine != null) {
                         directionLine.remove();
                     }
+                    Log.d("Routes Size",">>>>>>>>>>>>>>>>>>"+routes.size());
                     if (routes.size() > 0) {
                         directionLine = mGoogleMap.addPolyline((new PolylineOptions())
                                 .addAll(routes.get(0).getOverviewPolyLine())
                                 .color(ContextCompat.getColor(StartRideActivity.this, R.color.blacltext))
                                 .width(10));
+                    }else {
+                        Toast.makeText(context,json,Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

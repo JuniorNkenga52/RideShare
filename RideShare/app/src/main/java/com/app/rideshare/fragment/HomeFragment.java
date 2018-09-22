@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.activity.AutoCompleteLocationActivity;
@@ -119,6 +120,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             if (response.isSuccessful()) {
                 mProgressDialog.dismiss();
                 final String json = response.body().string();
+                Log.w(">>>>>>>","json :: >>>>>>>>>>>>>>>>>>"+json);
                 updateLineDestination(json);
             }
         }
@@ -293,10 +295,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         MessageUtils.showFailureMessage(getActivity(), "Please select destination location.");
                     } else {
                         if (selectedRide != null) {
-                            if (selectedRide.getU_ride_type().equals("2")) {
-                                getRiderInfoDialog(selectedRide);
-                            } else {
-                                getRiderInfoDialog(selectedRide);
+                            if(!selectedRide.getnUserId().equals(PrefUtils.getUserInfo().getmUserId())){
+                                if (selectedRide.getU_ride_type().equals("2")) {
+                                    getRiderInfoDialog(selectedRide);
+                                } else {
+                                    getRiderInfoDialog(selectedRide);
+                                }
                             }
                         }
                     }
@@ -307,7 +311,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         });
     }
 
-    private void createMarker() {
+    private void createMarker(String mType) {
 
         if (!mlist.isEmpty()) {
 
@@ -335,7 +339,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         .flat(true)
                         .icon(icon));*/
                 Marker m;
-                if (mUserType.equals("1")) {
+                if (mType.equals("1")) {
                     m = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
                             //.position(currentDriverPos).anchor(0.5f, 0.5f)
                             .position(currentDriverPos).anchor(0.5f, 1f)
@@ -343,7 +347,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                             // Specifies the anchor to be at a particular point in the marker image.
                             .rotation(0f)
                             .flat(true));
-                } else {
+                } else  {
                     m = setcutommarker(currentDriverPos, driver, mUserBean, 0);
                     getMarkerBitmapFromView(getActivity(), driver, mUserBean, 0, currentDriverPos);
                 }
@@ -401,6 +405,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                                 .addAll(routes.get(0).getOverviewPolyLine())
                                 .color(ContextCompat.getColor(getActivity(), R.color.blacltext))
                                 .width(10));
+                    }else {
+                        Toast.makeText(context,json,Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -409,7 +415,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         });
     }
 
-    private void selectRide(String mId, String mType, String latitude, String longitude, String mRideType) {
+    private void selectRide(String mId, String mType, String latitude, String longitude, final String mRideType) {
         mProgressDialog.show();
         ApiServiceModule.createService(RestApiInterface.class, context).getUser(mId, mType, latitude, longitude, mRideType).enqueue(new Callback<RideSelect>() {
             @Override
@@ -417,7 +423,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getMlistUser().size() == 0) {
                         showDialog();
-                        //startActivity(new Intent(getContext(), RideRateActivity.class));
                     } else {
                         if (mlist == null) {
                             mlist = new ArrayList<>();
@@ -426,8 +431,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         mlist.addAll(response.body().getMlistUser());
                         builder = new LatLngBounds.Builder();
                         builder.include(currentlthg);
-
-                        createMarker();
+                        createMarker(mRideType);
 
                     }
                 } else {

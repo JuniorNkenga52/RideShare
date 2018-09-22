@@ -38,7 +38,7 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
     //btn_cancle
     private EditText edt_comment;
     private String ride_id = "", driver_id = "";
-    Activity activity;
+     Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

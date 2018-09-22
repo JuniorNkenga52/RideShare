@@ -28,6 +28,7 @@ import com.app.rideshare.utils.PrefUtils;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -278,7 +279,8 @@ public class MyXMPP implements PingFailedListener {
     private void login() {
 
         try {
-
+            SASLAuthentication.unBlacklistSASLMechanism("PLAIN");
+            SASLAuthentication.blacklistSASLMechanism("DIGEST-MD5");
             Log.e(TAG, "login: " + loginUser + "\n" + passwordUser);
             connection.login(loginUser, passwordUser);
 

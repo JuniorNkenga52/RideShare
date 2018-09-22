@@ -20,7 +20,7 @@ import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SignupResponse;
-import com.app.rideshare.notification.GCMRegistrationIntentService;
+import com.app.rideshare.notificationservice.MyFirebaseInstanceIDService;
 import com.app.rideshare.service.LocationService;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
@@ -63,7 +63,7 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
+                if (intent.getAction().equals(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS)) {
                     token = intent.getStringExtra("token");
                     PrefUtils.putString("TokenID", token);
                     Log.d("token", token);
@@ -79,7 +79,7 @@ public class SplashActivity extends AppCompatActivity {
                                 .check();
 
                     }
-                } else if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
+                } else if (intent.getAction().equals(MyFirebaseInstanceIDService.REGISTRATION_ERROR)) {
 
                 }
             }
@@ -91,7 +91,7 @@ public class SplashActivity extends AppCompatActivity {
                 GooglePlayServicesUtil.showErrorNotification(resultCode, getApplicationContext());
             }
         } else {
-            startService(new Intent(this, GCMRegistrationIntentService.class));
+            startService(new Intent(this, MyFirebaseInstanceIDService.class));
         }
 
         PrefUtils.initPreference(this);
@@ -127,9 +127,9 @@ public class SplashActivity extends AppCompatActivity {
         super.onResume();
         Log.w("Splash", "onResume");
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
+                new IntentFilter(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS));
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
+                new IntentFilter(MyFirebaseInstanceIDService.REGISTRATION_ERROR));
     }
 
     @Override
@@ -155,11 +155,11 @@ public class SplashActivity extends AppCompatActivity {
                             startActivity(i);
                             finish();
                         } else {
-                            if (response.body().getMlist().get(0).getM_is_assigned_group().equals("1") ) {
+                            if (response.body().getMlist().get(0).getM_is_assigned_group().equals("1")) {
                                 //response.body().getMlist().get(0).getmRidestatus();
                                 PrefUtils.putString("isBlank", "false");
                                 Intent i = new Intent(getBaseContext(), MyGroupSelectionActivity.class);
-                                if (response.body().getMlist().get(0).getmRidestatus().equals("busy")&&  response.body().getmProgressRide().size()>0) {
+                                if (response.body().getMlist().get(0).getmRidestatus().equals("busy") && response.body().getmProgressRide().size() > 0) {
                                     i.putExtra("inprogress", "busy");
                                     i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
                                     i.putExtra("rideUserID", response.body().getMlist().get(0).getmUserId());
@@ -197,6 +197,10 @@ public class SplashActivity extends AppCompatActivity {
             public void onFailure(Call<SignupResponse> call, Throwable t) {
                 t.printStackTrace();
                 Log.d("error", t.toString());
+                Intent i = new Intent(getBaseContext(), SignUpActivity.class);
+                startActivity(i);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
             }
         });
     }
