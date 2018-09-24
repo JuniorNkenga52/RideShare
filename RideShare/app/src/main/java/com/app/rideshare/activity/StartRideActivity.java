@@ -370,9 +370,9 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             if (mApp.getmUserType().equals("2")) {
                 final Location driverlatlon = new Location(LocationManager.GPS_PROVIDER);
                 LatLng driverlatlng = new LatLng(Double.parseDouble(mRider.getStart_lati()), Double.parseDouble(mRider.getStart_long()));
-                MapDirectionAPI.getDirection(driverlatlng, droplng).enqueue(updateRouteCallback);
+                MapDirectionAPI.getDirection(driverlatlng, droplng,context).enqueue(updateRouteCallback);
             } else {
-                MapDirectionAPI.getDirection(picklng, droplng).enqueue(updateRouteCallback);
+                MapDirectionAPI.getDirection(picklng, droplng,context).enqueue(updateRouteCallback);
             }
 
         }

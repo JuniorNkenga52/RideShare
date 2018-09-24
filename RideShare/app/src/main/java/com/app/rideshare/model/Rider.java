@@ -54,6 +54,9 @@ public class Rider implements Serializable {
     @SerializedName("is_driver")
     private String is_driver;
 
+    @SerializedName("max_passengers")
+    private String max_passengers;
+
     public String getU_ride_type() {
         return u_ride_type;
     }
@@ -172,5 +175,13 @@ public class Rider implements Serializable {
 
     public void setIs_driver(String is_driver) {
         this.is_driver = is_driver;
+    }
+
+    public String getMax_passengers() {
+        return max_passengers;
+    }
+
+    public void setMax_passengers(String max_passengers) {
+        this.max_passengers = max_passengers;
     }
 }

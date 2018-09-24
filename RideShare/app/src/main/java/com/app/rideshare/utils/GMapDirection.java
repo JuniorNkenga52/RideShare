@@ -1,7 +1,9 @@
 package com.app.rideshare.utils;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.app.rideshare.R;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.w3c.dom.Document;
@@ -24,9 +26,10 @@ public class GMapDirection {
     }
 
 
-    public String getUrl(LatLng start, LatLng end, String mode, boolean isAlternative) {
+    public String getUrl(Context context,LatLng start, LatLng end, String mode, boolean isAlternative) {
 
-        String str_key = "key="+"AIzaSyBtvwSjFgg8VOhn9H7JZLS-jT1SXivcaDU";
+        //String str_key = "key="+"AIzaSyBtvwSjFgg8VOhn9H7JZLS-jT1SXivcaDU";
+        String str_key = "key="+context.getResources().getString(R.string.google_places_server_key);
         String url = "https://maps.googleapis.com/maps/api/directions/json?"
                 + "origin=" + start.latitude + "," + start.longitude
                 + "&destination=" + end.latitude + "," + end.longitude
@@ -36,6 +39,27 @@ public class GMapDirection {
             url += "&alternatives=true";
 
         Log.e("getUrl", url);
+        return url;
+    }
+
+    public  String getDirectionsUrl(Context context, LatLng origin, LatLng dest, boolean isAlternative) {
+        // Origin of route
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        // Sensor enabled
+        String sensor = "sensor=false";
+        String mode = "mode=driving";
+        // Building the parameters to the web service
+        //Key
+        String str_key = "key=" + context.getResources().getString(R.string.google_places_server_key);
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode + "&" + str_key;
+        // Output format
+        String output = "json";
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+        if (isAlternative)
+            url += "&alternatives=true";
         return url;
     }
 

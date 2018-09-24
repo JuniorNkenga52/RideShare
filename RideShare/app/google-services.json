@@ -1,43 +1,35 @@
 {
   "project_info": {
-    "project_number": "389180617160",
-    "firebase_url": "https://rideshareandroid-590c4.firebaseio.com",
-    "project_id": "rideshareandroid-590c4",
-    "storage_bucket": "rideshareandroid-590c4.appspot.com"
+    "project_number": "894682267269",
+    "firebase_url": "https://rideshareapp-11aeb.firebaseio.com",
+    "project_id": "rideshareapp-11aeb",
+    "storage_bucket": "rideshareapp-11aeb.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:389180617160:android:49718daea9b6c9e5",
+        "mobilesdk_app_id": "1:894682267269:android:49718daea9b6c9e5",
         "android_client_info": {
           "package_name": "com.app.rideshare"
         }
       },
       "oauth_client": [
         {
-          "client_id": "389180617160-hr3k4k4emf1u5rk3t728b50lumfngr2r.apps.googleusercontent.com",
+          "client_id": "894682267269-if0ro8ndcvtq3m4lul11dhic6cslfium.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.app.rideshare",
-            "certificate_hash": "6dd1104c68ce6a1fd1b4115260e9527ce3b23458"
+            "certificate_hash": "be0a7b2f28149756e6e36491e59ea2ea75a700b4"
           }
         },
         {
-          "client_id": "389180617160-co8ir0tj718t926abfql1fpjjjsl54ti.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.app.rideshare",
-            "certificate_hash": "2f49c1254ca63ecd1362b0225ba4cfe69ca19923"
-          }
-        },
-        {
-          "client_id": "389180617160-fhdmml1ack4ok0ou90v7vnff676g5iep.apps.googleusercontent.com",
+          "client_id": "894682267269-q77hvg084riiik0jlr269d6hm1cahjsl.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBItPmql4vFB_CEiZMZ95lNygT9T7WHPmM"
+          "current_key": "AIzaSyADxBSnaC9qdGjqHG4s7mtMMI7OQ5oYzsA"
         }
       ],
       "services": {
@@ -48,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "389180617160-fhdmml1ack4ok0ou90v7vnff676g5iep.apps.googleusercontent.com",
+              "client_id": "894682267269-q77hvg084riiik0jlr269d6hm1cahjsl.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

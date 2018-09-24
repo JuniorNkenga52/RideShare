@@ -387,7 +387,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     private void requestRoute() {
         if (currentlthg != null && destinationLatLang != null) {
             mProgressDialog.show();
-            MapDirectionAPI.getDirection(currentlthg, destinationLatLang).enqueue(updateRouteCallback);
+            MapDirectionAPI.getDirection(currentlthg, destinationLatLang,context).enqueue(updateRouteCallback);
         }
     }
 
@@ -480,12 +480,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         //cancel_driver_tv
         LinearLayout rider_layout = dialog.findViewById(R.id.rider_layout);
         LinearLayout driver_layout = dialog.findViewById(R.id.driver_layout);
-
+        //yourTextView.setText(String.format("Value of a: %.2f", a));
         try {
             mNameTv.setText(rider.getmFirstName());
             mAddressTv.setText(rider.getmAddress());
+            txt_maxPerson.setText("0"+rider.getMax_passengers());
             if (mUserType.equals("2") || !rider.getmType().equals("2")) {
-
                 mDetails_tv.setText("Rider details");
                 mGetRideTv.setText("Offer Ride");
                 mVahicalTv.setText(rider.getmLastName());

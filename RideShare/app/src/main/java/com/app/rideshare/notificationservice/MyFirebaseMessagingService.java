@@ -70,11 +70,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 sendNotification("Your Ride Finish", "5");
 
-
-
-
-
-
             } else if (jobj.getString("type").equals("6")) {
                 //JSONObject jObjUser = jobj.getJSONObject("result");
                 PrefUtils.putString("AdminID", jobj.getJSONObject("result").getString("admin_id"));

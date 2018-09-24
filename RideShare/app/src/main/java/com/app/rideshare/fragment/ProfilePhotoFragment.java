@@ -142,7 +142,7 @@ public class ProfilePhotoFragment extends Fragment {
                 return RideShareApi.updateProfileNew(SignUpActivity.mUserId, firstname,
                         lastname, homeaddress,
                         PrefUtils.getString("UemailID"), SignUpActivity.ProfilePhotoPath,
-                        "", "", "");
+                        "", "", "","0");
             } catch (Exception e) {
                 return null;
             }

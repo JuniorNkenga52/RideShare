@@ -19,7 +19,7 @@ public class ManageCarResponce {
     private String message;
 
     @SerializedName("result")
-    private ArrayList<ManageCar> result;
+    private ManageCar result;
 
     public String getStatus() {
         return status;
@@ -37,13 +37,11 @@ public class ManageCarResponce {
         this.message = message;
     }
 
-    public ArrayList<ManageCar> getResult() {
+    public ManageCar getResult() {
         return result;
     }
 
-    public void setResult(ArrayList<ManageCar> result) {
+    public void setResult(ManageCar result) {
         this.result = result;
     }
-
-
 }

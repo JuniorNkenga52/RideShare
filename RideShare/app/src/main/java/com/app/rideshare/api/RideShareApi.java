@@ -230,7 +230,7 @@ public class RideShareApi {
     }
 
     public static String updateProfileNew(String user_id, String u_firstname, String u_lastname, String address, String u_email, String profile_image,
-                                          String vehicle_model, String vehicle_type, String max_passengers) {
+                                          String vehicle_model, String vehicle_type, String max_passengers,String requested_as_driver) {
         try {
             String SERVER_WS_URL = SERVER_URL + "user/updateProfileNew";
 
@@ -252,7 +252,7 @@ public class RideShareApi {
             multipart.addFormField("vehicle_model", vehicle_model);
             multipart.addFormField("vehicle_type", vehicle_type);
             multipart.addFormField("max_passengers", max_passengers);
-
+            multipart.addFormField("requested_as_driver", requested_as_driver);
 
             return multipart.execute();
 

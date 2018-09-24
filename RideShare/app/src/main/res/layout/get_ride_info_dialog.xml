@@ -148,7 +148,7 @@
 
                     <com.app.rideshare.widget.TextViewRegular
                         android:id="@+id/driver_distance_tv"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_3sdp"
                         android:gravity="center"
@@ -157,8 +157,7 @@
                         android:textSize="@dimen/_12sdp" />
 
                     <com.app.rideshare.widget.TextViewRegular
-
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="CAB Distance"
@@ -181,7 +180,7 @@
 
                     <com.app.rideshare.widget.TextViewRegular
                         android:id="@+id/txt_maxPerson"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_3sdp"
                         android:gravity="center"

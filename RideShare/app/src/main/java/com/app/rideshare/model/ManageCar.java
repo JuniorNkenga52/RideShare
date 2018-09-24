@@ -6,17 +6,26 @@ package com.app.rideshare.model;
 
 public class ManageCar {
 
-    String id = "";
-    String user_id = "";
-    String created_date = "";
-    String update_date = "";
-    String brand = "";
-    String car_model = "";
-    String car_make = "";
-    String car_month = "";
-    String car_year = "";
-    String car_type = "";
-    String seating_capacity = "";
+
+    private String id;
+    private String user_id;
+    private String created_date;
+    private String update_date;
+    private String brand;
+    private String car_model;
+    private String car_make;
+    private String car_month;
+    private String car_year;
+    private String car_type;
+    private String seating_capacity;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUser_id() {
         return user_id;
@@ -24,6 +33,14 @@ public class ManageCar {
 
     public void setUser_id(String user_id) {
         this.user_id = user_id;
+    }
+
+    public String getCreated_date() {
+        return created_date;
+    }
+
+    public void setCreated_date(String created_date) {
+        this.created_date = created_date;
     }
 
     public String getUpdate_date() {
@@ -34,46 +51,20 @@ public class ManageCar {
         this.update_date = update_date;
     }
 
-    public String getCar_model() {
-        return car_model;
-    }
-
-    public void setCar_model(String car_model) {
-        this.car_model = car_model;
-    }
-
-    public String getSeating_capacity() {
-        return seating_capacity;
-    }
-
-    public void setSeating_capacity(String seating_capacity) {
-        this.seating_capacity = seating_capacity;
-    }
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-
-    public String getCreated_date() {
-        return created_date;
-    }
-
-    public void setCreated_date(String created_date) {
-        this.created_date = created_date;
-    }
-
     public String getBrand() {
         return brand;
     }
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    public String getCar_model() {
+        return car_model;
+    }
+
+    public void setCar_model(String car_model) {
+        this.car_model = car_model;
     }
 
     public String getCar_make() {
@@ -108,5 +99,11 @@ public class ManageCar {
         this.car_type = car_type;
     }
 
+    public String getSeating_capacity() {
+        return seating_capacity;
+    }
 
+    public void setSeating_capacity(String seating_capacity) {
+        this.seating_capacity = seating_capacity;
+    }
 }
