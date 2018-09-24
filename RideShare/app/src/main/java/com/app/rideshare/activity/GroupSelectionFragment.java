@@ -66,6 +66,11 @@ public class GroupSelectionFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_explore, container,
                 false);
 
+
+
+
+
+
         PrefUtils.initPreference(getActivity());
         PrefUtils.putString("loginwith", "normal");
         context = getActivity();

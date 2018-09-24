@@ -1,5 +1,4 @@
 RideShare(22_sep_2018).zip
 google-services_new.json
 google-services (5).json
-RideShare/app/src/main/java/com/app/rideshare/notificationservice/MyFirebaseMessagingService.java
-RideShare/app/src/main/java/com/app/rideshare/notificationservice/MyFirebaseInstanceIDService.java
+
