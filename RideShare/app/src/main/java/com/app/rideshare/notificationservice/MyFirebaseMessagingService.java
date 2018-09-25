@@ -31,6 +31,15 @@ import org.json.JSONObject;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
+    public static final String REGISTRATION_SUCCESS = "RegistrationSuccess";
+    public static final String REGISTRATION_ERROR = "RegistrationError";
+
+    @Override
+    public void onNewToken(String s) {
+        super.onNewToken(s);
+        Log.e("NEW_TOKEN", s);
+        registerGCM(s);
+    }
 
     /**
      * Called when message is received.
@@ -43,47 +52,45 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         String message = remoteMessage.getData().get("m");
         try {
-
             JSONObject jobj = new JSONObject(message);
+            if (PrefUtils.getBoolean("islogin")) {
+                if (jobj.getString("type").equals("1")) {
+                    JSONArray jarrMsg = jobj.getJSONArray("msg");
+                    JSONObject jobjmessage = jarrMsg.getJSONObject(0);
+                    openActivity(jobjmessage.toString());
+                } else if (jobj.getString("type").equals("2")) {
+                    Intent intent = new Intent("request_status");
+                    intent.putExtra("int_data", jobj.toString());
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                } else if (jobj.getString("type").equals("3")) {
+                    Intent intent = new Intent("request_notification");
+                    intent.putExtra("int_data", jobj.toString());
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                } else if (jobj.getString("type").equals("4")) {
+                    Intent intent = new Intent("start_ride");
+                    intent.putExtra("int_data", "1");
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                    sendNotification("Your Ride start", "4");
+                } else if (jobj.getString("type").equals("5")) {
+                    Intent intent = new Intent("start_ride");
+                    intent.putExtra("int_data", "2");
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                    sendNotification("Your Ride Finish", "5");
 
-            if (jobj.getString("type").equals("1")) {
-                JSONArray jarrMsg = jobj.getJSONArray("msg");
-                JSONObject jobjmessage = jarrMsg.getJSONObject(0);
-                openActivity(jobjmessage.toString());
-
-            } else if (jobj.getString("type").equals("2")) {
-                Intent intent = new Intent("request_status");
-                intent.putExtra("int_data", jobj.toString());
-                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-            } else if (jobj.getString("type").equals("3")) {
-                Intent intent = new Intent("request_notification");
-                intent.putExtra("int_data", jobj.toString());
-                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-            } else if (jobj.getString("type").equals("4")) {
-                Intent intent = new Intent("start_ride");
-                intent.putExtra("int_data", "1");
-                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-                sendNotification("Your Ride start", "4");
-            } else if (jobj.getString("type").equals("5")) {
-                Intent intent = new Intent("start_ride");
-                intent.putExtra("int_data", "2");
-                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-                sendNotification("Your Ride Finish", "5");
-
-            } else if (jobj.getString("type").equals("6")) {
-                //JSONObject jObjUser = jobj.getJSONObject("result");
-                PrefUtils.putString("AdminID", jobj.getJSONObject("result").getString("admin_id"));
-                Intent intent = new Intent("new_user");
-                intent.putExtra("int_data", "2");
-                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-                sendNotification(jobj.getString("msg"), "6");
-            } else if (jobj.getString("type").equals("7")) {
-                Intent intent = new Intent("new_user_req");
-                intent.putExtra("int_data", "2");
-                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-                sendNotification(jobj.getString("msg"), "7");
+                } else if (jobj.getString("type").equals("6")) {
+                    //JSONObject jObjUser = jobj.getJSONObject("result");
+                    PrefUtils.putString("AdminID", jobj.getJSONObject("result").getString("admin_id"));
+                    Intent intent = new Intent("new_user");
+                    intent.putExtra("int_data", "2");
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                    sendNotification(jobj.getString("msg"), "6");
+                } else if (jobj.getString("type").equals("7")) {
+                    Intent intent = new Intent("new_user_req");
+                    intent.putExtra("int_data", "2");
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                    sendNotification(jobj.getString("msg"), "7");
+                }
             }
-
         } catch (Exception e) {
             Log.d("error", e.toString());
         }
@@ -102,7 +109,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void sendNotification(String message, String type) {
 
         int currenttime = (int) System.currentTimeMillis();
-
         Intent intent;
         int requestCode = 0;
 
@@ -129,7 +135,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 startActivity(rateride);*/
 
             }
-
         }
         if (type.equals("6")) {
             if (!message.equals("Request Declined")) {
@@ -149,14 +154,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             PrefUtils.putBoolean("firstTime", true);
         } else {
-            if (PrefUtils.getBoolean("islogin")) {
+
                 notifBuilder = new NotificationCompat.Builder(this, NOTIF_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setContentText(message)
                         .setContentTitle("RideShare")
                         .setAutoCancel(true)
                         .setSound(sound);
-            }
+
         }
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -181,6 +186,31 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager nMgr = (NotificationManager) ctx.getSystemService(ns);
         nMgr.cancel(notifyId);
+    }
+
+    private void registerGCM(String token) {
+        //Registration complete intent initially null
+        Intent registrationComplete = null;
+
+        //Register token is also null
+        //we will get the token on successfull registration
+        try {
+            Log.w("GCMRegIntentService", "token:" + token);
+
+            //on registration complete creating intent with success
+            registrationComplete = new Intent(REGISTRATION_SUCCESS);
+
+            //Putting the token to the intent
+            registrationComplete.putExtra("token", token);
+        } catch (Exception e) {
+            //If any error occurred
+            e.printStackTrace();
+            Log.w("GCMRegIntentService", "Registration error");
+            registrationComplete = new Intent(REGISTRATION_ERROR);
+        }
+
+        //Sending the broadcast that registration is completed
+        LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
     }
 
 }

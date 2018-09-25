@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,11 +20,14 @@ import com.app.rideshare.fragment.MobileNumberFragment;
 import com.app.rideshare.fragment.NameFragment;
 import com.app.rideshare.fragment.OTPFragment;
 import com.app.rideshare.fragment.ProfilePhotoFragment;
-import com.app.rideshare.notificationservice.MyFirebaseInstanceIDService;
+import com.app.rideshare.notificationservice.MyFirebaseMessagingService;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.widget.CustomViewPager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.tangxiaolv.telegramgallery.GalleryActivity;
 
 import java.util.ArrayList;
@@ -61,20 +63,16 @@ public class SignUpActivity extends AppCompatActivity {
 
         PrefUtils.initPreference(this);
 
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-
-
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SignUpActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS)) {
-                    token = intent.getStringExtra("token");
-                    PrefUtils.putString("TokenID", token);
-                    Log.d("token", token);
-                } else if (intent.getAction().equals(MyFirebaseInstanceIDService.REGISTRATION_ERROR)) {
-                } else {
-                }
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String newToken = instanceIdResult.getToken();
+                Log.e("newToken", newToken);
+                PrefUtils.putString("TokenID", newToken);
+
             }
-        };
+        });
+
 
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
         if (ConnectionResult.SUCCESS != resultCode) {
@@ -83,15 +81,7 @@ public class SignUpActivity extends AppCompatActivity {
             } else {
             }
         } else {
-            /*Intent itent = new Intent(this, MyFirebaseInstanceIDService.class);
-            startService(itent);*/
-
-            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                ContextCompat.startForegroundService(context,new Intent(context, MyFirebaseInstanceIDService.class));
-            } else {
-                startService(new Intent(context, MyFirebaseInstanceIDService.class));
-            }*/
-            startService(new Intent(context, MyFirebaseInstanceIDService.class));
+            startService(new Intent(context, MyFirebaseMessagingService.class));
         }
 
 
@@ -124,12 +114,6 @@ public class SignUpActivity extends AppCompatActivity {
         LastName = "";
         HomeAddress = "";
         EmailId = "";
-
-        Log.w("MainActivity", "onResume");
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS));
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(MyFirebaseInstanceIDService.REGISTRATION_ERROR));
     }
 
     @Override

@@ -5,9 +5,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -108,6 +110,33 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
         ArrayOfMonth();
         ArrayOfYear();
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("My Groups");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ManageCarActivity.this, HomeNewActivity.class);
+                startActivity(i);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+            }
+        });
+
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
+            View view = toolbar.getChildAt(i);
+            if (view instanceof TextView) {
+                TextView tv = (TextView) view;
+                Typeface titleFont = Typeface.
+                        createFromAsset(getAssets(), "OpenSans-Regular.ttf");
+                if (tv.getText().equals(toolbar.getTitle())) {
+                    tv.setTypeface(titleFont);
+                    break;
+                }
+            }
+        }
+
         rlMainView = findViewById(R.id.rlMainView);
         tvTitle = findViewById(R.id.tvTitle);
 
@@ -143,12 +172,6 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
         txt_addcar.setOnClickListener(this);
 
         AddTextChangeListener(edt_licenseplate, "address");
-
-        /*ValidationGone(this, rlMainView, edt_carmake);
-        ValidationGone(this, rlMainView, edt_licenseplate);
-        ValidationGone(this, rlMainView, edt_seatingcapacity);
-        ValidationGone(this, rlMainView, edt_modelofthecar);
-        ValidationGone(this, rlMainView, edt_brand);*/
 
         if (PrefUtils.getBoolean("EditCar")) {
             if (manageCarsList != null && manageCarsList.size() > 0) {
@@ -353,25 +376,6 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
             }, "Transmission type", Brand_list);
 
             dialog.show();
-
-            /*new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    int colorFrom = getResources().getColor(R.color.transparent);
-                    int colorTo = getResources().getColor(R.color.Transparent_Black);
-                    final ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                    colorAnimation.setDuration(1000); // milliseconds
-                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animator) {
-                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable((int) animator.getAnimatedValue()));
-                        }
-                    });
-                    colorAnimation.start();
-                }
-            }, 1000);*/
-
-            // OpenDialogCartype();
         } else if (v.getId() == R.id.text_carmonth) {
             str_carmonth = "";
             Dialog dialog = new DialogUtils(this).buildDialogMonth(new CallbackYear() {
@@ -436,39 +440,7 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
 
             dialog.show();
 
-        } /*else if (v.getId() == R.id.text_transmissiontype) {
-
-            dialog = new DialogUtils(this).buildDialogTransmission(new CallbackTranssion() {
-                @Override
-                public void onSuccess(Dialog dialog, String message) {
-                    str_transsiontype = message;
-                    text_transmissiontype.setText(message);
-                }
-
-                @Override
-                public void onCancel(Dialog dialog) {
-                    dialog.dismiss();
-                }
-
-                @Override
-                public void onFinal(Dialog dialog, String mes) {
-                    dialog.dismiss();
-                    str_transsiontype = mes;
-                    text_transmissiontype.setText(mes);
-                }
-
-            }, "Car Type");
-
-            dialog.show();
-
-
-        }*/ /*else if (v.getId() == R.id.layout_back_arrow) {
-
-            SharedPreferences.Editor currentbalance = sPref.edit();
-            currentbalance.putBoolean("Carflag", false);
-            currentbalance.commit();
-            finish();
-        }*/ else if (v.getId() == R.id.txt_addcar) {
+        } else if (v.getId() == R.id.txt_addcar) {
             if (edt_carmake.getText().toString().trim().equals("")) {
                 showMKPanelError(this, getResources().getString(R.string.entercarmake), rlMainView, tvTitle);
                 edt_carmake.requestFocus();
@@ -477,17 +449,7 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
                 showMkErrorMessage(this, getResources().getString(R.string.entercarMonth));
             } else if (str_caryear.equals("")) {
                 showMkErrorMessage(this, getResources().getString(R.string.entercaryear));
-            }/* else if (edt_licenseplate.getText().toString().trim().equals("")) {
-                showMKPanelError(this, getResources().getString(R.string.entercarlicenseplate), rlMainView, tvTitle);
-                edt_licenseplate.requestFocus();
-                return;
-            } else if (!isValidPass(edt_licenseplate.getText().toString().trim())) {
-                showMKPanelError(this, getResources().getString(R.string.entercarlicenseplate1), rlMainView, tvTitle);
-                edt_licenseplate.requestFocus();
-                return;
-            } else if (str_carbrand.equals("")) {
-                showMkErrorMessage(this, getResources().getString(R.string.entercarbrand));
-            }*/
+            }
             else if (edt_brand.getText().toString().equals("")) {
                 showMKPanelError(this, getResources().getString(R.string.entercarbrand), rlMainView, tvTitle);
                 edt_brand.requestFocus();
@@ -501,11 +463,7 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
                 showMKPanelError(this, getResources().getString(R.string.entermodelofthecar), rlMainView, tvTitle);
                 edt_modelofthecar.requestFocus();
                 return;
-            } /*else if (str_transsiontype.equals("")) {
-                showMkErrorMessage(this, getResources().getString(R.string.entercartranssiontype));
-            } else if (selectcolor.equals("")) {
-                showMkErrorMessage(this, getResources().getString(R.string.entercarcolor));
-            } */else {
+            }else {
 
                 str_carbrand = edt_brand.getText().toString();
 
@@ -515,11 +473,7 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
 
                         manageCar(PrefUtils.getUserInfo().getmUserId(), edt_carmake.getText().toString().trim(), str_carmonth, str_caryear, edt_licenseplate.getText().toString().trim(), str_carbrand, str_cartypeid
                                 , edt_seatingcapacity.getText().toString().trim(), edt_modelofthecar.getText().toString().trim());
-                        //, str_transsiontype, selectcolor
-                        /*String m_user_id, String m_car_make, String m_car_month, String m_car_year, String m_license_plate,String m_brand,String m_car_type,String m_seating_capacity,String m_car_model*/
-                    } else {
 
-                        //Common.showInternetInfo(this, "Network is not available");
                     }
 
                 } else {
@@ -527,9 +481,6 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
 
                         manageCar(PrefUtils.getUserInfo().getmUserId(), edt_carmake.getText().toString().trim(), str_carmonth, str_caryear, edt_licenseplate.getText().toString().trim(), str_carbrand, "Honda"
                                 , edt_seatingcapacity.getText().toString().trim(), edt_modelofthecar.getText().toString().trim());
-                    } else {
-
-                        //AppUtils.int(this, "Network is not available");
                     }
                 }
             }
@@ -580,20 +531,6 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
             }
         });
     }
-
-    /*public static void showMKPanelError(final Activity act, String message, final RelativeLayout rlMainView, TextView tvTitle) {
-        if (!act.isFinishing() && (rlMainView.getVisibility() == View.GONE)) {
-            if ((rlMainView.getVisibility() == View.GONE)) {
-                rlMainView.setVisibility(View.VISIBLE);
-            }
-
-            rlMainView.setBackgroundResource(R.color.dialog_error_color);
-            tvTitle.setText(message);
-            Animation slideUpAnimation = AnimationUtils.loadAnimation(act.getApplicationContext(), R.anim.slide_up_map);
-            rlMainView.startAnimation(slideUpAnimation);
-
-        }
-    }*/
 
     public static void showMKPanelError(final Activity act, String message, final RelativeLayout rlMainView, TextView tvTitle) {
         if (!act.isFinishing() && (rlMainView.getVisibility() == View.GONE)) {
@@ -677,4 +614,12 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent i = new Intent(ManageCarActivity.this, HomeNewActivity.class);
+        startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
+    }
 }

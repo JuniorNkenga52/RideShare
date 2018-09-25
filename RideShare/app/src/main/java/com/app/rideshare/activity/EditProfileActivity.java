@@ -129,13 +129,12 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
         layout_req_driver = (LinearLayout) findViewById(R.id.layout_req_driver);
         layout_other_op = (LinearLayout) findViewById(R.id.layout_other_op);
 
-        if (mUserBean.getMvehicle_model() != null) {
+        if (mUserBean.getMrequested_as_driver() != null) {
             if (mUserBean.getMrequested_as_driver().equals("1") ) {
                 mReqdriver_Ch.setChecked(true);
                 ch_val = 1;
                 layout_other_op.setVisibility(View.VISIBLE);
             }
-
         }
         mSaveTv.setOnClickListener(new View.OnClickListener() {
             @Override

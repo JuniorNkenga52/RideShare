@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -20,12 +19,15 @@ import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SignupResponse;
-import com.app.rideshare.notificationservice.MyFirebaseInstanceIDService;
+import com.app.rideshare.notificationservice.MyFirebaseMessagingService;
 import com.app.rideshare.service.LocationService;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -57,33 +59,24 @@ public class SplashActivity extends AppCompatActivity {
         TextView textViewVersion = (TextView) findViewById(R.id.textViewVersion);
         textViewVersion.setText("Version " + BuildConfig.VERSION_NAME);
 
-
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-
-
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SplashActivity.this, new OnSuccessListener<InstanceIdResult>() {
             @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS)) {
-                    token = intent.getStringExtra("token");
-                    PrefUtils.putString("TokenID", token);
-                    Log.d("token", token);
-
-                    if (PrefUtils.getString("loginwith").equals("")) {
-
-                        new TedPermission(context)
-                                .setPermissionListener(permissionlistener)
-                                .setDeniedMessage("If you reject permission,you can not use this service\n\n" +
-                                        "Please turn on permissions at [Setting] > [Permission]")
-                                .setPermissions(Manifest.permission.READ_PHONE_STATE,
-                                        Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
-                                .check();
-
-                    }
-                } else if (intent.getAction().equals(MyFirebaseInstanceIDService.REGISTRATION_ERROR)) {
-
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String newToken = instanceIdResult.getToken();
+                Log.e("newToken", newToken);
+                PrefUtils.putString("TokenID", newToken);
+                if (PrefUtils.getString("loginwith").equals("")) {
+                    new TedPermission(context)
+                            .setPermissionListener(permissionlistener)
+                            .setDeniedMessage("If you reject permission,you can not use this service\n\n" +
+                                    "Please turn on permissions at [Setting] > [Permission]")
+                            .setPermissions(Manifest.permission.READ_PHONE_STATE,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+                            .check();
                 }
             }
-        };
+        });
+
 
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
         if (ConnectionResult.SUCCESS != resultCode) {
@@ -91,7 +84,7 @@ public class SplashActivity extends AppCompatActivity {
                 GooglePlayServicesUtil.showErrorNotification(resultCode, getApplicationContext());
             }
         } else {
-            startService(new Intent(this, MyFirebaseInstanceIDService.class));
+            startService(new Intent(this, MyFirebaseMessagingService.class));
         }
 
         PrefUtils.initPreference(this);
@@ -125,11 +118,6 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.w("Splash", "onResume");
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(MyFirebaseInstanceIDService.REGISTRATION_SUCCESS));
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(MyFirebaseInstanceIDService.REGISTRATION_ERROR));
     }
 
     @Override

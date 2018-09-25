@@ -50,7 +50,6 @@ public class OTPFragment extends Fragment {
     private TextView txtResendOTP;
 
     //CustomProgressDialog mProgressDialog;
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
     private SmsVerifyCatcher smsVerifyCatcher;
     //String token;
 

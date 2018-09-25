@@ -20,7 +20,7 @@
             android:text=""
             android:textAlignment="center"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/_14sdp"></TextView>
+            android:textSize="@dimen/_14sdp"/>
 
     </RelativeLayout>
 </merge>

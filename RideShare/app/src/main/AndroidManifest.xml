@@ -21,6 +21,7 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -58,25 +59,23 @@
         <activity
             android:name=".activity.SignUpActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|adjustPan"
-            >
-        </activity>
-       <!-- <activity
-            android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name" />
-        <activity
-            android:name="com.facebook.CustomTabActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+            android:windowSoftInputMode="adjustPan"/>
+        <!-- <activity
+             android:name="com.facebook.FacebookActivity"
+             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+             android:label="@string/app_name" />
+         <activity
+             android:name="com.facebook.CustomTabActivity"
+             android:exported="true">
+             <intent-filter>
+                 <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                 <category android:name="android.intent.category.DEFAULT" />
+                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="@string/fb_login_protocol_scheme" />
-            </intent-filter>
-        </activity>-->
+                 <data android:scheme="@string/fb_login_protocol_scheme" />
+             </intent-filter>
+         </activity>-->
         <activity
             android:name=".activity.NotificationActivity"
             android:screenOrientation="portrait" />
@@ -127,7 +126,7 @@
         <activity
             android:name=".activity.RideRateActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|adjustPan"/>
+            android:windowSoftInputMode="adjustResize|adjustPan" />
         <activity
             android:name=".activity.SettingActivity"
             android:screenOrientation="portrait" />
@@ -138,9 +137,9 @@
 
         <service android:name=".chat.MyService" />
 
-       <!-- <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyChC2mPyZsEQp0hXSqW2wwcdIrILZaJG-k" />-->
+        <!-- <meta-data
+             android:name="com.google.android.geo.API_KEY"
+             android:value="AIzaSyChC2mPyZsEQp0hXSqW2wwcdIrILZaJG-k" />-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyADxBSnaC9qdGjqHG4s7mtMMI7OQ5oYzsA" />
@@ -165,23 +164,24 @@
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
                 <category android:name="com.app.rideshare" />
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".notification.GCMPushReceiverService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
+        <!-- <service
+             android:name=".notification.GCMPushReceiverService"
+             android:exported="false">
+             <intent-filter>
+                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+             </intent-filter>
+         </service>-->
 
-        <service android:name=".notificationservice.MyFirebaseInstanceIDService">
+        <!--<service android:name=".notificationservice.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
-        </service>
+        </service>-->
 
         <service android:name=".notificationservice.MyFirebaseMessagingService">
             <intent-filter>
@@ -189,18 +189,18 @@
             </intent-filter>
         </service>
 
-        <service
-            android:name=".notification.GCMRegistrationIntentService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
-            </intent-filter>
-        </service>
+        <!-- <service
+             android:name=".notification.GCMRegistrationIntentService"
+             android:exported="false">
+             <intent-filter>
+                 <action android:name="com.google.android.gms.iid.InstanceID" />
+             </intent-filter>
+         </service>-->
         <service
             android:name=".service.LocationService"
             android:enabled="true"
-            android:stopWithTask="false"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:stopWithTask="false" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -251,9 +251,9 @@
                 tools:replace="android:resource" />
         </provider>
 
-       <!-- <activity
-            android:name=".activity.GroupSelectionFragment"
-            android:screenOrientation="portrait" />-->
+        <!-- <activity
+             android:name=".activity.GroupSelectionFragment"
+             android:screenOrientation="portrait" />-->
         <activity
             android:name=".activity.DeepLinkActivity"
             android:excludeFromRecents="true"
@@ -272,8 +272,8 @@
         </activity>
         <activity
             android:name=".activity.MyGroupSelectionActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.ManageCarActivity"/>
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.ManageCarActivity" />
 
 
     </application>
