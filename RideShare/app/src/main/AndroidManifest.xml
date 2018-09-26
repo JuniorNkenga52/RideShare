@@ -273,7 +273,8 @@
         <activity
             android:name=".activity.MyGroupSelectionActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.ManageCarActivity" />
+        <activity android:name=".activity.ManageCarActivity"
+            android:windowSoftInputMode="adjustPan"/>
 
 
     </application>

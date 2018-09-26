@@ -112,7 +112,7 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("My Groups");
+        getSupportActionBar().setTitle("My Cars");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -442,10 +442,10 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
 
         } else if (v.getId() == R.id.txt_addcar) {
             if (edt_carmake.getText().toString().trim().equals("")) {
-                showMKPanelError(this, getResources().getString(R.string.entercarmake), rlMainView, tvTitle);
+                showMkErrorMessage(this, getResources().getString(R.string.entercarmake));
                 edt_carmake.requestFocus();
                 return;
-            } else if (str_carmonth.equals("")) {
+            } /*else if (str_carmonth.equals("")) {
                 showMkErrorMessage(this, getResources().getString(R.string.entercarMonth));
             } else if (str_caryear.equals("")) {
                 showMkErrorMessage(this, getResources().getString(R.string.entercaryear));
@@ -455,15 +455,16 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
                 edt_brand.requestFocus();
             } else if (str_cartype.equals("")) {
                 showMkErrorMessage(this, getResources().getString(R.string.entercartype));
-            } else if (edt_seatingcapacity.getText().toString().trim().equals("")) {
-                showMKPanelError(this, getResources().getString(R.string.entercarseatingcapacity), rlMainView, tvTitle);
-                edt_seatingcapacity.requestFocus();
-                return;
-            } else if (edt_modelofthecar.getText().toString().trim().equals("")) {
-                showMKPanelError(this, getResources().getString(R.string.entermodelofthecar), rlMainView, tvTitle);
+            }*/
+            else if (edt_modelofthecar.getText().toString().trim().equals("")) {
+                showMkErrorMessage(this, getResources().getString(R.string.entermodelofthecar));
                 edt_modelofthecar.requestFocus();
                 return;
-            }else {
+            }else if (edt_seatingcapacity.getText().toString().trim().equals("")) {
+                showMkErrorMessage(this, getResources().getString(R.string.entercarseatingcapacity));
+                edt_seatingcapacity.requestFocus();
+                return;
+            } else {
 
                 str_carbrand = edt_brand.getText().toString();
 
@@ -542,7 +543,7 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
             tvTitle.setText(message);
             Animation slideUpAnimation = AnimationUtils.loadAnimation(act.getApplicationContext(), R.anim.slide_up_map);
             rlMainView.startAnimation(slideUpAnimation);
-
+            //rlMainView.clearAnimation();
         }
     }
 

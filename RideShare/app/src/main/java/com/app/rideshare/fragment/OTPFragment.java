@@ -81,8 +81,8 @@ public class OTPFragment extends Fragment {
             public void onClick(View v) {
                 if (AppUtils.isInternetAvailable(getActivity())) {
                     //sendOTP("+" + AppUtils.getCountryTelephoneCode(context) + SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
-                    //sendOTP("+1" +SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
-                    sendOTP("+91" +SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
+                    sendOTP("+1" +SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
+                    //sendOTP("+91" +SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
                 } else {
                     MessageUtils.showNoInternetAvailable(getActivity());
                 }

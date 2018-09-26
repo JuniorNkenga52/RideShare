@@ -15,12 +15,11 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/colorPrimary"
             android:titleTextColor="@color/colorAccent"
             app:navigationIcon="@drawable/ic_back"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:titleTextColor="@color/white"
-            app:title="Manage Car" />
+            app:titleTextColor="@color/white" />
     </FrameLayout>
 
 
@@ -39,7 +38,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="@dimen/_120sdp"
                 android:layout_marginTop="@dimen/_20sdp">
 
 
@@ -57,7 +56,7 @@
 
                     <ImageView
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
+                        android:layout_height="@dimen/_120sdp"
                         android:src="@drawable/car_big"
                         android:visibility="invisible" />
 
@@ -71,8 +70,8 @@
                     android:gravity="center">
 
                     <ImageView
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
+                        android:layout_width="@dimen/_120sdp"
+                        android:layout_height="@dimen/_120sdp"
                         android:src="@drawable/car_big" />
 
                 </LinearLayout>
@@ -81,7 +80,8 @@
                     android:layout_width="220dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true">
+                    android:layout_centerHorizontal="true"
+                    android:visibility="gone">
 
 
                     <RelativeLayout
@@ -115,8 +115,7 @@
                             android:text=""
                             android:textAllCaps="false"
                             android:textColor="@color/black"
-                            android:textSize="17sp"
-                             />
+                            android:textSize="17sp" />
 
                     </RelativeLayout>
                 </LinearLayout>
@@ -134,7 +133,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
 
                     <LinearLayout
@@ -149,8 +149,7 @@
                             android:layout_weight="1"
                             android:text="Add Car"
                             android:textColor="@color/Gray2"
-                            android:textSize="@dimen/_12sdp"
-                             />
+                            android:textSize="@dimen/_12sdp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -197,8 +196,27 @@
                     android:maxLines="1"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
-                    android:textSize="@dimen/_12sdp"
-                     />
+                    android:textSize="@dimen/_12sdp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:background="@color/colorPrimary" />
+
+                <com.app.rideshare.widget.EditTextRegular
+                    android:id="@+id/edt_modelofthecar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@null"
+                    android:hint="Model of the car"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/_12sdp" />
+
 
                 <View
                     android:layout_width="match_parent"
@@ -210,7 +228,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -230,8 +249,7 @@
                             android:singleLine="true"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:textSize="@dimen/_12sdp"
-                             />
+                            android:textSize="@dimen/_12sdp" />
 
                         <View
                             android:layout_width="match_parent"
@@ -259,8 +277,7 @@
                             android:singleLine="true"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:textSize="@dimen/_12sdp"
-                             />
+                            android:textSize="@dimen/_12sdp" />
 
                         <View
                             android:layout_width="match_parent"
@@ -292,8 +309,7 @@
                         android:singleLine="true"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
-                        android:textSize="@dimen/_12sdp"
-                         />
+                        android:textSize="@dimen/_12sdp" />
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -316,7 +332,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -336,8 +353,7 @@
                             android:maxLines="1"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:textSize="@dimen/_12sdp"
-                             />
+                            android:textSize="@dimen/_12sdp" />
 
                         <View
                             android:layout_width="match_parent"
@@ -381,7 +397,7 @@
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
                     android:textSize="@dimen/_12sdp"
-                     />
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -402,8 +418,7 @@
                         android:singleLine="true"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
-                        android:textSize="@dimen/_12sdp"
-                         />
+                        android:textSize="@dimen/_12sdp" />
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -419,14 +434,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_1sdp"
                     android:layout_marginTop="@dimen/_12sdp"
-                    android:background="@color/colorPrimary" />
+                    android:background="@color/colorPrimary"
+                    android:visibility="gone" />
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
 
                     <com.app.rideshare.widget.TextViewRegular
@@ -440,8 +457,7 @@
                         android:singleLine="true"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
-                        android:textSize="@dimen/_12sdp"
-                         />
+                        android:textSize="@dimen/_12sdp" />
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -457,7 +473,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_1sdp"
                     android:layout_marginTop="@dimen/_12sdp"
-                    android:background="@color/colorPrimary" />
+                    android:background="@color/colorPrimary"
+                    android:visibility="gone" />
 
 
                 <com.app.rideshare.widget.EditTextRegular
@@ -471,8 +488,7 @@
                     android:maxLines="1"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
-                    android:textSize="@dimen/_12sdp"
-                     />
+                    android:textSize="@dimen/_12sdp" />
 
 
                 <View
@@ -481,26 +497,6 @@
                     android:layout_marginTop="@dimen/_12sdp"
                     android:background="@color/colorPrimary" />
 
-                <com.app.rideshare.widget.EditTextRegular
-                    android:id="@+id/edt_modelofthecar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_15sdp"
-                    android:background="@null"
-                    android:hint="Model of the car"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
-                    android:textSize="@dimen/_12sdp"
-                     />
-
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_1sdp"
-                    android:layout_marginTop="@dimen/_12sdp"
-                    android:background="@color/colorPrimary" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -521,8 +517,7 @@
                         android:singleLine="true"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
-                        android:textSize="@dimen/_12sdp"
-                         />
+                        android:textSize="@dimen/_12sdp" />
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -542,25 +537,26 @@
                     android:visibility="gone" />
 
 
-                <com.app.rideshare.widget.TextViewRegular
-                    android:id="@+id/txt_addcar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/_16sdp"
-                    android:layout_marginTop="@dimen/_16sdp"
-                    android:background="@drawable/rounded_circle_red"
-                    android:gravity="center"
-                    android:padding="@dimen/_5sdp"
-                    android:text="ADD CAR"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_20sdp"
-                    android:textStyle="bold"
-                     />
+
 
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
+    <com.app.rideshare.widget.TextViewRegular
+        android:id="@+id/txt_addcar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_circle_red"
+        android:gravity="center"
+        android:padding="@dimen/_5sdp"
+        android:text="ADD CAR"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_30sdp"
+        android:layout_marginRight="@dimen/_20sdp"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_alignParentBottom="true"
+        android:textStyle="bold" />
     <RelativeLayout
         android:id="@+id/layout_info_panel"
         android:layout_width="match_parent"
