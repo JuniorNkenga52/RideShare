@@ -22,6 +22,7 @@ import com.app.rideshare.activity.MyGroupActivity;
 public class CommonDialog {
 
     public static void shareInviteLinkDialog(final Activity activity, final String shareData, final int type) {
+
         final Dialog dialog = new Dialog(activity, R.style.InviteDialogAnimation);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_invite_share);
@@ -36,10 +37,10 @@ public class CommonDialog {
         dialog.getWindow().setAttributes(lp);
 
         LinearLayout llInviteEmail, llInviteSMS, llInviteCopy, llInviteMoreOption;
-        llInviteEmail = (LinearLayout) dialog.findViewById(R.id.llInviteEmail);
-        llInviteSMS = (LinearLayout) dialog.findViewById(R.id.llInviteSMS);
-        llInviteCopy = (LinearLayout) dialog.findViewById(R.id.llInviteCopy);
-        llInviteMoreOption = (LinearLayout) dialog.findViewById(R.id.llInviteMoreOption);
+        llInviteEmail = dialog.findViewById(R.id.llInviteEmail);
+        llInviteSMS = dialog.findViewById(R.id.llInviteSMS);
+        llInviteCopy = dialog.findViewById(R.id.llInviteCopy);
+        llInviteMoreOption = dialog.findViewById(R.id.llInviteMoreOption);
 
         llInviteEmail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +91,6 @@ public class CommonDialog {
                     e.printStackTrace();
                 }
                 //dialog.cancel();
-
             }
         });
 
@@ -105,6 +105,7 @@ public class CommonDialog {
                 }
             }
         });
+
         dialog.show();
     }
 }
