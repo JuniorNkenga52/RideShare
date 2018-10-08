@@ -41,6 +41,7 @@ public class LocationService extends Service {
         /*if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
             startForeground(1, new Notification());*/
         PrefUtils.initPreference(this);
+        PrefUtils.putBoolean("isAppRunning",true);
         intent = new Intent(BROADCAST_ACTION);
         bean = PrefUtils.getUserInfo();
     }
@@ -61,6 +62,7 @@ public class LocationService extends Service {
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
         try {
+            PrefUtils.putBoolean("isAppRunning",false);
             new LongOperation(getApplicationContext()).execute(bean.getmUserId(), "0").get();
         } catch (Exception ignore) {
         }

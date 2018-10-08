@@ -125,6 +125,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.RideRateActivity"
+            android:exported="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|adjustPan" />
         <activity

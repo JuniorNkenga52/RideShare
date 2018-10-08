@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/notification"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/ride_rate_toolbar"
@@ -16,8 +17,9 @@
         app:title="Rate Ride" />
 
     <LinearLayout
+        android:id="@+id/layout_ride_rate"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_below="@+id/ride_rate_toolbar"
         android:padding="@dimen/_10sdp">
@@ -108,42 +110,18 @@
                 android:textColor="@color/blacltext"
                 android:visibility="visible" />
         </LinearLayout>
-
-
-        <com.app.rideshare.widget.TextViewSemiBold
-            android:id="@+id/btn_submit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_18sdp"
-            android:background="@color/colorAccent"
-            android:gravity="center_horizontal"
-            android:padding="@dimen/_10sdp"
-            android:text="@string/btn_submit"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_16sdp" />
-
-        <!--<com.app.rideshare.widget.TextViewSemiBold
-            android:id="@+id/btn_submit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:padding="@dimen/_12sdp"
-            android:layout_below="@+id/txt_rate_word"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:background="@color/colorAccent"
-            android:text="@string/btn_submit" />-->
-
-        <!--<Button
-            android:id="@+id/btn_cancle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_rate_word"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_toLeftOf="@+id/btn_submit"
-            android:background="@drawable/btn_login"
-            android:text="@string/btn_cancel" />-->
-
-
     </LinearLayout>
+
+    <com.app.rideshare.widget.TextViewSemiBold
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_ride_rate"
+        android:background="@color/colorAccent"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/_10sdp"
+        android:layout_margin="@dimen/_10sdp"
+        android:text="@string/btn_submit"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_16sdp" />
 </RelativeLayout>

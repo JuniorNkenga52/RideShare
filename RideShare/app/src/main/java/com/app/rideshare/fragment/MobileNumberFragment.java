@@ -137,45 +137,9 @@ public class MobileNumberFragment extends Fragment {
             }
         });
 
-        new TedPermission(getActivity())
-                .setPermissionListener(permissionlistener)
-                .setDeniedMessage("If you reject permission,you can not use this service" +
-                        "\n\nPlease turn on permissions at [Setting] > [Permission]")
-                .setPermissions(Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS)
-                .check();
+
         return rootView;
     }
-
-    /*@Override
-    public void onResume() {
-        super.onResume();
-        Log.w("MainActivity", "onResume");
-        if (mRegistrationBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mRegistrationBroadcastReceiver,
-                    new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
-            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mRegistrationBroadcastReceiver,
-                    new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.w("MainActivity", "onPause");
-        if (mRegistrationBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
-        }
-    }*/
-
-    PermissionListener permissionlistener = new PermissionListener() {
-        @Override
-        public void onPermissionGranted() {
-        }
-
-        @Override
-        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-        }
-    };
 
     public class AsyncSendTextMessage extends AsyncTask<Object, Integer, Object> {
 

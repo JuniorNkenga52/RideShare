@@ -18,7 +18,6 @@ import com.app.rideshare.R;
 import com.app.rideshare.activity.ChatActivity;
 import com.app.rideshare.activity.MyGroupSelectionActivity;
 import com.app.rideshare.activity.NotificationActivity;
-import com.app.rideshare.activity.RideRateActivity;
 import com.app.rideshare.activity.StartRideActivity;
 import com.app.rideshare.utils.PrefUtils;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -26,6 +25,8 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.List;
 
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -57,7 +58,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 if (jobj.getString("type").equals("1")) {
                     JSONArray jarrMsg = jobj.getJSONArray("msg");
                     JSONObject jobjmessage = jarrMsg.getJSONObject(0);
-                    openActivity(jobjmessage.toString());
+                    if (PrefUtils.getBoolean("isAppRunning")) {
+                        openActivity(jobjmessage.toString());
+                    }
                 } else if (jobj.getString("type").equals("2")) {
                     Intent intent = new Intent("request_status");
                     intent.putExtra("int_data", jobj.toString());
@@ -99,6 +102,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     // [END receive_message]
     public void openActivity(String json) {
+        //Log.d("App State :::: >>>>", String.valueOf(isAppRunning(this,"com.app.rideshare")));
+
         Intent intent = new Intent(this, NotificationActivity.class);
         intent.putExtra("data", json);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -129,11 +134,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 intent.putExtra("int_data", "2");
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 ChatActivity.activity.finish();
-                /*Intent rateride = new Intent(this, RideRateActivity.class);
-                *//*rateride.putExtra("riderate", mRider.getRide_id());
-                rateride.putExtra("driverid", mRider.getFromRider().getnUserId());*//*
-                startActivity(rateride);*/
-
             }
         }
         if (type.equals("6")) {
@@ -154,13 +154,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             PrefUtils.putBoolean("firstTime", true);
         } else {
+            intent = new Intent(this, MyGroupSelectionActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_ONE_SHOT);
 
-                notifBuilder = new NotificationCompat.Builder(this, NOTIF_CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_notification)
-                        .setContentText(message)
-                        .setContentTitle("RideShare")
-                        .setAutoCancel(true)
-                        .setSound(sound);
+            notifBuilder = new NotificationCompat.Builder(this, NOTIF_CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_notification)
+                    .setContentText(message)
+                    .setContentTitle("RideShare")
+                    .setAutoCancel(true)
+                    .setSound(sound)
+                    .setContentIntent(pendingIntent);
 
         }
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -175,7 +179,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notifChannel.setLightColor(Color.GREEN);
             notifChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
             notifChannel.enableVibration(true);
-
             notificationManager.createNotificationChannel(notifChannel);
         }
 
@@ -213,4 +216,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
     }
 
+    public static boolean isAppRunning(final Context context, final String packageName) {
+        try {
+            final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            final List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
+            if (procInfos != null) {
+                for (final ActivityManager.RunningAppProcessInfo processInfo : procInfos) {
+                    if (processInfo.processName.equals(packageName)) {
+                        return true;
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
