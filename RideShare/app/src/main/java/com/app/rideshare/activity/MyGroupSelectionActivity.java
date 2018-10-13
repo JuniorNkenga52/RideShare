@@ -175,6 +175,7 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
                             bean.setGroup_description(jObjResult.getString("group_description"));
                             bean.setCategory_name(jObjResult.getString("category_name"));
                             bean.setCategory_image(jObjResult.getString("category_image"));
+                            bean.setCategory_thumb_image(jObjResult.getString("category_thumb_image"));
                             bean.setIs_joined(jObjResult.optString("is_joined"));
                             bean.setShareLink(jObjResult.optString("share_link"));
                             bean.setCategory_id(jObjResult.optString("category_id"));

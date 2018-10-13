@@ -94,12 +94,12 @@ public class WaitingActivity extends AppCompatActivity {
         mNameTv.setText(currentRider.getmFirstName());
         mEmailTv.setText(currentRider.getmEmail());
         try {
-            if (!currentRider.getmProfileImage().equals("")) {
+            if (!currentRider.getThumb_image().equals("")) {
                 //Picasso.with(this).load(currentRider.getmProfileImage()).into(mProfilePic);
 
-                Glide.with(this).load(currentRider.getmProfileImage())
-                        .error(R.drawable.icon_test)
-                        .placeholder(R.drawable.icon_test)
+                Glide.with(this).load(currentRider.getThumb_image())
+                        .error(R.drawable.user_icon)
+                        .crossFade()
                         .into(mProfilePic);
             }
         } catch (Exception e) {
@@ -191,6 +191,7 @@ public class WaitingActivity extends AppCompatActivity {
                     fromRider.setmLastName(jFromRider.getString("u_lastname"));
                     fromRider.setmEmail(jFromRider.getString("u_email"));
                     fromRider.setmProfileImage(jFromRider.getString("profile_image"));
+                    fromRider.setThumb_image(jFromRider.getString("thumb_image"));
                     fromRider.setmLatitude(jFromRider.getString("u_lat"));
                     fromRider.setmLongitude(jFromRider.getString("u_long"));
                     rider.setFromRider(fromRider);
@@ -203,6 +204,7 @@ public class WaitingActivity extends AppCompatActivity {
                     toRider.setmLastName(jToRider.getString("u_lastname"));
                     toRider.setmEmail(jToRider.getString("u_email"));
                     toRider.setmProfileImage(jToRider.getString("profile_image"));
+                    toRider.setThumb_image(jToRider.getString("thumb_image"));
                     toRider.setmLatitude(jToRider.getString("u_lat"));
                     toRider.setmLongitude(jToRider.getString("u_long"));
                     rider.setToRider(toRider);

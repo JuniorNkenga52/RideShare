@@ -237,6 +237,7 @@ public class GroupDetailActivity extends AppCompatActivity {
                         bean.setmFirstName(jObjResult.getString("u_firstname"));
                         bean.setmLastName(jObjResult.getString("u_lastname"));
                         bean.setProfile_image(jObjResult.getString("profile_image"));
+                        bean.setThumb_image(jObjResult.getString("thumb_image"));
 
                         mListGroupUser.add(bean);
 
@@ -312,7 +313,7 @@ public class GroupDetailActivity extends AppCompatActivity {
 
             /*Picasso.with(GroupDetailActivity.this).load(bean.getProfile_image()).resize(300, 300)
                     .centerCrop().error(R.drawable.user_icon).into(holder.circularImageView );*/
-            Glide.with(GroupDetailActivity.this).load(bean.getProfile_image())
+            Glide.with(GroupDetailActivity.this).load(bean.getThumb_image())
                     .error(R.drawable.icon_test)
                     .into(holder.circularImageView);
 

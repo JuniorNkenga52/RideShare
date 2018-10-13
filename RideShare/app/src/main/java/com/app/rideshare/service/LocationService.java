@@ -17,6 +17,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.app.rideshare.activity.LongOperation;
+import com.app.rideshare.activity.RideShareApp;
 import com.app.rideshare.activity.StartRideActivity;
 import com.app.rideshare.model.User;
 import com.app.rideshare.utils.MessageUtils;
@@ -159,7 +160,10 @@ public class LocationService extends Service {
     public class MyLocationListener implements LocationListener {
 
         public void onLocationChanged(final Location loc) {
-            Log.i("*********************", "Location changed");
+            //Log.i("*********************", "Location changed");
+
+            RideShareApp.mLocation = loc;
+
             if (isBetterLocation(loc, previousBestLocation)) {
 
                 previousBestLocation = loc;

@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.ConnectivityManager;
@@ -131,6 +132,42 @@ public class AppUtils {
         return mlist;
     }
 
+    public static Bitmap getMarkerBitmapFromView(Activity activity, Bitmap userPhoto) {
+        try {
+
+            View customMarkerView = activity.getLayoutInflater().inflate(R.layout.item_custom_marker, null);
+
+            CircleImageView markerImageView = customMarkerView.findViewById(R.id.user_dp);
+
+            //markerImageView.setImageResource(R.drawable.mylocation);
+
+            markerImageView.setImageBitmap(userPhoto);
+
+        /*Glide.with(activity)
+                .load(Uri.parse(userPhoto))
+                .into(markerImageView);*/
+
+            customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
+            customMarkerView.buildDrawingCache();
+
+            Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+
+            Canvas canvas = new Canvas(returnedBitmap);
+            canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
+
+            Drawable drawable = customMarkerView.getBackground();
+
+            if (drawable != null)
+                drawable.draw(canvas);
+
+            customMarkerView.draw(canvas);
+
+            return returnedBitmap;
+        } catch (Exception e){
+            return null;
+        }
+    }
     public static Bitmap getMarkerBitmapFromView(Activity activity, String userImage) {
 
         Bitmap returnedBitmap=null;
@@ -353,5 +390,27 @@ public class AppUtils {
         }
 
         return countryIsoCode;
+    }
+
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if(bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
     }
 }

@@ -142,6 +142,7 @@ public class SplashActivity extends AppCompatActivity {
                             Intent i = new Intent(getBaseContext(), MobileNumberActivity.class);
                             startActivity(i);
                             finish();
+                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         } else {
                             if (response.body().getMlist().get(0).getM_is_assigned_group().equals("1")) {
                                 //response.body().getMlist().get(0).getmRidestatus();
@@ -155,6 +156,7 @@ public class SplashActivity extends AppCompatActivity {
                                 }
                                 startActivity(i);
                                 finish();
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
                             } else {
                                 PrefUtils.putString("isBlank", "true");
@@ -201,7 +203,7 @@ public class SplashActivity extends AppCompatActivity {
                 i.putExtra("MyUserID", PrefUtils.getUserInfo().getmUserId());
                 startActivity(i);
                 finish();
-
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             } else {
                 Intent i = new Intent(getBaseContext(), SignUpActivity.class);
                 startActivity(i);

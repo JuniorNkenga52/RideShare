@@ -81,8 +81,8 @@ public class OTPFragment extends Fragment {
             public void onClick(View v) {
                 if (AppUtils.isInternetAvailable(getActivity())) {
                     //sendOTP("+" + AppUtils.getCountryTelephoneCode(context) + SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
-                    //sendOTP("+1" +SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
-                    sendOTP("+91" +SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
+                    sendOTP("+1" +SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
+                    //sendOTP("+91" +SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
                 } else {
                     MessageUtils.showNoInternetAvailable(getActivity());
                 }
@@ -253,6 +253,7 @@ public class OTPFragment extends Fragment {
                         beanUser.setmDescription(jObjResult.getString("description"));
                         beanUser.setmAddress(jObjResult.getString("address"));
                         beanUser.setProfile_image(jObjResult.getString("profile_image"));
+                        beanUser.setThumb_image(jObjResult.getString("thumb_image"));
                         beanUser.setmMobileNo(jObjResult.getString("u_mo_number"));
                         beanUser.setmLatitude(jObjResult.getString("u_lat"));
                         beanUser.setmLongitude(jObjResult.getString("u_long"));

@@ -230,6 +230,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                         bean.setId(jObjResult.getString("id"));
                         bean.setName(jObjResult.getString("name"));
                         bean.setImage(jObjResult.getString("image"));
+                        bean.setThumb(jObjResult.getString("thumb"));
                         bean.setStatus(jObjResult.getString("status"));
 
                         if (isEditGroupDetail && groupDetailInfo != null) {
@@ -280,7 +281,7 @@ public class CreateGroupActivity extends AppCompatActivity {
             final Category bean = dataList.get(position);
 
             //MyImageUtils.loadImagePicasso(mContext, (itemRowHolder).imageView, bean.getFlower_image(), R.drawable.flower_unselect_bg);
-            Picasso.with(mContext).load(bean.getImage())
+            Picasso.with(mContext).load(bean.getThumb())
                     .resize(300, 300).centerCrop()
                     .error(R.drawable.user_icon).into((itemRowHolder).imageView);
 

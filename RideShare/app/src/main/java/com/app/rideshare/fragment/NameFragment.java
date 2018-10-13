@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.app.rideshare.R;
-import com.app.rideshare.activity.RegistrationActivity;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.utils.MessageUtils;
 

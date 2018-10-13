@@ -125,7 +125,7 @@ public class NotificationActivity extends AppCompatActivity {
             if (!profilePic.equals("")) {
                 //Picasso.with(this).load(profilePic).into(mProfilePicIv);
                 Glide.with(this).load(profilePic)
-                        .error(R.drawable.icon_test)
+                        .error(R.drawable.user_icon)
                         .into(mProfilePicIv);
             }
         } catch (Exception e) {

@@ -91,6 +91,8 @@ public class SettingActivity extends AppCompatActivity {
                                     PrefUtils.putBoolean("islogin", false);
                                     PrefUtils.putString("loginwith", "");
                                     //PrefUtils.putString("TokenID","");
+                                    RideShareApp.mHomeTabPos = 0;
+
                                     Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);

@@ -10,6 +10,7 @@ public class Category {
     private String name;
 
     private String image;
+    private String thumb;
     private String status;
     public boolean isSelect;
 
@@ -19,6 +20,14 @@ public class Category {
         image = "";
         status = "";
         isSelect = false;
+    }
+
+    public String getThumb() {
+        return thumb;
+    }
+
+    public void setThumb(String thumb) {
+        this.thumb = thumb;
     }
 
     public boolean isSelect() {

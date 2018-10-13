@@ -60,7 +60,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/first_name_new"
-                    android:inputType="textEmailAddress"
+                    android:inputType="textCapSentences"
+                    android:singleLine="true"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 
@@ -79,7 +81,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/last_name_new"
-                    android:inputType="textEmailAddress"
+                    android:inputType="textCapSentences"
+                    android:singleLine="true"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 
@@ -99,6 +103,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/home_address"
                     android:inputType="text"
+                    android:singleLine="true"
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 
@@ -119,6 +124,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/email_address"
                     android:inputType="textEmailAddress"
+                    android:singleLine="true"
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 
@@ -137,6 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/mobile_number"
+                    android:singleLine="true"
                     android:inputType="textEmailAddress"
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />

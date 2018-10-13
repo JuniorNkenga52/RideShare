@@ -13,6 +13,7 @@ public class GroupList implements Serializable {
     private String group_description;
     private String category_name;
     private String category_image;
+    private String category_thumb_image;
     private String is_joined;
     private String is_admin;
     private String status;
@@ -20,6 +21,14 @@ public class GroupList implements Serializable {
     private String category_id;
     private String is_assigned;
     private String user_id;
+
+    public String getCategory_thumb_image() {
+        return category_thumb_image;
+    }
+
+    public void setCategory_thumb_image(String category_thumb_image) {
+        this.category_thumb_image = category_thumb_image;
+    }
 
     public String getStatus() {
         return status;

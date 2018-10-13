@@ -53,13 +53,14 @@ public class ProfileFragment extends Fragment implements OnBackPressedListener {
         //HomeActivity.setOnBackPressedListener(this);
         imgProfilePhoto = (CircularImageView) rootView.findViewById(R.id.imgProfilePhoto);
 
-        if (PrefUtils.getUserInfo().getProfile_image().length() != 0) {
+        if (PrefUtils.getUserInfo().getThumb_image().length() != 0) {
             /*Picasso.with(getActivity()).load(PrefUtils.getUserInfo().getProfile_image())
                     .resize(300, 300)
                     .centerCrop()
                     .error(R.drawable.user_icon).into(imgProfilePhoto);*/
-            Glide.with(getActivity()).load(PrefUtils.getUserInfo().getProfile_image())
+            Glide.with(getActivity()).load(PrefUtils.getUserInfo().getThumb_image())
                     .crossFade()
+                    .error(R.drawable.user_icon)
                     .into(imgProfilePhoto);
             /*mProgressDialog = new CustomProgressDialog(getActivity());
             mProgressDialog.show();

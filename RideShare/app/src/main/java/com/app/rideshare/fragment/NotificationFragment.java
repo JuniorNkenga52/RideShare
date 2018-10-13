@@ -163,6 +163,7 @@ public class NotificationFragment extends Fragment {
                         bean.setU_lastname(jObjResult.getString("u_lastname"));
                         bean.setU_email(jObjResult.getString("u_email"));
                         bean.setProfile_image(jObjResult.getString("profile_image"));
+                        bean.setThumb_image(jObjResult.getString("thumb_image"));
 
                         bean.setCategory_id(jObjResult.getString("category_id"));
                         bean.setCategory_name(jObjResult.getString("category_name"));
@@ -255,7 +256,7 @@ public class NotificationFragment extends Fragment {
             holder.mUserName.setText(String.format("%s %s", notifBean.getU_firstname(), notifBean.getU_lastname()));
             holder.mGroupName.setText(notifBean.getGroup_name());
 
-            Picasso.with(getActivity()).load(notifBean.getProfile_image()).resize(300, 300)
+            Picasso.with(getActivity()).load(notifBean.getThumb_image()).resize(300, 300)
                     .centerCrop().error(R.drawable.user_icon).into(holder.circularImageView);
 
             if(notifBean.getIs_admin_accept().equals("1")){

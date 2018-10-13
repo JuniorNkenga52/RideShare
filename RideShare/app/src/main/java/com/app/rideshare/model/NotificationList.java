@@ -12,6 +12,7 @@ public class NotificationList {
     private String u_lastname;
     private String u_email;
     private String profile_image;
+    private String thumb_image;
     private String category_name;
     private String category_id;
 
@@ -20,6 +21,14 @@ public class NotificationList {
 
     private String status;
     private String is_admin_accept;
+
+    public String getThumb_image() {
+        return thumb_image;
+    }
+
+    public void setThumb_image(String thumb_image) {
+        this.thumb_image = thumb_image;
+    }
 
     public String getStatus() {
         return status;

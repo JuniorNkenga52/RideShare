@@ -51,12 +51,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.LoginActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.RegistrationActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.SignUpActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"/>
@@ -84,11 +78,6 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity
-            android:name=".activity.HomeActivity"
-            android:label="@string/title_activity_home"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.HomeNewActivity"
             android:label="@string/title_activity_home"

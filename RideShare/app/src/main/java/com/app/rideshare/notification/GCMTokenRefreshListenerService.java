@@ -1,10 +1,7 @@
 package com.app.rideshare.notification;
 
 import android.content.Intent;
-import android.os.Build;
-import android.support.v4.content.ContextCompat;
 
-import com.app.rideshare.service.LocationService;
 import com.google.android.gms.iid.InstanceIDListenerService;
 
 public class GCMTokenRefreshListenerService extends InstanceIDListenerService {

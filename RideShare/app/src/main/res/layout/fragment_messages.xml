@@ -21,12 +21,14 @@
         android:layout_below="@+id/txtxHeaderName"
         android:layout_above="@+id/layout_bottom"
         android:divider="@null"
+        android:visibility="gone"
         android:padding="@dimen/_5sdp"
         android:scrollbars="none"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
+        android:visibility="gone"
         android:layout_above="@+id/layout_bottom"
         android:background="@color/GrayLine"/>
 
@@ -38,6 +40,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:background="@color/white"
+        android:visibility="gone"
         android:padding="@dimen/_5sdp">
 
         <LinearLayout

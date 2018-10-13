@@ -161,6 +161,7 @@ public class ExploreFragment extends Fragment {
                         bean.setGroup_description(jObjResult.getString("group_description"));
                         bean.setCategory_name(jObjResult.getString("category_name"));
                         bean.setCategory_image(jObjResult.getString("category_image"));
+                        bean.setCategory_thumb_image(jObjResult.getString("category_thumb_image"));
                         bean.setIs_joined(jObjResult.getString("is_joined"));
                         bean.setIs_admin(jObjResult.optString("is_admin"));
                         bean.setStatus(jObjResult.optString("status"));
@@ -242,7 +243,7 @@ public class ExploreFragment extends Fragment {
             holder.txtGroupName.setText(bean.getGroup_name());
             holder.txtGroupDescription.setText(bean.getGroup_description());
 
-            Picasso.with(getActivity()).load(bean.getCategory_image()).error(R.drawable.user_icon).into(holder.imgGroup);
+            Picasso.with(getActivity()).load(bean.getCategory_thumb_image()).error(R.drawable.user_icon).into(holder.imgGroup);
 
             /*0 = None (Join)
             1 = Requested

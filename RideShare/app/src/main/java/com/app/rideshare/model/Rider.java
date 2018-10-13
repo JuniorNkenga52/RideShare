@@ -44,6 +44,8 @@ public class Rider implements Serializable {
     @SerializedName("profile_image")
     private String mProfileImage;
 
+    private String thumb_image;
+
     @SerializedName("u_ride_type")
     private String u_ride_type;
 
@@ -56,6 +58,14 @@ public class Rider implements Serializable {
 
     @SerializedName("max_passengers")
     private String max_passengers;
+
+    public String getThumb_image() {
+        return thumb_image;
+    }
+
+    public void setThumb_image(String thumb_image) {
+        this.thumb_image = thumb_image;
+    }
 
     public String getU_ride_type() {
         return u_ride_type;

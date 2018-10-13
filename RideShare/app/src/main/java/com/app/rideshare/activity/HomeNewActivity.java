@@ -84,11 +84,11 @@ public class HomeNewActivity extends AppCompatActivity {
                                 break;
                         }
 
-                        if (RideShareApp.mHomeTabPos != 2) {
+                        //if (RideShareApp.mHomeTabPos != 2) {
                             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                             transaction.replace(R.id.frame_layout, selectedFragment);
                             transaction.commit();
-                        }
+                        //}
                         return true;
                     }
                 });

@@ -102,7 +102,6 @@ public class MobileNumberFragment extends Fragment {
         txtNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 try {
                     /*getUserCountry(getContext());
                     GetCountryZipCode();*/
@@ -124,7 +123,7 @@ public class MobileNumberFragment extends Fragment {
                         //result="+919265762630";-Darshan
                         //result="+917600902008";
                         if (AppUtils.isInternetAvailable(getActivity())) {
-                            new AsyncSendTextMessage(numberMo).execute();
+                            new AsyncSendTextMessage(numberMo.trim().replaceAll(" ","")).execute();
                         } else {
                             MessageUtils.showNoInternetAvailable(getActivity());
                         }

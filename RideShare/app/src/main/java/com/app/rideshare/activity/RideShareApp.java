@@ -1,6 +1,7 @@
 package com.app.rideshare.activity;
 
 import android.app.Application;
+import android.location.Location;
 import android.support.multidex.MultiDex;
 
 import com.app.rideshare.utils.PrefUtils;
@@ -11,6 +12,8 @@ import io.fabric.sdk.android.Fabric;
 public class RideShareApp extends Application {
     public static String mUserType = "";
     public static int mHomeTabPos = 0;
+
+    public static Location mLocation;
 
     @Override
     public void onCreate() {

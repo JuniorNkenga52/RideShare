@@ -5,11 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -120,7 +116,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             if (response.isSuccessful()) {
                 mProgressDialog.dismiss();
                 final String json = response.body().string();
-                Log.w(">>>>>>>","json :: >>>>>>>>>>>>>>>>>>"+json);
+                Log.w(">>>>>>>", "json :: >>>>>>>>>>>>>>>>>>" + json);
                 updateLineDestination(json);
             }
         }
@@ -232,7 +228,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         mMaterialDialog = new MaterialDialog(getActivity())
                 .setTitle(getResources().getString(R.string.app_name))
 
-                .setMessage("No user found near by you.")
+                .setMessage("Driver is no longer available.")
                 .setPositiveButton("ok", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -259,16 +255,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                         if (curLocMarker == null) {
-                            /*curLocMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker())
-                                    .position(currentlthg));*/
-                            curLocMarker = setcutommarker(currentlthg, null, mUserBean, 1);
-
-                            getMarkerBitmapFromView(getActivity(), null, mUserBean, 1, currentlthg);
-
+                            setcutommarker(currentlthg, null, mUserBean, 1);
+                            //getMarkerBitmapFromView(getActivity(), null, mUserBean, 1, currentlthg);
                         } else {
-                            //curLocMarker.remove();
                             curLocMarker.setPosition(currentlthg);
                         }
+
                         builder.include(currentlthg);
                     }
                 });
@@ -295,7 +287,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         MessageUtils.showFailureMessage(getActivity(), "Please select destination location.");
                     } else {
                         if (selectedRide != null) {
-                            if(!selectedRide.getnUserId().equals(PrefUtils.getUserInfo().getmUserId())){
+                            if (!selectedRide.getnUserId().equals(PrefUtils.getUserInfo().getmUserId())) {
                                 if (selectedRide.getU_ride_type().equals("2")) {
                                     getRiderInfoDialog(selectedRide);
                                 } else {
@@ -347,12 +339,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                             // Specifies the anchor to be at a particular point in the marker image.
                             .rotation(0f)
                             .flat(true));
-                } else  {
-                    m = setcutommarker(currentDriverPos, driver, mUserBean, 0);
+
+                    mlistMarker.add(m);
+                } else {
+
                     getMarkerBitmapFromView(getActivity(), driver, mUserBean, 0, currentDriverPos);
+
+                    //m = setcutommarker(currentDriverPos, driver, mUserBean, 0);
+                    //getMarkerBitmapFromView(getActivity(), driver, mUserBean, 0, currentDriverPos);
+
+                    //mlistMarker.add(m);
                 }
 
-                mlistMarker.add(m);
+
             }
 
             LatLngBounds bounds = builder.build();
@@ -387,7 +386,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     private void requestRoute() {
         if (currentlthg != null && destinationLatLang != null) {
             mProgressDialog.show();
-            MapDirectionAPI.getDirection(currentlthg, destinationLatLang,context).enqueue(updateRouteCallback);
+            MapDirectionAPI.getDirection(currentlthg, destinationLatLang, context).enqueue(updateRouteCallback);
         }
     }
 
@@ -405,8 +404,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                                 .addAll(routes.get(0).getOverviewPolyLine())
                                 .color(ContextCompat.getColor(getActivity(), R.color.blacltext))
                                 .width(10));
-                    }else {
-                        Toast.makeText(context,json,Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(context, json, Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -422,6 +421,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             public void onResponse(Call<RideSelect> call, Response<RideSelect> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getMlistUser().size() == 0) {
+                        if (mlist == null) {
+                            mlist = new ArrayList<>();
+                        }
+                        mlist.clear();
+                        builder = new LatLngBounds.Builder();
+                        builder.include(currentlthg);
+                        createMarker(mRideType);
                         showDialog();
                     } else {
                         if (mlist == null) {
@@ -432,10 +438,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         builder = new LatLngBounds.Builder();
                         builder.include(currentlthg);
                         createMarker(mRideType);
-
                     }
                 } else {
-                    MessageUtils.showFailureMessage(getActivity(), "No any user available.");
+                    try {
+                        if (mlist == null) {
+                            mlist = new ArrayList<>();
+                        }
+                        mlist.clear();
+                        builder = new LatLngBounds.Builder();
+                        builder.include(currentlthg);
+                        createMarker(mRideType);
+                    } catch (Exception e) {
+                    }
+                    MessageUtils.showFailureMessage(getActivity(), "Driver is no longer available.");
                 }
                 mProgressDialog.cancel();
             }
@@ -484,7 +499,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         try {
             mNameTv.setText(rider.getmFirstName());
             mAddressTv.setText(rider.getmAddress());
-            txt_maxPerson.setText("0"+rider.getMax_passengers());
+            txt_maxPerson.setText("0" + rider.getMax_passengers());
             if (mUserType.equals("2") || !rider.getmType().equals("2")) {
                 mDetails_tv.setText("Rider details");
                 mGetRideTv.setText("Offer Ride");
@@ -493,8 +508,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                 driver_layout.setVisibility(View.VISIBLE);
                 rider_layout.setVisibility(View.GONE);
                 try {
-                    Glide.with(this).load(rider.getmProfileImage())
-                            .error(R.drawable.icon_test)
+                    Glide.with(this).load(rider.getThumb_image())
+                            .error(R.drawable.user_icon)
                             .into(userImage);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -548,6 +563,24 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         i.putExtra("rider", rider);
                         i.putExtra("rider_data", response.body().getMlist().get(0));
                         startActivity(i);
+                    } else if (response.body().getmStatus().equals("error")) {
+                        MessageUtils.showFailureMessage(getActivity(), "Driver is not available");
+
+                        if (currentlthg != null) {
+                            if (mUserType.equals("1")) {
+                                if (PrefUtils.getBoolean("isFriends")) {
+                                    selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "1");
+                                } else {
+                                    selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "1");
+                                }
+                            } else {
+                                if (PrefUtils.getBoolean("isFriends")) {
+                                    selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "2");
+                                } else {
+                                    selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "2");
+                                }
+                            }
+                        }
                     }
                 } else {
 
@@ -572,16 +605,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                 userImage = driver.getmProfileImage();
             } else {
                 //mGoogleMap.clear();
-                userImage = user.getProfile_image();
+                //userImage = user.getProfile_image();
+                userImage = user.getThumb_image();
             }
             getMarkerBitmapFromView(getActivity(), driver, user, type, currentDriverPos);
 
-            marker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
+           /* marker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
                     .position(currentDriverPos).anchor(0.5f, 1f)
                     .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), userImage)))
                     // Specifies the anchor to be at a particular point in the marker image.
                     .rotation(0f)
-                    .flat(true));
+                    .flat(true));*/
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -596,9 +630,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             CircleImageView markerImageView = customMarkerView.findViewById(R.id.user_dp);
             String userimage = "";
             if (type == 0) {
-                userimage = driver.getmProfileImage();
+                //userimage = driver.getmProfileImage();
+                userimage = driver.getThumb_image();
             } else {
-                userimage = user.getProfile_image();
+                userimage = user.getThumb_image();
             }
 
             final String finalUserimage = userimage;
@@ -610,7 +645,40 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
                 @Override
                 public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                    customMarkerView.setDrawingCacheEnabled(true);
+
+                    Bitmap icon = AppUtils.drawableToBitmap(resource);
+
+                    Bitmap bmImg = AppUtils.getMarkerBitmapFromView(getActivity(), icon);
+
+                    Marker m = null;
+                    if (type == 0) {
+
+                        m = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
+                                //.position(currentDriverPos).anchor(0.5f, 0.5f)
+                                .position(currentDriverPos).anchor(0.5f, 1f)
+                                .icon(BitmapDescriptorFactory.fromBitmap(bmImg))
+                                // Specifies the anchor to be at a particular point in the marker image.
+                                .rotation(0f)
+                                .flat(true));
+
+                        mlistMarker.add(m);
+                    } else {
+                        try {
+                            curLocMarker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(user))
+                                            //.position(currentDriverPos).anchor(0.5f, 0.5f)
+                                            .position(currentDriverPos).anchor(0.5f, 1f)
+                                            .icon(BitmapDescriptorFactory.fromBitmap(bmImg))
+                                            // Specifies the anchor to be at a particular point in the marker image.
+                                            .rotation(0f)
+                                            .flat(true));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+
+                    /*customMarkerView.setDrawingCacheEnabled(true);
 
                     customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
                     customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
@@ -649,7 +717,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                             e.printStackTrace();
                         }
 
-                    }
+                    }*/
                     return false;
                 }
             }).error(R.drawable.ic_user_pin).placeholder(R.drawable.ic_user_pin).into(markerImageView);
@@ -701,6 +769,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         if (PrefUtils.getBoolean("isFriends")) {
             mFriendRb.setChecked(true);
         } else if (PrefUtils.getBoolean("isAll")) {
+            mAllRb.setChecked(true);
+        } else {
+            PrefUtils.putBoolean("isFriends", false);
+            PrefUtils.putBoolean("isAll", true);
             mAllRb.setChecked(true);
         }
 

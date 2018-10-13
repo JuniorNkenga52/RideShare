@@ -217,6 +217,7 @@ public class MyGroupActivity extends AppCompatActivity {
                         bean.setGroup_description(jObjResult.getString("group_description"));
                         bean.setCategory_name(jObjResult.getString("category_name"));
                         bean.setCategory_image(jObjResult.getString("category_image"));
+                        bean.setCategory_thumb_image(jObjResult.getString("category_thumb_image"));
                         bean.setIs_joined(jObjResult.optString("is_joined"));
                         bean.setShareLink(jObjResult.optString("share_link"));
                         bean.setCategory_id(jObjResult.optString("category_id"));
@@ -299,7 +300,7 @@ public class MyGroupActivity extends AppCompatActivity {
             holder.txtGroupName.setText(bean.getGroup_name());
             holder.txtGroupDescription.setText(bean.getGroup_description());
 
-            Picasso.with(MyGroupActivity.this).load(bean.getCategory_image()).error(R.drawable.user_icon).into(holder.imgGroup);
+            Picasso.with(MyGroupActivity.this).load(bean.getCategory_thumb_image()).error(R.drawable.user_icon).into(holder.imgGroup);
 
             if (bean.getUser_id().equals(PrefUtils.getUserInfo().getmUserId())) {
                 holder.txtJoin.setVisibility(View.VISIBLE);

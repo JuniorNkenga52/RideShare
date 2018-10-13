@@ -147,15 +147,16 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
 
         mProfileIv = findViewById(R.id.circularImageView);
 
-        if (!PrefUtils.getUserInfo().getProfile_image().equals("")) {
-            mProgressDialog.show();
+        if (!PrefUtils.getUserInfo().getThumb_image().equals("")) {
+            //mProgressDialog.show();
             Glide.with(activity)
-                    .load(mUserBean.getProfile_image())
+                    .load(PrefUtils.getUserInfo().getThumb_image())
                     .crossFade()
+                    .error(R.drawable.user_icon)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            mProgressDialog.dismiss();
+                            //mProgressDialog.dismiss();
                             return false;
                         }
 
@@ -163,7 +164,7 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
                         public boolean onResourceReady(GlideDrawable resource, String model,
                                                        Target<GlideDrawable> target,
                                                        boolean isFromMemoryCache, boolean isFirstResource) {
-                            mProgressDialog.dismiss();
+                            //mProgressDialog.dismiss();
                             return false;
                         }
                     })
@@ -312,14 +313,14 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
             imagePath = photos.get(0);
             Uri uri = Uri.fromFile(new File(photos.get(0)));
             Glide.with(this).load(uri)
-                    .error(R.drawable.icon_test)
+                    .error(R.drawable.user_icon)
                     .into(mProfileIv);
 
         } else if (PICK_CAMERA == requestCode && resultCode == Activity.RESULT_OK) {
             imagePath = convertImageUriToFile(imageUri, activity);
             Glide.with(this)
                     .load("file://" + imagePath)
-                    .error(R.drawable.icon_test)
+                    .error(R.drawable.user_icon)
                     .into(mProfileIv);
 
         }
@@ -515,6 +516,7 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
                         beanUser.setmDescription(jObjResult.getString("description"));
                         beanUser.setmAddress(jObjResult.getString("address"));
                         beanUser.setProfile_image(jObjResult.getString("profile_image"));
+                        beanUser.setThumb_image(jObjResult.getString("thumb_image"));
                         beanUser.setmMobileNo(jObjResult.getString("u_mo_number"));
                         beanUser.setmLatitude(jObjResult.getString("u_lat"));
                         beanUser.setmLongitude(jObjResult.getString("u_long"));

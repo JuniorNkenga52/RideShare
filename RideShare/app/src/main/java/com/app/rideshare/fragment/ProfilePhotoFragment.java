@@ -27,6 +27,7 @@ import com.app.rideshare.model.User;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
+import com.bumptech.glide.Glide;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -37,6 +38,7 @@ import com.tangxiaolv.telegramgallery.GalleryConfig;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -175,6 +177,7 @@ public class ProfilePhotoFragment extends Fragment {
                         beanUser.setmDescription(jObjResult.getString("description"));
                         beanUser.setmAddress(jObjResult.getString("address"));
                         beanUser.setProfile_image(jObjResult.getString("profile_image"));
+                        beanUser.setThumb_image(jObjResult.getString("thumb_image"));
                         beanUser.setmMobileNo(jObjResult.getString("u_mo_number"));
                         beanUser.setmLatitude(jObjResult.getString("u_lat"));
                         beanUser.setmLongitude(jObjResult.getString("u_long"));
@@ -306,7 +309,8 @@ public class ProfilePhotoFragment extends Fragment {
             String imagePath = "file://" + convertImageUriToFile(imageUri, getActivity());
             SignUpActivity.ProfilePhotoPath = convertImageUriToFile(imageUri, getActivity());
 
-            Picasso.with(getActivity()).load("file://" + SignUpActivity.ProfilePhotoPath).resize(300, 300).centerCrop().into(imgProfilePhoto);
+            Glide.with(getActivity()).load(new File(SignUpActivity.ProfilePhotoPath)).into(imgProfilePhoto);
+            //Picasso.with(getActivity()).load("file://" + SignUpActivity.ProfilePhotoPath).resize(300, 300).centerCrop().into(imgProfilePhoto);
         }
     }
 

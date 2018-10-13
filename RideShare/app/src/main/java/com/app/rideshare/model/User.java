@@ -47,6 +47,7 @@ public class User implements Serializable {
     private String mRidestatus;
 
     private String profile_image;
+    private String thumb_image;
 
     @SerializedName("group_id")
     private String mGroup_id;
@@ -92,6 +93,14 @@ public class User implements Serializable {
     private String m_is_assigned_group;
 
     private String jabberId;
+
+    public String getThumb_image() {
+        return thumb_image;
+    }
+
+    public void setThumb_image(String thumb_image) {
+        this.thumb_image = thumb_image;
+    }
 
     public String getJabberId() {
         return jabberId;

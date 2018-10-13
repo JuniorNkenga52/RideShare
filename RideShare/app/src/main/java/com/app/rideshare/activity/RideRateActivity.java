@@ -56,7 +56,6 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
             driver_id = getIntent().getStringExtra("driverid");
         }
 
-
         ride_rate = (RatingBar) findViewById(R.id.ride_rate);
         txt_rate_ride = (TextView) findViewById(R.id.txt_rate_ride);
         txt_rate_ride_msg = (TextView) findViewById(R.id.txt_rate_ride_msg);
@@ -73,7 +72,7 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+               onBackPressed();
             }
         });
 
@@ -126,8 +125,13 @@ public class RideRateActivity extends AppCompatActivity implements TextWatcher {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+        //super.onBackPressed();
+        //finish();
+        Intent i = new Intent(RideRateActivity.this, HomeNewActivity.class);
+        startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        activity.finish();
+        mProgressDialog.cancel();
     }
 
     @Override
