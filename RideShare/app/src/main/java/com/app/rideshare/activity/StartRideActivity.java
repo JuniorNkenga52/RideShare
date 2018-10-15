@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -46,12 +47,16 @@ import com.app.rideshare.model.Rider;
 import com.app.rideshare.model.Route;
 import com.app.rideshare.model.User;
 import com.app.rideshare.service.LocationService;
+import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.Constants;
 import com.app.rideshare.utils.MapDirectionAPI;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -63,6 +68,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -75,6 +81,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
 import retrofit2.Call;
@@ -504,9 +511,9 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                             if (CustomerMarker == null) {
                                 //CustomerMarker
                                 //mGoogleMap.clear();
-                                CustomerMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
-                                        .position(CustomerLocaton));
-                                //curLocMarker=setcutommarker(CustomerLocaton,mRider);
+                                /*CustomerMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
+                                        .position(CustomerLocaton));*/
+                                curLocMarker=setcutommarker(CustomerLocaton,mRider);
                                 //CustomerMarker = setcutommarker();
                             } else {
                                 CustomerMarker.setPosition(CustomerLocaton);
@@ -852,5 +859,68 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         Cursor allRows = myDb.rawQuery("SELECT * FROM " + tblName + " WHERE msgtype = 'false' AND who = 'r'", null);
         System.out.println("COUNT : " + allRows.getCount());
         return String.valueOf(allRows.getCount());
+    }
+
+    private Marker setcutommarker(LatLng currentDriverPos, AcceptRider rider) {
+        String userImage;
+        Marker marker = null;
+        try {
+            getMarkerBitmapFromView(activity, rider, currentDriverPos);
+
+           /* marker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
+                    .position(currentDriverPos).anchor(0.5f, 1f)
+                    .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), userImage)))
+                    // Specifies the anchor to be at a particular point in the marker image.
+                    .rotation(0f)
+                    .flat(true));*/
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return marker;
+    }
+
+    public void getMarkerBitmapFromView(final Activity activity, final AcceptRider rider, final LatLng currentDriverPos) {
+
+        try {
+            final View customMarkerView = activity.getLayoutInflater().inflate(R.layout.item_custom_marker, null);
+
+            CircleImageView markerImageView = customMarkerView.findViewById(R.id.user_dp);
+            String userimage = "";
+
+            userimage = rider.getFromRider().getThumb_image();
+            Glide.with(activity).load(userimage).listener(new RequestListener<String, GlideDrawable>() {
+                @Override
+                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+
+                    Bitmap icon = AppUtils.drawableToBitmap(resource);
+
+                    Bitmap bmImg = AppUtils.getMarkerBitmapFromView(activity, icon);
+
+                    Marker m = null;
+                    try {
+                        curLocMarker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(rider))
+                                //.position(currentDriverPos).anchor(0.5f, 0.5f)
+                                .position(currentDriverPos).anchor(0.5f, 1f)
+                                .icon(BitmapDescriptorFactory.fromBitmap(bmImg))
+                                // Specifies the anchor to be at a particular point in the marker image.
+                                .rotation(0f)
+                                .flat(true));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                    return false;
+                }
+            }).error(R.drawable.ic_user_pin).placeholder(R.drawable.ic_user_pin).into(markerImageView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

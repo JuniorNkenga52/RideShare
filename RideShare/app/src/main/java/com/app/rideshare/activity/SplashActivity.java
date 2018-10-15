@@ -44,7 +44,7 @@ public class SplashActivity extends AppCompatActivity {
     Activity activity;
     public static String token = "";
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    Location currentLocation;
+    //Location currentLocation;
     Context context;
 
     @Override
@@ -167,14 +167,14 @@ public class SplashActivity extends AppCompatActivity {
 
                                 startService(new Intent(getBaseContext(), LocationService.class));
 
-                                SmartLocation.with(getBaseContext()).location()
+                                /*SmartLocation.with(getBaseContext()).location()
                                         .oneFix()
                                         .start(new OnLocationUpdatedListener() {
                                             @Override
                                             public void onLocationUpdated(Location location) {
                                                 currentLocation = location;
                                             }
-                                        });
+                                        });*/
                             }
                         }
                     } else {
