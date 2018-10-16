@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +19,7 @@ import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SignupResponse;
 import com.app.rideshare.notificationservice.MyFirebaseMessagingService;
-import com.app.rideshare.service.LocationService;
+
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.google.android.gms.common.ConnectionResult;
@@ -33,8 +32,6 @@ import com.gun0912.tedpermission.TedPermission;
 
 import java.util.ArrayList;
 
-import io.nlopez.smartlocation.OnLocationUpdatedListener;
-import io.nlopez.smartlocation.SmartLocation;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -100,6 +97,9 @@ public class SplashActivity extends AppCompatActivity {
             if (PrefUtils.getUserInfo() != null)
                 getUserDetails(PrefUtils.getUserInfo().getmUserId());
         }
+
+
+
     }
 
     private void addShortcut() {
@@ -165,7 +165,7 @@ public class SplashActivity extends AppCompatActivity {
                                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                                 finish();
 
-                                startService(new Intent(getBaseContext(), LocationService.class));
+                                //startService(new Intent(getBaseContext(), LocationService.class));
 
                                 /*SmartLocation.with(getBaseContext()).location()
                                         .oneFix()
@@ -198,6 +198,8 @@ public class SplashActivity extends AppCompatActivity {
     PermissionListener permissionlistener = new PermissionListener() {
         @Override
         public void onPermissionGranted() {
+
+
             if (PrefUtils.getBoolean("islogin")) {
                 Intent i = new Intent(getBaseContext(), MyGroupSelectionActivity.class);
                 i.putExtra("MyUserID", PrefUtils.getUserInfo().getmUserId());

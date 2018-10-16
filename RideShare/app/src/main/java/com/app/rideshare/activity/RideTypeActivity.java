@@ -3,16 +3,22 @@ package com.app.rideshare.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -32,25 +38,29 @@ import com.app.rideshare.api.response.RideSelect;
 import com.app.rideshare.api.response.StartRideResponse;
 import com.app.rideshare.model.InProgressRide;
 import com.app.rideshare.model.User;
+import com.app.rideshare.service.LocationProvider;
 import com.app.rideshare.service.LocationService;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 import java.util.ArrayList;
 
-import io.nlopez.smartlocation.OnLocationUpdatedListener;
-import io.nlopez.smartlocation.SmartLocation;
 import me.drakeet.materialdialog.MaterialDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class RideTypeActivity extends AppCompatActivity {
+public class RideTypeActivity extends AppCompatActivity implements LocationProvider.LocationCallback{
 
 
     RadioButton mNeedRideRb;
@@ -60,7 +70,7 @@ public class RideTypeActivity extends AppCompatActivity {
     Context context;
     Activity activity;
     TextView mNextTv;
-    Location currentLocation;
+    //Location currentLocation;
 
     CustomProgressDialog mProgressDialog;
     User mUserBean;
@@ -74,6 +84,9 @@ public class RideTypeActivity extends AppCompatActivity {
     MaterialDialog mMaterialDialog;
     InProgressRide mRide;
     private static long back_pressed;
+
+
+    //LocationProvider mLocationProvider;
 
     PermissionListener permissionlistener = new PermissionListener() {
         @Override
@@ -93,17 +106,17 @@ public class RideTypeActivity extends AppCompatActivity {
             } else {
                 context.startService(new Intent(context, LocationService.class));
             }*/
-            startService(new Intent(getBaseContext(), LocationService.class));
+            //startService(new Intent(getBaseContext(), LocationService.class));
             /*Intent intent = new Intent(RideTypeActivity.this, LocationService.class);
             startService(intent);*/
-            SmartLocation.with(RideTypeActivity.this).location()
+            /*SmartLocation.with(RideTypeActivity.this).location()
                     .oneFix()
                     .start(new OnLocationUpdatedListener() {
                         @Override
                         public void onLocationUpdated(Location location) {
                             currentLocation = location;
                         }
-                    });
+                    });*/
         }
 
         @Override
@@ -123,6 +136,8 @@ public class RideTypeActivity extends AppCompatActivity {
         activity = this;
         application = (RideShareApp) getApplicationContext();
         turnGPSOn();
+
+        //mLocationProvider = new LocationProvider(this, this);
 
         if (getIntent().hasExtra("inprogress")) {
             InprogressRide = getIntent().getExtras().getString("inprogress");
@@ -235,14 +250,16 @@ public class RideTypeActivity extends AppCompatActivity {
                 if (!GpsStatus) {
                     turnGPSOn();
                 } else {
-                    if (currentLocation != null) {
+                    if (RideShareApp.mLocation != null) {
                         mNeedRideLL.setSelected(true);
                         mOfferRideLL.setSelected(false);
                         rideType = 1;
                         application.setmUserType("" + rideType);
 
                         if (AppUtils.isInternetAvailable(activity)) {
-                            selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
+                            selectRide(mUserBean.getmUserId(), "" + rideType, "" +
+                                    RideShareApp.mLocation.getLatitude(), "" +
+                                    RideShareApp.mLocation.getLongitude());
                         } else {
                             MessageUtils.showNoInternetAvailable(activity);
                         }
@@ -261,13 +278,15 @@ public class RideTypeActivity extends AppCompatActivity {
                 if (!GpsStatus) {
                     turnGPSOn();
                 } else {
-                    if (currentLocation != null) {
+                    if (RideShareApp.mLocation != null) {
                         mOfferRideLL.setSelected(true);
                         mNeedRideLL.setSelected(false);
                         rideType = 2;
                         application.setmUserType("" + rideType);
                         if (AppUtils.isInternetAvailable(activity)) {
-                            selectRide(mUserBean.getmUserId(), "" + rideType, "" + currentLocation.getLatitude(), "" + currentLocation.getLongitude());
+                            selectRide(mUserBean.getmUserId(), "" + rideType, "" +
+                                    RideShareApp.mLocation.getLatitude(), "" +
+                                    RideShareApp.mLocation.getLongitude());
                         } else {
                             MessageUtils.showNoInternetAvailable(activity);
                         }
@@ -403,8 +422,8 @@ public class RideTypeActivity extends AppCompatActivity {
                     if (mType.equals("3")) {
 
                     } else if (mType.equals("4")) {
-                        Intent intent = new Intent(RideTypeActivity.this, LocationService.class);
-                        stopService(intent);
+                        /*Intent intent = new Intent(RideTypeActivity.this, LocationService.class);
+                        stopService(intent);*/
                         //finish();
                         // rate & rewie
                     }
@@ -437,8 +456,8 @@ public class RideTypeActivity extends AppCompatActivity {
             finish();
             System.exit(0);*/
             if (!InprogressRide.equals("busy")) {
-                Intent intentLocation = new Intent(RideTypeActivity.this, LocationService.class);
-                stopService(intentLocation);
+                /*Intent intentLocation = new Intent(RideTypeActivity.this, LocationService.class);
+                stopService(intentLocation);*/
             }
 
 
@@ -466,8 +485,39 @@ public class RideTypeActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         //if(!InprogressRide.equals("busy")){
-        Intent intentLocation = new Intent(RideTypeActivity.this, LocationService.class);
-        stopService(intentLocation);
+        /*Intent intentLocation = new Intent(RideTypeActivity.this, LocationService.class);
+        stopService(intentLocation);*/
+        //fusedLocationProviderClient = null;
         //}
+        //mLocationProvider.disconnect();
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //mLocationProvider.connect();
+
+        LocalBroadcastManager.getInstance(context).registerReceiver(mLocationReceiver, new IntentFilter("update-location"));
+
+
+    }
+
+    public void handleNewLocation(Location location) {
+        //currentLocation = location;
+    }
+
+    private BroadcastReceiver mLocationReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            //currentLocation = RideShareApp.mLocation;
+        }
+    };
 }

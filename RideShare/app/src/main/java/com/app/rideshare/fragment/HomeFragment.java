@@ -2,15 +2,17 @@ package com.app.rideshare.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -72,8 +74,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.nlopez.smartlocation.OnLocationUpdatedListener;
-import io.nlopez.smartlocation.SmartLocation;
 import me.drakeet.materialdialog.MaterialDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -104,6 +104,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     private ArrayList<Marker> mlistMarker;
     private String duration;
     Context context;
+
     private okhttp3.Callback updateRouteCallback = new okhttp3.Callback() {
 
         @Override
@@ -228,7 +229,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         mMaterialDialog = new MaterialDialog(getActivity())
                 .setTitle(getResources().getString(R.string.app_name))
 
-                .setMessage("Driver is no longer available.")
+                .setMessage("No drivers are available")
                 .setPositiveButton("ok", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -240,30 +241,59 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         mMaterialDialog.show();
     }
 
+    boolean isSetMarker;
+
+
+    private BroadcastReceiver mLocationReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // YOU WILL GET DATA HERE...
+
+            //Location location = new Location("");//provider name is unnecessary
+            //location.setLatitude((Double) intent.getExtras().get("Latitude"));//your coords of course
+            //location.setLongitude((Double) intent.getExtras().get("Longitude"));
+
+            Log.d("Nikunj", RideShareApp.mLocation.toString());
+
+            currentlthg = new LatLng(RideShareApp.mLocation.getLatitude(), RideShareApp.mLocation.getLongitude());
+
+            if (curLocMarker == null) {
+
+                if (!isSetMarker) {
+                    isSetMarker = true;
+                    CameraPosition cameraPosition = new CameraPosition.Builder().target(currentlthg).zoom(16).build();
+                    mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    setcutommarker(currentlthg, null, mUserBean, 1);
+                }
+            } else {
+                curLocMarker.setPosition(currentlthg);
+            }
+
+            builder.include(currentlthg);
+        }
+    };
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
 
-        SmartLocation.with(getActivity()).location()
-                .start(new OnLocationUpdatedListener() {
-                    @Override
-                    public void onLocationUpdated(Location location) {
-                        currentlthg = new LatLng(location.getLatitude(), location.getLongitude());
-                        Log.d("Bearing", "" + location.getBearing());
-                        CameraPosition cameraPosition = new CameraPosition.Builder().target(currentlthg).zoom(16).build();
+        currentlthg = new LatLng(RideShareApp.mLocation.getLatitude(), RideShareApp.mLocation.getLongitude());
 
-                        mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        if (curLocMarker == null) {
 
-                        if (curLocMarker == null) {
-                            setcutommarker(currentlthg, null, mUserBean, 1);
-                            //getMarkerBitmapFromView(getActivity(), null, mUserBean, 1, currentlthg);
-                        } else {
-                            curLocMarker.setPosition(currentlthg);
-                        }
+            if (!isSetMarker) {
+                isSetMarker = true;
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(currentlthg).zoom(16).build();
+                mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                setcutommarker(currentlthg, null, mUserBean, 1);
+            }
+        } else {
+            curLocMarker.setPosition(currentlthg);
+        }
 
-                        builder.include(currentlthg);
-                    }
-                });
+        builder.include(currentlthg);
+
         initMap();
     }
 
@@ -450,7 +480,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         createMarker(mRideType);
                     } catch (Exception e) {
                     }
-                    MessageUtils.showFailureMessage(getActivity(), "Driver is no longer available.");
+                    MessageUtils.showFailureMessage(getActivity(), "No drivers are available");
                 }
                 mProgressDialog.cancel();
             }
@@ -564,7 +594,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         i.putExtra("rider_data", response.body().getMlist().get(0));
                         startActivity(i);
                     } else if (response.body().getmStatus().equals("error")) {
-                        MessageUtils.showFailureMessage(getActivity(), "Driver is not available");
+                        MessageUtils.showFailureMessage(getActivity(), "No drivers are available");
 
                         if (currentlthg != null) {
                             if (mUserType.equals("1")) {
@@ -665,12 +695,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                     } else {
                         try {
                             curLocMarker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(user))
-                                            //.position(currentDriverPos).anchor(0.5f, 0.5f)
-                                            .position(currentDriverPos).anchor(0.5f, 1f)
-                                            .icon(BitmapDescriptorFactory.fromBitmap(bmImg))
-                                            // Specifies the anchor to be at a particular point in the marker image.
-                                            .rotation(0f)
-                                            .flat(true));
+                                    //.position(currentDriverPos).anchor(0.5f, 0.5f)
+                                    .position(currentDriverPos).anchor(0.5f, 1f)
+                                    .icon(BitmapDescriptorFactory.fromBitmap(bmImg))
+                                    // Specifies the anchor to be at a particular point in the marker image.
+                                    .rotation(0f)
+                                    .flat(true));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -816,18 +846,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        try {
-            popupWindow.dismiss();
-        } catch (Exception e) {
-
-        }
-
-
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         try {
@@ -836,4 +854,20 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
         }
     }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        try {
+            popupWindow.dismiss();
+        } catch (Exception e) {
+
+        }
+
+        LocalBroadcastManager.getInstance(context).registerReceiver(mLocationReceiver, new IntentFilter("update-location"));
+
+    }
+
 }

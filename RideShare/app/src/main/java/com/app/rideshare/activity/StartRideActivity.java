@@ -46,7 +46,8 @@ import com.app.rideshare.model.InProgressRide;
 import com.app.rideshare.model.Rider;
 import com.app.rideshare.model.Route;
 import com.app.rideshare.model.User;
-import com.app.rideshare.service.LocationService;
+import com.app.rideshare.service.LocationProvider;
+
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.Constants;
 import com.app.rideshare.utils.MapDirectionAPI;
@@ -70,7 +71,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 import com.mikhaellopez.circularimageview.CircularImageView;
-import com.squareup.picasso.Picasso;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -82,8 +82,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.nlopez.smartlocation.OnLocationUpdatedListener;
-import io.nlopez.smartlocation.SmartLocation;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -99,9 +97,9 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     AcceptRider mRider;
     LatLng pickuplocation;
     LatLng droppfflocation;
-    BroadcastReceiver receiver;
+    //BroadcastReceiver receiver;
     Double Latitude, Longitude;
-    String Provider;
+    //String Provider;
     User mUserbean;
     RideShareApp mApp;
     LatLng DriverLocation;
@@ -132,6 +130,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     private String TabelName;
     private TextView item_txt_counts;
     private RelativeLayout layout_unreadmsgs;
+
 
     private Runnable runnable = new Runnable() {
 
@@ -169,7 +168,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
             if (response.isSuccessful()) {
                 final String json = response.body().string();
-                Log.d("Response for Json",">>>>>>>>>>>>> \n\n"+json);
+                Log.d("Response for Json", ">>>>>>>>>>>>> \n\n" + json);
                 updateLineDestination(json);
 
             }
@@ -234,7 +233,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         mStartRideBtn = (Button) findViewById(R.id.start_ride_btn);
         mFinishRideBtn = (Button) findViewById(R.id.finish_ride_btn);
 
-
         mStartRideBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -275,7 +273,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             }
         }
 
-        receiver = new BroadcastReceiver() {
+        /*receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(RECEIVE_JSON)) {
@@ -296,10 +294,10 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         LocalBroadcastManager bManager = LocalBroadcastManager.getInstance(this);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(RECEIVE_JSON);
-        bManager.registerReceiver(receiver, intentFilter);
+        bManager.registerReceiver(receiver, intentFilter);*/
 
         if (mApp.getmUserType().equals("2")) {
-            startService(new Intent(getBaseContext(), LocationService.class));
+            //startService(new Intent(getBaseContext(), LocationService.class));
         }
         try {
             if (mApp.getmUserType().equals("2")) {
@@ -308,10 +306,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     mEmailTv.setText(mRider.getToRider().getmEmail());
 
                     if (!mRider.getToRider().getThumb_image().equals("")) {
-                        /*Picasso.with(StartRideActivity.this)
-                                .load(mRider.getToRider().getThumb_image())
-                                .error(R.drawable.icon_test)
-                                .into(mProfileIv);*/
                         Glide.with(this).load(mRider.getToRider().getThumb_image())
                                 .error(R.drawable.user_icon)
                                 .crossFade()
@@ -397,9 +391,9 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             if (mApp.getmUserType().equals("2")) {
                 final Location driverlatlon = new Location(LocationManager.GPS_PROVIDER);
                 LatLng driverlatlng = new LatLng(Double.parseDouble(mRider.getStart_lati()), Double.parseDouble(mRider.getStart_long()));
-                MapDirectionAPI.getDirection(driverlatlng, droplng,context).enqueue(updateRouteCallback);
+                MapDirectionAPI.getDirection(driverlatlng, droplng, context).enqueue(updateRouteCallback);
             } else {
-                MapDirectionAPI.getDirection(picklng, droplng,context).enqueue(updateRouteCallback);
+                MapDirectionAPI.getDirection(picklng, droplng, context).enqueue(updateRouteCallback);
             }
 
         }
@@ -416,14 +410,14 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     if (directionLine != null) {
                         directionLine.remove();
                     }
-                    Log.d("Routes Size",">>>>>>>>>>>>>>>>>>"+routes.size());
+                    Log.d("Routes Size", ">>>>>>>>>>>>>>>>>>" + routes.size());
                     if (routes.size() > 0) {
                         directionLine = mGoogleMap.addPolyline((new PolylineOptions())
                                 .addAll(routes.get(0).getOverviewPolyLine())
                                 .color(ContextCompat.getColor(StartRideActivity.this, R.color.blacltext))
                                 .width(10));
-                    }else {
-                        Toast.makeText(context,json,Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(context, json, Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -433,10 +427,21 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        LocalBroadcastManager.getInstance(context).registerReceiver(mLocationReceiver, new IntentFilter("update-location"));
+
+        LocalBroadcastManager.getInstance(StartRideActivity.this).registerReceiver(mMessageReceiver, new IntentFilter("start_ride"));
+
+        LocalBroadcastManager.getInstance(StartRideActivity.this).registerReceiver(mUpdateMessageReciver, new IntentFilter("update_message"));
+        getMessages();
+    }
+
+
+    @Override
     public void onBackPressed() {
 
-        Intent intent = new Intent(StartRideActivity.this, LocationService.class);
-        stopService(intent);
         mUpdaterHandler.removeCallbacks(runnable);
         mUpdaterHandler.removeCallbacksAndMessages(null);
         if (mWebSocketClient != null) {
@@ -481,48 +486,15 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         }*/
     }
 
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        SmartLocation.with(this).location()
-                .start(new OnLocationUpdatedListener() {
-                    @Override
-                    public void onLocationUpdated(Location location) {
-                        try {
-                            currentlthg = new LatLng(location.getLatitude(), location.getLongitude());
-                            Log.d("Bearing", "" + location.getBearing());
-                            if (zoomLevel <= 4.0f) {
-                                zoomLevel = 16.0f;
-                            }
-                            cameraPosition = new CameraPosition.Builder().target(currentlthg).zoom(zoomLevel).build();
-                            mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-                            mDriverLocation = new Location("");
-                            mDriverLocation.setLatitude(DriverLocation.latitude);
-                            mDriverLocation.setLongitude(DriverLocation.longitude);
+        //handlerUpdateLocation.removeCallbacks(mRunnableUpdateLocation);
+        //handlerUpdateLocation.postDelayed(mRunnableUpdateLocation, 1000);
 
-                            if (DriverMarker == null) {
-                                DriverMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin))
-                                        .position(DriverLocation));
-                            } else {
-                                DriverMarker.setPosition(DriverLocation);
-                            }
-
-                            if (CustomerMarker == null) {
-                                //CustomerMarker
-                                //mGoogleMap.clear();
-                                /*CustomerMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
-                                        .position(CustomerLocaton));*/
-                                curLocMarker=setcutommarker(CustomerLocaton,mRider);
-                                //CustomerMarker = setcutommarker();
-                            } else {
-                                CustomerMarker.setPosition(CustomerLocaton);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+        setMarker();
 
         if (PickupMarker == null) {
             PickupMarker = mGoogleMap.addMarker(new MarkerOptions().title("Pick Up Location").snippet(mRider.getStarting_address()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_start))
@@ -551,6 +523,69 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         if (mApp.getmUserType().equals("2")) {
             mUpdaterHandler.post(runnable);
         }
+    }
+
+    boolean isSetMarker;
+    public Location previousBestLocation = null;
+
+    private BroadcastReceiver mLocationReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            try {
+
+                if (AppUtils.isBetterLocation(RideShareApp.mLocation, previousBestLocation)) {
+                    previousBestLocation = RideShareApp.mLocation;
+
+                    Latitude = RideShareApp.mLocation.getLatitude();
+                    Longitude = RideShareApp.mLocation.getLongitude();
+
+                    DriverLocation = new LatLng(Latitude, Longitude);
+                    mDriverLocation = new Location("");
+                    mDriverLocation.setLatitude(Latitude);
+                    mDriverLocation.setLongitude(Latitude);
+                }
+
+                setMarker();
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    public void setMarker(){
+        try{
+            currentlthg = new LatLng(RideShareApp.mLocation.getLatitude(), RideShareApp.mLocation.getLongitude());
+            Log.d("Bearing", "" + RideShareApp.mLocation.getBearing());
+            if (zoomLevel <= 4.0f) {
+                zoomLevel = 16.0f;
+            }
+            cameraPosition = new CameraPosition.Builder().target(currentlthg).zoom(zoomLevel).build();
+            mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+            mDriverLocation = new Location("");
+            mDriverLocation.setLatitude(DriverLocation.latitude);
+            mDriverLocation.setLongitude(DriverLocation.longitude);
+
+            if (DriverMarker == null) {
+                DriverMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin))
+                        .position(DriverLocation));
+            } else {
+                DriverMarker.setPosition(DriverLocation);
+            }
+
+            if (CustomerMarker == null) {
+                if(!isSetMarker) {
+                    isSetMarker = true;
+                    curLocMarker = setcutommarker(CustomerLocaton, mRider);
+                }
+            } else {
+                CustomerMarker.setPosition(CustomerLocaton);
+            }
+        } catch (Exception e){}
     }
 
     private void connectWebSocket() {
@@ -637,8 +672,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                         mFinishRideBtn.setVisibility(View.VISIBLE);
                         mStartRideBtn.setVisibility(View.GONE);
                     } else if (mType.equals("4")) {
-                        Intent intent = new Intent(StartRideActivity.this, LocationService.class);
-                        stopService(intent);
+
                         mUpdaterHandler.removeCallbacks(runnable);
                         mUpdaterHandler.removeCallbacksAndMessages(null);
                         finish();
@@ -690,15 +724,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         });*/
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(StartRideActivity.this).registerReceiver(mMessageReceiver, new IntentFilter("start_ride"));
-
-        LocalBroadcastManager.getInstance(StartRideActivity.this).registerReceiver(mUpdateMessageReciver, new IntentFilter("update_message"));
-        getMessages();
-    }
-
     private void getMessages() {
         CommonMethods commonMethods = new CommonMethods(getApplicationContext());
         Rider toRider;
@@ -729,11 +754,11 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         super.onPause();
     }
 
-    @Override
+    /*@Override
     protected void onDestroy() {
         super.onDestroy();
         doUnbindService();
-    }
+    }*/
 
     private float getBearing(LatLng begin, LatLng end) {
 
@@ -923,4 +948,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
     }
+
+
 }

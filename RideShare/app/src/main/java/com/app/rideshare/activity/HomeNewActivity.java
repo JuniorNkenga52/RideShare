@@ -41,7 +41,6 @@ public class HomeNewActivity extends AppCompatActivity {
 
         mlist = (ArrayList<Rider>) getIntent().getSerializableExtra("list");
 
-
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         if (PrefUtils.getString("isBlank").equals("true")) {
             if (RideShareApp.mHomeTabPos == 4) {

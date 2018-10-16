@@ -87,7 +87,7 @@ public class NotificationActivity extends AppCompatActivity {
             mStartingAddress = jobjRide.getString("starting_address");
             mEndingAddress = jobjRide.getString("ending_address");
             Email = jobjRide.getString("u_email");
-            profilePic = jobjRide.getString("profile_image");
+            profilePic = jobjRide.getString("thumb_image");
 
         } catch (Exception e) {
             Log.d("erroe", e.toString());

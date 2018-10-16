@@ -26,9 +26,9 @@ import com.app.rideshare.utils.PrefUtils;
 public class LocationService extends Service {
     public static final String BROADCAST_ACTION = "Hello World";
     private static final int TWO_MINUTES = 1000 * 60 * 2;
-    public LocationManager locationManager;
-    public MyLocationListener listener;
-    public Location previousBestLocation = null;
+    //public LocationManager locationManager;
+   // public MyLocationListener listener;
+   // public Location previousBestLocation = null;
 
     Intent intent;
     int counter = 0;
@@ -49,24 +49,28 @@ public class LocationService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        listener = new MyLocationListener();
+        /*locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        listener = new MyLocationListener();*/
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             MessageUtils.showFailureMessage(getApplicationContext(), "Permission Denied");
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+        /*locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);*/
         
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
+        PrefUtils.putBoolean("isAppRunning",false);
         super.onTaskRemoved(rootIntent);
+        Log.w("TASK REMOVE", "DONE");
+
         try {
-            PrefUtils.putBoolean("isAppRunning",false);
+
             new LongOperation(getApplicationContext()).execute(bean.getmUserId(), "0").get();
         } catch (Exception ignore) {
         }
+        this.stopSelf();
     }
 
     @Override
@@ -131,12 +135,12 @@ public class LocationService extends Service {
     public void onDestroy() {
         // handler.removeCallbacks(sendUpdatesToUI);
         super.onDestroy();
-        Log.v("STOP_SERVICE", "DONE");
+        Log.w("STOP_SERVICE", "DONE");
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             MessageUtils.showFailureMessage(getApplicationContext(), "Permission Denied");
         }
         try {
-            locationManager.removeUpdates(listener);
+            //locationManager.removeUpdates(listener);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -162,9 +166,7 @@ public class LocationService extends Service {
         public void onLocationChanged(final Location loc) {
             //Log.i("*********************", "Location changed");
 
-            RideShareApp.mLocation = loc;
-
-            if (isBetterLocation(loc, previousBestLocation)) {
+           /* if (isBetterLocation(loc, previousBestLocation)) {
 
                 previousBestLocation = loc;
                 loc.getLatitude();
@@ -179,7 +181,7 @@ public class LocationService extends Service {
                 RTReturn.putExtra("Longitude", loc.getLongitude());
                 RTReturn.putExtra("Provider", loc.getProvider());
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(RTReturn);
-            }
+            }*/
         }
 
         public void onProviderDisabled(String provider) {

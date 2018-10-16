@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -50,6 +51,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+
+        Log.w("Check==>", "Get Notification" + isAppRunning(this));
+        PrefUtils.initPreference(this);
+        if(!isAppRunning(this)){
+            PrefUtils.putBoolean("isAppRunning",false);
+        } else {
+            PrefUtils.putBoolean("isAppRunning",true);
+        }
 
         String message = remoteMessage.getData().get("m");
         try {
@@ -233,4 +242,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
         return false;
     }
+
+    public boolean isAppRunning(Context context)
+    {
+        boolean appFound = false;
+        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        final List<ActivityManager.RunningTaskInfo> recentTasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
+
+        for (int i = 0; i < recentTasks.size(); i++)
+        {
+            if (recentTasks.get(i).baseActivity.getPackageName().equals("com.app.rideshare"))
+            {
+                appFound = true;
+                break;
+            }
+        }
+        return appFound;
+    }
+
 }

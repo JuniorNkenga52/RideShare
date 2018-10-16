@@ -59,7 +59,7 @@ public class MessageUtils {
                 txt_toast_msg.setTextColor(Color.RED);
                 break;
             case TYPE_WARNING:
-                txt_toast_msg.setTextColor(context.getResources().getColor(R.color.blue));
+                txt_toast_msg.setTextColor(context.getResources().getColor(R.color.blacltext));
                 break;
         }
 
