@@ -82,12 +82,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Intent intent = new Intent("start_ride");
                     intent.putExtra("int_data", "1");
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-                    sendNotification("Your Ride start", "4");
+                    sendNotification("Ride Started", "4");
                 } else if (jobj.getString("type").equals("5")) {
                     Intent intent = new Intent("start_ride");
                     intent.putExtra("int_data", "2");
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-                    sendNotification("Your Ride Finish", "5");
+                    sendNotification("Ride Finished", "5");
 
                 } else if (jobj.getString("type").equals("6")) {
                     //JSONObject jObjUser = jobj.getJSONObject("result");

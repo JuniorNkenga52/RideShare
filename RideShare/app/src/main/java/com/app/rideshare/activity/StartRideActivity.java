@@ -181,12 +181,12 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         public void onReceive(Context context, Intent intent) {
             String staus = intent.getStringExtra("int_data");
             if (staus.equals("1")) {
-                MessageUtils.showSuccessMessage(StartRideActivity.this, "Your Ride Started.");
+                MessageUtils.showSuccessMessage(StartRideActivity.this, "Ride Started");
                 mRider.setRequest_status("3");
             } else if (staus.equals("2")) {
                 try {
                     if (mUserbean.getmIs_rider().equals("1")) {
-                        MessageUtils.showSuccessMessage(StartRideActivity.this, "Your Ride Finish.");
+                        MessageUtils.showSuccessMessage(StartRideActivity.this, "Ride Finished");
                         Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
                         rateride.putExtra("riderate", mRider.getRide_id());
                         rateride.putExtra("driverid", mRider.getFromRider().getnUserId());

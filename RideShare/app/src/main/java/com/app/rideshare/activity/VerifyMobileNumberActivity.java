@@ -65,7 +65,7 @@ public class VerifyMobileNumberActivity extends AppCompatActivity {
         mResendTv = (TextView) findViewById(R.id.resend_tv);
         mVerifyTv = (TextView) findViewById(R.id.verify_tv);
         mTitleTv = (TextView) findViewById(R.id.title_tv);
-        mTitleTv.setText("Please input your 5 digit verification code.We sent code to your mobile number " + mBean.getmMobileNo());
+        mTitleTv.setText("Please input your 5 digit verification code. We sent the code to your mobile number " + mBean.getmMobileNo());
 
         //mRobotoMeduim = TypefaceUtils.getTypefaceRobotoMediam(this);
         /*mResendTv.setTypeface(mRobotoMeduim);
