@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:focusableInTouchMode="true"
+    android:background="@color/contentBGnew"
     android:layout_height="match_parent">
 
     <com.app.rideshare.widget.TextViewBold
@@ -31,11 +32,12 @@
         android:id="@+id/llSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:layout_below="@+id/txtHeaderName"
         android:orientation="vertical"
         android:padding="@dimen/_5sdp">
-
+        <!-- Include 'android:background="@color/white"' in section above
+        to revert to white square behind search box. I removed it to
+        make the layout the same as the 'activity_mygroup.xml' file. -->
         <com.app.rideshare.widget.EditTextRegular
             android:id="@+id/txtSearchGroup"
             android:layout_width="match_parent"
