@@ -89,7 +89,7 @@ public class MobileNumberFragment extends Fragment {
         }
 
 
-        chkIAgree = (CheckBox) rootView.findViewById(R.id.chkIAgree);
+        chkIAgree = rootView.findViewById(R.id.chkIAgree);
 
         txtTermsOfService.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,13 +98,11 @@ public class MobileNumberFragment extends Fragment {
             }
         });
 
-        txtNext = (TextView) rootView.findViewById(R.id.txtNext);
+        txtNext = rootView.findViewById(R.id.txtNext);
         txtNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    /*getUserCountry(getContext());
-                    GetCountryZipCode();*/
                     String result = txtPhoneNumber.getUnmaskedText().toString();
                     if (result.length() == 0) {
                         MessageUtils.showFailureMessage(getActivity(), "Please enter Mobile Number.");

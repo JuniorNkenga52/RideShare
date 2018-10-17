@@ -39,16 +39,11 @@ import com.app.rideshare.api.response.StartRideResponse;
 import com.app.rideshare.model.InProgressRide;
 import com.app.rideshare.model.User;
 import com.app.rideshare.service.LocationProvider;
-import com.app.rideshare.service.LocationService;
+
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -86,7 +81,7 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
     private static long back_pressed;
 
 
-    //LocationProvider mLocationProvider;
+    LocationProvider mLocationProvider;
 
     PermissionListener permissionlistener = new PermissionListener() {
         @Override
@@ -501,9 +496,10 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
     @Override
     public void onResume() {
         super.onResume();
-        //mLocationProvider.connect();
 
-        LocalBroadcastManager.getInstance(context).registerReceiver(mLocationReceiver, new IntentFilter("update-location"));
+       // mLocationProvider.connect();
+
+        //LocalBroadcastManager.getInstance(context).registerReceiver(mLocationReceiver, new IntentFilter("update-location"));
 
 
     }
