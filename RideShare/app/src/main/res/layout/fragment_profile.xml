@@ -18,47 +18,49 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/txtHeaderName"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="0dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/llMyProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/_8sdp"
-            android:paddingBottom="@dimen/_8sdp"
-            android:paddingLeft="@dimen/_12sdp"
             android:background="@drawable/group_selector"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingTop="@dimen/_8sdp"
             android:paddingRight="@dimen/_12sdp"
-            android:orientation="horizontal">
+            android:paddingBottom="@dimen/_8sdp">
 
             <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/imgProfilePhoto"
                 android:layout_width="@dimen/_55sdp"
                 android:layout_height="@dimen/_55sdp"
+                android:layout_marginRight="@dimen/_12sdp"
                 android:src="@drawable/user_icon"
                 app:civ_border_color="#EEEEEE"
                 app:civ_border_width="0dp"
                 app:civ_shadow="true"
-                android:layout_marginRight="@dimen/_12sdp"
-                app:civ_shadow_radius="0"
-                app:civ_shadow_color="#00000000"/>
+                app:civ_shadow_color="#00000000"
+                app:civ_shadow_radius="0" />
 
             <com.app.rideshare.widget.TextViewBold
                 android:id="@+id/txtUserName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:textSize="@dimen/_15sdp"
-                android:textColor="@color/black"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="My Profile"/>
+                android:text="My Profile"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15sdp" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_right_arrow"/>
+                android:src="@drawable/ic_right_arrow" />
 
         </LinearLayout>
 
@@ -67,34 +69,73 @@
             android:id="@+id/llMyGroup"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
-            android:paddingLeft="@dimen/_12sdp"
             android:layout_marginTop="@dimen/_12sdp"
             android:background="@drawable/group_selector"
-            android:paddingRight="@dimen/_12sdp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingRight="@dimen/_12sdp">
 
             <ImageView
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
-                android:src="@drawable/ic_admin"
-                android:layout_marginRight="@dimen/_12sdp"/>
+                android:layout_marginRight="@dimen/_12sdp"
+                android:src="@drawable/ic_admin" />
 
             <com.app.rideshare.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:textSize="@dimen/_13sdp"
-                android:textColor="@color/black"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="My Group"/>
+                android:text="My Group"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_13sdp" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_right_arrow"/>
+                android:src="@drawable/ic_right_arrow" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/GrayLine" />
+
+        <LinearLayout
+            android:id="@+id/offer_ride_ll"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:background="@drawable/group_selector"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingRight="@dimen/_12sdp">
+
+            <ImageView
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_marginRight="@dimen/_12sdp"
+                android:src="@drawable/ic_admin" />
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="Group Selection"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_13sdp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_right_arrow" />
 
         </LinearLayout>
 
@@ -107,34 +148,34 @@
             android:id="@+id/llManageCar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
-            android:paddingLeft="@dimen/_12sdp"
             android:background="@drawable/group_selector"
-            android:paddingRight="@dimen/_12sdp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingRight="@dimen/_12sdp"
             android:visibility="visible">
 
             <ImageView
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
-                android:src="@drawable/ic_admin"
-                android:layout_marginRight="@dimen/_12sdp"/>
+                android:layout_marginRight="@dimen/_12sdp"
+                android:src="@drawable/ic_admin" />
 
             <com.app.rideshare.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:textSize="@dimen/_13sdp"
-                android:textColor="@color/black"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="Manage Car"/>
+                android:text="Manage Car"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_13sdp" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_right_arrow"/>
+                android:src="@drawable/ic_right_arrow" />
 
         </LinearLayout>
 
@@ -145,36 +186,75 @@
             android:background="@color/GrayLine" />
 
         <LinearLayout
-            android:id="@+id/llHistory"
+            android:id="@+id/need_ride_ll"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
-            android:paddingLeft="@dimen/_12sdp"
             android:background="@drawable/group_selector"
-            android:paddingRight="@dimen/_12sdp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingRight="@dimen/_12sdp">
 
             <ImageView
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
-                android:src="@drawable/ic_admin"
-                android:layout_marginRight="@dimen/_12sdp"/>
+                android:layout_marginRight="@dimen/_12sdp"
+                android:src="@drawable/ic_admin" />
 
             <com.app.rideshare.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:textSize="@dimen/_13sdp"
-                android:textColor="@color/black"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="History"/>
+                android:text="Change Ride Role"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_13sdp" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_right_arrow"/>
+                android:src="@drawable/ic_right_arrow" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/GrayLine" />
+
+        <LinearLayout
+            android:id="@+id/llHistory"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:background="@drawable/group_selector"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingRight="@dimen/_12sdp">
+
+            <ImageView
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_marginRight="@dimen/_12sdp"
+                android:src="@drawable/ic_admin" />
+
+            <com.app.rideshare.widget.TextViewRegular
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="History"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_13sdp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_right_arrow" />
 
         </LinearLayout>
 
@@ -187,33 +267,33 @@
             android:id="@+id/llSetting"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
-            android:paddingLeft="@dimen/_12sdp"
             android:background="@drawable/group_selector"
-            android:paddingRight="@dimen/_12sdp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingRight="@dimen/_12sdp">
 
             <ImageView
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
-                android:src="@drawable/ic_admin"
-                android:layout_marginRight="@dimen/_12sdp"/>
+                android:layout_marginRight="@dimen/_12sdp"
+                android:src="@drawable/ic_admin" />
 
             <com.app.rideshare.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:textSize="@dimen/_13sdp"
-                android:textColor="@color/black"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="Settings"/>
+                android:text="Settings"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_13sdp" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_right_arrow"/>
+                android:src="@drawable/ic_right_arrow" />
 
         </LinearLayout>
 
@@ -226,34 +306,34 @@
             android:id="@+id/llLogout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
-            android:paddingLeft="@dimen/_12sdp"
             android:background="@drawable/group_selector"
-            android:paddingRight="@dimen/_12sdp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingRight="@dimen/_12sdp"
             android:visibility="gone">
 
             <ImageView
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
-                android:src="@drawable/ic_admin"
-                android:layout_marginRight="@dimen/_12sdp"/>
+                android:layout_marginRight="@dimen/_12sdp"
+                android:src="@drawable/ic_admin" />
 
             <com.app.rideshare.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:textSize="@dimen/_13sdp"
-                android:textColor="@color/black"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="Logout"/>
+                android:text="Logout"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_13sdp" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_right_arrow"/>
+                android:src="@drawable/ic_right_arrow" />
 
         </LinearLayout>
     </LinearLayout>

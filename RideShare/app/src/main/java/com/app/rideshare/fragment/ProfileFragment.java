@@ -17,6 +17,8 @@ import com.app.rideshare.activity.EditProfileActivity;
 import com.app.rideshare.activity.HistoryActivity;
 import com.app.rideshare.activity.ManageCarActivity;
 import com.app.rideshare.activity.MyGroupActivity;
+import com.app.rideshare.activity.MyGroupSelectionActivity;
+import com.app.rideshare.activity.RideTypeActivity;
 import com.app.rideshare.activity.SettingActivity;
 import com.app.rideshare.activity.SignUpActivity;
 import com.app.rideshare.listner.OnBackPressedListener;
@@ -34,6 +36,8 @@ public class ProfileFragment extends Fragment implements OnBackPressedListener {
     private LinearLayout llMyGroup;
     private LinearLayout llManageCar;
     private LinearLayout llHistory;
+    private LinearLayout need_ride_ll;
+    private LinearLayout offer_ride_ll;
     private LinearLayout llSetting;
     private LinearLayout llLogout;
     private CustomProgressDialog mProgressDialog;
@@ -138,6 +142,25 @@ public class ProfileFragment extends Fragment implements OnBackPressedListener {
                 startActivity(intent);
             }
         });
+
+        need_ride_ll = (LinearLayout) rootView.findViewById(R.id.need_ride_ll);
+        need_ride_ll.setOnClickListener(new View.OnClickListener() {
+                                          @Override
+                                          public void onClick(View view) {
+                                              Intent intent = new Intent(getActivity(), RideTypeActivity.class);
+                                              startActivity(intent);
+                                          }
+        });
+
+        offer_ride_ll = (LinearLayout) rootView.findViewById(R.id.offer_ride_ll);
+        offer_ride_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), MyGroupSelectionActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
         llLogout = (LinearLayout) rootView.findViewById(R.id.llLogout);
         llLogout.setOnClickListener(new View.OnClickListener() {
