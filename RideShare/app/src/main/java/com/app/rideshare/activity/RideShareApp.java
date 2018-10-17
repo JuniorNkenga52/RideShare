@@ -26,8 +26,8 @@ public class RideShareApp extends Application implements LocationProvider.Locati
         MultiDex.install(this);
         PrefUtils.initPreference(this);
 
-        mLocationProvider = new LocationProvider(this, this);
-        mLocationProvider.connect();
+        //mLocationProvider = new LocationProvider(this, this);
+       // mLocationProvider.connect();
     }
 
 

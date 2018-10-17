@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -24,6 +25,7 @@ import com.app.rideshare.R;
 import com.app.rideshare.api.RideShareApi;
 import com.app.rideshare.model.GroupList;
 import com.app.rideshare.model.InProgressRide;
+import com.app.rideshare.service.LocationProvider;
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.view.CustomProgressDialog;
@@ -35,7 +37,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MyGroupSelectionActivity extends AppCompatActivity {
+public class MyGroupSelectionActivity extends AppCompatActivity implements LocationProvider.LocationCallback {
 
     ArrayList<GroupList> mListGroup = new ArrayList<>();
     ArrayList<GroupList> mSearchListGroup = new ArrayList<>();
@@ -49,6 +51,8 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshRequests;
     String InprogressRide;
 
+    LocationProvider mLocationProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +62,9 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
         mProgressDialog = new CustomProgressDialog(context);
 
         //adminid = PrefUtils.getString("AdminID");
+
+        mLocationProvider = new LocationProvider(this, this);
+
 
         mLvMyGroup = findViewById(R.id.mLvMyGroup);
         txtskip = findViewById(R.id.txtskip);
@@ -365,5 +372,15 @@ public class MyGroupSelectionActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mLocationProvider.connect();
+    }
+
+    public void handleNewLocation(Location location) {
+        //currentLocation = location;
     }
 }

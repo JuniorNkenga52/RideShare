@@ -55,22 +55,7 @@
             android:name=".activity.SignUpActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"/>
-        <!-- <activity
-             android:name="com.facebook.FacebookActivity"
-             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-             android:label="@string/app_name" />
-         <activity
-             android:name="com.facebook.CustomTabActivity"
-             android:exported="true">
-             <intent-filter>
-                 <action android:name="android.intent.action.VIEW" />
 
-                 <category android:name="android.intent.category.DEFAULT" />
-                 <category android:name="android.intent.category.BROWSABLE" />
-
-                 <data android:scheme="@string/fb_login_protocol_scheme" />
-             </intent-filter>
-         </activity>-->
         <activity
             android:name=".activity.NotificationActivity"
             android:screenOrientation="portrait" />
@@ -128,9 +113,6 @@
 
         <service android:name=".chat.MyService" />
 
-        <!-- <meta-data
-             android:name="com.google.android.geo.API_KEY"
-             android:value="AIzaSyChC2mPyZsEQp0hXSqW2wwcdIrILZaJG-k" />-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyADxBSnaC9qdGjqHG4s7mtMMI7OQ5oYzsA" />
@@ -138,16 +120,6 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <!--<receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
-                <category android:name="com.app.rideshare" />
-            </intent-filter>
-        </receiver>-->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
@@ -160,39 +132,11 @@
             </intent-filter>
         </receiver>
 
-        <!-- <service
-             android:name=".notification.GCMPushReceiverService"
-             android:exported="false">
-             <intent-filter>
-                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-             </intent-filter>
-         </service>-->
-
-        <!--<service android:name=".notificationservice.MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>-->
-
         <service android:name=".notificationservice.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-        <!-- <service
-             android:name=".notification.GCMRegistrationIntentService"
-             android:exported="false">
-             <intent-filter>
-                 <action android:name="com.google.android.gms.iid.InstanceID" />
-             </intent-filter>
-         </service>-->
-        <service
-            android:name=".service.LocationService"
-            android:enabled="true"
-            android:excludeFromRecents="true"
-            android:stopWithTask="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -213,9 +157,6 @@
         <activity
             android:name=".activity.CreateGroupActivity"
             android:exported="true">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>-->
         </activity>
         <activity
             android:name=".activity.HistoryActivity"
@@ -243,9 +184,7 @@
                 tools:replace="android:resource" />
         </provider>
 
-        <!-- <activity
-             android:name=".activity.GroupSelectionFragment"
-             android:screenOrientation="portrait" />-->
+
         <activity
             android:name=".activity.DeepLinkActivity"
             android:excludeFromRecents="true"
