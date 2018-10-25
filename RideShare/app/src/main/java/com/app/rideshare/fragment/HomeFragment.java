@@ -594,7 +594,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         i.putExtra("rider_data", response.body().getMlist().get(0));
                         startActivity(i);
                     } else if (response.body().getmStatus().equals("error")) {
-                        MessageUtils.showFailureMessage(getActivity(), "No drivers are available");
+                        MessageUtils.showFailureMessage(getActivity(), "Driver is no longer available");
 
                         if (currentlthg != null) {
                             if (mUserType.equals("1")) {

@@ -74,7 +74,6 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
 
-
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
         if (ConnectionResult.SUCCESS != resultCode) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
@@ -165,16 +164,7 @@ public class SplashActivity extends AppCompatActivity {
                                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                                 finish();
 
-                                //startService(new Intent(getBaseContext(), LocationService.class));
 
-                                /*SmartLocation.with(getBaseContext()).location()
-                                        .oneFix()
-                                        .start(new OnLocationUpdatedListener() {
-                                            @Override
-                                            public void onLocationUpdated(Location location) {
-                                                currentLocation = location;
-                                            }
-                                        });*/
                             }
                         }
                     } else {
@@ -209,8 +199,8 @@ public class SplashActivity extends AppCompatActivity {
             } else {
                 Intent i = new Intent(getBaseContext(), SignUpActivity.class);
                 startActivity(i);
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         }
 

@@ -84,11 +84,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     sendNotification("Ride Started", "4");
                 } else if (jobj.getString("type").equals("5")) {
+
                     Intent intent = new Intent("start_ride");
                     intent.putExtra("int_data", "2");
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                     sendNotification("Ride Finished", "5");
-
                 } else if (jobj.getString("type").equals("6")) {
                     //JSONObject jObjUser = jobj.getJSONObject("result");
                     PrefUtils.putString("AdminID", jobj.getJSONObject("result").getString("admin_id"));

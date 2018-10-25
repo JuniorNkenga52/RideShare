@@ -389,8 +389,11 @@ public class CreateGroupActivity extends AppCompatActivity {
                     JSONObject jObj = new JSONObject(result);
 
                     if (jObj.getString("status").equals("success")) {
-
-                        MessageUtils.showSuccessMessage(getApplicationContext(), "Group Created.");
+                        if (isEditGroupDetail) {
+                            MessageUtils.showSuccessMessage(getApplicationContext(), "Group info updated successfully.");
+                        } else {
+                            MessageUtils.showSuccessMessage(getApplicationContext(), "Group Created.");
+                        }
 //                        RideShareApp.mHomeTabPos = 0;
 //                        Intent i = new Intent(CreateGroupActivity.this, HomeNewActivity.class);
 //                        startActivity(i);

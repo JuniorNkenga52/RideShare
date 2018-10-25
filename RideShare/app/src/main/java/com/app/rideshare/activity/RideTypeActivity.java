@@ -207,18 +207,12 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
 
         mProgressDialog = new CustomProgressDialog(this);
 
-        //mRobotoMediam = TypefaceUtils.getTypefaceRobotoMediam(this);
+        mNeedRideRb = findViewById(R.id.need_ride_rb);
+        mOfferRideRb = findViewById(R.id.offer_ride_rb);
 
-        mNeedRideRb = (RadioButton) findViewById(R.id.need_ride_rb);
-        mOfferRideRb = (RadioButton) findViewById(R.id.offer_ride_rb);
+        mNextTv = findViewById(R.id.next_tv);
 
-       /* mNeedRideRb.setTypeface(mRobotoMediam);
-        mOfferRideRb.setTypeface(mRobotoMediam);*/
-
-        mNextTv = (TextView) findViewById(R.id.next_tv);
-        //mNextTv.setTypeface(mRobotoMediam);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("Select Ride");
 
@@ -235,8 +229,8 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
             }
         }
 
-        mNeedRideLL = (LinearLayout) findViewById(R.id.need_ride_ll);
-        mOfferRideLL = (LinearLayout) findViewById(R.id.offer_ride_ll);
+        mNeedRideLL = findViewById(R.id.need_ride_ll);
+        mOfferRideLL = findViewById(R.id.offer_ride_ll);
 
         mNeedRideLL.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,6 +243,10 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
                         mNeedRideLL.setSelected(true);
                         mOfferRideLL.setSelected(false);
                         rideType = 1;
+
+                        mUserBean.setmRideType("1");
+                        PrefUtils.addUserInfo(mUserBean);
+
                         application.setmUserType("" + rideType);
 
                         if (AppUtils.isInternetAvailable(activity)) {
@@ -277,6 +275,10 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
                         mOfferRideLL.setSelected(true);
                         mNeedRideLL.setSelected(false);
                         rideType = 2;
+
+                        mUserBean.setmRideType("2");
+                        PrefUtils.addUserInfo(mUserBean);
+
                         application.setmUserType("" + rideType);
                         if (AppUtils.isInternetAvailable(activity)) {
                             selectRide(mUserBean.getmUserId(), "" + rideType, "" +
@@ -441,24 +443,12 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
     @Override
     public void onBackPressed() {
         if (back_pressed + 2000 > System.currentTimeMillis()) {
-            super.onBackPressed();
 
             RideShareApp.mHomeTabPos = 0;
-            /*Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-            System.exit(0);*/
-            if (!InprogressRide.equals("busy")) {
-                /*Intent intentLocation = new Intent(RideTypeActivity.this, LocationService.class);
-                stopService(intentLocation);*/
-            }
-
 
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finishAndRemoveTask();
             finishAffinity();
@@ -473,36 +463,9 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
             MessageUtils.showFailureMessage(getBaseContext(), "Press once again to exit!");
             back_pressed = System.currentTimeMillis();
         }
-        //super.onBackPressed();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //if(!InprogressRide.equals("busy")){
-        /*Intent intentLocation = new Intent(RideTypeActivity.this, LocationService.class);
-        stopService(intentLocation);*/
-        //fusedLocationProviderClient = null;
-        //}
-        //mLocationProvider.disconnect();
-    }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-       // mLocationProvider.connect();
-
-        //LocalBroadcastManager.getInstance(context).registerReceiver(mLocationReceiver, new IntentFilter("update-location"));
-
-
-    }
 
     public void handleNewLocation(Location location) {
         //currentLocation = location;

@@ -2,6 +2,7 @@ package com.app.rideshare.service;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -36,9 +37,13 @@ public class LocationProvider implements
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
+    private Intent mIntentService;
+    private PendingIntent mPendingIntent;
 
     public LocationProvider(Context context, LocationCallback callback) {
 
+        mIntentService = new Intent(context,LocationService.class);
+        mPendingIntent = PendingIntent.getService(context, 1, mIntentService, 0);
 
         mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)

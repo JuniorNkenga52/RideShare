@@ -1,6 +1,5 @@
 package com.app.rideshare.fragment;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -72,16 +71,16 @@ public class OTPFragment extends Fragment {
         txtPhoneNumberInfo = (TextView) rootView.findViewById(R.id.txtPhoneNumberInfo);
         txtPhoneNumberInfo.setText(getActivity().getResources().getString(R.string.txt_enter_the_code) + " " + SignUpActivity.PhoneNumber);
 
-        txtPin = (PinEntryEditText) rootView.findViewById(R.id.txtPin);
+        txtPin = rootView.findViewById(R.id.txtPin);
 
-        txtResendOTP = (TextView) rootView.findViewById(R.id.txtResendOTP);
+        txtResendOTP = rootView.findViewById(R.id.txtResendOTP);
 
         txtResendOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (AppUtils.isInternetAvailable(getActivity())) {
                     //sendOTP("+" + AppUtils.getCountryTelephoneCode(context) + SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
-                    sendOTP("+1" +SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
+                    sendOTP("+1" + SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
                     //sendOTP("+91" +SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
                 } else {
                     MessageUtils.showNoInternetAvailable(getActivity());
@@ -145,29 +144,6 @@ public class OTPFragment extends Fragment {
         return rootView;
     }
 
-    /* @Override
-    protected void onResume() {
-        super.onResume();
-
-        FirstName = "";
-        LastName = "";
-        HomeAddress = "";
-        EmailId = "";
-
-        Log.w("MainActivity", "onResume");
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_SUCCESS));
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(GCMRegistrationIntentService.REGISTRATION_ERROR));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.w("MainActivity", "onPause");
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-    }*/
-
     @Override
     public void onStart() {
         super.onStart();
@@ -177,7 +153,7 @@ public class OTPFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("Called",">>>>>>>");
+        Log.d("Called", ">>>>>>>");
     }
 
     @Override
@@ -217,7 +193,7 @@ public class OTPFragment extends Fragment {
         public Object doInBackground(Object... params) {
             try {
                 //return RideShareApi.verifyOTP(OTP, SignUpActivity.mUserId, SignUpActivity.token);
-                return RideShareApi.verifyOTP(OTP, SignUpActivity.mUserId, PrefUtils.getString("TokenID"),getContext());
+                return RideShareApi.verifyOTP(OTP, SignUpActivity.mUserId, PrefUtils.getString("TokenID"), getContext());
             } catch (Exception e) {
                 return null;
             }
@@ -333,7 +309,7 @@ public class OTPFragment extends Fragment {
     private void sendOTP(final String mobileNuber, String nUserId) {
         final CustomProgressDialog mProgressDialog = new CustomProgressDialog(getActivity());
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class,context).sendOTP(mobileNuber, nUserId).enqueue(new Callback<SendOTPResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class, context).sendOTP(mobileNuber, nUserId).enqueue(new Callback<SendOTPResponse>() {
             @Override
             public void onResponse(Call<SendOTPResponse> call, Response<SendOTPResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

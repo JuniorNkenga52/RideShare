@@ -46,8 +46,6 @@ import com.app.rideshare.model.InProgressRide;
 import com.app.rideshare.model.Rider;
 import com.app.rideshare.model.Route;
 import com.app.rideshare.model.User;
-import com.app.rideshare.service.LocationProvider;
-
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.Constants;
 import com.app.rideshare.utils.MapDirectionAPI;
@@ -82,6 +80,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import me.drakeet.materialdialog.MaterialDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -105,7 +104,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     LatLng DriverLocation;
     LatLng CustomerLocaton;
     Marker DriverMarker;
-    Marker CustomerMarker;
+
     Location mDriverLocation;
     Location mPreDriverLocation;
     WebSocketClient mWebSocketClient;
@@ -130,7 +129,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     private String TabelName;
     private TextView item_txt_counts;
     private RelativeLayout layout_unreadmsgs;
-
+    MaterialDialog mMaterialDialog;
 
     private Runnable runnable = new Runnable() {
 
@@ -181,11 +180,14 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         public void onReceive(Context context, Intent intent) {
             String staus = intent.getStringExtra("int_data");
             if (staus.equals("1")) {
+                /*mStartRideLi.setVisibility(View.VISIBLE);
+                mFinishRideBtn.setVisibility(View.VISIBLE);
+                mStartRideBtn.setVisibility(View.GONE);*/
                 MessageUtils.showSuccessMessage(StartRideActivity.this, "Ride Started");
                 mRider.setRequest_status("3");
             } else if (staus.equals("2")) {
                 try {
-                    if (mUserbean.getmIs_rider().equals("1")) {
+                    if (mUserbean.getmRideType().equals("1")) {
                         MessageUtils.showSuccessMessage(StartRideActivity.this, "Ride Finished");
                         Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
                         rateride.putExtra("riderate", mRider.getRide_id());
@@ -246,7 +248,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 RideStatus = "finished";
-                startRide(mRider.getRide_id(), "1", "4", mUserbean.getmUserId());
+                endRide(mRider.getRide_id(), "1", "4", mUserbean.getmUserId());
             }
         });
 
@@ -362,6 +364,16 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 if (mFinishRideBtn.getVisibility() != View.VISIBLE) {
                     mStartRideLi.setVisibility(View.GONE);
                 }
+               /*if(mRider.getRequest_status().equals("3")){
+
+                    mStartRideLi.setVisibility(View.VISIBLE);
+                    mFinishRideBtn.setVisibility(View.VISIBLE);
+                    mStartRideBtn.setVisibility(View.GONE);
+                } else {
+                   if (mFinishRideBtn.getVisibility() != View.VISIBLE) {
+                       mStartRideLi.setVisibility(View.GONE);
+                   }
+               }*/
 
             }
         } catch (Exception e) {
@@ -442,48 +454,67 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     public void onBackPressed() {
 
-        mUpdaterHandler.removeCallbacks(runnable);
-        mUpdaterHandler.removeCallbacksAndMessages(null);
-        if (mWebSocketClient != null) {
-            mWebSocketClient.close();
-            mWebSocketClient = null;
-        }
 
 
-        Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+        //Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
         if (mRider.getRequest_status().equals("3")) {
-            i.putExtra("inprogress", "busy");
-            //i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
-            InProgressRide inProgressRide = new InProgressRide();
-            inProgressRide.setmRideId(mRider.getRide_id());
-            inProgressRide.setmRideType(mRider.getU_ride_type());
 
-            inProgressRide.setmStartingAddress(mRider.getStarting_address());
-            inProgressRide.setmEndingAddress(mRider.getEnding_address());
-            inProgressRide.setmStartLat(mRider.getStart_lati());
-            inProgressRide.setmStartLang(mRider.getStart_long());
-            inProgressRide.setmEndLat(mRider.getEnd_lati());
-            inProgressRide.setmEndLang(mRider.getEnd_long());
-            inProgressRide.setmRequestStatus(mRider.getRequest_status());
-            inProgressRide.setmFromRider(mRider.getFromRider());
-            inProgressRide.setmToRider(mRider.getToRider());
+            mMaterialDialog = new MaterialDialog(this)
+                    .setTitle("Warning")
+                    .setMessage("You have currently 1 Ride active.Are you want to continue?")
+                    .setPositiveButton("Yes i'm in", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mMaterialDialog.dismiss();
 
-            i.putExtra("rideprogress", inProgressRide);
-            i.putExtra("rideUserID", mUserbean.getmUserId());
-            i.putExtra("u_ride_type", mUserbean.getmRideType());
-            if (mUserbean.getmIs_driver().equals("1")) {
-                i.putExtra("Is_driver", "1");
-            }
+                        }
+                    })
+                    .setNegativeButton("no Cancel", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final InProgressRide inProgressRide = new InProgressRide();
+                            inProgressRide.setmRideId(mRider.getRide_id());
+                            inProgressRide.setmRideType(mRider.getU_ride_type());
+
+                            inProgressRide.setmStartingAddress(mRider.getStarting_address());
+                            inProgressRide.setmEndingAddress(mRider.getEnding_address());
+                            inProgressRide.setmStartLat(mRider.getStart_lati());
+                            inProgressRide.setmStartLang(mRider.getStart_long());
+                            inProgressRide.setmEndLat(mRider.getEnd_lati());
+                            inProgressRide.setmEndLang(mRider.getEnd_long());
+                            inProgressRide.setmRequestStatus(mRider.getRequest_status());
+                            inProgressRide.setmFromRider(mRider.getFromRider());
+                            inProgressRide.setmToRider(mRider.getToRider());
+
+                            mUpdaterHandler.removeCallbacks(runnable);
+                            mUpdaterHandler.removeCallbacksAndMessages(null);
+                            if (mWebSocketClient != null) {
+                                mWebSocketClient.close();
+                                mWebSocketClient = null;
+                            }
+
+                            if (mUserbean.getmRideType().equals("2")) {
+                                endRide(inProgressRide.getmRideId(), "1", "4", mUserbean.getmUserId());
+                            } else {
+                                endRide(inProgressRide.getmRideId(), "0", "4", mUserbean.getmUserId());
+                            }
+
+                            mMaterialDialog.dismiss();
+
+                            MyXMPP.disconnect();
+
+                        }
+                    });
+
+            mMaterialDialog.show();
         } else {
+            Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
             i.putExtra("inprogress", "free");
+            startActivity(i);
+            activity.finish();
+            MyXMPP.disconnect();
+
         }
-        startActivity(i);
-        activity.finish();
-        MyXMPP.disconnect();
-        super.onBackPressed();
-        /*if (!response.body().getMlist().get(0).getmRidestatus().equals("free")) {
-            i.putExtra("rideprogress", response.body().getmProgressRide().get(0));
-        }*/
     }
 
 
@@ -535,34 +566,44 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
             try {
 
-                if (AppUtils.isBetterLocation(RideShareApp.mLocation, previousBestLocation)) {
+                //if (AppUtils.isBetterLocation(RideShareApp.mLocation, previousBestLocation)) {
                     previousBestLocation = RideShareApp.mLocation;
 
                     Latitude = RideShareApp.mLocation.getLatitude();
                     Longitude = RideShareApp.mLocation.getLongitude();
 
-                    DriverLocation = new LatLng(Latitude, Longitude);
                     mDriverLocation = new Location("");
                     mDriverLocation.setLatitude(Latitude);
                     mDriverLocation.setLongitude(Latitude);
-                }
+                    DriverLocation = new LatLng(Latitude, Longitude);
+                    /*if(mRider.getRequest_status().equals("3")){
+                        DriverLocation = new LatLng(Latitude, Longitude);
+
+                    }*/
+
+
+                //}
+
+                /*if (mApp.getmUserType().equals("2")) {
+                    mUpdaterHandler.post(runnable);
+                }*/
 
                 setMarker();
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
 
-    public void setMarker(){
-        try{
+    public void setMarker() {
+        try {
             currentlthg = new LatLng(RideShareApp.mLocation.getLatitude(), RideShareApp.mLocation.getLongitude());
             Log.d("Bearing", "" + RideShareApp.mLocation.getBearing());
             if (zoomLevel <= 4.0f) {
                 zoomLevel = 16.0f;
             }
+
+
             cameraPosition = new CameraPosition.Builder().target(currentlthg).zoom(zoomLevel).build();
             mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
@@ -574,18 +615,37 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 DriverMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin))
                         .position(DriverLocation));
             } else {
-                DriverMarker.setPosition(DriverLocation);
+                if(mApp.getmUserType().equals("2"))
+                    if (mRider.getRequest_status().equals("3")) {
+                        if (mDriverLocation.distanceTo(mPreDriverLocation) >= 0.5f) {
+                            mPreDriverLocation = mDriverLocation;
+                            mPreDriverLocation = mDriverLocation;
+                            animateMarkerNew(DriverMarker, DriverLocation);
+                        }
+                    }
+                else {
+                    if (mRider.getRequest_status().equals("3")) {
+                        if (mDriverLocation.distanceTo(mPreDriverLocation) >= 0.5f) {
+                            mPreDriverLocation = mDriverLocation;
+                            mPreDriverLocation = mDriverLocation;
+                            animateMarkerNew(DriverMarker, DriverLocation);
+                        }
+                    }
+                }
+
             }
 
-            if (CustomerMarker == null) {
-                if(!isSetMarker) {
+            if (curLocMarker == null) {
+                if (!isSetMarker) {
                     isSetMarker = true;
                     curLocMarker = setcutommarker(CustomerLocaton, mRider);
                 }
             } else {
-                CustomerMarker.setPosition(CustomerLocaton);
+                curLocMarker.setPosition(CustomerLocaton);
             }
-        } catch (Exception e){}
+        } catch (Exception e) {
+            //mPreDriverLocation = mDriverLocation;
+        }
     }
 
     private void connectWebSocket() {
@@ -607,7 +667,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 try {
 
                     final JSONObject jobj = new JSONObject(s);
-                    if (mApp.getmUserType().equals("1")) {
+                    //if (mApp.getmUserType().equals("1")) {
 
                         if (!jobj.getString("message_type").equals("chat-connection-ack")) {
                             if (!jobj.getString("chat_message").equals("null") && jobj.getString("sender_user").equals(mRider.getRide_id())) {
@@ -626,7 +686,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                                             mDriverLocation.setLatitude(mlet);
                                             mDriverLocation.setLongitude(mlong);
 
-                                            animateMarkerNew(DriverMarker, new LatLng(mlet, mlong));
+                                            if(!mRider.getRequest_status().equals("3"))
+                                                animateMarkerNew(DriverMarker, new LatLng(mlet, mlong));
 
                                         } catch (Exception e) {
                                             e.printStackTrace();
@@ -636,7 +697,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
                             }
                         }
-                    }
+                    //}
 
                 } catch (Exception e) {
                     Log.d("error", e.toString());
@@ -646,6 +707,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClose(int i, String s, boolean b) {
                 Log.i("Websocket", "Closed " + s);
+                //mWebSocketClient.connect();
 
 
             }
@@ -653,12 +715,82 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onError(final Exception e) {
                 Log.i("Websocket", "Error " + e.getMessage());
+                //mWebSocketClient.connect();
             }
         };
         mWebSocketClient.connect();
     }
 
     private void startRide(String mId, String check_driver, final String mType, String userid) {
+        mProgressDialog.show();
+        //destinationLatLang = new LatLng(Double.parseDouble(location.getmLatitude()), Double.parseDouble(location.getmLongitude()));
+       /* ApiServiceModule.createService(RestApiInterface.class, context).mStartRide(mId, check_driver,
+                mType, userid,
+                "" + RideShareApp.mLocation.getLatitude(), "" + RideShareApp.mLocation.getLongitude()).enqueue(new Callback<StartRideResponse>() {
+            @Override
+            public void onResponse(Call<StartRideResponse> call, Response<StartRideResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (mType.equals("3")) {
+                        mFinishRideBtn.setVisibility(View.VISIBLE);
+                        mStartRideBtn.setVisibility(View.GONE);
+                    } else if (mType.equals("4")) {
+
+                        mUpdaterHandler.removeCallbacks(runnable);
+                        mUpdaterHandler.removeCallbacksAndMessages(null);
+                        Intent i = new Intent(StartRideActivity.this, HomeNewActivity.class);
+                        startActivity(i);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        activity.finish();
+                        mProgressDialog.cancel();
+                    }
+                } else {
+
+                }
+                mProgressDialog.cancel();
+            }
+
+            @Override
+            public void onFailure(Call<StartRideResponse> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("error", t.toString());
+                mProgressDialog.cancel();
+            }
+        });*/
+        ApiServiceModule.createService(RestApiInterface.class, context).mStartRide(mId, check_driver,
+                mType, userid,
+                "" + mRider.getEnd_lati(), "" + mRider.getEnd_long()).enqueue(new Callback<StartRideResponse>() {
+            @Override
+            public void onResponse(Call<StartRideResponse> call, Response<StartRideResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (mType.equals("3")) {
+
+                        mFinishRideBtn.setVisibility(View.VISIBLE);
+                        mStartRideBtn.setVisibility(View.GONE);
+                    } else if (mType.equals("4")) {
+                        mUpdaterHandler.removeCallbacks(runnable);
+                        mUpdaterHandler.removeCallbacksAndMessages(null);
+                        Intent i = new Intent(StartRideActivity.this, HomeNewActivity.class);
+                        startActivity(i);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        activity.finish();
+                        mProgressDialog.cancel();
+                    }
+                } else {
+
+                }
+                mProgressDialog.cancel();
+            }
+
+            @Override
+            public void onFailure(Call<StartRideResponse> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("error", t.toString());
+                mProgressDialog.cancel();
+            }
+        });
+    }
+
+    private void endRide(String mId, String check_driver, final String mType, String userid) {
         mProgressDialog.show();
         //destinationLatLang = new LatLng(Double.parseDouble(location.getmLatitude()), Double.parseDouble(location.getmLongitude()));
         ApiServiceModule.createService(RestApiInterface.class, context).mStartRide(mId, check_driver,
@@ -668,15 +800,28 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             public void onResponse(Call<StartRideResponse> call, Response<StartRideResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (mType.equals("3")) {
-
                         mFinishRideBtn.setVisibility(View.VISIBLE);
                         mStartRideBtn.setVisibility(View.GONE);
                     } else if (mType.equals("4")) {
 
                         mUpdaterHandler.removeCallbacks(runnable);
                         mUpdaterHandler.removeCallbacksAndMessages(null);
-                        finish();
-                        // rate & rewie
+                        if (mUserbean.getmRideType().equals("1")) {
+
+                            MessageUtils.showSuccessMessage(StartRideActivity.this, "Ride Finished");
+                            Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
+                            rateride.putExtra("riderate", mRider.getRide_id());
+                            rateride.putExtra("driverid", mRider.getFromRider().getnUserId());
+                            startActivity(rateride);
+                        } else {
+                            Intent i = new Intent(StartRideActivity.this, HomeNewActivity.class);
+                            startActivity(i);
+                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            activity.finish();
+                            mProgressDialog.cancel();
+                        }
+
+
                     }
                 } else {
 
