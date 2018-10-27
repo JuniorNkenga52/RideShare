@@ -1,7 +1,9 @@
 package com.app.rideshare.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -17,20 +19,23 @@ import com.app.rideshare.fragment.MessagesFragment;
 import com.app.rideshare.fragment.NotificationFragment;
 import com.app.rideshare.fragment.ProfileFragment;
 import com.app.rideshare.model.Rider;
+import com.app.rideshare.service.LocationProvider;
 import com.app.rideshare.utils.PrefUtils;
 
 import java.util.ArrayList;
 
 
-public class HomeNewActivity extends AppCompatActivity {
+public class HomeNewActivity extends AppCompatActivity implements LocationProvider.LocationCallback{
 
 
     Context context;
+    Activity activity;
     private static long back_pressed;
     public BottomNavigationView bottomNavigationView;
 
     public static String currentChat = "";
     ArrayList<Rider> mlist = new ArrayList<>();
+    LocationProvider mLocationProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +43,10 @@ public class HomeNewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_new);
 
         context = this;
-
+        activity=this;
         mlist = (ArrayList<Rider>) getIntent().getSerializableExtra("list");
+
+        mLocationProvider = new LocationProvider(this, this);
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         if (PrefUtils.getString("isBlank").equals("true")) {
@@ -139,6 +146,19 @@ public class HomeNewActivity extends AppCompatActivity {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
         }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (RideShareApp.mLocation == null){
+            mLocationProvider.connect(activity);
+        }
+    }
+
+    @Override
+    public void handleNewLocation(Location location) {
 
     }
 }

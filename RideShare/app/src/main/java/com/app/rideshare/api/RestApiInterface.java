@@ -113,6 +113,12 @@ public interface RestApiInterface {
 
 
     @FormUrlEncoded
+    @POST("user/declineRequestNotification")
+    Call<AcceptRequest> declineRequestNotification(@Field("user_id") String user_id,@Field("ride_id") String mRideId, @Field("request_status") String mRequestStatus);
+
+
+
+    @FormUrlEncoded
     @POST("user/cancelRide")
     Call<CancelRequest> cancelRequest(@Field("ride_id") String mRideId);
 

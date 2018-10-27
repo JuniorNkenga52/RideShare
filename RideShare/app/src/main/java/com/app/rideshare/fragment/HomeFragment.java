@@ -670,6 +670,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             Glide.with(activity).load(userimage).listener(new RequestListener<String, GlideDrawable>() {
                 @Override
                 public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    if (type != 0) {
+
+                        curLocMarker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(user))
+                                //.position(currentDriverPos).anchor(0.5f, 0.5f)
+                                .position(currentDriverPos).anchor(0.5f, 1f)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
+                                // Specifies the anchor to be at a particular point in the marker image.
+                                .rotation(0f)
+                                .flat(true));
+                    }
                     return false;
                 }
 

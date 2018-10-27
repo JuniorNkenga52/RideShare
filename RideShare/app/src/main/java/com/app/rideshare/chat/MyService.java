@@ -3,6 +3,7 @@ package com.app.rideshare.chat;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.app.rideshare.model.User;
 import com.app.rideshare.utils.Constants;
@@ -38,4 +39,5 @@ public class MyService extends Service {
     public int onStartCommand(final Intent intent, final int flags, final int startId) {
         return Service.START_STICKY;
     }
+
 }

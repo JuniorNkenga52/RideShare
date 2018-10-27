@@ -377,7 +377,7 @@ public class MyGroupSelectionActivity extends AppCompatActivity implements Locat
     @Override
     protected void onResume() {
         super.onResume();
-        mLocationProvider.connect();
+        mLocationProvider.connect(MyGroupSelectionActivity.this);
     }
 
     public void handleNewLocation(Location location) {

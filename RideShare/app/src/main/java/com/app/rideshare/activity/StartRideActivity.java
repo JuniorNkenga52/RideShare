@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
+import com.app.rideshare.api.response.AcceptRequest;
 import com.app.rideshare.api.response.AcceptRider;
 import com.app.rideshare.api.response.StartRideResponse;
 import com.app.rideshare.chat.CommonMethods;
@@ -131,6 +132,9 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     private RelativeLayout layout_unreadmsgs;
     MaterialDialog mMaterialDialog;
 
+    boolean isDestroy = false;
+    boolean isRejectRide = false;
+
     private Runnable runnable = new Runnable() {
 
         @Override
@@ -178,26 +182,39 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String staus = intent.getStringExtra("int_data");
-            if (staus.equals("1")) {
-                /*mStartRideLi.setVisibility(View.VISIBLE);
-                mFinishRideBtn.setVisibility(View.VISIBLE);
-                mStartRideBtn.setVisibility(View.GONE);*/
-                MessageUtils.showSuccessMessage(StartRideActivity.this, "Ride Started");
-                mRider.setRequest_status("3");
-            } else if (staus.equals("2")) {
-                try {
-                    if (mUserbean.getmRideType().equals("1")) {
-                        MessageUtils.showSuccessMessage(StartRideActivity.this, "Ride Finished");
-                        Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
-                        rateride.putExtra("riderate", mRider.getRide_id());
-                        rateride.putExtra("driverid", mRider.getFromRider().getnUserId());
-                        startActivity(rateride);
+            Log.w("DESTROY", "1");
+            try {
+                String staus = intent.getStringExtra("int_data");
+                if (staus.equals("1")) {
+                    mStartRideLi.setVisibility(View.VISIBLE);
+                    mFinishRideBtn.setVisibility(View.VISIBLE);
+                    mStartRideBtn.setVisibility(View.GONE);
+                    MessageUtils.showSuccessMessage(StartRideActivity.this, "Ride Started");
+                    mRider.setRequest_status("3");
+                } else if (staus.equals("2")) {
+                    try {
+                        if (mUserbean.getmRideType().equals("1")) {
+                            isRejectRide = true;
+                            MessageUtils.showSuccessMessage(StartRideActivity.this, "Ride Finished");
+                            Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
+                            rateride.putExtra("riderate", mRider.getRide_id());
+                            rateride.putExtra("driverid", mRider.getFromRider().getnUserId());
+                            startActivity(rateride);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    finish();
+                } else {
+                    JSONObject jobj = new JSONObject(staus);
+                    if (jobj.getString("request_status").equals("2")) {
+                        isRejectRide = true;
+                        MessageUtils.showFailureMessage(StartRideActivity.this, "Request Rejected");
+                        finish();
+                    }
                 }
-                finish();
+            } catch (Exception e){
+                e.printStackTrace();
             }
         }
     };
@@ -206,6 +223,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.w("DESTROY", "2");
             getMessages();
         }
     };
@@ -361,19 +379,19 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     DriverLocation = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
                     CustomerLocaton = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
                 }
-                if (mFinishRideBtn.getVisibility() != View.VISIBLE) {
-                    mStartRideLi.setVisibility(View.GONE);
-                }
-               /*if(mRider.getRequest_status().equals("3")){
+                //if (mFinishRideBtn.getVisibility() != View.VISIBLE) {
+                //    mStartRideLi.setVisibility(View.GONE);
+                //}
+                if (mRider.getRequest_status().equals("3")) {
 
                     mStartRideLi.setVisibility(View.VISIBLE);
                     mFinishRideBtn.setVisibility(View.VISIBLE);
                     mStartRideBtn.setVisibility(View.GONE);
                 } else {
-                   if (mFinishRideBtn.getVisibility() != View.VISIBLE) {
-                       mStartRideLi.setVisibility(View.GONE);
-                   }
-               }*/
+                    if (mFinishRideBtn.getVisibility() != View.VISIBLE) {
+                        mStartRideLi.setVisibility(View.GONE);
+                    }
+                }
 
             }
         } catch (Exception e) {
@@ -387,6 +405,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         ivStartChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                isRejectRide = true;
                 Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                 intent.putExtra(Constants.intentKey.SelectedChatUser, mRider);
                 startActivity(intent);
@@ -441,8 +460,11 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onResume() {
         super.onResume();
+        isDestroy = false;
 
         LocalBroadcastManager.getInstance(context).registerReceiver(mLocationReceiver, new IntentFilter("update-location"));
+
+        LocalBroadcastManager.getInstance(StartRideActivity.this).registerReceiver(mMessageReceiver, new IntentFilter("request_status"));
 
         LocalBroadcastManager.getInstance(StartRideActivity.this).registerReceiver(mMessageReceiver, new IntentFilter("start_ride"));
 
@@ -450,12 +472,10 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         getMessages();
     }
 
-
     @Override
     public void onBackPressed() {
 
-
-
+        Log.w("DESTROY", "3");
         //Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
         if (mRider.getRequest_status().equals("3")) {
 
@@ -488,11 +508,11 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
                             mUpdaterHandler.removeCallbacks(runnable);
                             mUpdaterHandler.removeCallbacksAndMessages(null);
-                            if (mWebSocketClient != null) {
+                            /*if (mWebSocketClient != null) {
                                 mWebSocketClient.close();
                                 mWebSocketClient = null;
                             }
-
+*/
                             if (mUserbean.getmRideType().equals("2")) {
                                 endRide(inProgressRide.getmRideId(), "1", "4", mUserbean.getmUserId());
                             } else {
@@ -511,12 +531,43 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
             i.putExtra("inprogress", "free");
             startActivity(i);
-            activity.finish();
+            finish();
+            //activity.finish();
             MyXMPP.disconnect();
 
         }
     }
 
+    @Override
+    public void onPause() {
+         LocalBroadcastManager.getInstance(StartRideActivity.this).unregisterReceiver(mMessageReceiver);
+         LocalBroadcastManager.getInstance(StartRideActivity.this).unregisterReceiver(mUpdateMessageReciver);
+        // LocalBroadcastManager.getInstance(StartRideActivity.this).registerReceiver(mMessageReceiver, new IntentFilter("request_status"));
+
+        super.onPause();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        isDestroy = true;
+        if (mWebSocketClient != null) {
+            mWebSocketClient.close();
+            mWebSocketClient = null;
+        }
+
+        Log.w("DESTROY", mApp.getmUserType());
+
+        if (mApp.getmUserType().equals("1") || mApp.getmUserType().equals("2")) {
+            if(!isRejectRide)
+                acceptOrRejectRequest(mRider.getRide_id(), "0",context);
+        }
+
+
+
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -563,19 +614,19 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            //Log.w("DESTROY", "7");
             try {
 
                 //if (AppUtils.isBetterLocation(RideShareApp.mLocation, previousBestLocation)) {
-                    previousBestLocation = RideShareApp.mLocation;
+                previousBestLocation = RideShareApp.mLocation;
 
-                    Latitude = RideShareApp.mLocation.getLatitude();
-                    Longitude = RideShareApp.mLocation.getLongitude();
+                Latitude = RideShareApp.mLocation.getLatitude();
+                Longitude = RideShareApp.mLocation.getLongitude();
 
-                    mDriverLocation = new Location("");
-                    mDriverLocation.setLatitude(Latitude);
-                    mDriverLocation.setLongitude(Latitude);
-                    DriverLocation = new LatLng(Latitude, Longitude);
+                mDriverLocation = new Location("");
+                mDriverLocation.setLatitude(Latitude);
+                mDriverLocation.setLongitude(Latitude);
+                DriverLocation = new LatLng(Latitude, Longitude);
                     /*if(mRider.getRequest_status().equals("3")){
                         DriverLocation = new LatLng(Latitude, Longitude);
 
@@ -583,10 +634,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
 
                 //}
-
-                /*if (mApp.getmUserType().equals("2")) {
-                    mUpdaterHandler.post(runnable);
-                }*/
 
                 setMarker();
             } catch (Exception e) {
@@ -615,7 +662,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 DriverMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin))
                         .position(DriverLocation));
             } else {
-                if(mApp.getmUserType().equals("2"))
+                /*if(mApp.getmUserType().equals("2")) {
                     if (mRider.getRequest_status().equals("3")) {
                         if (mDriverLocation.distanceTo(mPreDriverLocation) >= 0.5f) {
                             mPreDriverLocation = mDriverLocation;
@@ -623,7 +670,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                             animateMarkerNew(DriverMarker, DriverLocation);
                         }
                     }
-                else {
+                }else {
                     if (mRider.getRequest_status().equals("3")) {
                         if (mDriverLocation.distanceTo(mPreDriverLocation) >= 0.5f) {
                             mPreDriverLocation = mDriverLocation;
@@ -631,7 +678,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                             animateMarkerNew(DriverMarker, DriverLocation);
                         }
                     }
-                }
+                }*/
 
             }
 
@@ -669,34 +716,34 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     final JSONObject jobj = new JSONObject(s);
                     //if (mApp.getmUserType().equals("1")) {
 
-                        if (!jobj.getString("message_type").equals("chat-connection-ack")) {
-                            if (!jobj.getString("chat_message").equals("null") && jobj.getString("sender_user").equals(mRider.getRide_id())) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
+                    if (!jobj.getString("message_type").equals("chat-connection-ack")) {
+                        if (!jobj.getString("chat_message").equals("null") && jobj.getString("sender_user").equals(mRider.getRide_id())) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
 
-                                            // MessageUtils.showSuccessMessage((StartRideActivity.this, "received");
+                                        // MessageUtils.showSuccessMessage((StartRideActivity.this, "received");
 
-                                            String updatedlocation[] = jobj.getString("chat_message").split("`");
-                                            double mlet = Double.parseDouble(updatedlocation[0]);
-                                            double mlong = Double.parseDouble(updatedlocation[1]);
+                                        String updatedlocation[] = jobj.getString("chat_message").split("`");
+                                        double mlet = Double.parseDouble(updatedlocation[0]);
+                                        double mlong = Double.parseDouble(updatedlocation[1]);
 
-                                            mDriverLocation = new Location("");
-                                            mDriverLocation.setLatitude(mlet);
-                                            mDriverLocation.setLongitude(mlong);
+                                        mDriverLocation = new Location("");
+                                        mDriverLocation.setLatitude(mlet);
+                                        mDriverLocation.setLongitude(mlong);
 
-                                            if(!mRider.getRequest_status().equals("3"))
-                                                animateMarkerNew(DriverMarker, new LatLng(mlet, mlong));
+                                        //if (!mRider.getRequest_status().equals("3"))
+                                        animateMarkerNew(DriverMarker, new LatLng(mlet, mlong));
 
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                });
+                                }
+                            });
 
-                            }
                         }
+                    }
                     //}
 
                 } catch (Exception e) {
@@ -707,7 +754,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClose(int i, String s, boolean b) {
                 Log.i("Websocket", "Closed " + s);
-                //mWebSocketClient.connect();
+                if (!isDestroy)
+                    mWebSocketClient.reconnect();
 
 
             }
@@ -715,7 +763,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onError(final Exception e) {
                 Log.i("Websocket", "Error " + e.getMessage());
-                //mWebSocketClient.connect();
+                if (!isDestroy)
+                    mWebSocketClient.reconnect();
             }
         };
         mWebSocketClient.connect();
@@ -892,18 +941,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-    @Override
-    public void onPause() {
-        LocalBroadcastManager.getInstance(StartRideActivity.this).unregisterReceiver(mMessageReceiver);
-        LocalBroadcastManager.getInstance(StartRideActivity.this).unregisterReceiver(mUpdateMessageReciver);
-        super.onPause();
-    }
 
-    /*@Override
-    protected void onDestroy() {
-        super.onDestroy();
-        doUnbindService();
-    }*/
 
     private float getBearing(LatLng begin, LatLng end) {
 
@@ -1061,6 +1099,15 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             Glide.with(activity).load(userimage).listener(new RequestListener<String, GlideDrawable>() {
                 @Override
                 public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+
+                    curLocMarker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(rider))
+                            //.position(currentDriverPos).anchor(0.5f, 0.5f)
+                            .position(currentDriverPos).anchor(0.5f, 1f)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
+                            // Specifies the anchor to be at a particular point in the marker image.
+                            .rotation(0f)
+                            .flat(true));
+
                     return false;
                 }
 
@@ -1095,4 +1142,19 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
 
+    public void acceptOrRejectRequest(String mRideId, String acceptOrreject,Context context) {
+        Log.w("DESTROY", "8");
+        ApiServiceModule.createService(RestApiInterface.class,context).declineRequestNotification(mUserbean.getmUserId(), mRideId, acceptOrreject).enqueue(new Callback<AcceptRequest>() {
+            @Override
+            public void onResponse(Call<AcceptRequest> call, Response<AcceptRequest> response) {
+                Log.w("ONBACK-S","N");
+
+            }
+
+            @Override
+            public void onFailure(Call<AcceptRequest> call, Throwable t) {
+                Log.w("ONBACK-F","N");
+            }
+        });
+    }
 }

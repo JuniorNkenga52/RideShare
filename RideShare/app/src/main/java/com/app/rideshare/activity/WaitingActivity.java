@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
@@ -60,7 +61,7 @@ public class WaitingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_waiting);
 
         //mRobotoMedium = TypefaceUtils.getTypefaceRobotoMediam(this);
-        context=this;
+        context = this;
         currentRider = (Rider) getIntent().getExtras().getSerializable("rider");
         mRideResponse = (RideResponse) getIntent().getExtras().getSerializable("rider_data");
 
@@ -234,7 +235,7 @@ public class WaitingActivity extends AppCompatActivity {
     }
 
     public void cancelRequst(String mRideId) {
-        ApiServiceModule.createService(RestApiInterface.class,context).cancelRequest(mRideId).enqueue(new Callback<CancelRequest>() {
+        ApiServiceModule.createService(RestApiInterface.class, context).cancelRequest(mRideId).enqueue(new Callback<CancelRequest>() {
             @Override
             public void onResponse(Call<CancelRequest> call, Response<CancelRequest> response) {
 

@@ -7,21 +7,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -39,7 +35,6 @@ import com.app.rideshare.api.response.StartRideResponse;
 import com.app.rideshare.model.InProgressRide;
 import com.app.rideshare.model.User;
 import com.app.rideshare.service.LocationProvider;
-
 import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
@@ -55,7 +50,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class RideTypeActivity extends AppCompatActivity implements LocationProvider.LocationCallback{
+public class RideTypeActivity extends AppCompatActivity implements LocationProvider.LocationCallback {
 
 
     RadioButton mNeedRideRb;
@@ -235,6 +230,13 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
         mNeedRideLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*boolean locationState = isLocationEnabled();
+                if (locationState) {
+
+                } else {
+                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                }*/
+
 
                 if (!GpsStatus) {
                     turnGPSOn();
@@ -316,17 +318,36 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
 
     }
 
+    protected boolean isLocationEnabled() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+            int locationMode = Settings.Secure.getInt(
+                    getContentResolver(),
+                    Settings.Secure.LOCATION_MODE,
+                    0
+            );
+
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+        } else {
+
+            String locationProviders = Settings.Secure.getString(
+                    getContentResolver(),
+                    Settings.Secure.LOCATION_PROVIDERS_ALLOWED
+            );
+
+
+            return !TextUtils.isEmpty(locationProviders);
+        }
+    }
+
+
     public void turnGPSOn() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         GpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!GpsStatus) {
-            final AlertDialog.Builder builder;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                builder = new AlertDialog.Builder(RideTypeActivity.this, android.R.style.Theme_Material_Dialog_Alert);
-            } else {
-                builder = new AlertDialog.Builder(RideTypeActivity.this);
-            }
+            AlertDialog.Builder builder;
+            builder = new AlertDialog.Builder(RideTypeActivity.this);
             builder.setCancelable(false);
             builder.setTitle("Alert")
                     .setMessage("Please Enable GPS.")
@@ -466,7 +487,6 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
     }
 
 
-
     public void handleNewLocation(Location location) {
         //currentLocation = location;
     }
@@ -475,8 +495,9 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
             //currentLocation = RideShareApp.mLocation;
         }
     };
+
+   
 }
