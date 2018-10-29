@@ -325,25 +325,34 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     mNameTv.setText(mRider.getToRider().getmFirstName());
                     mEmailTv.setText(mRider.getToRider().getmEmail());
 
-                    if (!mRider.getToRider().getThumb_image().equals("")) {
-                        Glide.with(this).load(mRider.getToRider().getThumb_image())
-                                .error(R.drawable.user_icon)
-                                .crossFade()
-                                .into(mProfileIv);
-                    }
+                    try {
+                        if (mRider.getToRider().getThumb_image() != null) {
+                            if (!mRider.getToRider().getThumb_image().equals("")) {
+                                Glide.with(this).load(mRider.getToRider().getThumb_image())
+                                        .error(R.drawable.user_icon)
+                                        .crossFade()
+                                        .into(mProfileIv);
+                            }
+                        }
+                    }catch (Exception e){}
 
                     DriverLocation = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
                     CustomerLocaton = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
                 } else if (mUserbean.getmUserId().equals(mRider.getToRider().getnUserId())) {
                     mNameTv.setText(mRider.getFromRider().getmFirstName());
                     mEmailTv.setText(mRider.getFromRider().getmEmail());
-                    if (!mRider.getFromRider().getThumb_image().equals("")) {
-                        //Picasso.with(StartRideActivity.this).load(mRider.getFromRider().getThumb_image()).into(mProfileIv);
-                        Glide.with(this).load(mRider.getFromRider().getThumb_image())
-                                .error(R.drawable.user_icon)
-                                .crossFade()
-                                .into(mProfileIv);
-                    }
+
+                    try {
+                        if (mRider.getFromRider().getThumb_image() != null) {
+                            if (!mRider.getFromRider().getThumb_image().equals("")) {
+                                //Picasso.with(StartRideActivity.this).load(mRider.getFromRider().getThumb_image()).into(mProfileIv);
+                                Glide.with(this).load(mRider.getFromRider().getThumb_image())
+                                        .error(R.drawable.user_icon)
+                                        .crossFade()
+                                        .into(mProfileIv);
+                            }
+                        }
+                    }catch (Exception e){}
 
                     DriverLocation = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
                     CustomerLocaton = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
@@ -354,14 +363,17 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     mNameTv.setText(mRider.getToRider().getmFirstName());
                     mEmailTv.setText(mRider.getToRider().getmEmail());
 
-
-                    if (!mRider.getToRider().getThumb_image().equals("")) {
-                        //Picasso.with(StartRideActivity.this).load(mRider.getToRider().getThumb_image()).into(mProfileIv);
-                        Glide.with(this).load(mRider.getToRider().getThumb_image())
-                                .error(R.drawable.user_icon)
-                                .crossFade()
-                                .into(mProfileIv);
-                    }
+                    try {
+                        if (mRider.getToRider().getThumb_image() != null) {
+                            if (!mRider.getToRider().getThumb_image().equals("")) {
+                                //Picasso.with(StartRideActivity.this).load(mRider.getToRider().getThumb_image()).into(mProfileIv);
+                                Glide.with(this).load(mRider.getToRider().getThumb_image())
+                                        .error(R.drawable.user_icon)
+                                        .crossFade()
+                                        .into(mProfileIv);
+                            }
+                        }
+                    }catch (Exception e){}
 
                     CustomerLocaton = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
                     DriverLocation = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
@@ -369,13 +381,17 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     mNameTv.setText(mRider.getFromRider().getmFirstName());
                     mEmailTv.setText(mRider.getFromRider().getmEmail());
 
-                    if (!mRider.getFromRider().getThumb_image().equals("")) {
-                        //Picasso.with(StartRideActivity.this).load(mRider.getFromRider().getThumb_image()).into(mProfileIv);
-                        Glide.with(this).load(mRider.getFromRider().getThumb_image())
-                                .error(R.drawable.user_icon)
-                                .crossFade()
-                                .into(mProfileIv);
-                    }
+                    try {
+                        if (mRider.getFromRider().getThumb_image() != null) {
+                            if (!mRider.getFromRider().getThumb_image().equals("")) {
+                                //Picasso.with(StartRideActivity.this).load(mRider.getFromRider().getThumb_image()).into(mProfileIv);
+                                Glide.with(this).load(mRider.getFromRider().getThumb_image())
+                                        .error(R.drawable.user_icon)
+                                        .crossFade()
+                                        .into(mProfileIv);
+                            }
+                        }
+                    } catch (Exception e){}
                     DriverLocation = new LatLng(Double.parseDouble(mRider.getToRider().getmLatitude()), Double.parseDouble(mRider.getToRider().getmLongitude()));
                     CustomerLocaton = new LatLng(Double.parseDouble(mRider.getFromRider().getmLatitude()), Double.parseDouble(mRider.getFromRider().getmLongitude()));
                 }
@@ -1096,45 +1112,57 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             String userimage = "";
 
             userimage = rider.getFromRider().getThumb_image();
-            Glide.with(activity).load(userimage).listener(new RequestListener<String, GlideDrawable>() {
-                @Override
-                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+            if(userimage == null){
+                userimage = "";
+            }
 
-                    curLocMarker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(rider))
-                            //.position(currentDriverPos).anchor(0.5f, 0.5f)
-                            .position(currentDriverPos).anchor(0.5f, 1f)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
-                            // Specifies the anchor to be at a particular point in the marker image.
-                            .rotation(0f)
-                            .flat(true));
+            if(!userimage.equals("")) {
+                Glide.with(activity).load(userimage).listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
 
-                    return false;
-                }
+                        try {
+                            curLocMarker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(rider))
+                                    //.position(currentDriverPos).anchor(0.5f, 0.5f)
+                                    .position(currentDriverPos).anchor(0.5f, 1f)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
+                                    // Specifies the anchor to be at a particular point in the marker image.
+                                    .rotation(0f)
+                                    .flat(true));
+                        } catch (Exception ew) {
 
-                @Override
-                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-
-                    Bitmap icon = AppUtils.drawableToBitmap(resource);
-
-                    Bitmap bmImg = AppUtils.getMarkerBitmapFromView(activity, icon);
-
-                    Marker m = null;
-                    try {
-                        curLocMarker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(rider))
-                                //.position(currentDriverPos).anchor(0.5f, 0.5f)
-                                .position(currentDriverPos).anchor(0.5f, 1f)
-                                .icon(BitmapDescriptorFactory.fromBitmap(bmImg))
-                                // Specifies the anchor to be at a particular point in the marker image.
-                                .rotation(0f)
-                                .flat(true));
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        }
+                        return false;
                     }
 
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
 
-                    return false;
-                }
-            }).error(R.drawable.ic_user_pin).placeholder(R.drawable.ic_user_pin).into(markerImageView);
+                        Bitmap icon = AppUtils.drawableToBitmap(resource);
+
+                        Bitmap bmImg = AppUtils.getMarkerBitmapFromView(activity, icon);
+
+                        Marker m = null;
+                        try {
+                            curLocMarker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(rider))
+                                    //.position(currentDriverPos).anchor(0.5f, 0.5f)
+                                    .position(currentDriverPos).anchor(0.5f, 1f)
+                                    .icon(BitmapDescriptorFactory.fromBitmap(bmImg))
+                                    // Specifies the anchor to be at a particular point in the marker image.
+                                    .rotation(0f)
+                                    .flat(true));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+                        return false;
+                    }
+                }).error(R.drawable.ic_user_pin).placeholder(R.drawable.ic_user_pin).into(markerImageView);
+            } else {
+                curLocMarker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(rider)).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
+                        .position(currentDriverPos));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

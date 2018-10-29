@@ -186,6 +186,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         mSearchCabTv = (TextView) rootview.findViewById(R.id.search_cab_iv);
         linearLayout = rootview.findViewById(R.id.linearLayout);
         //mSearchCabTv.setTypeface(mRobotoReguler);
+        if(mUserType.equals("")){
+            mUserType = mUserBean.getmRideType();
+        }
         if (mUserType.equals("2")) {
             mSearchCabTv.setText("Find Rider");
         }
@@ -667,18 +670,25 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             }
 
             final String finalUserimage = userimage;
+            if(userimage == null){
+                userimage = "";
+            }
             Glide.with(activity).load(userimage).listener(new RequestListener<String, GlideDrawable>() {
                 @Override
                 public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                     if (type != 0) {
 
-                        curLocMarker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(user))
-                                //.position(currentDriverPos).anchor(0.5f, 0.5f)
-                                .position(currentDriverPos).anchor(0.5f, 1f)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
-                                // Specifies the anchor to be at a particular point in the marker image.
-                                .rotation(0f)
-                                .flat(true));
+                        if(curLocMarker == null) {
+                            curLocMarker = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(user))
+                                    //.position(currentDriverPos).anchor(0.5f, 0.5f)
+                                    .position(currentDriverPos).anchor(0.5f, 1f)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_user_pin))
+                                    // Specifies the anchor to be at a particular point in the marker image.
+                                    .rotation(0f)
+                                    .flat(true));
+                        } else {
+                            curLocMarker.setPosition(currentDriverPos);
+                        }
                     }
                     return false;
                 }
@@ -717,47 +727,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
                     }
 
-
-                    /*customMarkerView.setDrawingCacheEnabled(true);
-
-                    customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                    customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
-                    customMarkerView.buildDrawingCache();
-
-                    Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-
-                    Canvas canvas = new Canvas(returnedBitmap);
-                    canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
-
-                    Drawable drawable = customMarkerView.getBackground();
-
-                    if (drawable != null)
-                        drawable.draw(canvas);
-
-                    customMarkerView.draw(canvas);
-
-                    if (type == 0) {
-                        mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
-                                //.position(currentDriverPos).anchor(0.5f, 0.5f)
-                                .position(currentDriverPos).anchor(0.5f, 1f)
-                                .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), finalUserimage)))
-                                // Specifies the anchor to be at a particular point in the marker image.
-                                .rotation(0f)
-                                .flat(true));
-                    } else {
-                        try {
-                            mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(user))
-                                    //.position(currentDriverPos).anchor(0.5f, 0.5f)
-                                    .position(currentDriverPos).anchor(0.5f, 1f)
-                                    .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.getMarkerBitmapFromView(getActivity(), finalUserimage)))
-                                    // Specifies the anchor to be at a particular point in the marker image.
-                                    .rotation(0f)
-                                    .flat(true));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    }*/
                     return false;
                 }
             }).error(R.drawable.ic_user_pin).placeholder(R.drawable.ic_user_pin).into(markerImageView);

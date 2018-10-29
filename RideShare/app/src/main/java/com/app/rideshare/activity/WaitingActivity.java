@@ -191,8 +191,8 @@ public class WaitingActivity extends AppCompatActivity {
                     fromRider.setmFirstName(jFromRider.getString("u_firstname"));
                     fromRider.setmLastName(jFromRider.getString("u_lastname"));
                     fromRider.setmEmail(jFromRider.getString("u_email"));
-                    fromRider.setmProfileImage(jFromRider.getString("profile_image"));
-                    fromRider.setThumb_image(jFromRider.getString("thumb_image"));
+                    fromRider.setmProfileImage(jFromRider.optString("profile_image"));
+                    fromRider.setThumb_image(jFromRider.optString("thumb_image"));
                     fromRider.setmLatitude(jFromRider.getString("u_lat"));
                     fromRider.setmLongitude(jFromRider.getString("u_long"));
                     rider.setFromRider(fromRider);
@@ -204,8 +204,8 @@ public class WaitingActivity extends AppCompatActivity {
                     toRider.setmFirstName(jToRider.getString("u_firstname"));
                     toRider.setmLastName(jToRider.getString("u_lastname"));
                     toRider.setmEmail(jToRider.getString("u_email"));
-                    toRider.setmProfileImage(jToRider.getString("profile_image"));
-                    toRider.setThumb_image(jToRider.getString("thumb_image"));
+                    toRider.setmProfileImage(jToRider.optString("profile_image"));
+                    toRider.setThumb_image(jToRider.optString("thumb_image"));
                     toRider.setmLatitude(jToRider.getString("u_lat"));
                     toRider.setmLongitude(jToRider.getString("u_long"));
                     rider.setToRider(toRider);

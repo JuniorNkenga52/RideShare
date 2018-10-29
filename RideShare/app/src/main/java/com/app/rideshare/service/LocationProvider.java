@@ -81,6 +81,14 @@ public class LocationProvider implements
             locationChecker(mGoogleApiClient, activity);
         }
     }
+   /* public void isGPS(Activity activity) {
+        if (!mGoogleApiClient.isConnected()){
+            mGoogleApiClient.connect();
+            locationChecker(mGoogleApiClient, activity);
+        }
+    }*/
+
+
 
     public void disconnect() {
         if (mGoogleApiClient.isConnected()) {
@@ -179,6 +187,8 @@ public class LocationProvider implements
                         break;
                 }
             }
+
+
         });
     }
 

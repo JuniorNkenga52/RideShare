@@ -4,7 +4,6 @@ import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -54,10 +53,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Log.w("Check==>", "Get Notification" + isAppRunning(this));
         PrefUtils.initPreference(this);
-        if(!isAppRunning(this)){
-            PrefUtils.putBoolean("isAppRunning",false);
+        if (!isAppRunning(this)) {
+            PrefUtils.putBoolean("isAppRunning", false);
         } else {
-            PrefUtils.putBoolean("isAppRunning",true);
+            PrefUtils.putBoolean("isAppRunning", true);
         }
 
         String message = remoteMessage.getData().get("m");
@@ -129,6 +128,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notifBuilder = null;
         String NOTIF_CHANNEL_ID = "my_notification_channel";
+
         if (type.equals("4")) {
             StartRideActivity.RideStatus = "inProgress";
         }
@@ -243,16 +243,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         return false;
     }
 
-    public boolean isAppRunning(Context context)
-    {
+    public boolean isAppRunning(Context context) {
         boolean appFound = false;
         final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         final List<ActivityManager.RunningTaskInfo> recentTasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
 
-        for (int i = 0; i < recentTasks.size(); i++)
-        {
-            if (recentTasks.get(i).baseActivity.getPackageName().equals("com.app.rideshare"))
-            {
+        for (int i = 0; i < recentTasks.size(); i++) {
+            if (recentTasks.get(i).baseActivity.getPackageName().equals("com.app.rideshare")) {
                 appFound = true;
                 break;
             }
