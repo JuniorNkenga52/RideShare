@@ -29,12 +29,9 @@ import com.app.rideshare.utils.AppUtils;
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.view.CustomProgressDialog;
 import com.github.pinball83.maskededittext.MaskedEditText;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 public class MobileNumberFragment extends Fragment {
@@ -121,7 +118,7 @@ public class MobileNumberFragment extends Fragment {
                         //result="+919265762630";-Darshan
                         //result="+917600902008";
                         if (AppUtils.isInternetAvailable(getActivity())) {
-                            new AsyncSendTextMessage(numberMo.trim().replaceAll(" ","")).execute();
+                            new AsyncSendTextMessage(numberMo.trim().replaceAll(" ", "")).execute();
                         } else {
                             MessageUtils.showNoInternetAvailable(getActivity());
                         }
@@ -161,7 +158,7 @@ public class MobileNumberFragment extends Fragment {
         public Object doInBackground(Object... params) {
             try {
                 //return RideShareApi.sendTextMessageNew(mobileNumber);
-                return RideShareApi.sendTextMessageNew(mobileNumber,getContext());
+                return RideShareApi.sendTextMessageNew(mobileNumber, getContext());
             } catch (Exception e) {
                 return null;
             }

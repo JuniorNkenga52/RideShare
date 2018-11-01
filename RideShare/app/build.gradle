@@ -24,7 +24,7 @@ android {
         targetSdkVersion 27
         versionCode 7
         multiDexEnabled true
-        versionName "1.12"
+        versionName "1.13"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         renderscriptSupportModeEnabled true
     }

@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -21,6 +22,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +39,7 @@ import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.AcceptRequest;
 import com.app.rideshare.api.response.AcceptRider;
+import com.app.rideshare.api.response.CancelRequest;
 import com.app.rideshare.api.response.StartRideResponse;
 import com.app.rideshare.chat.CommonMethods;
 import com.app.rideshare.chat.LocalBinder;
@@ -293,29 +296,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             }
         }
 
-        /*receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(RECEIVE_JSON)) {
-                    Provider = intent.getStringExtra("Provider");
-                    Latitude = (Double) intent.getExtras().get("Latitude");
-                    Longitude = (Double) intent.getExtras().get("Longitude");
-                    Log.d("Provider", "" + Provider);
-                    Log.d("location", "" + Latitude + "," + Longitude);
-
-                    DriverLocation = new LatLng(Latitude, Longitude);
-                    mDriverLocation = new Location("");
-                    mDriverLocation.setLatitude(Latitude);
-                    mDriverLocation.setLongitude(Latitude);
-                }
-            }
-        };
-
-        LocalBroadcastManager bManager = LocalBroadcastManager.getInstance(this);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(RECEIVE_JSON);
-        bManager.registerReceiver(receiver, intentFilter);*/
-
         if (mApp.getmUserType().equals("2")) {
             //startService(new Intent(getBaseContext(), LocationService.class));
         }
@@ -544,12 +524,45 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
             mMaterialDialog.show();
         } else {
-            Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
-            i.putExtra("inprogress", "free");
-            startActivity(i);
-            finish();
-            //activity.finish();
-            MyXMPP.disconnect();
+
+            //if (mApp.getmUserType().equals("1") || mApp.getmUserType().equals("2")) {
+
+                    AlertDialog.Builder builder;
+                    builder = new AlertDialog.Builder(StartRideActivity.this);
+                    builder.setTitle("Cancel Ride")
+                            .setMessage("Are you sure you want to reject ride?")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    try {
+
+                                        //cancelRequst();
+
+                                        acceptOrRejectRequest(mRider.getRide_id(), "2", context);
+
+                                        Intent i = new Intent(getBaseContext(), RideTypeActivity.class);
+                                        i.putExtra("inprogress", "free");
+                                        startActivity(i);
+                                        finish();
+                                        //activity.finish();
+                                        MyXMPP.disconnect();
+
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
+
+
+            //}
+
+
 
         }
     }
@@ -576,10 +589,30 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
         Log.w("DESTROY", mApp.getmUserType());
 
-        if (mApp.getmUserType().equals("1") || mApp.getmUserType().equals("2")) {
-            if(!isRejectRide)
-                acceptOrRejectRequest(mRider.getRide_id(), "0",context);
-        }
+        /*if (mApp.getmUserType().equals("1") || mApp.getmUserType().equals("2")) {
+            if(!isRejectRide) {
+                AlertDialog.Builder builder;
+                builder = new AlertDialog.Builder(StartRideActivity.this);
+                builder.setTitle("Reject Ride")
+                        .setMessage("Are you sure you want to reject ride?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    acceptOrRejectRequest(mRider.getRide_id(), "0", context);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+
+            }
+        }*/
 
 
 
@@ -1169,6 +1202,21 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    public void cancelRequst(String mRideId) {
+        ApiServiceModule.createService(RestApiInterface.class, context).cancelRequest(mRideId).enqueue(new Callback<CancelRequest>() {
+            @Override
+            public void onResponse(Call<CancelRequest> call, Response<CancelRequest> response) {
+
+
+            }
+
+            @Override
+            public void onFailure(Call<CancelRequest> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("error", t.toString());
+            }
+        });
+    }
 
     public void acceptOrRejectRequest(String mRideId, String acceptOrreject,Context context) {
         Log.w("DESTROY", "8");
