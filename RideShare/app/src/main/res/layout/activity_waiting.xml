@@ -81,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            custom:donut_progress="30" />
+            custom:donut_progress="45" />
     </RelativeLayout>
 
     <com.app.rideshare.widget.TextViewRegular

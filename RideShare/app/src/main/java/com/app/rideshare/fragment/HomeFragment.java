@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -433,10 +434,28 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                     List<Route> routes = directions.parse(json);
                     if (directionLine != null) directionLine.remove();
                     if (routes.size() > 0) {
-                        directionLine = mGoogleMap.addPolyline((new PolylineOptions())
-                                .addAll(routes.get(0).getOverviewPolyLine())
-                                .color(ContextCompat.getColor(getActivity(), R.color.blacltext))
-                                .width(10));
+                        for(int i=0;i<routes.size();i++){
+                            directionLine = mGoogleMap.addPolyline((new PolylineOptions())
+                                    .addAll(routes.get(i).getOverviewPolyLine())
+                                    .color(ContextCompat.getColor(getActivity(), R.color.blue))
+                                    .width(10));
+                            directionLine.setClickable(true);
+                            mGoogleMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
+                                @Override
+                                public void onPolylineClick(Polyline polyline) {
+                                    if(polyline.isClickable()){
+                                        directionLine.setClickable(false);
+                                        polyline.setColor(getActivity().getResources().getColor(R.color.gray));
+                                    }else {
+                                        directionLine.setClickable(true);
+                                        polyline.setColor(getActivity().getResources().getColor(R.color.blue));
+                                    }
+                                }
+
+                            });
+
+                        }
+
                     } else {
                         Toast.makeText(context, json, Toast.LENGTH_LONG).show();
                     }

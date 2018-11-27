@@ -85,7 +85,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            custom:donut_progress="30" />
+            custom:donut_progress="60" />
     </RelativeLayout>
 
     <LinearLayout

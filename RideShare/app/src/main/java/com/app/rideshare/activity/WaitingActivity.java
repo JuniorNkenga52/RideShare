@@ -76,7 +76,7 @@ public class WaitingActivity extends AppCompatActivity {
 
 
         mCircleProgress = (DonutProgress) findViewById(R.id.donut_progress);
-        mCircleProgress.setMax(30);
+        mCircleProgress.setMax(45);
         mCircleProgress.setSuffixText("");
         mCircleProgress.setStartingDegree(270);
         mCircleProgress.setShowText(false);
@@ -144,7 +144,7 @@ public class WaitingActivity extends AppCompatActivity {
     }
 
     protected void startTimer() {
-        timer = new OTPTimer(30000, 1000);
+        timer = new OTPTimer(45000, 1000);
         timer.start();
     }
 

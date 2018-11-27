@@ -16,7 +16,7 @@ public class MapDirectionAPI {
 
         Request request = new Request.Builder()
                 //.url(gMapDirection.getUrl(context,pickUp, destination, GMapDirection.MODE_DRIVING, false))
-                .url(gMapDirection.getDirectionsUrl(context,pickUp, destination, false))
+                .url(gMapDirection.getDirectionsUrl(context,pickUp, destination, true))
                 .build();
 
         return client.newCall(request);

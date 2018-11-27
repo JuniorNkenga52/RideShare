@@ -163,7 +163,7 @@ public class NotificationActivity extends AppCompatActivity {
 
 
         mCircleProgress = (DonutProgress) findViewById(R.id.donut_progress);
-        mCircleProgress.setMax(30);
+        mCircleProgress.setMax(60);
         mCircleProgress.setSuffixText("");
         mCircleProgress.setStartingDegree(270);
         mCircleProgress.setShowText(false);
@@ -240,7 +240,7 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     protected void startTimer() {
-        timer = new OTPTimer(30000, 1000);
+        timer = new OTPTimer(60000, 1000);
         timer.start();
     }
 

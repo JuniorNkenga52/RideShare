@@ -20,11 +20,8 @@ import com.app.rideshare.fragment.MobileNumberFragment;
 import com.app.rideshare.fragment.NameFragment;
 import com.app.rideshare.fragment.OTPFragment;
 import com.app.rideshare.fragment.ProfilePhotoFragment;
-import com.app.rideshare.notificationservice.MyFirebaseMessagingService;
 import com.app.rideshare.utils.PrefUtils;
 import com.app.rideshare.widget.CustomViewPager;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
@@ -74,7 +71,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
 
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+       /* int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
         if (ConnectionResult.SUCCESS != resultCode) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
                 GooglePlayServicesUtil.showErrorNotification(resultCode, getApplicationContext());
@@ -82,7 +79,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         } else {
             startService(new Intent(context, MyFirebaseMessagingService.class));
-        }
+        }*/
 
 
         mViewPager = (CustomViewPager) findViewById(R.id.pagerSignUp);

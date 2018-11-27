@@ -18,12 +18,8 @@ import com.app.rideshare.R;
 import com.app.rideshare.api.ApiServiceModule;
 import com.app.rideshare.api.RestApiInterface;
 import com.app.rideshare.api.response.SignupResponse;
-import com.app.rideshare.notificationservice.MyFirebaseMessagingService;
-
 import com.app.rideshare.utils.MessageUtils;
 import com.app.rideshare.utils.PrefUtils;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
@@ -74,14 +70,14 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
 
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+        /*int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
         if (ConnectionResult.SUCCESS != resultCode) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
                 GooglePlayServicesUtil.showErrorNotification(resultCode, getApplicationContext());
             }
         } else {
             startService(new Intent(this, MyFirebaseMessagingService.class));
-        }
+        }*/
 
         PrefUtils.initPreference(this);
 
@@ -96,7 +92,6 @@ public class SplashActivity extends AppCompatActivity {
             if (PrefUtils.getUserInfo() != null)
                 getUserDetails(PrefUtils.getUserInfo().getmUserId());
         }
-
 
 
     }

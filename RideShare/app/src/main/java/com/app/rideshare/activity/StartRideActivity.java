@@ -530,7 +530,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     AlertDialog.Builder builder;
                     builder = new AlertDialog.Builder(StartRideActivity.this);
                     builder.setTitle("Cancel Ride")
-                            .setMessage("Are you sure you want to reject ride?")
+                            .setMessage("Are you sure you want to cancel ride?")
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     try {
