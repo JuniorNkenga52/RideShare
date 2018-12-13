@@ -11,7 +11,7 @@
         android:textSize="@dimen/_18sdp"
         android:textColor="@color/white"
         android:gravity="center"
-        android:text="Message"/>
+        android:text="Messages"/>
 
 
     <ListView

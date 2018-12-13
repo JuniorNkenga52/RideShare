@@ -45,7 +45,7 @@
 
     <string name="action_settings">Settings</string>
     <string name="ride_rate">Help us to serve you better!\n Let us know your feedback!</string>
-    <string name="ride_rate_msg">Select Stars and Give Your \n FeedBack</string>
+    <string name="ride_rate_msg">Rate and Give Feedback</string>
     <string name="ride_rate_comment">Please write your comment here.....</string>
     <string name="ride_rate_wordcount">0</string>
     <string name="ride_rate_totalwords">/500</string>
@@ -55,7 +55,7 @@
     <string name="user_name">Name</string>
     <string name="user_lname">Last Name</string>
     <string name="user_role">User Role</string>
-    <string name="approve_req">Request as Driver</string>
+    <string name="approve_req">Request to be a driver</string>
     <string name="disable">Disable</string>
     <string name="approve_privilege">Approve (Admin Privilege)</string>
     <string name="admin_apply">Apply</string>

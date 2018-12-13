@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true">
@@ -38,7 +39,7 @@
             android:drawableLeft="@drawable/ic_search_cab"
             android:drawablePadding="@dimen/_6sdp"
             android:ems="10"
-            android:hint="Search group"
+            android:hint="Search groups"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences"
             android:padding="@dimen/_8sdp"
@@ -59,7 +60,7 @@
         android:paddingLeft="@dimen/_12sdp"
         android:paddingRight="@dimen/_12sdp"
         android:paddingTop="@dimen/_5sdp"
-        android:text="You are not joined any group currently! please select any group to join in."
+        android:text="You are not a member of any group currently! Please join a group to proceed!"
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/_12sdp" />
     <!--<LinearLayout
