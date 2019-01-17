@@ -130,7 +130,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     private Button mStartRideBtn;
     private Button mFinishRideBtn;
     public static String RideStatus = "";
-    private String TabelName;
+    private String TableName;
     private TextView item_txt_counts;
     private RelativeLayout layout_unreadmsgs;
     MaterialDialog mMaterialDialog;
@@ -976,10 +976,10 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         else
             toRider = mRider.getFromRider();
 
-        TabelName = Constants.intentKey.jabberPrefix + toRider.getnUserId();
+        TableName = Constants.intentKey.jabberPrefix + toRider.getnUserId();
 
-        if (commonMethods.isTableExists(TabelName.toLowerCase())) {
-            String unreadCount = getUnreadMessages(TabelName.toLowerCase());
+        if (commonMethods.isTableExists(TableName.toLowerCase())) {
+            String unreadCount = getUnreadMessages(TableName.toLowerCase());
             if (!unreadCount.equals("") && !unreadCount.equals("0")) {
                 layout_unreadmsgs.setVisibility(View.VISIBLE);
                 item_txt_counts.setText(unreadCount);
