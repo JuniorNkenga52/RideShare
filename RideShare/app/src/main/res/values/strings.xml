@@ -37,7 +37,7 @@
 
     <string name="signup">Sign Up</string>
 
-    <string name="authentication_sent">An authentication code will sent your mobile</string>
+    <string name="authentication_sent">An authentication code will sent your number</string>
     <string name="title_activity_home">HomeActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -99,7 +99,7 @@
     <string name="term_of_service">Terms of Service</string>
 
     <string name="whats_the_verification_code">What is the verification code?</string>
-    <string name="txt_enter_the_code">Enter the code send to </string>
+    <string name="txt_enter_the_code">Enter the code sent to </string>
     <string name="resend_code">Resend Code</string>
 
     <string name="whats_your_name">What is your name?</string>
