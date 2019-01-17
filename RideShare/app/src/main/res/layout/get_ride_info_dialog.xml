@@ -192,7 +192,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Max Person"
+                        android:text="Seats"
                         android:textColor="@color/blacltext"
                         android:textSize="@dimen/_12sdp" />
                 </LinearLayout>
