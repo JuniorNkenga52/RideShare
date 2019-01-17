@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.app.rideshare.widget.TextViewRegular
+                <com.app.rideWhiz.widget.TextViewRegular
                     android:id="@+id/username_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 
-                <com.app.rideshare.widget.TextViewRegular
+                <com.app.rideWhiz.widget.TextViewRegular
                     android:id="@+id/item_user_name_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.app.rideshare.widget.TextViewRegular
+                <com.app.rideWhiz.widget.TextViewRegular
                     android:id="@+id/item_userphno_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 
-                <com.app.rideshare.widget.TextViewRegular
+                <com.app.rideWhiz.widget.TextViewRegular
                     android:id="@+id/item_phno_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -34,7 +34,7 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
-            <com.app.rideshare.widget.TextViewBold
+            <com.app.rideWhiz.widget.TextViewBold
                 android:id="@+id/mUserName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/_15sdp" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:id="@+id/mGroupName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                 android:textColor="@color/GrayLine"
                 android:textSize="@dimen/_11sdp" />
 
-            <com.app.rideshare.widget.TextViewBold
+            <com.app.rideWhiz.widget.TextViewBold
                 android:id="@+id/mGroupStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

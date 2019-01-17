@@ -13,7 +13,7 @@
         android:orientation="horizontal">
 
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:id="@+id/lbl_item_searchlocation_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

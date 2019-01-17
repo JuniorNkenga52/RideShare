@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.app.rideshare.widget.TextViewBold
+    <com.app.rideWhiz.widget.TextViewBold
         android:id="@+id/txtHeaderName"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -31,7 +31,7 @@
                 android:listSelector="#00000000" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:id="@+id/no_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

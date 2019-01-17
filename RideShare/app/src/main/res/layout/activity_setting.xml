@@ -57,7 +57,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:id="@+id/tvTermsOfService"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:id="@+id/tvFAQ"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:id="@+id/tvChats"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -192,7 +192,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:id="@+id/tvFeedback"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -237,7 +237,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:id="@+id/tvSignOut"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

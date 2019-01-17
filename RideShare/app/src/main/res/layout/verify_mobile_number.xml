@@ -8,7 +8,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <com.app.rideshare.widget.TextViewRegular
+    <com.app.rideWhiz.widget.TextViewRegular
         android:id="@+id/title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/_14sdp" />
 
-    <com.app.rideshare.widget.TextViewSemiBold
+    <com.app.rideWhiz.widget.TextViewSemiBold
         android:id="@+id/change_mobile_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         pinview:textSizeTitles="0dp" />
 
 
-    <com.app.rideshare.widget.TextViewRegular
+    <com.app.rideWhiz.widget.TextViewRegular
         android:id="@+id/title_number_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/_14sdp" />
 
-    <com.app.rideshare.widget.TextViewSemiBold
+    <com.app.rideWhiz.widget.TextViewSemiBold
         android:id="@+id/resend_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
         android:textSize="@dimen/_16sdp"/>
 
 
-    <com.app.rideshare.widget.TextViewSemiBold
+    <com.app.rideWhiz.widget.TextViewSemiBold
         android:id="@+id/verify_tv"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/_35sdp"

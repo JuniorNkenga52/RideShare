@@ -44,7 +44,7 @@
             android:gravity="right|center_vertical"
             android:padding="@dimen/_10sdp">
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -71,7 +71,7 @@
             android:gravity="right|center_vertical"
             android:padding="@dimen/_10sdp">
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -116,7 +116,7 @@
                 android:textSize="@dimen/_14sdp" />
         </RadioGroup>
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:id="@+id/next_tv"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_35sdp"

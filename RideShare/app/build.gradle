@@ -14,17 +14,16 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
     google()
 }
-
 android {
     compileSdkVersion 27
     buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "com.app.rideshare"
+        applicationId "com.app.rideWhiz"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 8
+        versionCode 1
         multiDexEnabled true
-        versionName "1.14"
+        versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         renderscriptSupportModeEnabled true
     }

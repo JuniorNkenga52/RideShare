@@ -17,7 +17,7 @@
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
-        <com.app.rideshare.widget.EditTextRegular
+        <com.app.rideWhiz.widget.EditTextRegular
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

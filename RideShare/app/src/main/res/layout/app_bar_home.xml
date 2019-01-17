@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.app.rideshare.activity.HomeActivity">
+    tools:context="com.app.rideWhiz.activity.HomeActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.app.rideshare.widget.TextViewRegular
+                <com.app.rideWhiz.widget.TextViewRegular
                     android:id="@+id/title_home_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

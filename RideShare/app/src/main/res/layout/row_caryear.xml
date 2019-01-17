@@ -15,7 +15,7 @@
         android:orientation="horizontal"
         android:padding="@dimen/_12sdp">
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:id="@+id/text_caryear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

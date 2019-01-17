@@ -23,7 +23,7 @@
         android:paddingTop="@dimen/_8sdp"
         android:divider="@null" />
 
-    <com.app.rideshare.widget.TextViewRegular
+    <com.app.rideWhiz.widget.TextViewRegular
         android:id="@+id/no_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -6,7 +6,7 @@
     android:focusableInTouchMode="true">
 
 
-    <com.app.rideshare.widget.CustomViewPager
+    <com.app.rideWhiz.widget.CustomViewPager
         android:id="@+id/pagerSignUp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

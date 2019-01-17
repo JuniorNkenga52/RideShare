@@ -27,7 +27,7 @@
         android:layout_weight="1"
         android:padding="@dimen/_8sdp">
 
-        <com.app.rideshare.widget.EditTextRegular
+        <com.app.rideWhiz.widget.EditTextRegular
             android:id="@+id/txtGroupName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
             android:textSize="@dimen/_14sdp" />
 
 
-        <com.app.rideshare.widget.EditTextRegular
+        <com.app.rideWhiz.widget.EditTextRegular
             android:id="@+id/txtGroupDescription"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_100sdp"
@@ -62,7 +62,7 @@
             android:textSize="@dimen/_14sdp" />
 
 
-        <com.app.rideshare.widget.TextViewBold
+        <com.app.rideWhiz.widget.TextViewBold
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
 
     </LinearLayout>
 
-    <com.app.rideshare.widget.TextViewSemiBold
+    <com.app.rideWhiz.widget.TextViewSemiBold
         android:id="@+id/txtCreate"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"

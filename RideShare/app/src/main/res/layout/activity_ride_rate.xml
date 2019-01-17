@@ -25,7 +25,7 @@
         android:padding="@dimen/_10sdp">
 
 
-        <com.app.rideshare.widget.TextViewSemiBold
+        <com.app.rideWhiz.widget.TextViewSemiBold
             android:id="@+id/txt_rate_ride"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/_18sdp" />
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:id="@+id/txt_rate_ride_msg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
             android:stepSize="1"
             android:theme="@style/RatingBar" />
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:id="@+id/txt_rate_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
              android:layout_below="@+id/txt_rate_type"
              >-->
 
-        <com.app.rideshare.widget.EditTextRegular
+        <com.app.rideWhiz.widget.EditTextRegular
             android:id="@+id/edt_comment"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
             android:layout_gravity="end"
             android:layout_margin="@dimen/_5sdp">
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:id="@+id/txt_rate_word"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
                 android:textColor="@color/blacltext"
                 android:visibility="visible" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:id="@+id/txt_rate_tword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <com.app.rideshare.widget.TextViewSemiBold
+    <com.app.rideWhiz.widget.TextViewSemiBold
         android:id="@+id/btn_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

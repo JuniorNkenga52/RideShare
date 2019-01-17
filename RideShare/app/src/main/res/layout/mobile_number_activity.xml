@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
 
-    <com.app.rideshare.widget.TextViewRegular
+    <com.app.rideWhiz.widget.TextViewRegular
         android:id="@+id/title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
         card_view:cardElevation="@dimen/_3sdp"
         card_view:cardUseCompatPadding="true">
 
-        <com.app.rideshare.widget.EditTextRegular
+        <com.app.rideWhiz.widget.EditTextRegular
             android:id="@+id/mobile_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:textStyle="bold" />
     </android.support.v7.widget.CardView>
 
-    <com.app.rideshare.widget.TextViewRegular
+    <com.app.rideWhiz.widget.TextViewRegular
         android:id="@+id/title_number_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/_14sdp" />
 
-    <com.app.rideshare.widget.TextViewSemiBold
+    <com.app.rideWhiz.widget.TextViewSemiBold
         android:id="@+id/send_code_tv"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/_35sdp"

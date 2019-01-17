@@ -12,7 +12,7 @@
         android:layout_height="fill_parent"
         android:orientation="vertical">
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:id="@+id/lbl_item_searchlocation_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
             android:textColor="@color/blacltext"
             android:textSize="@dimen/_14sdp" />
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:id="@+id/lbl_item_searchlocation_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

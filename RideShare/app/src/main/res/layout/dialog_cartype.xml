@@ -54,7 +54,7 @@
                     android:orientation="vertical">
 
 
-                    <com.app.rideshare.widget.TextViewRegular
+                    <com.app.rideWhiz.widget.TextViewRegular
                         android:id="@+id/txt_msg"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                     android:layout_gravity="center_horizontal"
                     android:orientation="horizontal">
 
-                    <com.app.rideshare.widget.TextViewRegular
+                    <com.app.rideWhiz.widget.TextViewRegular
                         android:id="@+id/txt_ok"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_40sdp"

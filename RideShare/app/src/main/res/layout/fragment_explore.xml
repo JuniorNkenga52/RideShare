@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true">
 
-    <com.app.rideshare.widget.TextViewBold
+    <com.app.rideWhiz.widget.TextViewBold
         android:id="@+id/txtHeaderName"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -30,7 +30,7 @@
         android:orientation="vertical"
         android:padding="@dimen/_5sdp">
 
-        <com.app.rideshare.widget.EditTextRegular
+        <com.app.rideWhiz.widget.EditTextRegular
             android:id="@+id/txtSearchGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
     </LinearLayout>
 
 
-    <com.app.rideshare.widget.TextViewRegular
+    <com.app.rideWhiz.widget.TextViewRegular
         android:id="@+id/txtgroupinfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

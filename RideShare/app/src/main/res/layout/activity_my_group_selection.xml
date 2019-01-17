@@ -5,7 +5,7 @@
     android:background="@color/contentBGnew"
     android:layout_height="match_parent">
 
-    <com.app.rideshare.widget.TextViewBold
+    <com.app.rideWhiz.widget.TextViewBold
         android:id="@+id/txtHeaderName"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -15,7 +15,7 @@
         android:gravity="center"
         android:text="Select Group"/>
 
-    <com.app.rideshare.widget.TextViewRegular
+    <com.app.rideWhiz.widget.TextViewRegular
         android:id="@+id/txtskip"
         android:layout_width="wrap_content"
         android:layout_height="?attr/actionBarSize"
@@ -38,7 +38,7 @@
         <!-- Include 'android:background="@color/white"' in section above
         to revert to white square behind search box. I removed it to
         make the layout the same as the 'activity_mygroup.xml' file. -->
-        <com.app.rideshare.widget.EditTextRegular
+        <com.app.rideWhiz.widget.EditTextRegular
             android:id="@+id/txtSearchGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.app.rideshare.widget.TextViewBold
+        <com.app.rideWhiz.widget.TextViewBold
             android:id="@+id/txtHeaderName"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -64,7 +64,7 @@
                 android:background="@drawable/ic_circle"
                 android:padding="@dimen/_6sdp" />
 
-            <com.app.rideshare.widget.EditTextRegular
+            <com.app.rideWhiz.widget.EditTextRegular
                 android:id="@+id/location_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
             android:layout_marginRight="@dimen/_3sdp"
             android:background="@drawable/ic_search_cab" />
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:id="@+id/search_cab_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

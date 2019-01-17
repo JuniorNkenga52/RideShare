@@ -16,7 +16,7 @@
         android:padding="10dp"
         android:orientation="vertical" >
 
-        <com.app.rideshare.widget.TextViewSemiBold
+        <com.app.rideWhiz.widget.TextViewSemiBold
 
             android:id="@+id/notification_text_title"
             android:layout_width="match_parent"

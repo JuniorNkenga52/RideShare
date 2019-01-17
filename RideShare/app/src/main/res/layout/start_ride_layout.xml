@@ -39,7 +39,7 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:id="@+id/name_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_14sdp" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:id="@+id/email_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                 android:paddingTop="@dimen/_10sdp"
                 />
 
-            <com.app.rideshare.widget.TextViewSemiBold
+            <com.app.rideWhiz.widget.TextViewSemiBold
                 android:id="@+id/item_txt_counts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -22,7 +22,7 @@
         android:orientation="vertical">
 
 
-        <com.app.rideshare.widget.TextViewBold
+        <com.app.rideWhiz.widget.TextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_100sdp"
@@ -31,7 +31,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/_18sdp" />
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:id="@+id/txtPhoneNumberInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
             android:textColor="@color/whiteOff"
             android:textSize="@dimen/_12sdp" />
 
-        <com.app.rideshare.widget.PinEntryEditText
+        <com.app.rideWhiz.widget.PinEntryEditText
             android:id="@+id/txtPin"
             android:layout_width="@dimen/_230sdp"
             android:layout_height="@dimen/_60sdp"
@@ -60,7 +60,7 @@
             app:pinLineStrokeSelected="2dp" />
 
 
-        <com.app.rideshare.widget.TextViewBold
+        <com.app.rideWhiz.widget.TextViewBold
             android:id="@+id/txtResendOTP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
     </LinearLayout>
 
 
-    <com.app.rideshare.widget.TextViewSemiBold
+    <com.app.rideWhiz.widget.TextViewSemiBold
         android:id="@+id/txtNext"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"

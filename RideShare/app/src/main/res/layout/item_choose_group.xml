@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
 
-    <com.app.rideshare.widget.TextViewRegular
+    <com.app.rideWhiz.widget.TextViewRegular
         android:id="@+id/txt_choose_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

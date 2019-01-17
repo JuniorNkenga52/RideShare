@@ -7,7 +7,7 @@
     card_view:cardCornerRadius="@dimen/_2sdp"
     card_view:cardElevation="@dimen/_5sdp">
 
-    <com.app.rideshare.widget.TextViewRegular
+    <com.app.rideWhiz.widget.TextViewRegular
         android:id="@+id/txt_toast_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

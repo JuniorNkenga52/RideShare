@@ -23,7 +23,7 @@
         android:orientation="vertical">
 
 
-        <com.app.rideshare.widget.TextViewBold
+        <com.app.rideWhiz.widget.TextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_100sdp"
@@ -32,7 +32,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/_18sdp" />
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"
@@ -94,7 +94,7 @@
     </LinearLayout>
 
 
-    <com.app.rideshare.widget.TextViewSemiBold
+    <com.app.rideWhiz.widget.TextViewSemiBold
         android:id="@+id/txtNext"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"

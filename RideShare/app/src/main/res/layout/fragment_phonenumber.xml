@@ -4,6 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:id="@+id/frame_layout_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+    </FrameLayout>
+
     <ImageView
         android:id="@+id/imgBack"
         android:layout_width="@dimen/_30sdp"
@@ -21,7 +28,7 @@
         android:orientation="vertical">
 
 
-        <com.app.rideshare.widget.TextViewBold
+        <com.app.rideWhiz.widget.TextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_100sdp"
@@ -30,7 +37,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/_18sdp" />
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:id="@+id/txt_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -63,7 +70,7 @@
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
-            <com.app.rideshare.widget.CheckBoxRegular
+            <com.app.rideWhiz.widget.CheckBoxRegular
                 android:id="@+id/chkIAgree"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,7 +83,7 @@
                 android:button="@drawable/checkbox_selector"
                 android:textSize="@dimen/_10sdp"/>
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:id="@+id/txtTermsOfService"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,7 +101,7 @@
     </LinearLayout>
 
 
-    <com.app.rideshare.widget.TextViewSemiBold
+    <com.app.rideWhiz.widget.TextViewSemiBold
         android:id="@+id/txtNext"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"

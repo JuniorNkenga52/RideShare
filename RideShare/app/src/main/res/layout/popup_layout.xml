@@ -21,14 +21,14 @@
             android:layout_margin="@dimen/_5sdp"
             android:orientation="vertical">
 
-            <com.app.rideshare.widget.RadioButtonRegular
+            <com.app.rideWhiz.widget.RadioButtonRegular
                 android:id="@+id/fridnds_rb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Friends Only"
                 android:textSize="@dimen/_14sdp" />
 
-            <com.app.rideshare.widget.RadioButtonRegular
+            <com.app.rideWhiz.widget.RadioButtonRegular
                 android:id="@+id/all_rb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

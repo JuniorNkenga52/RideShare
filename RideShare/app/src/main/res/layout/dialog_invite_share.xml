@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.app.rideshare.widget.TextViewSemiBold
+        <com.app.rideWhiz.widget.TextViewSemiBold
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_8sdp"
@@ -41,7 +41,7 @@
                 android:contentDescription="@null"
                 android:src="@drawable/ic_invite_email" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -79,7 +79,7 @@
                 android:contentDescription="@null"
                 android:src="@drawable/ic_invite_sms" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -117,7 +117,7 @@
                 android:contentDescription="@null"
                 android:src="@drawable/ic_invite_copy" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -156,7 +156,7 @@
                 android:contentDescription="@null"
                 android:src="@drawable/ic_invite_more" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

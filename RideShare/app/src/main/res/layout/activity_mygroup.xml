@@ -32,7 +32,7 @@
             android:contentDescription="@null"/>
     </FrameLayout>
 
-    <com.app.rideshare.widget.EditTextRegular
+    <com.app.rideWhiz.widget.EditTextRegular
         android:id="@+id/tvSearchGroup"
         android:layout_below="@+id/frame_layout"
         android:layout_width="match_parent"
@@ -52,7 +52,7 @@
         android:textColorHint="#aeb1b5"
         android:textSize="@dimen/_12sdp" />
 
-    <com.app.rideshare.widget.TextViewRegular
+    <com.app.rideWhiz.widget.TextViewRegular
         android:id="@+id/txt_no_grp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

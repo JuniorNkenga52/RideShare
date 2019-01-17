@@ -22,7 +22,7 @@
         app:civ_border_color="@color/black"
         android:src="@drawable/banner" />
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:id="@+id/mGroupUserName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

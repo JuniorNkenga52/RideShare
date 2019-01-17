@@ -20,7 +20,7 @@
         android:layout_marginTop="44dp"
         android:src="@drawable/banner" />
 
-    <com.app.rideshare.widget.TextViewRegular
+    <com.app.rideWhiz.widget.TextViewRegular
         android:id="@+id/username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 android:theme="@style/TextLabel"
                 app:hintTextAppearance="@style/TextLabelSize">
 
-                <com.app.rideshare.widget.EditTextRegular
+                <com.app.rideWhiz.widget.EditTextRegular
                     android:id="@+id/first_name_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 android:theme="@style/TextLabel"
                 app:hintTextAppearance="@style/TextLabelSize">
 
-                <com.app.rideshare.widget.EditTextRegular
+                <com.app.rideWhiz.widget.EditTextRegular
                     android:id="@+id/last_name_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
                 android:theme="@style/TextLabel"
                 app:hintTextAppearance="@style/TextLabelSize">
 
-                <com.app.rideshare.widget.EditTextRegular
+                <com.app.rideWhiz.widget.EditTextRegular
                     android:id="@+id/address_name_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -118,7 +118,7 @@
                 android:theme="@style/TextLabel"
                 app:hintTextAppearance="@style/TextLabelSize">
 
-                <com.app.rideshare.widget.EditTextRegular
+                <com.app.rideWhiz.widget.EditTextRegular
                     android:id="@+id/email_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                 android:visibility="gone"
                 app:hintTextAppearance="@style/TextLabelSize">
 
-                <com.app.rideshare.widget.EditTextRegular
+                <com.app.rideWhiz.widget.EditTextRegular
                     android:id="@+id/mobile_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -157,7 +157,7 @@
                 android:layout_margin="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_8sdp">
 
-                <com.app.rideshare.widget.TextViewRegular
+                <com.app.rideWhiz.widget.TextViewRegular
                     android:id="@+id/item_dr_ap_req"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -190,7 +190,7 @@
                     android:theme="@style/TextLabel"
                     app:hintTextAppearance="@style/TextLabelSize">
 
-                    <com.app.rideshare.widget.EditTextRegular
+                    <com.app.rideWhiz.widget.EditTextRegular
                         android:id="@+id/vhmodel_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -208,7 +208,7 @@
                     android:theme="@style/TextLabel"
                     app:hintTextAppearance="@style/TextLabelSize">
 
-                    <com.app.rideshare.widget.EditTextRegular
+                    <com.app.rideWhiz.widget.EditTextRegular
                         android:id="@+id/vhtype_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -227,7 +227,7 @@
                     android:layout_marginBottom="@dimen/_12sdp"
                     app:hintTextAppearance="@style/TextLabelSize">
 
-                    <com.app.rideshare.widget.EditTextRegular
+                    <com.app.rideWhiz.widget.EditTextRegular
                         android:id="@+id/maxpassenger_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -268,7 +268,7 @@
             android:layout_marginLeft="@dimen/_8sdp"
             app:srcCompat="@drawable/ic_back_gray" />
 
-        <com.app.rideshare.widget.TextViewBold
+        <com.app.rideWhiz.widget.TextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -277,7 +277,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/_15sdp" />
 
-        <com.app.rideshare.widget.TextViewRegular
+        <com.app.rideWhiz.widget.TextViewRegular
             android:id="@+id/save_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

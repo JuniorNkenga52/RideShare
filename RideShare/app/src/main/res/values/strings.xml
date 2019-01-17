@@ -1,7 +1,7 @@
 <resources>
 
 
-    <string name="app_name">Ride Share</string>
+    <string name="app_name">RideWhiz</string>
     <string name="title_activity_splash">SplashActivity</string>
     <string name="senderId">237817979464</string>
 

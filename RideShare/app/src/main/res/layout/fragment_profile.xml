@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.app.rideshare.widget.TextViewBold
+    <com.app.rideWhiz.widget.TextViewBold
         android:id="@+id/txtHeaderName"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -45,7 +45,7 @@
                 app:civ_shadow_color="#00000000"
                 app:civ_shadow_radius="0" />
 
-            <com.app.rideshare.widget.TextViewBold
+            <com.app.rideWhiz.widget.TextViewBold
                 android:id="@+id/txtUserName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                 android:layout_marginRight="@dimen/_12sdp"
                 android:src="@drawable/ic_admin" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -121,7 +121,7 @@
                 android:layout_marginRight="@dimen/_12sdp"
                 android:src="@drawable/ic_admin" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -161,7 +161,7 @@
                 android:layout_marginRight="@dimen/_12sdp"
                 android:src="@drawable/ic_admin" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -201,7 +201,7 @@
                 android:layout_marginRight="@dimen/_12sdp"
                 android:src="@drawable/ic_admin" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -240,7 +240,7 @@
                 android:layout_marginRight="@dimen/_12sdp"
                 android:src="@drawable/ic_admin" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -279,7 +279,7 @@
                 android:layout_marginRight="@dimen/_12sdp"
                 android:src="@drawable/ic_admin" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -319,7 +319,7 @@
                 android:layout_marginRight="@dimen/_12sdp"
                 android:src="@drawable/ic_admin" />
 
-            <com.app.rideshare.widget.TextViewRegular
+            <com.app.rideWhiz.widget.TextViewRegular
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

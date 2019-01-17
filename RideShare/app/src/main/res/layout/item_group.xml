@@ -38,7 +38,7 @@
                         android:layout_gravity="center"
                         android:visibility="gone" />
 
-                    <com.app.rideshare.widget.SquareImageView
+                    <com.app.rideWhiz.widget.SquareImageView
                         android:id="@+id/imgGroup"
                         android:layout_width="@dimen/_60sdp"
                         android:layout_height="@dimen/_60sdp"
@@ -58,7 +58,7 @@
                     android:orientation="vertical"
                     android:padding="3dp">
 
-                    <com.app.rideshare.widget.TextViewBold
+                    <com.app.rideWhiz.widget.TextViewBold
                         android:id="@+id/txtGroupName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                         android:textSize="@dimen/_13sdp"
                         android:textStyle="bold" />
 
-                    <com.app.rideshare.widget.TextViewRegular
+                    <com.app.rideWhiz.widget.TextViewRegular
                         android:id="@+id/txtGroupDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <com.app.rideshare.widget.TextViewBold
+                    <com.app.rideWhiz.widget.TextViewBold
                         android:id="@+id/txtJoin"
                         android:layout_width="@dimen/_70sdp"
                         android:layout_height="wrap_content"
