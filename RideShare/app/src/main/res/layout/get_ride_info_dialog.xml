@@ -66,11 +66,11 @@
                         android:textSize="@dimen/_12sdp" />
 
                     <com.app.rideWhiz.widget.TextViewRegular
-                        android:id="@+id/vahical_tv"
+                        android:id="@+id/vehicle_tv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
-                        android:text="Vehical"
+                        android:text="Vehicle"
                         android:textColor="@color/blacltext"
                         android:textSize="@dimen/_12sdp" />
 
