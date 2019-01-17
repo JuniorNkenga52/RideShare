@@ -1,6 +1,5 @@
 package com.app.rideWhiz.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -133,7 +132,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         return fragment;
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -435,11 +433,27 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                     List<Route> routes = directions.parse(json);
                     if (directionLine != null) directionLine.remove();
                     if (routes.size() > 0) {
-                        directionLine = mGoogleMap.addPolyline((new PolylineOptions())
-                                .addAll(routes.get(0).getOverviewPolyLine())
-                                .color(ContextCompat.getColor(getActivity(), R.color.blacltext))
-                                .width(10));
-                        directionLine.setClickable(true);
+                        for(int i=0;i<routes.size();i++){
+                            directionLine = mGoogleMap.addPolyline((new PolylineOptions())
+                                    .addAll(routes.get(i).getOverviewPolyLine())
+                                    .color(ContextCompat.getColor(getActivity(), R.color.blue))
+                                    .width(10));
+                            directionLine.setClickable(true);
+                            mGoogleMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
+                                @Override
+                                public void onPolylineClick(Polyline polyline) {
+                                    if(polyline.isClickable()){
+                                        directionLine.setClickable(false);
+                                        polyline.setColor(getActivity().getResources().getColor(R.color.gray));
+                                    }else {
+                                        directionLine.setClickable(true);
+                                        polyline.setColor(getActivity().getResources().getColor(R.color.blue));
+                                    }
+                                }
+
+                            });
+
+                        }
 
                     } else {
                         Toast.makeText(context, json, Toast.LENGTH_LONG).show();
@@ -552,6 +566,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                     e.printStackTrace();
                 }
                 // mVehicleTv
+                // mvehicleTv
             } else {
                 driver_layout.setVisibility(View.GONE);
                 rider_layout.setVisibility(View.VISIBLE);
