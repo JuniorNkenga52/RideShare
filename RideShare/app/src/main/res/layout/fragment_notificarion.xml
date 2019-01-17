@@ -9,7 +9,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:gravity="center"
-        android:text="Notifications"
+        android:text="Notification"
         android:textColor="@color/white"
         android:textSize="@dimen/_18sdp" />
 

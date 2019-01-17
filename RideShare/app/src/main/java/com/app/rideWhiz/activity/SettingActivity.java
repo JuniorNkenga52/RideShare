@@ -2,7 +2,6 @@ package com.app.rideWhiz.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -21,8 +20,6 @@ public class SettingActivity extends AppCompatActivity {
 
     ConstraintLayout clSignOut;
     ConstraintLayout clear_chats;
-    ConstraintLayout privacy_policy;
-
     User mUserBean;
     private String toJabberId;
 
@@ -48,33 +45,7 @@ public class SettingActivity extends AppCompatActivity {
         });
         clSignOut = (ConstraintLayout) findViewById(R.id.clSignOut);
         clear_chats = findViewById(R.id.clear_chats);
-        privacy_policy = findViewById(R.id.PrivacyPolicy);
 
-        privacy_policy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder;
-                builder = new AlertDialog.Builder(SettingActivity.this);
-                builder.setTitle(getResources().getString(R.string.privacy_policy))
-                        .setMessage(getResources().getString(R.string.privacy_policy))
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                try {
-                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
-                                    startActivity(browserIntent);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .show();
-            }
-        });
 
         clear_chats.setOnClickListener(new View.OnClickListener() {
             @Override

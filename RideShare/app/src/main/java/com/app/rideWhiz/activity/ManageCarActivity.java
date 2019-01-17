@@ -78,7 +78,7 @@ public class ManageCarActivity extends AppCompatActivity implements View.OnClick
 
 
     String selectcolor, str_cartype = "", str_cartypeid = "", str_carmonth = "", str_caryear = "", str_carbrand = "",
-            str_transmissiontype = "", str_carid = "", str_ispooling = "0", str_iscurrent, str_caricon;
+            str_transsiontype = "", str_carid = "", str_ispooling = "0", str_iscurrent, str_caricon;
 
     CustomProgressDialog mProgressDialog;
 

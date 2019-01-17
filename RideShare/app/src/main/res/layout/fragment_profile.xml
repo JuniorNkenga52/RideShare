@@ -88,7 +88,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="My Groups"
+                android:text="My Group"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_13sdp" />
 
