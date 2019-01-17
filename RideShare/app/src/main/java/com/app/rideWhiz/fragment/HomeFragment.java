@@ -521,7 +521,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
         TextView mDetails_tv = (TextView) dialog.findViewById(R.id.ride_type_details_tv);
         TextView mNameTv = (TextView) dialog.findViewById(R.id.name_tv);
-        TextView mVahicalTv = (TextView) dialog.findViewById(R.id.vahical_tv);
+        TextView mVehicleTv = (TextView) dialog.findViewById(R.id.vehicle_tv);
         TextView mAddressTv = (TextView) dialog.findViewById(R.id.address_tv);
         LinearLayout mOther_info = (LinearLayout) dialog.findViewById(R.id.ride_other_info);
         TextView txt_maxPerson = dialog.findViewById(R.id.txt_maxPerson);
@@ -540,7 +540,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             if (mUserType.equals("2") || !rider.getmType().equals("2")) {
                 mDetails_tv.setText("Rider details");
                 mGetRideTv.setText("Offer Ride");
-                mVahicalTv.setText(rider.getmLastName());
+                mVehicleTv.setText(rider.getmLastName());
                 mOther_info.setVisibility(View.GONE);
                 driver_layout.setVisibility(View.VISIBLE);
                 rider_layout.setVisibility(View.GONE);
@@ -551,7 +551,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                // mVahicalTv
+                // mVehicleTv
             } else {
                 driver_layout.setVisibility(View.GONE);
                 rider_layout.setVisibility(View.VISIBLE);
