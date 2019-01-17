@@ -91,7 +91,7 @@
         android:layout_below="@+id/rele"
         android:layout_marginTop="@dimen/_10sdp"
         android:gravity="center"
-        android:text="Please wait until driver accept request"
+        android:text="Please wait until the driver accepts your request"
         android:textColor="@color/white"
         android:textSize="@dimen/_14sdp" />
 

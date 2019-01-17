@@ -112,6 +112,15 @@ public class ProfileFragment extends Fragment implements OnBackPressedListener {
             }
         });
 
+        offer_ride_ll = (LinearLayout) rootView.findViewById(R.id.offer_ride_ll);
+        offer_ride_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), MyGroupSelectionActivity.class);
+                startActivity(intent);
+            }
+        });
+
         llManageCar = (LinearLayout) rootView.findViewById(R.id.llManageCar);
         llManageCar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +129,15 @@ public class ProfileFragment extends Fragment implements OnBackPressedListener {
                 startActivity(i);
                 getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 getActivity().finish();
+            }
+        });
+
+        need_ride_ll = (LinearLayout) rootView.findViewById(R.id.need_ride_ll);
+        need_ride_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), RideTypeActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -143,23 +161,7 @@ public class ProfileFragment extends Fragment implements OnBackPressedListener {
             }
         });
 
-        need_ride_ll = (LinearLayout) rootView.findViewById(R.id.need_ride_ll);
-        need_ride_ll.setOnClickListener(new View.OnClickListener() {
-                                          @Override
-                                          public void onClick(View view) {
-                                              Intent intent = new Intent(getActivity(), RideTypeActivity.class);
-                                              startActivity(intent);
-                                          }
-        });
 
-        offer_ride_ll = (LinearLayout) rootView.findViewById(R.id.offer_ride_ll);
-        offer_ride_ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MyGroupSelectionActivity.class);
-                startActivity(intent);
-            }
-        });
 
 
         llLogout = (LinearLayout) rootView.findViewById(R.id.llLogout);
