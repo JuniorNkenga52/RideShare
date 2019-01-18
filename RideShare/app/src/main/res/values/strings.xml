@@ -76,7 +76,7 @@
     <string name="txt_next">Next</string>
 
     <!--Policy Text-->
-    <string name="privacy_policy">privacy policy</string>
+    <!--<string name="privacy_policy">privacy policy</string> -->
     <string name="privacy_url">https://cpcericola.wixsite.com/ridewhiz/privacy-policy</string>
 
     <!--Rider Privileges-->
@@ -185,7 +185,7 @@
     <string name="entermodelofthecar">Please enter model of the car.</string>
     <string name="entercartransmissiontype">Please select transmission type.</string>
     <string name="entercarcolor">Please select car color.</string>
-
+    <string name="privacy_policy">privacy policy</string>
 
 
     <!--Country Codes-->
