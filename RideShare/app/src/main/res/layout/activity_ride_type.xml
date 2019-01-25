@@ -51,7 +51,7 @@
                 android:gravity="left"
                 android:paddingLeft="@dimen/_30sdp"
                 android:text="Need a Ride"
-                android:textColor="@color/white"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="@dimen/_16sdp" />
 
             <ImageView
@@ -78,7 +78,7 @@
                 android:gravity="left"
                 android:paddingLeft="@dimen/_30sdp"
                 android:text="Offer a Ride"
-                android:textColor="@color/white"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="@dimen/_16sdp" />
 
             <ImageView
