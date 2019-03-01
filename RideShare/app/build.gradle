@@ -21,9 +21,9 @@ android {
         applicationId "com.app.rideWhiz"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 2
+        versionCode 3
         multiDexEnabled true
-        versionName "1.1"
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         renderscriptSupportModeEnabled true
     }
@@ -102,7 +102,6 @@ dependencies {
         transitive = true;
     }
 
-    implementation 'com.github.stfalcon:smsverifycatcher:0.3.1'
 
     /* socket */
     implementation ('io.socket:engine.io-client:1.0.0') {

@@ -45,10 +45,8 @@ public class MobileNumberFragment extends Fragment {
     public MaskedEditText txtPhoneNumber;
 
     private CheckBox chkIAgree;
-    //private BroadcastReceiver mRegistrationBroadcastReceiver;
     String wantPermission = Manifest.permission.READ_PHONE_STATE;
     private static final int PERMISSION_REQUEST_CODE = 1;
-    String token;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -86,17 +84,13 @@ public class MobileNumberFragment extends Fragment {
             }
 
         }
-
-
         chkIAgree = rootView.findViewById(R.id.chkIAgree);
-
         txtTermsOfService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
-
         txtNext = rootView.findViewById(R.id.txtNext);
         txtNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,15 +104,6 @@ public class MobileNumberFragment extends Fragment {
                     } else {
 
                         String numberMo = "+1" + result;
-                        //String numberMo = "+91"+ result;
-                        //String numberMo = "+" + AppUtils.getCountryTelephoneCode(getApplicationContext()) + result;
-                        //String numberMo = "+91" + result;
-                        //result = "+919265094032";-nikunj
-                        //result="+917359371716";
-                        //result="+917435068611";-Ajay
-                        //result="+919725672270";
-                        //result="+919265762630";-Darshan
-                        //result="+917600902008";
                         if (AppUtils.isInternetAvailable(getActivity())) {
                             new AsyncSendTextMessage(numberMo.trim().replaceAll(" ", "")).execute();
                         } else {
@@ -129,11 +114,8 @@ public class MobileNumberFragment extends Fragment {
                     MessageUtils.showFailureMessage(getActivity(), "Please enter Mobile Number.");
                     e.printStackTrace();
                 }
-                //SignUpActivity.mViewPager.setCurrentItem(3);
             }
         });
-
-
         return rootView;
     }
 
@@ -193,7 +175,6 @@ public class MobileNumberFragment extends Fragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-
             }
         }
     }
@@ -206,13 +187,6 @@ public class MobileNumberFragment extends Fragment {
         }
         if (phoneMgr.getLine1Number() != null) {
             phno = phoneMgr.getLine1Number();
-            /*if (phno.length() == 12) {
-                phno = phoneMgr.getLine1Number().substring(2, 12);
-            } else if (phno.length() == 13) {
-                phno = phoneMgr.getLine1Number().substring(3, 13);
-            } else {
-                phno = phoneMgr.getLine1Number();
-            }*/
             if (phno.length() == 11) {
                 phno = phoneMgr.getLine1Number().substring(1, 11);
             } else if (phno.length() == 12) {
@@ -223,7 +197,6 @@ public class MobileNumberFragment extends Fragment {
             } else {
                 phno = phoneMgr.getLine1Number();
             }
-            /*phno = phoneMgr.getLine1Number().replace("+","").substring(0,1).equals("1") ? "+" + phoneMgr.getLine1Number().replace("+","") : "+1"+phoneMgr.getLine1Number();*/
         } else {
             phno = "";
         }
@@ -261,41 +234,5 @@ public class MobileNumberFragment extends Fragment {
         } else {
             return true;
         }
-    }
-
-    public String GetCountryZipCode() {
-        String CountryID = "";
-        String CountryZipCode = "";
-
-        TelephonyManager manager = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
-        //getNetworkCountryIso
-        CountryID = manager.getSimCountryIso().toUpperCase();
-        String[] rl = getContext().getResources().getStringArray(R.array.CountryCodes);
-        for (int i = 0; i < rl.length; i++) {
-            String[] g = rl[i].split(",");
-            if (g[1].trim().equals(CountryID.trim())) {
-                CountryZipCode = g[0];
-                break;
-            }
-        }
-        return CountryZipCode;
-    }
-
-    public static String getUserCountry(Context context) {
-        try {
-            final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            final String simCountry = tm.getSimCountryIso();
-            if (simCountry != null && simCountry.length() == 2) { // SIM country code is available
-                return simCountry.toLowerCase(Locale.US);
-            } else if (tm.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA) { // device is not 3G (would be unreliable)
-                String networkCountry = tm.getNetworkCountryIso();
-                if (networkCountry != null && networkCountry.length() == 2) { // network country code is available
-                    return networkCountry.toLowerCase(Locale.US);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

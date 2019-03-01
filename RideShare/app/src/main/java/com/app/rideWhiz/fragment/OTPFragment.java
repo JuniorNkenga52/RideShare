@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,8 +26,6 @@ import com.app.rideWhiz.utils.MessageUtils;
 import com.app.rideWhiz.utils.PrefUtils;
 import com.app.rideWhiz.view.CustomProgressDialog;
 import com.app.rideWhiz.widget.PinEntryEditText;
-import com.stfalcon.smsverifycatcher.OnSmsCatchListener;
-import com.stfalcon.smsverifycatcher.SmsVerifyCatcher;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,10 +44,6 @@ public class OTPFragment extends Fragment {
 
     private PinEntryEditText txtPin;
     private TextView txtResendOTP;
-
-    //CustomProgressDialog mProgressDialog;
-    private SmsVerifyCatcher smsVerifyCatcher;
-    //String token;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -107,47 +100,17 @@ public class OTPFragment extends Fragment {
                         MessageUtils.showNoInternetAvailable(getActivity());
                     }
                 }
-                //SignUpActivity.mViewPager.setCurrentItem(2);
 
             }
         });
 
-        smsVerifyCatcher = new SmsVerifyCatcher(getActivity(), new OnSmsCatchListener<String>() {
 
-            @Override
-            public void onSmsCatch(String message) {
-                if (message.contains("RideWhiz")) {
-
-                    final String code = AppUtils.parseOTPFromSms(message);
-
-                    txtPin.setText(code);
-
-                    if (AppUtils.isInternetAvailable(getActivity()))
-                        new AsyncOTP(code).execute();
-                }
-            }
-        });
-
-        smsVerifyCatcher.onStart();
-
-       /* mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_SUCCESS)) {
-                    token = intent.getStringExtra("token");
-                    Log.d("token", token);
-                } else if (intent.getAction().equals(GCMRegistrationIntentService.REGISTRATION_ERROR)) {
-                } else {
-                }
-            }
-        };*/
         return rootView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        smsVerifyCatcher.onStart();
     }
 
     @Override
@@ -159,7 +122,6 @@ public class OTPFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        smsVerifyCatcher.onStop();
     }
 
     public static void updateTest() {
@@ -181,9 +143,6 @@ public class OTPFragment extends Fragment {
             mProgressDialog.show();
 
             this.OTP = OTP;
-            /*if(token.equals("")){
-                PrefUtils.getString("tokenID");
-            }*/
         }
 
         @Override
@@ -195,7 +154,6 @@ public class OTPFragment extends Fragment {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                //return RideShareApi.verifyOTP(OTP, SignUpActivity.mUserId, SignUpActivity.token);
                 return RideShareApi.verifyOTP(OTP, SignUpActivity.mUserId, PrefUtils.getString("TokenID"), getContext());
             } catch (Exception e) {
                 return null;
@@ -216,7 +174,6 @@ public class OTPFragment extends Fragment {
                         SignUpActivity.mViewPager.setCurrentItem(2);
 
                     } else {
-                        smsVerifyCatcher.onStop();
                         PrefUtils.putString("loginwith", "normal");
                         PrefUtils.putBoolean("islogin", true);
                         JSONArray jArrayResult = new JSONArray(jsonObject.getString("result"));
@@ -263,41 +220,13 @@ public class OTPFragment extends Fragment {
                             Intent i = new Intent(context, MyGroupSelectionActivity.class);
                             startActivity(i);
                             getActivity().finish();
-                            /*Intent i = new Intent(getActivity(), RideTypeActivity.class);
-                            startActivity(i);
-                            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                            getActivity().finish();*/
                         } else {
-                            /*Intent i = new Intent(getActivity(), GroupSelectionFragment.class);
-                            startActivity(i);
-                            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                            getActivity().finish();*/
                             PrefUtils.putString("isBlank", "true");
                             Intent i = new Intent(getActivity(), HomeNewActivity.class);
                             startActivity(i);
                             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             getActivity().finish();
                         }
-
-
-                        /*if (PrefUtils.getBoolean("firstTime")) {
-                            Intent i = new Intent(getActivity(), RideTypeActivity.class);
-                            startActivity(i);
-                            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                            getActivity().finish();
-                        } else {
-                            Intent i = new Intent(getActivity(), GroupSelectionFragment.class);
-                            startActivity(i);
-                            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                            getActivity().finish();
-
-                        }*/
-                        /*Intent i = new Intent(getActivity(), GroupSelectionFragment.class);
-                        startActivity(i);
-                        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                        getActivity().finish();
-                        PrefUtils.putBoolean("firstTime", true);*/
-
                     }
                 } else {
                     //MessageUtils.showPleaseTryAgain(context);
@@ -334,12 +263,5 @@ public class OTPFragment extends Fragment {
                 mProgressDialog.cancel();
             }
         });
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        smsVerifyCatcher.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
