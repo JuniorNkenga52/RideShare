@@ -10,9 +10,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +22,7 @@ import com.app.rideWhiz.R;
 import com.app.rideWhiz.api.ApiServiceModule;
 import com.app.rideWhiz.api.RestApiInterface;
 import com.app.rideWhiz.api.response.AcceptRequest;
+import com.app.rideWhiz.model.Rider;
 import com.app.rideWhiz.utils.MessageUtils;
 import com.app.rideWhiz.view.CustomProgressDialog;
 import com.bumptech.glide.Glide;
@@ -54,8 +55,8 @@ public class NotificationActivity extends AppCompatActivity {
     private OTPTimer timer;
     PulsatorLayout pulsator;
 
-    private String mStartingAddress;
-    private String mEndingAddress;
+    private String mStartingAddress = "";
+    private String mEndingAddress = "";
 
     private TextView mStartingAddressTv;
     private TextView mEndingAddressTv;
@@ -72,13 +73,16 @@ public class NotificationActivity extends AppCompatActivity {
 
     CircularImageView mProfilePicIv;
     Context context;
+    Rider rider;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
         mProgressDialog = new CustomProgressDialog(this);
-        context=this;
+        context = this;
         try {
+            //rider = (Rider) getIntent().getExtras().getSerializable("RiderData");
             jobjRide = new JSONObject(getIntent().getExtras().getString("data"));
             Log.d("erroe", "" + jobjRide);
 
@@ -88,6 +92,14 @@ public class NotificationActivity extends AppCompatActivity {
             mEndingAddress = jobjRide.getString("ending_address");
             Email = jobjRide.getString("u_email");
             profilePic = jobjRide.getString("thumb_image");
+            /*if (rider != null) {
+                mRideId = rider.getnUserId();
+                mFirstName = rider.getmFirstName();
+                //mStartingAddress=AppUtils.getAddress(context,Double.parseDouble(rider.getmLatitude()),Double.parseDouble(rider.getmLongitude()));
+                Email = rider.getmEmail();
+                profilePic = rider.getThumb_image();
+            }*/
+
 
         } catch (Exception e) {
             Log.d("erroe", e.toString());
@@ -126,6 +138,7 @@ public class NotificationActivity extends AppCompatActivity {
                 //Picasso.with(this).load(profilePic).into(mProfilePicIv);
                 Glide.with(this).load(profilePic)
                         .error(R.drawable.user_icon)
+                        .dontAnimate()
                         .into(mProfilePicIv);
             }
         } catch (Exception e) {
@@ -141,7 +154,7 @@ public class NotificationActivity extends AppCompatActivity {
                     BG.stop();
                     vibration.cancel();
                 }
-                acceptOrRejectRequest(mRideId, "1",context);
+                acceptOrRejectRequest(mRideId, "1", context);
 
             }
         });
@@ -152,7 +165,7 @@ public class NotificationActivity extends AppCompatActivity {
                     BG.stop();
                     vibration.cancel();
                 }
-                acceptOrRejectRequest(mRideId, "0",context);
+                acceptOrRejectRequest(mRideId, "0", context);
             }
         });
 
@@ -174,13 +187,12 @@ public class NotificationActivity extends AppCompatActivity {
 
         startTimer();
         playSound();
-
     }
 
 
-    public void acceptOrRejectRequest(String mRideId, String acceptOrreject,Context context) {
+    public void acceptOrRejectRequest(String mRideId, String acceptOrreject, Context context) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class,context).acceptRequest(mRideId, acceptOrreject).enqueue(new Callback<AcceptRequest>() {
+        ApiServiceModule.createService(RestApiInterface.class, context).acceptRequest(mRideId, acceptOrreject).enqueue(new Callback<AcceptRequest>() {
             @Override
             public void onResponse(Call<AcceptRequest> call, Response<AcceptRequest> response) {
 

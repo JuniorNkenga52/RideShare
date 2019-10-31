@@ -1,0 +1,41 @@
+package com.app.rideWhiz.api.response;
+
+import com.app.rideWhiz.model.Rider;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+
+public class UpdateDestinationAddress {
+    @SerializedName("status")
+    private String mStatus;
+
+    @SerializedName("message")
+    private String mMessage;
+
+    @SerializedName("result")
+    private ArrayList<String> mlistResult;
+
+    public String getmStatus() {
+        return mStatus;
+    }
+
+    public void setmStatus(String mStatus) {
+        this.mStatus = mStatus;
+    }
+
+    public String getmMessage() {
+        return mMessage;
+    }
+
+    public void setmMessage(String mMessage) {
+        this.mMessage = mMessage;
+    }
+
+    public ArrayList<String> getMlistResult() {
+        return mlistResult;
+    }
+
+    public void setMlistResult(ArrayList<String> mlistResult) {
+        this.mlistResult = mlistResult;
+    }
+}

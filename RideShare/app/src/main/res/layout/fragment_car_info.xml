@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imgBack"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:padding="@dimen/_8sdp"
+        android:src="@drawable/ic_back" />
+
+    <LinearLayout
+        android:id="@+id/llTop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/txtNext"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+
+        <com.app.rideWhiz.widget.TextViewBold
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_100sdp"
+            android:gravity="center"
+            android:text="@string/add_car_info"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sdp" />
+
+        <com.app.rideWhiz.widget.TextViewRegular
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:gravity="center"
+            android:paddingLeft="@dimen/_15sdp"
+            android:paddingRight="@dimen/_15sdp"
+            android:text="@string/add_seats"
+            android:textColor="@color/whiteOff"
+            android:textSize="@dimen/_12sdp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_15sdp"
+            android:orientation="vertical">
+
+
+            <com.app.rideWhiz.widget.EditTextRegular
+                android:id="@+id/edt_car_model"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="#00000000"
+                android:hint="@string/car_model"
+                android:inputType="textEmailAddress"
+                android:padding="@dimen/_8sdp"
+                android:singleLine="true"
+                android:textColor="#FFF"
+                android:textColorHint="@color/gray"
+                android:textSize="@dimen/_14sdp" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:orientation="vertical">
+
+
+            <com.app.rideWhiz.widget.EditTextRegular
+                android:id="@+id/edt_car_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="#00000000"
+                android:hint="@string/car_type"
+                android:inputType="textEmailAddress"
+                android:padding="@dimen/_8sdp"
+                android:singleLine="true"
+                android:textColor="#FFF"
+                android:textColorHint="@color/gray"
+                android:textSize="@dimen/_14sdp" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_15sdp"
+            android:gravity="center">
+
+
+            <com.app.rideWhiz.widget.TextViewRegular
+                android:id="@+id/max_Seats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/max_seats"
+                android:textColor="@color/whiteOff" />
+
+            <com.hariofspades.incdeclibrary.IncDecImageButton
+                android:id="@+id/number_picker"
+                android:layout_width="@dimen/_150sdp"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/max_Seats"
+                app:leftButtonColorTintB="@color/colorPrimaryDark"
+                app:leftDrawableB="@drawable/ic_remove_black_24dp"
+                app:leftDrawableTintB="@color/white"
+                app:rightButtonColorTinitB="@color/colorPrimary"
+                app:rightDrawableB="@drawable/ic_add_white_24dp"
+                app:rightDrawableTintB="@color/white"
+                app:textColorB="@color/white"
+                app:textSizeB="24" />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+    <com.app.rideWhiz.widget.TextViewSemiBold
+        android:id="@+id/txt_Next"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btn_login"
+        android:gravity="center"
+        android:lineSpacingExtra="1.2dp"
+        android:text="@string/txt_next"
+        android:textColor="@color/blacltext"
+        android:textSize="@dimen/_16sdp" />
+</RelativeLayout>

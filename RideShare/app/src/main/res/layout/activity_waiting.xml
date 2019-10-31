@@ -69,7 +69,6 @@
             android:layout_centerInParent="true"
             app:pulse_color="@color/colorAccent"
             app:pulse_count="5"
-            app:pulse_duration="7000"
             app:pulse_interpolator="Linear"
             app:pulse_repeat="0"
             app:pulse_startFromScratch="true">
@@ -81,7 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            custom:donut_progress="45" />
+            custom:donut_progress="60" />
     </RelativeLayout>
 
     <com.app.rideWhiz.widget.TextViewRegular

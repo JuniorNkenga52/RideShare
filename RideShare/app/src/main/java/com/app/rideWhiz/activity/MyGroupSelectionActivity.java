@@ -3,12 +3,14 @@ package com.app.rideWhiz.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -27,6 +29,7 @@ import com.app.rideWhiz.model.GroupList;
 import com.app.rideWhiz.model.InProgressRide;
 import com.app.rideWhiz.service.LocationProvider;
 import com.app.rideWhiz.utils.AppUtils;
+import com.app.rideWhiz.utils.MessageUtils;
 import com.app.rideWhiz.utils.PrefUtils;
 import com.app.rideWhiz.view.CustomProgressDialog;
 import com.squareup.picasso.Picasso;
@@ -34,6 +37,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -49,9 +53,12 @@ public class MyGroupSelectionActivity extends AppCompatActivity implements Locat
     CustomProgressDialog mProgressDialog;
     TextView txtskip;
     SwipeRefreshLayout swipeRefreshRequests;
-    String InprogressRide;
+    String InprogressRide = "";
 
     LocationProvider mLocationProvider;
+    InProgressRide inProgressRideModel;
+    String rideUserID;
+    String Is_driver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,18 +103,25 @@ public class MyGroupSelectionActivity extends AppCompatActivity implements Locat
         txtskip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(context, RideTypeActivity.class);
-                if (getIntent().hasExtra("inprogress")) {
-                    InprogressRide = getIntent().getExtras().getString("inprogress");
-                    i.putExtra("inprogress", "busy");
-                    i.putExtra("rideprogress", (InProgressRide) getIntent().getExtras().getSerializable("rideprogress"));
-                    i.putExtra("rideUserID", PrefUtils.getUserInfo().getmUserId());
-                    i.putExtra("Is_driver",  getIntent().getExtras().getString("Is_driver"));
+                RideShareApp.mRideTypeTabPos = 0;
+                if(mSearchListGroup.size()>0){
+                    PrefUtils.putString("SelectedGroup",mSearchListGroup.get(0).getGroup_name());
+                    PrefUtils.putString("SelectedGroupID",mSearchListGroup.get(0).getId());
+                    Intent i = new Intent(context, RideTypeActivity.class);
+                    if (!InprogressRide.equals("")) {
+                        i.putExtra("inprogress", "busy");
+                        i.putExtra("rideprogress", inProgressRideModel);
+                        i.putExtra("rideUserID", rideUserID);
+                        i.putExtra("Is_driver", Is_driver);
+                    }
+
+                    startActivity(i);
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    finish();
+                }else {
+                    MessageUtils.showFailureMessage(context,"Please Select at least one Group");
                 }
 
-                startActivity(i);
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                finish();
             }
         });
 
@@ -122,6 +136,13 @@ public class MyGroupSelectionActivity extends AppCompatActivity implements Locat
             }
         });
         swipeRefreshRequests.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+
+        if (getIntent().hasExtra("inprogress")) {
+            InprogressRide = getIntent().getExtras().getString("inprogress");
+            inProgressRideModel = (InProgressRide) getIntent().getExtras().getSerializable("rideprogress");
+            rideUserID = getIntent().getExtras().getString("rideUserID");
+            Is_driver = getIntent().getExtras().getString("Is_driver");
+        }
     }
 
     public class AsyncMyGroup extends AsyncTask<Object, Integer, Object> {
@@ -144,7 +165,7 @@ public class MyGroupSelectionActivity extends AppCompatActivity implements Locat
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.mygroups(PrefUtils.getUserInfo().getmUserId(),context);
+                return RideShareApi.mygroups(PrefUtils.getUserInfo().getmUserId(), context);
             } catch (Exception e) {
                 return null;
             }
@@ -271,7 +292,7 @@ public class MyGroupSelectionActivity extends AppCompatActivity implements Locat
             holder.txtGroupName.setText(bean.getGroup_name());
             holder.txtGroupDescription.setText(bean.getGroup_description());
 
-            Picasso.with(context).load(bean.getCategory_image()).error(R.drawable.user_icon).into(holder.imgGroup);
+            Picasso.get().load(bean.getCategory_image()).error(R.drawable.user_icon).into(holder.imgGroup);
 
             /*0 = None (Join)
             1 = Requested
@@ -345,7 +366,7 @@ public class MyGroupSelectionActivity extends AppCompatActivity implements Locat
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.getUpdateUserGroup(PrefUtils.getUserInfo().getmUserId(), mSearchListGroup.get(poss).getId(),context);
+                return RideShareApi.getUpdateUserGroup(PrefUtils.getUserInfo().getmUserId(), mSearchListGroup.get(poss).getId(), context);
             } catch (Exception e) {
                 return null;
             }
@@ -359,10 +380,25 @@ public class MyGroupSelectionActivity extends AppCompatActivity implements Locat
                 JSONObject jsonObject = new JSONObject(result.toString());
 
                 if (jsonObject.getString("status").equalsIgnoreCase("success")) {
-                    Intent i = new Intent(context, RideTypeActivity.class);
-                    startActivity(i);
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();
+
+                    RideShareApp.mRideTypeTabPos = 0;
+                    if(mSearchListGroup.size()>0){
+                        PrefUtils.putString("SelectedGroup",mSearchListGroup.get(poss).getGroup_name());
+                        PrefUtils.putString("SelectedGroupID",mSearchListGroup.get(poss).getId());
+                        Intent i = new Intent(context, RideTypeActivity.class);
+                        if (!InprogressRide.equals("")) {
+                            i.putExtra("inprogress", "busy");
+                            i.putExtra("rideprogress", inProgressRideModel);
+                            i.putExtra("rideUserID", rideUserID);
+                            i.putExtra("Is_driver", Is_driver);
+                        }
+
+                        startActivity(i);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        finish();
+                    }else {
+                        MessageUtils.showFailureMessage(context,"Please Select at least one Group");
+                    }
                     groupAdapter.notifyDataSetChanged();
 
                 }

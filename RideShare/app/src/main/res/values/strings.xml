@@ -37,7 +37,7 @@
 
     <string name="signup">Sign Up</string>
 
-    <string name="authentication_sent">An authentication code will sent your number</string>
+    <string name="authentication_sent">An authentication code will sent your mobile</string>
     <string name="title_activity_home">HomeActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -68,16 +68,13 @@
     <string name="btn_cancle">Cancel</string>
     <string name="rider_ratings">Ratings : </string>
     <string name="driver_details">Driver details</string>
+    <string name="user_details">User details</string>
     <string name="btn_submit">Submit</string>
     <string name="btn_cancel">Cancel</string>
     <string name="txt_user_name">User Name</string>
     <string name="txt_ph_no">Phone Number</string>
 
     <string name="txt_next">Next</string>
-
-    <!--Policy Text-->
-    <!--<string name="privacy_policy">privacy policy</string> -->
-    <string name="privacy_url">https://cpcericola.wixsite.com/ridewhiz/privacy-policy</string>
 
     <!--Rider Privileges-->
     <string name="vehicle_privileges">Driver Privileges</string>
@@ -87,7 +84,7 @@
 
     <!--Forgot Password-->
     <string name="forgot_password">Forgot Password ?</string>
-    <string name="forgot_password_text">We need your registered EmailId to send \n you password reset instructions.</string>
+    <string name="forgot_password_text">We need your registered EmailId to sent \n you password reset instructions.</string>
     <string name="forgot_reset_password">Reset Password</string>
     <string name="forgot_emailid">Email</string>
     <string name="forgot_back">Back</string>
@@ -95,11 +92,11 @@
 
     <string name="whats_your_mobile_number">What is your mobile number?</string>
     <string name="txt_we_text_you_code_to_verify_this_number">We\'ll text you a code to verify this number</string>
-    <string name="txt_i_agree_to">I agree to RideShare\'s</string>
+    <string name="txt_i_agree_to">I agree to RideWhiz\'s</string>
     <string name="term_of_service">Terms of Service</string>
 
     <string name="whats_the_verification_code">What is the verification code?</string>
-    <string name="txt_enter_the_code">Enter the code sent to </string>
+    <string name="txt_enter_the_code">Enter the code send to </string>
     <string name="resend_code">Resend Code</string>
 
     <string name="whats_your_name">What is your name?</string>
@@ -113,9 +110,15 @@
     <string name="we_use_this_alert">We use this to alert you to carpool matches and other ride notification.</string>
     <string name="email_address">Email Address</string>
 
+    <string name="add_car_info">Add Car Info</string>
+    <string name="add_seats">This will help the ride find best car near by.</string>
+    <string name="max_seats">Max Seats</string>
+    <string name="car_model">Enter Car Model</string>
+    <string name="car_type">Enter Car Type</string>
+
     <string name="add_photo">Add Photo</string>
     <string name="add_profile_photo">Add a profile photo?</string>
-    <string name="a_clear_photo">A clear photo of your smiling face helps build trust among RideShare users.</string>
+    <string name="a_clear_photo">A clear photo of your smiling face helps build trust among RideWhiz users.</string>
 
     <string name="first_name_new">First Name</string>
     <string name="last_name_new">Last Name</string>
@@ -129,7 +132,7 @@
     <string name="logout_message">Are you sure you want to logout?</string>
 
     <string name="clearChats">Clear Chat</string>
-    <string name="clearChats_msg">Are you sure you want to clear all of your chats?</string>
+    <string name="clearChats_msg">Are you sure you want to clear chats?</string>
     // INVITE DIALOG STRINGS
     <string name="invite_email">Invite by email</string>
     <string name="invite_sms">Invite by text message</string>
@@ -138,8 +141,8 @@
     <string name="invite_title">Share Invite Link</string>
 
     <!--Common Messages-->
-    <string name="txt_msg_no_internet_available">No Internet Available!</string>
-    <string name="txt_msg_please_try_again">Please Try Again!</string>
+    <string name="txt_msg_no_internet_available">No Internet Available!!</string>
+    <string name="txt_msg_please_try_again">Please Try Again!!</string>
     <string name="txt_no_email_client_installed">No email client configured in your phone.</string>
     <string name="txt_msg_warning">Please enter message to send</string>
 
@@ -177,19 +180,19 @@
     <string name="entercarmake">Please enter car make.</string>
     <string name="entercaryear">Please select car year.</string>
     <string name="entercarMonth">Please select car month.</string>
-    <string name="entercarlicenseplate">Please enter license plate number.</string>
-    <string name="entercarlicenseplate1">Please enter license plate number with letter &amp; numbers.</string>
+    <string name="entercarlicenseplate">Please enter licenseplate.</string>
+    <string name="entercarlicenseplate1">Please enter licenseplate with letter &amp; numbers</string>
     <string name="entercarbrand">Please select car brand.</string>
     <string name="entercartype">Please select car type.</string>
     <string name="entercarseatingcapacity">Please enter car seating capacity.</string>
     <string name="entermodelofthecar">Please enter model of the car.</string>
-    <string name="entercartransmissiontype">Please select transmission type.</string>
-    <string name="entercarcolor">Please select car color.</string>
-    <string name="privacy_policy">privacy policy</string>
-
+    <string name="entercartranssiontype">Please select transsion type.</string>
+    <string name="entercarcolor">Please select car numberplat color.</string>
+    <string name="select_max_person">Select Max Persons :</string>
+    <string name="accept_reject">Ride Request from </string>
 
     <!--Country Codes-->
-    <string-array name="CountryCodes" >
+    <string-array name="CountryCodes">
         <item>93,AF</item>
         <item>355,AL</item>
         <item>213,DZ</item>
@@ -397,4 +400,40 @@
         <item>260,ZM</item>
         <item>263,ZW</item>
     </string-array>
+    <string-array name="radius_list">
+        <item>Selection</item>
+        <item>Driver one - 0.2 miles 3 mins</item>
+        <item>Driver Two - 0.4 miles 5 mins</item>
+        <item>Driver Three - 0.7 miles 10 mins</item>
+    </string-array>
+
+    <string-array name="radius_miles">
+        <item>10.0</item>
+        <item>0.2</item>
+        <item>0.4</item>
+        <item>0.7</item>
+    </string-array>
+
+    <string-array name="no_of_seats">
+        <item>Number of passengers</item>
+        <item>One</item>
+        <item>Two</item>
+        <item>Three</item>
+    </string-array>
+
+    <string-array name="max_seats">
+        <item>Number of passengers</item>
+        <item>One</item>
+        <item>Two</item>
+        <item>Three</item>
+        <item>Four</item>
+    </string-array>
+
+    <string name="cancel">cancel</string>
+    <string name="error_max_option_carfeatures">Please select option maximum 5.</string>
+    <string name="start_ride_request">Start Ride for </string>
+    <string name="time">Ex Time</string>
+    <string name="distance">Ex Miles</string>
+    <string name="name">Name</string>
+    <string name="ok">Okay</string>
 </resources>

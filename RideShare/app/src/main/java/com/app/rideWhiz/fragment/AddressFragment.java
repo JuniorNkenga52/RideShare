@@ -3,63 +3,79 @@ package com.app.rideWhiz.fragment;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.rideWhiz.R;
 import com.app.rideWhiz.activity.SignUpActivity;
-import com.app.rideWhiz.model.SearchPlace;
 import com.app.rideWhiz.utils.MessageUtils;
 import com.app.rideWhiz.utils.TypefaceUtils;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.data.DataBufferUtils;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.AutocompletePredictionBuffer;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceResponse;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public class AddressFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class AddressFragment extends Fragment {
 
-    Typeface mRobotoRegular;
+    private static PlacesAutoCompleteAdapter mAdapter;
+    private AutoCompleteTextView pickUpText;
+    private RecyclerView recyclerView;
 
-    private ImageView imgBack;
-    private TextView txtNext;
+    private TextWatcher filterTextWatcher = new TextWatcher() {
+        public void afterTextChanged(Editable s) {
+            if (!s.toString().equals("")) {
+                mAdapter.getFilter().filter(s.toString());
+                if (recyclerView.getVisibility() == View.GONE) {
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
+            } else {
+                if (recyclerView.getVisibility() == View.VISIBLE) {
+                    recyclerView.setVisibility(View.GONE);
+                }
+            }
+        }
 
-    public TextView txtAddress;
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
-    AutoCompleteTextView pickUpText;
-
-    static PlaceAutocompleteAdapter mAdapter;
-
-    CharacterStyle STYLE_BOLD = new StyleSpan(Typeface.BOLD);
-
-    private GoogleApiClient googleApiClient;
-    public static final LatLngBounds BOUNDS = new LatLngBounds(
-            new LatLng(-0, 0), // southwest
-            new LatLng(0, 0)); // northeast
-    ArrayList<SearchPlace> mlist;
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,9 +84,10 @@ public class AddressFragment extends Fragment implements GoogleApiClient.Connect
                 false);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        mRobotoRegular = TypefaceUtils.getOpenSansRegular(getActivity());
+        Places.initialize(getActivity(), getResources().getString(R.string.google_places_server_key));
+        Typeface mRobotoRegular = TypefaceUtils.getOpenSansRegular(getActivity());
 
-        imgBack = (ImageView) rootView.findViewById(R.id.imgBack);
+        ImageView imgBack = rootView.findViewById(R.id.imgBack);
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,10 +95,10 @@ public class AddressFragment extends Fragment implements GoogleApiClient.Connect
             }
         });
 
-        txtAddress = (TextView) rootView.findViewById(R.id.txtAddress);
+        TextView txtAddress = rootView.findViewById(R.id.txtAddress);
         txtAddress.setText(SignUpActivity.HomeAddress);
 
-        txtNext = (TextView) rootView.findViewById(R.id.txtNext);
+        TextView txtNext = rootView.findViewById(R.id.txtNext);
         txtNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,129 +113,65 @@ public class AddressFragment extends Fragment implements GoogleApiClient.Connect
             }
         });
 
-        mlist = new ArrayList<>();
-
-        pickUpText = (AutoCompleteTextView) rootView.findViewById(R.id.autoCompleteTextView);
+        pickUpText = rootView.findViewById(R.id.autoCompleteTextView);
         pickUpText.setTypeface(mRobotoRegular);
+        pickUpText.setDropDownVerticalOffset(100);
 
-        if (googleApiClient == null) {
-            googleApiClient = new GoogleApiClient.Builder(getActivity())
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .addApi(Places.GEO_DATA_API)
-                    .build();
-        }
+        recyclerView = rootView.findViewById(R.id.places_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        pickUpText.addTextChangedListener(filterTextWatcher);
 
-        mAdapter = new PlaceAutocompleteAdapter(getActivity(), googleApiClient, BOUNDS, null);
-        pickUpText.setAdapter(mAdapter);
+
+        mAdapter = new PlacesAutoCompleteAdapter(getActivity());
+        mAdapter.setClickListener(new PlacesAutoCompleteAdapter.ClickListener() {
+            @Override
+            public void click(Place place) {
+                pickUpText.setText(place.getName()+", "+place.getAddress());
+                recyclerView.setVisibility(View.GONE);
+            }
+        });
+        recyclerView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
 
         return rootView;
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
 
-    }
+    public static class PlacesAutoCompleteAdapter extends RecyclerView.Adapter<PlacesAutoCompleteAdapter.PredictionHolder> implements Filterable {
+        private static final String TAG = "PlacesAutoAdapter";
+        private final PlacesClient placesClient;
+        private ArrayList<PlaceAutocomplete> mResultList = new ArrayList<>();
+        private Context mContext;
+        private CharacterStyle STYLE_BOLD;
+        private CharacterStyle STYLE_NORMAL;
+        private ClickListener clickListener;
 
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    public void onStart() {
-        googleApiClient.connect();
-        super.onStart();
-    }
-
-
-    public void onStop() {
-        googleApiClient.disconnect();
-        super.onStop();
-    }
-
-    public class PlaceAutocompleteAdapter extends ArrayAdapter<AutocompletePrediction> implements Filterable {
-
-        Context context;
-        private ArrayList<AutocompletePrediction> mResultList;
-        private GoogleApiClient mGoogleApiClients;
-        private LatLngBounds mBounds;
-        private AutocompleteFilter mPlaceFilter;
-
-        public PlaceAutocompleteAdapter(Context context, GoogleApiClient googleApiClient,
-                                        LatLngBounds bounds, AutocompleteFilter filter) {
-            super(context, android.R.layout.simple_expandable_list_item_2, android.R.id.text1);
-            this.mGoogleApiClients = googleApiClient;
-            this.context = context;
-            mBounds = bounds;
-
-            mPlaceFilter = filter;
-
+        PlacesAutoCompleteAdapter(Context context) {
+            mContext = context;
+            STYLE_BOLD = new StyleSpan(Typeface.BOLD);
+            STYLE_NORMAL = new StyleSpan(Typeface.NORMAL);
+            placesClient = Places.createClient(context);
         }
 
-        public void setBounds(LatLngBounds bounds) {
-            mBounds = bounds;
+        void setClickListener(ClickListener clickListener) {
+            this.clickListener = clickListener;
         }
 
-        @Override
-        public int getCount() {
-            return mResultList.size();
-        }
-
-        @Override
-        public AutocompletePrediction getItem(int position) {
-            return mResultList.get(position);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.item_searchlocation_signup, parent, false);
-
-            final AutocompletePrediction item = getItem(position);
-
-
-            //TextView lblIcon = (TextView) view.findViewById(R.id.lbl_item_searchlocation);
-            TextView lblName = (TextView) view.findViewById(R.id.lbl_item_searchlocation_name);
-
-            //lblIcon.setText("\uf041");
-            lblName.setText("" + item.getPrimaryText(STYLE_BOLD) + ", " + item.getSecondaryText(STYLE_BOLD));
-            //lblIcon.setTypeface(Config.fontFamily);
-
-            /*lblName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-
-                        //pickUpText.setText("" + item.getPrimaryText(STYLE_BOLD) + ", " + item.getSecondaryText(STYLE_BOLD));
-                        //pickUpText.setSelection(pickUpText.getText().length());
-
-                        *//*PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, item.getPlaceId());
-                        placeResult.setResultCallback(mUpdatePlaceDetailsCallback);*//*
-
-                    } catch (Exception e) {
-                    }
-                }
-            });*/
-
-            return view;
-
-        }
-
+        /**
+         * Returns the filter for the current set of autocomplete results.
+         */
         @Override
         public Filter getFilter() {
             return new Filter() {
                 @Override
                 protected FilterResults performFiltering(CharSequence constraint) {
                     FilterResults results = new FilterResults();
+                    // Skip the autocomplete query if no constraints are given.
                     if (constraint != null) {
-                        mResultList = getAutocomplete(constraint);
-                        if (mResultList != null && mResultList.size()>0) {
+                        // Query the autocomplete API for the (constraint) search string.
+                        mResultList = getPredictions(constraint);
+                        if (mResultList != null) {
+                            // The API successfully returned results.
                             results.values = mResultList;
                             results.count = mResultList.size();
                         }
@@ -229,54 +182,137 @@ public class AddressFragment extends Fragment implements GoogleApiClient.Connect
                 @Override
                 protected void publishResults(CharSequence constraint, FilterResults results) {
                     if (results != null && results.count > 0) {
-
-                        mResultList = (ArrayList<AutocompletePrediction>) results.values;
+                        // The API returned at least one result, update the data.
                         notifyDataSetChanged();
-
                     } else {
+                        Toast.makeText(mContext, "No Results Found", Toast.LENGTH_SHORT).show();
                         // The API did not return any results, invalidate the data set.
-                        notifyDataSetInvalidated();
-                    }
-
-                }
-
-                @Override
-                public CharSequence convertResultToString(Object resultValue) {
-
-                    if (resultValue instanceof AutocompletePrediction) {
-                        return ((AutocompletePrediction) resultValue).getFullText(null);
-                    } else {
-                        return super.convertResultToString(resultValue);
+                        //notifyDataSetInvalidated();
                     }
                 }
             };
         }
 
+        private ArrayList<PlaceAutocomplete> getPredictions(CharSequence constraint) {
 
-        private ArrayList<AutocompletePrediction> getAutocomplete(CharSequence constraint) {
-            if (googleApiClient.isConnected()) {
+            final ArrayList<PlaceAutocomplete> resultList = new ArrayList<>();
 
-                PendingResult<AutocompletePredictionBuffer> results =
-                        Places.GeoDataApi
-                                .getAutocompletePredictions(googleApiClient, constraint.toString(),
-                                        mBounds, mPlaceFilter);
+            // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
+            // and once again when the user makes a selection (for example when calling fetchPlace()).
+            AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 
-                AutocompletePredictionBuffer autocompletePredictions = results
-                        .await(60, TimeUnit.SECONDS);
 
-                final Status status = autocompletePredictions.getStatus();
-                if (!status.isSuccess()) {
-                    MessageUtils.showFailureMessage(getContext(), "Error contacting API: " + status.toString());
+            // Use the builder to create a FindAutocompletePredictionsRequest.
+            FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                    .setSessionToken(token)
+                    .setQuery(constraint.toString())
+                    .build();
 
-                    autocompletePredictions.release();
-                    return null;
-                }
+            Task<FindAutocompletePredictionsResponse> autocompletePredictions = placesClient.findAutocompletePredictions(request);
 
-                return DataBufferUtils.freezeAndClose(autocompletePredictions);
+            // This method should have been called off the main UI thread. Block and wait for at most
+            // 60s for a result from the API.
+            try {
+                Tasks.await(autocompletePredictions, 60, TimeUnit.SECONDS);
+            } catch (ExecutionException | InterruptedException | TimeoutException e) {
+                e.printStackTrace();
             }
-            return null;
+
+            if (autocompletePredictions.isSuccessful()) {
+                FindAutocompletePredictionsResponse findAutocompletePredictionsResponse = autocompletePredictions.getResult();
+                if (findAutocompletePredictionsResponse != null)
+                    for (AutocompletePrediction prediction : findAutocompletePredictionsResponse.getAutocompletePredictions()) {
+                        Log.i(TAG, prediction.getPlaceId());
+                        resultList.add(new PlaceAutocomplete(prediction.getPlaceId(), prediction.getPrimaryText(STYLE_NORMAL).toString(), prediction.getFullText(STYLE_BOLD).toString()));
+                    }
+
+                return resultList;
+            } else {
+                return resultList;
+            }
+
         }
 
+        @NonNull
+        @Override
+        public PredictionHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View convertView = layoutInflater.inflate(R.layout.item_searchlocation_signup, viewGroup, false);
+            return new PredictionHolder(convertView);
+        }
 
+        @Override
+        public void onBindViewHolder(@NonNull PredictionHolder mPredictionHolder, final int i) {
+            mPredictionHolder.address.setText(mResultList.get(i).address);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mResultList.size();
+        }
+
+        public PlaceAutocomplete getItem(int position) {
+            return mResultList.get(position);
+        }
+
+        public interface ClickListener {
+            void click(Place place);
+        }
+
+        public class PredictionHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            private TextView address;
+
+            PredictionHolder(View itemView) {
+                super(itemView);
+                address = itemView.findViewById(R.id.lbl_item_searchlocation_name);
+                itemView.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View v) {
+                PlaceAutocomplete item = mResultList.get(getAdapterPosition());
+                if (v.getId() == R.id.address_search) {
+
+                    String placeId = String.valueOf(item.placeId);
+
+                    List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
+                    FetchPlaceRequest request = FetchPlaceRequest.builder(placeId, placeFields).build();
+                    placesClient.fetchPlace(request).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
+                        @Override
+                        public void onSuccess(FetchPlaceResponse response) {
+                            Place place = response.getPlace();
+                            clickListener.click(place);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            if (exception instanceof ApiException) {
+                                Toast.makeText(mContext, exception.getMessage() + "", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        /**
+         * Holder for Places Geo Data Autocomplete API results.
+         */
+        public class PlaceAutocomplete {
+
+            CharSequence placeId;
+            CharSequence address, area;
+
+            PlaceAutocomplete(CharSequence placeId, CharSequence area, CharSequence address) {
+                this.placeId = placeId;
+                this.area = area;
+                this.address = address;
+            }
+
+            @Override
+            public String toString() {
+                return area.toString();
+            }
+        }
     }
 }

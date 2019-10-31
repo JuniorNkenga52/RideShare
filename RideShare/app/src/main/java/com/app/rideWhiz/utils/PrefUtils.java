@@ -12,10 +12,10 @@ import java.util.ArrayList;
 
 public class PrefUtils {
 
-    private static final String PREFS_NAME = "RideShare";
+    private static final String PREFS_NAME = "RideWhiz";
     private static SharedPreferences SETTINGS = null;
     private static Editor EDITOR = null;
-
+    public static String PREF_BATTERY_LEVEL="PREF_BATTERY_LEVEL";
     public static final String PREF_USER_INFO = "PREF_USER_INFO";
 
     public static void initPreference(Context context) {

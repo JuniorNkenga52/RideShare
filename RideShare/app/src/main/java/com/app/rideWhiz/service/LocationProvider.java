@@ -9,8 +9,8 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.app.rideWhiz.activity.RideShareApp;
@@ -50,7 +50,7 @@ public class LocationProvider implements
 
     public LocationProvider(Context context, LocationCallback callback) {
 
-        mIntentService = new Intent(context,LocationService.class);
+        mIntentService = new Intent(context, LocationService.class);
         mPendingIntent = PendingIntent.getService(context, 1, mIntentService, 0);
 
         mGoogleApiClient = new GoogleApiClient.Builder(context)
@@ -66,7 +66,7 @@ public class LocationProvider implements
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(3 * 1000)    // 3 seconds, in milliseconds
-        .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
 
         mContext = context;
 
@@ -74,7 +74,7 @@ public class LocationProvider implements
     }
 
     public void connect(Activity activity) {
-        if (!mGoogleApiClient.isConnected()){
+        if (!mGoogleApiClient.isConnected()) {
             mGoogleApiClient.connect();
             locationChecker(mGoogleApiClient, activity);
         }
@@ -85,7 +85,6 @@ public class LocationProvider implements
             locationChecker(mGoogleApiClient, activity);
         }
     }*/
-
 
 
     public void disconnect() {
@@ -139,7 +138,7 @@ public class LocationProvider implements
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.w("==>UpdateLocation<==","N");
+        Log.w("==>UpdateLocation<==", "N");
         //mLocationCallback.handleNewLocation(location);
         RideShareApp.mLocation = location;
         Intent intentLocation = new Intent("update-location");
@@ -189,5 +188,6 @@ public class LocationProvider implements
 
         });
     }
+
 
 }

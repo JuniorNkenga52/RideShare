@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -38,7 +38,8 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_history);
 
-        context=this;
+        context = this;
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("History");
@@ -74,25 +75,34 @@ public class HistoryActivity extends AppCompatActivity {
         mNoHistoryTv.setVisibility(View.GONE);
 
         getHistory(mUserBean.getmUserId());
-
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
 
-        RideShareApp.mHomeTabPos = 4;
+        if(RideShareApp.mHomeTabPos!=0){
+            RideShareApp.mHomeTabPos = 4;
+            Intent i = new Intent(HistoryActivity.this, HomeNewActivity.class);
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }else {
+            RideShareApp.mRideTypeTabPos = 4;
 
-        Intent i = new Intent(HistoryActivity.this, HomeNewActivity.class);
-        startActivity(i);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finish();
+            Intent i = new Intent(HistoryActivity.this, RideTypeActivity.class);
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }
+
+
 
     }
 
     private void getHistory(final String mId) {
         mProgressDialog.show();
-        ApiServiceModule.createService(RestApiInterface.class,context).getHistory(mId).enqueue(new Callback<HistoryResponse>() {
+        ApiServiceModule.createService(RestApiInterface.class, context).getHistory(mId).enqueue(new Callback<HistoryResponse>() {
             @Override
             public void onResponse(Call<HistoryResponse> call, Response<HistoryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

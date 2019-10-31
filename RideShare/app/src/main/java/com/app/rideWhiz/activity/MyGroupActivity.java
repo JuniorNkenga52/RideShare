@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -155,11 +155,25 @@ public class MyGroupActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        RideShareApp.mHomeTabPos = 4;
+        if(RideShareApp.mHomeTabPos!=0){
+            RideShareApp.mHomeTabPos = 4;
+            Intent i = new Intent(MyGroupActivity.this, HomeNewActivity.class);
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }else {
+            RideShareApp.mRideTypeTabPos = 4;
+
+            Intent i = new Intent(MyGroupActivity.this, RideTypeActivity.class);
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }
+       /* RideShareApp.mHomeTabPos = 4;
         Intent i = new Intent(MyGroupActivity.this, HomeNewActivity.class);
         startActivity(i);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        activity.finish();
+        activity.finish();*/
         //finish();
 
     }
@@ -300,7 +314,7 @@ public class MyGroupActivity extends AppCompatActivity {
             holder.txtGroupName.setText(bean.getGroup_name());
             holder.txtGroupDescription.setText(bean.getGroup_description());
 
-            Picasso.with(MyGroupActivity.this).load(bean.getCategory_thumb_image()).error(R.drawable.user_icon).into(holder.imgGroup);
+            Picasso.get().load(bean.getCategory_thumb_image()).error(R.drawable.user_icon).into(holder.imgGroup);
 
             if (bean.getUser_id().equals(PrefUtils.getUserInfo().getmUserId())) {
                 holder.txtJoin.setVisibility(View.VISIBLE);

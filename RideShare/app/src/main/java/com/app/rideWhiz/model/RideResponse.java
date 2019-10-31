@@ -26,6 +26,8 @@ public class RideResponse implements Serializable
     private String ending_address;
     private String distance;
     private String ride_id;
+    private String priority;
+    private String request_share_id;
 
     public String getU_id() {
         return u_id;
@@ -193,5 +195,13 @@ public class RideResponse implements Serializable
 
     public void setRide_id(String ride_id) {
         this.ride_id = ride_id;
+    }
+
+    public String getRequest_share_id() {
+        return request_share_id;
+    }
+
+    public void setRequest_share_id(String request_share_id) {
+        this.request_share_id = request_share_id;
     }
 }

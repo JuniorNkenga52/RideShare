@@ -10,10 +10,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -79,7 +79,7 @@ public class ChatActivity extends AppCompatActivity {
     private String toJabberId = "";
     RideShareApp mApp;
     public static Activity activity;
-
+    public static String chat_sender_id="";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,8 +105,11 @@ public class ChatActivity extends AppCompatActivity {
         setSupportActionBar(tbChatHeader);
 
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
+        if (actionBar != null){
+            chat_sender_id=toRider.getnUserId();
             actionBar.setTitle("" + toRider.getmFirstName() + " " + toRider.getmLastName());
+        }
+
 
         tbChatHeader.setTitleTextColor(getResources().getColor(R.color.white));
         tbChatHeader.setNavigationOnClickListener(new View.OnClickListener() {
@@ -159,9 +162,6 @@ public class ChatActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
-
-        btn_chat_send = findViewById(R.id.btn_chat_send);
-        btn_chat_send.setOnClickListener(clickIt);
 
         btn_chat_send = findViewById(R.id.btn_chat_send);
         btn_chat_send.setOnClickListener(clickIt);

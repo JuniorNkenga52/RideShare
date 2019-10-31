@@ -5,8 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-public class RideSelect
-{
+public class RideSelect {
     @SerializedName("status")
     private String mStatus;
 
@@ -39,4 +38,5 @@ public class RideSelect
     public void setMlistUser(ArrayList<Rider> mlistUser) {
         this.mlistUser = mlistUser;
     }
+
 }

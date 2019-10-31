@@ -5,16 +5,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 
 import com.app.rideWhiz.R;
 import com.app.rideWhiz.fragment.AddressFragment;
+import com.app.rideWhiz.fragment.CarInfoFragment;
 import com.app.rideWhiz.fragment.EmailFragment;
 import com.app.rideWhiz.fragment.MobileNumberFragment;
 import com.app.rideWhiz.fragment.NameFragment;
@@ -45,6 +46,9 @@ public class SignUpActivity extends AppCompatActivity {
     public static String LastName = "";
     public static String HomeAddress = "";
     public static String EmailId = "";
+    public static String CarModel = "";
+    public static String CarType = "";
+    public static String CarSeats = "";
     public static String ProfilePhotoPath = "";
 
     private int PICK_CAMERA = 1;
@@ -147,6 +151,8 @@ public class SignUpActivity extends AppCompatActivity {
             } else if (position == 4) {
                 return new EmailFragment();
             } else if (position == 5) {
+                return new CarInfoFragment();
+            } else if (position == 6) {
                 return new ProfilePhotoFragment();
             } else {
                 PrefUtils.putString("FragVal", "true");
@@ -159,7 +165,7 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 2 total pages.
-            return 6;
+            return 7;
         }
     }
 

@@ -15,6 +15,13 @@ import com.app.rideWhiz.api.response.SendOTPResponse;
 import com.app.rideWhiz.api.response.SendResponse;
 import com.app.rideWhiz.api.response.SignupResponse;
 import com.app.rideWhiz.api.response.StartRideResponse;
+import com.app.rideWhiz.api.response.UpdateDestinationAddress;
+import com.app.rideWhiz.model.User;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -49,6 +56,10 @@ public interface RestApiInterface {
     Call<SignupResponse> getUserDetails(@Field("user_id") String user_id);
 
     @FormUrlEncoded
+    @POST("user/updateUserStatus")
+    Call<JsonObject> updateUserStatus(@Field("user_id[]") ArrayList<String> user_id_list, @Field("status") String status);
+
+    @FormUrlEncoded
     @POST("group/create")
     Call<GroupResponce> creategroup(@Field("group_name") String group_name, @Field("email") String email);
 
@@ -72,10 +83,13 @@ public interface RestApiInterface {
     @POST("auth/select_ride")
     Call<RideSelect> selectRide(@Field("u_id") String mId, @Field("u_ride_type") String mType, @Field("u_lat") String mLatitude, @Field("u_long") String mLongitude);
 
+    @FormUrlEncoded
+    @POST("user/updateDestinationAddress")
+    Call<UpdateDestinationAddress> updateDestinationAddress(@Field("user_id") String user_id, @Field("destination_address") String destination_address);
 
     @FormUrlEncoded
     @POST("user/getUserContacts")
-    Call<RideSelect> getUser(@Field("user_id") String mId, @Field("friend_list_type") String mType, @Field("u_lat") String mLatitude, @Field("u_long") String mLongitude, @Field("u_ride_type") String mRideType);
+    Call<RideSelect> getUser(@Field("user_id") String mId, @Field("friend_list_type") String mType, @Field("u_lat") String mLatitude, @Field("u_long") String mLongitude, @Field("u_ride_type") String mRideType, @Field("group_id") String mgroup_id);
 
     @FormUrlEncoded
     @POST("auth/facebook_register")
@@ -105,7 +119,8 @@ public interface RestApiInterface {
     Call<SendResponse> sendRequest(@Field("user_id") String mUserId, @Field("from_id") String mFromUserId,
                                    @Field("start_latitude") String startlatitude, @Field("start_longitude") String startLongitude,
                                    @Field("end_latitude") String endlatitude, @Field("end_longitude") String endlongitude,
-                                   @Field("u_ride_type") String mtype, @Field("start_address") String mStartAddress, @Field("end_address") String mEndAddress, @Field("group_id") String mGroup_id);
+                                   @Field("u_ride_type") String mtype, @Field("start_address") String mStartAddress,
+                                   @Field("end_address") String mEndAddress, @Field("group_id") String mGroup_id, @Field("ride_id") String mride_id, @Field("no_of_seats") String no_of_seats);
 
     @FormUrlEncoded
     @POST("user/acceptDeclineRequest")
@@ -114,8 +129,7 @@ public interface RestApiInterface {
 
     @FormUrlEncoded
     @POST("user/declineRequestNotification")
-    Call<AcceptRequest> declineRequestNotification(@Field("user_id") String user_id,@Field("ride_id") String mRideId, @Field("request_status") String mRequestStatus);
-
+    Call<AcceptRequest> declineRequestNotification(@Field("user_id") String user_id, @Field("ride_id") String mRideId, @Field("request_status") String mRequestStatus, @Field("is_driver") String is_driver);
 
 
     @FormUrlEncoded
@@ -128,12 +142,22 @@ public interface RestApiInterface {
 
     @Multipart
     @POST("user/updateProfile")
-    Call<SignupResponse> updateProfile(@Part("user_id") RequestBody mUserId, @Part("u_firstname") RequestBody Firstname, @Part("u_lastname") RequestBody lastName
-            , @Part("u_mobile") RequestBody mobilenumber, @Part MultipartBody.Part file, @Part("u_email") RequestBody mEmail, @Part("vehicle_model") RequestBody mVh_Model, @Part("vehicle_type") RequestBody mVh_Type, @Part("max_passengers") RequestBody mMax_Passengers, @Part("requested_as_driver") RequestBody mReq_driver, @Part("group_id") RequestBody mgroup_id);
+    Call<SignupResponse> updateProfile(
+            @Part("user_id") RequestBody mUserId,
+            @Part("u_firstname") RequestBody Firstname,
+            @Part("u_lastname") RequestBody lastName,
+            @Part("u_mobile") RequestBody mobilenumber,
+            @Part MultipartBody.Part file,
+            @Part("u_email") RequestBody mEmail,
+            @Part("vehicle_model") RequestBody mVh_Model,
+            @Part("vehicle_type") RequestBody mVh_Type,
+            @Part("max_passengers") RequestBody mMax_Passengers,
+            @Part("requested_as_driver") RequestBody mReq_driver,
+            @Part("group_id") RequestBody mgroup_id);
 
     @FormUrlEncoded
     @POST("user/startOrEndRide")
-    Call<StartRideResponse> mStartRide(@Field("ride_id") String mRideId, @Field("check_driver") String check_driver, @Field("ride_status") String mRideStatus, @Field("user_id") String mUserId, @Field("end_lati") String endlat, @Field("end_long") String endlong);
+    Call<StartRideResponse> mStartRide(@Field("ride_id") String mRideId, @Field("check_driver") String check_driver, @Field("ride_status") String mRideStatus, @Field("user_id") String mUserId, @Field("end_lati") String endlat, @Field("end_long") String endlong,@Field("u_ride_type") String u_ride_type);
 
     @FormUrlEncoded
     @POST("user/rideRate")
@@ -145,4 +169,28 @@ public interface RestApiInterface {
     /*
     ec2-13-58-7-10.us-east-2.compute.amazonaws.com/rideshare/api/user/manageCar
     * */
+
+    @FormUrlEncoded
+    @POST("user/updateUserLocation")
+    Call<User> updateUserLocation(@Field("user_id") String mUserId, @Field("u_lat") String mLatitude, @Field("u_long") String mLongitude);
+    //http://php.rlogical.com/rideshare/api/user/updateUserLocation
+
+    // Update User Details
+    @FormUrlEncoded
+    @POST("user/updateDriverDetails")
+    Call<User> updateDriverDetails(@Field("user_id") String mUserId, @Field("driverDetail[no_of_seats]") String no_of_seats);
+
+    // Get Ride ID
+    @FormUrlEncoded
+    @POST("user/getRideId")
+    Call<JsonObject> getRideId(@Field("to_id") String rider_id, @Field("from_id") String user_id);
+
+    // removeDriverFromList for Ghost Riders
+    @FormUrlEncoded
+    @POST("user/removeDriverFromList")
+    Call<JsonObject> removeDriverFromList(@Field("user_id") String user_id);
+
+    @FormUrlEncoded
+    @POST("user/updateFriendListType")
+    Call<JSONObject> updateFriendListType(@Field("user_id") String mId, @Field("friend_list_type") String mType);
 }

@@ -16,6 +16,8 @@ public class SendResponse
     @SerializedName("msg")
     ArrayList<RideResponse> mlist;
 
+    @SerializedName("message")
+    private String message;
 
     public ArrayList<RideResponse> getMlist() {
         return mlist;
@@ -39,5 +41,13 @@ public class SendResponse
 
     public void setmType(String mType) {
         this.mType = mType;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

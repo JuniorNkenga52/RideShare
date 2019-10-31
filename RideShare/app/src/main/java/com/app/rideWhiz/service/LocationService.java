@@ -19,9 +19,6 @@ public class LocationService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-
-
-
 		Log.w("UpdateLocation Service","N");
 			
 	}

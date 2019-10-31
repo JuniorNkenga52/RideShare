@@ -11,8 +11,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +23,7 @@ import com.app.rideWhiz.R;
 import com.app.rideWhiz.activity.HomeNewActivity;
 import com.app.rideWhiz.activity.SignUpActivity;
 import com.app.rideWhiz.api.RideShareApi;
+import com.app.rideWhiz.model.CarInfo;
 import com.app.rideWhiz.model.User;
 import com.app.rideWhiz.utils.MessageUtils;
 import com.app.rideWhiz.utils.PrefUtils;
@@ -94,7 +95,7 @@ public class ProfilePhotoFragment extends Fragment {
         imgProfilePhoto = (CircularImageView) rootView.findViewById(R.id.imgProfilePhoto);
 
         if (SignUpActivity.ProfilePhotoPath.length() != 0) {
-            Picasso.with(context).load("file://" + SignUpActivity.ProfilePhotoPath).resize(300, 300).centerCrop().into(imgProfilePhoto);
+            Picasso.get().load("file://" + SignUpActivity.ProfilePhotoPath).resize(300, 300).centerCrop().into(imgProfilePhoto);
         }
 
         imgProfilePhoto.setOnClickListener(new View.OnClickListener() {
@@ -144,7 +145,7 @@ public class ProfilePhotoFragment extends Fragment {
                 return RideShareApi.updateProfileNew(SignUpActivity.mUserId, firstname,
                         lastname, homeaddress,
                         PrefUtils.getString("UemailID"), SignUpActivity.ProfilePhotoPath,
-                        "", "", "","0");
+                        SignUpActivity.CarModel, SignUpActivity.CarType, SignUpActivity.CarSeats,"0");
             } catch (Exception e) {
                 return null;
             }
@@ -197,6 +198,13 @@ public class ProfilePhotoFragment extends Fragment {
                         beanUser.setMvehicle_type(jObjResult.optString("vehicle_type"));
                         beanUser.setmMax_passengers(jObjResult.optString("max_passengers"));
 
+                        JSONObject jObjcarInfo = jObjResult.optJSONObject("car_info");
+                        CarInfo carInfo = new CarInfo();
+                        carInfo.setCar_model(jObjcarInfo.optString("car_model"));
+                        carInfo.setCar_type(jObjcarInfo.optString("car_type"));
+                        carInfo.setSeating_capacity(jObjcarInfo.optString("seating_capacity"));
+                        beanUser.setCar_info(carInfo);
+
                         PrefUtils.addUserInfo(beanUser);
 
                         PrefUtils.putString("isBlank", "true");
@@ -227,7 +235,7 @@ public class ProfilePhotoFragment extends Fragment {
 
     public Void OnitemClick() {
 
-        new TedPermission(getActivity())
+        TedPermission.with(getActivity())
                 .setPermissionListener(permissionlistener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\n" +
                         "Please turn on permissions at [Setting] > [Permission]")
@@ -294,7 +302,7 @@ public class ProfilePhotoFragment extends Fragment {
 
     public static void setProfilePhoto(String ProfilePhoto) {
         SignUpActivity.ProfilePhotoPath = ProfilePhoto;
-        Picasso.with(context).load("file://" + SignUpActivity.ProfilePhotoPath).resize(300, 300).centerCrop().into(imgProfilePhoto);
+        Picasso.get().load("file://" + SignUpActivity.ProfilePhotoPath).resize(300, 300).centerCrop().into(imgProfilePhoto);
     }
 
     @Override
@@ -304,7 +312,7 @@ public class ProfilePhotoFragment extends Fragment {
             ArrayList<String> photos = (ArrayList<String>) data.getSerializableExtra(GalleryActivity.PHOTOS);
 
 
-            Picasso.with(getActivity()).load(photos.get(0)).into(imgProfilePhoto);
+            Picasso.get().load(photos.get(0)).into(imgProfilePhoto);
         } else if (PICK_CAMERA == requestCode && resultCode == Activity.RESULT_OK) {
             String imagePath = "file://" + convertImageUriToFile(imageUri, getActivity());
             SignUpActivity.ProfilePhotoPath = convertImageUriToFile(imageUri, getActivity());

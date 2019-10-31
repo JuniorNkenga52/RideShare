@@ -7,12 +7,6 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -23,6 +17,11 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.app.rideWhiz.R;
 import com.app.rideWhiz.activity.SignUpActivity;
@@ -38,15 +37,33 @@ import java.util.Locale;
 
 public class MobileNumberFragment extends Fragment {
 
+    private static final int PERMISSION_REQUEST_CODE = 1;
+    public MaskedEditText txtPhoneNumber;
+    //private BroadcastReceiver mRegistrationBroadcastReceiver;
+    String wantPermission = Manifest.permission.READ_PHONE_STATE;
+    String token;
     private ImageView imgBack;
     private TextView txtTermsOfService;
     private TextView txtNext;
-
-    public MaskedEditText txtPhoneNumber;
-
     private CheckBox chkIAgree;
-    String wantPermission = Manifest.permission.READ_PHONE_STATE;
-    private static final int PERMISSION_REQUEST_CODE = 1;
+
+    public static String getUserCountry(Context context) {
+        try {
+            final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            final String simCountry = tm.getSimCountryIso();
+            if (simCountry != null && simCountry.length() == 2) { // SIM country code is available
+                return simCountry.toLowerCase(Locale.US);
+            } else if (tm.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA) { // device is not 3G (would be unreliable)
+                String networkCountry = tm.getNetworkCountryIso();
+                if (networkCountry != null && networkCountry.length() == 2) { // network country code is available
+                    return networkCountry.toLowerCase(Locale.US);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -55,7 +72,7 @@ public class MobileNumberFragment extends Fragment {
                 false);
 
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        imgBack = (ImageView) rootView.findViewById(R.id.imgBack);
+        imgBack = rootView.findViewById(R.id.imgBack);
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,14 +81,14 @@ public class MobileNumberFragment extends Fragment {
             }
         });
 
-        txtTermsOfService = (TextView) rootView.findViewById(R.id.txtTermsOfService);
+        txtTermsOfService = rootView.findViewById(R.id.txtTermsOfService);
 
         String udata = getActivity().getString(R.string.term_of_service);
         SpannableString content = new SpannableString(udata);
         content.setSpan(new UnderlineSpan(), 0, udata.length(), 0);
         txtTermsOfService.setText(content);
 
-        txtPhoneNumber = (MaskedEditText) rootView.findViewById(R.id.txtPhoneNumber);
+        txtPhoneNumber = rootView.findViewById(R.id.txtPhoneNumber);
 
         if (!checkPermission(wantPermission)) {
             requestPermission(wantPermission);
@@ -84,31 +101,38 @@ public class MobileNumberFragment extends Fragment {
             }
 
         }
+
+
         chkIAgree = rootView.findViewById(R.id.chkIAgree);
+
+
         txtTermsOfService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
+
         txtNext = rootView.findViewById(R.id.txtNext);
         txtNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    String result = txtPhoneNumber.getUnmaskedText().toString();
+                    String result = txtPhoneNumber.getUnmaskedText();
                     if (result.length() == 0) {
                         MessageUtils.showFailureMessage(getActivity(), "Please enter Mobile Number.");
                     } else if (!chkIAgree.isChecked()) {
                         MessageUtils.showFailureMessage(getActivity(), "You must agree with the Terms and Conditions");
                     } else {
-
-                        String numberMo = "+1" + result;
+                        //String numberMo = "+1" + result;
+                        String numberMo = "+91" + result;
+                        //String numberMo = "+" + AppUtils.getCountryTelephoneCode(getApplicationContext()) + result;
                         if (AppUtils.isInternetAvailable(getActivity())) {
                             new AsyncSendTextMessage(numberMo.trim().replaceAll(" ", "")).execute();
                         } else {
                             MessageUtils.showNoInternetAvailable(getActivity());
                         }
+
                     }
                 } catch (Exception e) {
                     MessageUtils.showFailureMessage(getActivity(), "Please enter Mobile Number.");
@@ -116,67 +140,9 @@ public class MobileNumberFragment extends Fragment {
                 }
             }
         });
+
+
         return rootView;
-    }
-
-    public class AsyncSendTextMessage extends AsyncTask<Object, Integer, Object> {
-
-        String mobileNumber;
-        CustomProgressDialog mProgressDialog;
-
-        public AsyncSendTextMessage(String mobileNumber) {
-
-            mProgressDialog = new CustomProgressDialog(getActivity());
-            mProgressDialog.show();
-
-            this.mobileNumber = mobileNumber;
-        }
-
-        @Override
-        public void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        public Object doInBackground(Object... params) {
-            try {
-                //return RideShareApi.sendTextMessageNew(mobileNumber);
-                return RideShareApi.sendTextMessageNew(mobileNumber, getContext());
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        @Override
-        public void onPostExecute(Object result) {
-            super.onPostExecute(result);
-
-            mProgressDialog.dismiss();
-
-            try {
-                JSONObject jsonObject = new JSONObject(result.toString());
-
-                if (jsonObject.getString("status").equalsIgnoreCase("success")) {
-                    JSONObject jsonObjectResult = new JSONObject(jsonObject.getString("result"));
-                    SignUpActivity.PhoneNumber = txtPhoneNumber.getUnmaskedText().toString();
-                    SignUpActivity.mUserId = jsonObjectResult.getString("user_id");
-                    SignUpActivity.mViewPager.setCurrentItem(1);
-
-                    OTPFragment.updateTest();
-                    OTPFragment otpFragment = new OTPFragment();
-                    FragmentManager fragmentManager = getFragmentManager();
-                    assert fragmentManager != null;
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.frame_layout_mobile, otpFragment);
-                    fragmentTransaction.commit();
-
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private String getPhone() {
@@ -211,7 +177,7 @@ public class MobileNumberFragment extends Fragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -226,13 +192,80 @@ public class MobileNumberFragment extends Fragment {
     private boolean checkPermission(String permission) {
         if (Build.VERSION.SDK_INT >= 23) {
             int result = ContextCompat.checkSelfPermission(getActivity(), permission);
-            if (result == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            } else {
-                return false;
-            }
+            return result == PackageManager.PERMISSION_GRANTED;
         } else {
             return true;
+        }
+    }
+
+    public String GetCountryZipCode() {
+        String CountryID = "";
+        String CountryZipCode = "";
+
+        TelephonyManager manager = (TelephonyManager) getContext().getSystemService(Context.TELEPHONY_SERVICE);
+        //getNetworkCountryIso
+        CountryID = manager.getSimCountryIso().toUpperCase();
+        String[] rl = getContext().getResources().getStringArray(R.array.CountryCodes);
+        for (int i = 0; i < rl.length; i++) {
+            String[] g = rl[i].split(",");
+            if (g[1].trim().equals(CountryID.trim())) {
+                CountryZipCode = g[0];
+                break;
+            }
+        }
+        return CountryZipCode;
+    }
+
+    public class AsyncSendTextMessage extends AsyncTask<Object, Integer, Object> {
+
+        String mobileNumber;
+        CustomProgressDialog mProgressDialog;
+
+        public AsyncSendTextMessage(String mobileNumber) {
+            mProgressDialog = new CustomProgressDialog(getActivity());
+            mProgressDialog.show();
+            this.mobileNumber = mobileNumber;
+        }
+
+        @Override
+        public void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        public Object doInBackground(Object... params) {
+            try {
+                //return RideShareApi.sendTextMessageNew(mobileNumber);
+                return RideShareApi.sendTextMessageNew(mobileNumber, getContext());
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        @Override
+        public void onPostExecute(Object result) {
+            super.onPostExecute(result);
+
+            mProgressDialog.dismiss();
+
+            try {
+                if (result != null) {
+                    JSONObject jsonObject = new JSONObject(result.toString());
+
+                    if (jsonObject.getString("status").equalsIgnoreCase("success")) {
+                        JSONObject jsonObjectResult = new JSONObject(jsonObject.getString("result"));
+                        SignUpActivity.PhoneNumber = txtPhoneNumber.getUnmaskedText();
+                        SignUpActivity.mUserId = jsonObjectResult.getString("user_id");
+                        SignUpActivity.mViewPager.setCurrentItem(1);
+                        OTPFragment.updateTest();
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
         }
     }
 }

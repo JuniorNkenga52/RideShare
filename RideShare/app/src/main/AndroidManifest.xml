@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.app.rideWhiz">
+    package="com.app.rideWhiz"
+    android:targetSandboxVersion="1"
+    tools:targetApi="o">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -15,7 +17,7 @@
         android:name="com.app.rideWhiz.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.app.rideshare.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="com.app.rideWhiz.permission.MAPS_RECEIVE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -25,9 +27,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
@@ -36,7 +36,7 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
-        android:name="com.app.rideWhiz.activity.RideShareApp"
+        android:name=".activity.RideShareApp"
         android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
@@ -44,25 +44,32 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:allowBackup">
-        <activity android:name="com.app.rideWhiz.activity.SplashActivity">
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup,android:icon,android:theme">
+        <activity android:name=".activity.PlaceSerachActivity"/>
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.app.rideWhiz.activity.RideTypeActivity"
+            android:name=".activity.RideTypeActivity"
             android:label="@string/title_activity_splash"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.app.rideWhiz.activity.SignUpActivity"
+            android:name=".activity.SignUpActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
-            android:name="com.app.rideWhiz.activity.NotificationActivity"
+            android:name=".activity.NotificationActivity"
             android:screenOrientation="portrait" />
 
         <meta-data
@@ -70,53 +77,37 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name="com.app.rideWhiz.activity.HomeNewActivity"
+            android:name=".activity.HomeNewActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.app.rideWhiz.activity.MobileNumberActivity"
-            android:label="@string/title_activity_home"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name="com.app.rideWhiz.activity.VerifyMobileNumberActivity"
-            android:label="@string/title_activity_home"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name="com.app.rideWhiz.activity.WebSocketActivity"
+            android:name=".activity.WebSocketActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.app.rideWhiz.activity.WaitingActivity"
+            android:name=".activity.WaitingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.app.rideWhiz.activity.StartRideActivity"
+            android:name=".activity.StartRideActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.app.rideWhiz.activity.ProfileActivity"
+            android:name=".activity.EditProfileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.app.rideWhiz.activity.EditProfileActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.app.rideWhiz.activity.AutoCompleteLocationActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.app.rideWhiz.activity.RideRateActivity"
+            android:name=".activity.RideRateActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|adjustPan" />
         <activity
-            android:name="com.app.rideWhiz.activity.SettingActivity"
+            android:name=".activity.SettingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.app.rideWhiz.activity.ChatActivity"
+            android:name=".activity.ChatActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
 
-        <service android:name="com.app.rideWhiz.chat.MyService" />
+        <service android:name=".chat.MyService" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -137,7 +128,19 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.app.rideWhiz.notificationservice.MyFirebaseMessagingService">
+        <receiver
+            android:name=".service.BatteryInfoReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.ACTION_BATTERY_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".notificationservice.MyFirebaseMessagingService"
+            android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -148,28 +151,16 @@
             android:value="222483a7f0f7bff743470f4112c6de9459fe0141" />
 
         <activity
-            android:name="com.app.rideWhiz.activity.AdminFunctionsActivity"
+            android:name=".activity.CreateGroupActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activity.HistoryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.app.rideWhiz.activity.AdminUserinfoActivity"
+            android:name=".activity.MyGroupActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.app.rideWhiz.activity.DriverPrivileges"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.app.rideWhiz.activity.ForgotPasswordActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.app.rideWhiz.activity.CreateGroupActivity"
-            android:exported="true"></activity>
-        <activity
-            android:name="com.app.rideWhiz.activity.HistoryActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.app.rideWhiz.activity.MyGroupActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.app.rideWhiz.activity.GroupDetailActivity"
+            android:name=".activity.GroupDetailActivity"
             android:screenOrientation="portrait" />
         <activity android:name="com.tangxiaolv.telegramgallery.GalleryActivity" />
         <activity
@@ -177,7 +168,7 @@
             android:theme="@style/Base.Theme.AppCompat" />
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="com.app.rideWhiz"
             android:exported="false"
             android:grantUriPermissions="true"
@@ -188,9 +179,8 @@
                 tools:replace="android:resource" />
         </provider>
 
-
         <activity
-            android:name="com.app.rideWhiz.activity.DeepLinkActivity"
+            android:name=".activity.DeepLinkActivity"
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
@@ -206,13 +196,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.app.rideWhiz.activity.MyGroupSelectionActivity"
+            android:name=".activity.MyGroupSelectionActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.app.rideWhiz.activity.ManageCarActivity"
+            android:name=".activity.ManageCarActivity"
             android:windowSoftInputMode="adjustPan" />
-
-
+        <activity
+            android:name=".activity.NotificationViewActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

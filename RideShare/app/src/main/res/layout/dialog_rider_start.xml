@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dialog">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="@dimen/_20sdp"
+        android:background="@drawable/rectangular_popup_bottom">
+
+        <RelativeLayout
+            android:id="@+id/popup_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/Transparent">
+
+
+
+            <ImageView
+                android:id="@+id/popup_close"
+                android:layout_width="@dimen/_22sdp"
+                android:layout_height="@dimen/_22sdp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:padding="@dimen/_2sdp"
+                android:src="@drawable/ic_close"
+                android:tint="@color/gray_109" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/popup_header"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="@color/Transparent">
+
+            <com.app.rideWhiz.widget.TextViewBold
+                android:id="@+id/tv_start_title_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="Riders"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold"/>
+
+            <RelativeLayout
+                android:id="@+id/layout_driver_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_below="@+id/tv_start_title_caption"
+
+                android:padding="@dimen/_8sdp">
+
+
+                <LinearLayout
+                    android:id="@+id/layout_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/_9sdp"
+                    android:layout_marginLeft="@dimen/_9sdp"
+                    android:orientation="vertical">
+
+                    <com.app.rideWhiz.widget.TextViewRegular
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:text="Time "
+                        android:textColor="@color/blacltext"
+                        android:textSize="@dimen/_12sdp" />
+                    <com.app.rideWhiz.widget.TextViewRegular
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Distance"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:textColor="@color/blacltext"
+                        android:textSize="@dimen/_12sdp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/layout_1"
+                    android:orientation="vertical">
+
+                    <com.app.rideWhiz.widget.TextViewRegular
+                        android:id="@+id/ride_time_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:textColor="@color/blacltext"
+                        android:textSize="@dimen/_12sdp" />
+                    <com.app.rideWhiz.widget.TextViewRegular
+                        android:id="@+id/ride_dis_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/blacltext"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:textSize="@dimen/_12sdp" />
+
+                </LinearLayout>
+                <ImageView
+                    android:id="@+id/img_btn_chat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:src="@drawable/ic_chat_black"/>
+
+            </RelativeLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_accept"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_driver_info"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:layout_marginLeft="@dimen/_15sdp"
+                card_view:cardUseCompatPadding="true">
+
+                <Button
+                    android:id="@+id/btn_start_ride"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/button3"
+                    android:background="@color/accept_btn_color"
+                    android:text="Start ride"
+                    android:textColor="#FFF"
+                    android:textSize="@dimen/_14sdp" />
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true">
+
+            <RelativeLayout
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
+                android:background="@drawable/circle_whitebg"
+                android:padding="2dp">
+
+                <RelativeLayout
+                    android:id="@+id/layoutProfile"
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="@dimen/_80sdp"
+                    android:background="@drawable/round_fillred"
+                    android:gravity="center"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:id="@+id/imgDriverPicture"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:src="@drawable/ic_car_dialog" />
+                </RelativeLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+</RelativeLayout>
+
+
+
+
+
+
+
+
+

@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,12 +104,8 @@ public class GroupDetailActivity extends AppCompatActivity {
 
         mGroupIv = (CircularImageView) findViewById(R.id.circularImageView);
         if (!PrefUtils.getUserInfo().getProfile_image().equals("")) {
-            Picasso.with(this).load(groupDetail.getCategory_image()).resize(300, 300)
+            Picasso.get().load(groupDetail.getCategory_image()).resize(300, 300)
                     .centerCrop().into(mGroupIv);
-            /*Glide.with(this).load(groupDetail.getCategory_image())
-                    .error(R.drawable.icon_test)
-                    .placeholder(R.drawable.icon_test)
-                    .into(mGroupIv);*/
         }
 
         mGroupName.setText(groupDetail.getGroup_name());
@@ -314,7 +310,8 @@ public class GroupDetailActivity extends AppCompatActivity {
             /*Picasso.with(GroupDetailActivity.this).load(bean.getProfile_image()).resize(300, 300)
                     .centerCrop().error(R.drawable.user_icon).into(holder.circularImageView );*/
             Glide.with(GroupDetailActivity.this).load(bean.getThumb_image())
-                    .error(R.drawable.icon_test)
+                    .error(R.drawable.user_icon)
+                    .dontAnimate()
                     .into(holder.circularImageView);
 
             return vi;

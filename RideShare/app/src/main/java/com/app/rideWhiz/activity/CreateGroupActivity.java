@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -281,7 +281,7 @@ public class CreateGroupActivity extends AppCompatActivity {
             final Category bean = dataList.get(position);
 
             //MyImageUtils.loadImagePicasso(mContext, (itemRowHolder).imageView, bean.getFlower_image(), R.drawable.flower_unselect_bg);
-            Picasso.with(mContext).load(bean.getThumb())
+            Picasso.get().load(bean.getThumb())
                     .resize(300, 300).centerCrop()
                     .error(R.drawable.user_icon).into((itemRowHolder).imageView);
 

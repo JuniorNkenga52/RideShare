@@ -21,6 +21,7 @@ public class NotificationList {
 
     private String status;
     private String is_admin_accept;
+    private String u_mo_number;
 
     public String getThumb_image() {
         return thumb_image;
@@ -116,5 +117,13 @@ public class NotificationList {
 
     public void setIs_admin_accept(String is_admin_accept) {
         this.is_admin_accept = is_admin_accept;
+    }
+
+    public String getU_mo_number() {
+        return u_mo_number;
+    }
+
+    public void setU_mo_number(String u_mo_number) {
+        this.u_mo_number = u_mo_number;
     }
 }

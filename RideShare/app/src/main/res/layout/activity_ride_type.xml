@@ -6,25 +6,43 @@
     android:background="@drawable/ic_login_bg"
     android:focusableInTouchMode="true">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="4dp">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/vvv"
+        android:animateLayoutChanges="true"
+        android:background="@color/contentBGnew"
+        android:visibility="gone">
+
+    </FrameLayout>
+
+    <View
+        android:id="@+id/vvv"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@+id/navigation"
+        android:background="@color/GrayLine" />
     <LinearLayout
+        android:id="@+id/layout_select_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -51,7 +69,7 @@
                 android:gravity="left"
                 android:paddingLeft="@dimen/_30sdp"
                 android:text="Need a Ride"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/white"
                 android:textSize="@dimen/_16sdp" />
 
             <ImageView
@@ -78,7 +96,7 @@
                 android:gravity="left"
                 android:paddingLeft="@dimen/_30sdp"
                 android:text="Offer a Ride"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/white"
                 android:textSize="@dimen/_16sdp" />
 
             <ImageView
@@ -130,4 +148,13 @@
             android:textSize="@dimen/_16sdp"
             android:visibility="gone" />
     </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        app:elevation="16dp"
+        app:menu="@menu/bottom_navigation_items" />
 </RelativeLayout>

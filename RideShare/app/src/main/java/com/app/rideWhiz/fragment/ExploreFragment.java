@@ -1,11 +1,12 @@
 package com.app.rideWhiz.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import com.app.rideWhiz.api.RideShareApi;
 import com.app.rideWhiz.model.GroupList;
 import com.app.rideWhiz.utils.AppUtils;
 import com.app.rideWhiz.utils.Constants;
+import com.app.rideWhiz.utils.MessageUtils;
 import com.app.rideWhiz.utils.PrefUtils;
 import com.app.rideWhiz.view.CustomProgressDialog;
 import com.squareup.picasso.Picasso;
@@ -44,6 +46,7 @@ public class ExploreFragment extends Fragment {
     EditText txtSearchGroup;
     TextView txtgroupinfo;
     private SwipeRefreshLayout swipeRefreshRequests;
+    Activity activity;
 
     public static ExploreFragment newInstance() {
         ExploreFragment fragment = new ExploreFragment();
@@ -58,12 +61,18 @@ public class ExploreFragment extends Fragment {
 
         PrefUtils.initPreference(getActivity());
 
+        activity=getActivity();
         txtSearchGroup = (EditText) rootView.findViewById(R.id.txtSearchGroup);
         mLvGroup = (ListView) rootView.findViewById(R.id.mLvGroup);
         txtgroupinfo = rootView.findViewById(R.id.txtgroupinfo);
         swipeRefreshRequests = rootView.findViewById(R.id.swipeRefreshRequests);
         txtgroupinfo.setVisibility(View.GONE);
-        new AsyncAllGroup().execute();
+        if(AppUtils.isInternetAvailable(activity)){
+            new AsyncAllGroup().execute();
+        }else {
+            MessageUtils.showNoInternetAvailable(activity);
+        }
+
 
         txtSearchGroup.addTextChangedListener(new TextWatcher() {
 
@@ -103,6 +112,7 @@ public class ExploreFragment extends Fragment {
                     new AsyncAllGroup().execute();
                 } else {
                     swipeRefreshRequests.setRefreshing(false);
+                    MessageUtils.showNoInternetAvailable(activity);
                 }
             }
         });
@@ -243,7 +253,7 @@ public class ExploreFragment extends Fragment {
             holder.txtGroupName.setText(bean.getGroup_name());
             holder.txtGroupDescription.setText(bean.getGroup_description());
 
-            Picasso.with(getActivity()).load(bean.getCategory_thumb_image()).error(R.drawable.user_icon).into(holder.imgGroup);
+            Picasso.get().load(bean.getCategory_thumb_image()).error(R.drawable.user_icon).into(holder.imgGroup);
 
             /*0 = None (Join)
             1 = Requested

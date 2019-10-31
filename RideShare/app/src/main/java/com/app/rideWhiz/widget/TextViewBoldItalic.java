@@ -1,7 +1,7 @@
 package com.app.rideWhiz.widget;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 import com.app.rideWhiz.utils.TypefaceUtils;

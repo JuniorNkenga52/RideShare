@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import com.app.rideWhiz.api.ApiServiceModule;
 import com.app.rideWhiz.api.RestApiInterface;
 import com.app.rideWhiz.api.RideShareApi;
 import com.app.rideWhiz.api.response.SendOTPResponse;
+import com.app.rideWhiz.model.CarInfo;
 import com.app.rideWhiz.model.User;
 import com.app.rideWhiz.utils.AppUtils;
 import com.app.rideWhiz.utils.MessageUtils;
@@ -45,9 +48,10 @@ public class OTPFragment extends Fragment {
     private PinEntryEditText txtPin;
     private TextView txtResendOTP;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_otp, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_otp, container, false);
 
         context = getActivity();
 
@@ -57,6 +61,7 @@ public class OTPFragment extends Fragment {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 SignUpActivity.mViewPager.setCurrentItem(0);
             }
         });
@@ -74,7 +79,7 @@ public class OTPFragment extends Fragment {
                 if (AppUtils.isInternetAvailable(getActivity())) {
                     //sendOTP("+" + AppUtils.getCountryTelephoneCode(context) + SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
                     sendOTP("+1" + SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
-                    //sendOTP("+91" +SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
+                    //sendOTP("+91" + SignUpActivity.PhoneNumber, SignUpActivity.mUserId);
                 } else {
                     MessageUtils.showNoInternetAvailable(getActivity());
                 }
@@ -100,11 +105,10 @@ public class OTPFragment extends Fragment {
                         MessageUtils.showNoInternetAvailable(getActivity());
                     }
                 }
+                //SignUpActivity.mViewPager.setCurrentItem(2);
 
             }
         });
-
-
         return rootView;
     }
 
@@ -125,11 +129,8 @@ public class OTPFragment extends Fragment {
     }
 
     public static void updateTest() {
-        if (!SignUpActivity.PhoneNumber.equals("")) {
-            String number = "(" + SignUpActivity.PhoneNumber.substring(0, 3) + ") " + SignUpActivity.PhoneNumber.substring(3, 6) + "-" + SignUpActivity.PhoneNumber.substring(6, 10);
-            txtPhoneNumberInfo.setText(context.getResources().getString(R.string.txt_enter_the_code) + " " + number);
-        }
-
+        String number = "(" + SignUpActivity.PhoneNumber.substring(0, 3) + ") " + SignUpActivity.PhoneNumber.substring(3, 6) + "-" + SignUpActivity.PhoneNumber.substring(6, 10);
+        txtPhoneNumberInfo.setText(context.getResources().getString(R.string.txt_enter_the_code) + " " + number);
     }
 
     public class AsyncOTP extends AsyncTask<Object, Integer, Object> {
@@ -138,22 +139,23 @@ public class OTPFragment extends Fragment {
         CustomProgressDialog mProgressDialog;
 
         public AsyncOTP(String OTP) {
-
-            mProgressDialog = new CustomProgressDialog(getActivity());
-            mProgressDialog.show();
-
             this.OTP = OTP;
+            /*if(token.equals("")){
+                PrefUtils.getString("tokenID");
+            }*/
         }
 
         @Override
         public void onPreExecute() {
             super.onPreExecute();
-
+            mProgressDialog = new CustomProgressDialog(getActivity());
+            mProgressDialog.show();
         }
 
         @Override
         public Object doInBackground(Object... params) {
             try {
+                //return RideShareApi.verifyOTP(OTP, SignUpActivity.mUserId, SignUpActivity.token);
                 return RideShareApi.verifyOTP(OTP, SignUpActivity.mUserId, PrefUtils.getString("TokenID"), getContext());
             } catch (Exception e) {
                 return null;
@@ -163,6 +165,7 @@ public class OTPFragment extends Fragment {
         @Override
         public void onPostExecute(Object result) {
             super.onPostExecute(result);
+
             try {
                 if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
@@ -201,7 +204,7 @@ public class OTPFragment extends Fragment {
                         beanUser.setmRideType(jObjResult.getString("u_ride_type"));
                         beanUser.setmStatus(jObjResult.getString("u_status"));
                         beanUser.setmRidestatus(jObjResult.getString("ride_status"));
-                        beanUser.setContact_sync(jObjResult.getString("contact_sync"));
+                        //beanUser.setContact_sync(jObjResult.getString("contact_sync"));
                         beanUser.setmIs_rider(jObjResult.getString("is_rider"));
                         beanUser.setmUpdatedDate(jObjResult.getString("update_date"));
                         beanUser.setmCreatedDate(jObjResult.getString("create_date"));
@@ -211,8 +214,14 @@ public class OTPFragment extends Fragment {
                         beanUser.setmMax_passengers(jObjResult.optString("max_passengers"));
                         beanUser.setM_is_assigned_group(jObjResult.optString("is_assigned_group"));
 
-                        PrefUtils.addUserInfo(beanUser);
+                        JSONObject jObjcarInfo = jObjResult.optJSONObject("car_info");
+                        CarInfo carInfo = new CarInfo();
+                        carInfo.setCar_model(jObjcarInfo.optString("car_model"));
+                        carInfo.setCar_type(jObjcarInfo.optString("car_type"));
+                        carInfo.setSeating_capacity(jObjcarInfo.optString("seating_capacity"));
+                        beanUser.setCar_info(carInfo);
 
+                        PrefUtils.addUserInfo(beanUser);
 
                         if (beanUser.getM_is_assigned_group().equals("1")) {
 
@@ -220,24 +229,48 @@ public class OTPFragment extends Fragment {
                             Intent i = new Intent(context, MyGroupSelectionActivity.class);
                             startActivity(i);
                             getActivity().finish();
+                            /*Intent i = new Intent(getActivity(), RideTypeActivity.class);
+                            startActivity(i);
+                            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            getActivity().finish();*/
                         } else {
+                            /*Intent i = new Intent(getActivity(), GroupSelectionFragment.class);
+                            startActivity(i);
+                            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            getActivity().finish();*/
                             PrefUtils.putString("isBlank", "true");
                             Intent i = new Intent(getActivity(), HomeNewActivity.class);
                             startActivity(i);
                             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             getActivity().finish();
                         }
+
+
+                        /*if (PrefUtils.getBoolean("firstTime")) {
+                            Intent i = new Intent(getActivity(), RideTypeActivity.class);
+                            startActivity(i);
+                            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            getActivity().finish();
+                        } else {
+                            Intent i = new Intent(getActivity(), GroupSelectionFragment.class);
+                            startActivity(i);
+                            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            getActivity().finish();
+
+                        }*/
+                        /*Intent i = new Intent(getActivity(), GroupSelectionFragment.class);
+                        startActivity(i);
+                        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        getActivity().finish();
+                        PrefUtils.putBoolean("firstTime", true);*/
+
                     }
                 } else {
-                    //MessageUtils.showPleaseTryAgain(context);
+                    MessageUtils.showPleaseTryAgain(context);
                 }
-            } catch (final IllegalArgumentException e) {
-                // Handle or log or ignore
             } catch (Exception e) {
                 e.printStackTrace();
                 MessageUtils.showPleaseTryAgain(context);
-            } finally {
-                mProgressDialog = null;
             }
         }
     }
@@ -263,5 +296,11 @@ public class OTPFragment extends Fragment {
                 mProgressDialog.cancel();
             }
         });
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

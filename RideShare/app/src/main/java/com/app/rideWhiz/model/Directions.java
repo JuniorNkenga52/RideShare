@@ -70,6 +70,7 @@ public class Directions {
             JSONArray routeJSONArray = jSONObject.getJSONArray(ROUTES);
             Route route;
             JSONObject routesJSONObject;
+            //int colors[]={R.color.darkGreen,R.color.black};
             for (int m = 0; m < routeJSONArray.length(); m++) {
                 route = new Route(context);
                 routesJSONObject = routeJSONArray.getJSONObject(m);

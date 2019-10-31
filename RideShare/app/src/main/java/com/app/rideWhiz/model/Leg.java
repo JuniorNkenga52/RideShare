@@ -13,6 +13,7 @@ public class Leg {
     private String startAddress;
     private LatLng startLocation;
     private List<Step> steps;
+    private int color;
 
     public Leg() {
         steps = new ArrayList<Step>();
@@ -78,4 +79,11 @@ public class Leg {
         this.steps.add(step);
     }
 
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
 }

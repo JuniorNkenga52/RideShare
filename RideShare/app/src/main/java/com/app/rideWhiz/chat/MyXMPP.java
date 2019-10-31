@@ -15,8 +15,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.app.rideWhiz.R;
@@ -77,24 +77,15 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Random;
 
+import static com.app.rideWhiz.utils.Constants.DOMAIN;
+import static com.app.rideWhiz.utils.Constants.PORT;
+import static com.app.rideWhiz.utils.Constants.RESOURCE_NAME;
+
 public class MyXMPP implements PingFailedListener {
 
     private static final String NOTIF_CHANNEL_ID = "practice_chat_channel";
 
     private static final String TAG = "MyXMPP";
-    //http://chat.myridewhiz.com:9090
-    //private static final String DOMAIN = "13.58.7.10";
-    //private static final String DOMAIN = "chat.myridewhiz.com";
-    //private static final String DOMAIN = "ec2-18-218-151-202.us-east-2.compute.amazonaws.com";
-    //private static final String DOMAIN = "win-2i67mca8hqp";
-    //private static final String DOMAIN = "http://192.168.0.30";
-    //http://ec2-18-218-151-202.us-east-2.compute.amazonaws.com:9090
-    private static final String DOMAIN = "ec2-18-218-151-202.us-east-2.compute.amazonaws.com";
-    //private static final String DOMAIN = " http://18.222.137.245";
-    //private static final String DOMAIN = "192.168.0.30";
-    private static final String RESOURCE_NAME = "RideShare";
-    private static final int PORT = 5222;
-    //private static final int PORT = 9090;
 
     private final String delimiter = "\\@";
 
@@ -102,7 +93,7 @@ public class MyXMPP implements PingFailedListener {
     private Chat myChat;
 
     private static MyXMPP instance = null;
-    private MyService context;
+    private Context context;
 
     private static boolean instanceCreated = false;
     private static boolean connected = false;
@@ -110,7 +101,7 @@ public class MyXMPP implements PingFailedListener {
     private static boolean isToasted = true;
 
     private boolean loggedIn = false;
-    private boolean chatCreated = false;
+    public static boolean chatCreated = false;
 
     private static String loginUser;
     private static String passwordUser;
@@ -129,7 +120,7 @@ public class MyXMPP implements PingFailedListener {
     public MyXMPP() {
     }
 
-    private MyXMPP(MyService context, String lUser, String lpassword) {
+    private MyXMPP(Context context, String lUser, String lpassword) {
 
         this.context = context;
 
@@ -148,7 +139,7 @@ public class MyXMPP implements PingFailedListener {
         return connection;
     }
 
-    public static MyXMPP getInstance(MyService context, String user) {
+    public static MyXMPP getInstance(Context context, String user) {
 
         if (instance == null) {
             instance = new MyXMPP(context, user, user);
@@ -164,10 +155,11 @@ public class MyXMPP implements PingFailedListener {
         config.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
         config.setServiceName(DOMAIN);
         config.setHost(DOMAIN);
-        config.setPort(PORT);
+        //config.setPort(PORT);
         config.setDebuggerEnabled(true);
-        config.setResource(RESOURCE_NAME);
+        //config.setResource(RESOURCE_NAME);
         config.setUsernameAndPassword(loginUser, passwordUser);
+        //config.setConnectTimeout(60000);
         config.setCompressionEnabled(false);
 
         XMPPTCPConnection.setUseStreamManagementResumptiodDefault(true);
@@ -196,6 +188,11 @@ public class MyXMPP implements PingFailedListener {
         }).start();
     }
 
+    public static void destroy_connect() {
+        if (connection != null)
+            connection.disconnect();
+    }
+
     public void connect(final String caller) {
 
         @SuppressLint("StaticFieldLeak")
@@ -207,14 +204,6 @@ public class MyXMPP implements PingFailedListener {
                     return false;
                 }
                 isConnecting = true;
-                /*if (isToasted)
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            MessageUtils.showSuccessMessage(context, caller + "=>connecting....");
-                        }
-                    });*/
 
                 Log.d(TAG, "Connect() Function" + caller + "=>connecting....");
 
@@ -251,7 +240,7 @@ public class MyXMPP implements PingFailedListener {
 
                         @Override
                         public void run() {
-                            MessageUtils.showFailureMessage(context, "(" + caller + ")" + "SMACKException: ");
+                            //MessageUtils.showFailureMessage(context, "(" + caller + ")" + "SMACKException: ");
                         }
                     });
 
@@ -527,6 +516,7 @@ public class MyXMPP implements PingFailedListener {
                         messageModel.getMessageText(), "r", MessageModel.MEG_TYPE_TEXT, messageModel.getTime(), "false");
 
                 Intent intent = new Intent("update_message");
+                intent.putExtra("Sender_ID",messageModel.getSender().split("_")[1]);
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
 
@@ -556,10 +546,17 @@ public class MyXMPP implements PingFailedListener {
                     });
 
                 } else {
-                    sendNotification(message.getBody());
+                    if (am.getRunningTasks(1).get(0).topActivity.getClassName().equals(
+                            packageName + ".activity.StartRideActivity")) {
+                        sendNotification(message.getBody());
+                    }
+
                 }
             } catch (Exception e) {
-                sendNotification(message.getBody());
+                if (am.getRunningTasks(1).get(0).topActivity.getClassName().equals(
+                        packageName + ".activity.StartRideActivity")) {
+                    sendNotification(message.getBody());
+                }
             }
         }
     }

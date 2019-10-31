@@ -1,6 +1,5 @@
 package com.app.rideWhiz.model;
 
-
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -58,6 +57,21 @@ public class Rider implements Serializable {
 
     @SerializedName("max_passengers")
     private String max_passengers;
+
+    @SerializedName("no_of_seats")
+    private String no_of_seats;
+
+    @SerializedName("average_rate")
+    private String average_rate;
+
+    @SerializedName("destination_address")
+    private String destination_address;
+
+    private String rideID;
+
+    private int rideCount;
+
+    private boolean is_new_request;
 
     public String getThumb_image() {
         return thumb_image;
@@ -193,5 +207,53 @@ public class Rider implements Serializable {
 
     public void setMax_passengers(String max_passengers) {
         this.max_passengers = max_passengers;
+    }
+
+    public String getNo_of_seats() {
+        return no_of_seats;
+    }
+
+    public void setNo_of_seats(String no_of_seats) {
+        this.no_of_seats = no_of_seats;
+    }
+
+    public String getRideID() {
+        return rideID;
+    }
+
+    public void setRideID(String rideID) {
+        this.rideID = rideID;
+    }
+
+    public boolean getIs_new_request() {
+        return is_new_request;
+    }
+
+    public void setIs_new_request(boolean is_new_request) {
+        this.is_new_request = is_new_request;
+    }
+
+    public String getAverage_rate() {
+        return average_rate;
+    }
+
+    public void setAverage_rate(String average_rate) {
+        this.average_rate = average_rate;
+    }
+
+    public String getDestination_address() {
+        return destination_address;
+    }
+
+    public void setDestination_address(String destination_address) {
+        this.destination_address = destination_address;
+    }
+
+    public int getRideCount() {
+        return rideCount;
+    }
+
+    public void setRideCount(int rideCount) {
+        this.rideCount = rideCount;
     }
 }

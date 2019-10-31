@@ -1,25 +1,24 @@
 package com.app.rideWhiz.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,21 +26,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.app.rideWhiz.R;
-import com.app.rideWhiz.api.ApiServiceModule;
-import com.app.rideWhiz.api.RestApiInterface;
 import com.app.rideWhiz.api.RideShareApi;
-import com.app.rideWhiz.api.response.SignupResponse;
+import com.app.rideWhiz.model.CarInfo;
 import com.app.rideWhiz.model.User;
 import com.app.rideWhiz.utils.AppUtils;
 import com.app.rideWhiz.utils.MessageUtils;
 import com.app.rideWhiz.utils.PrefUtils;
 import com.app.rideWhiz.view.CustomProgressDialog;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.hariofspades.incdeclibrary.IncDecCircular;
+import com.hariofspades.incdeclibrary.IncDecImageButton;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.tangxiaolv.telegramgallery.GalleryActivity;
 import com.tangxiaolv.telegramgallery.GalleryConfig;
@@ -53,18 +55,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-
-public class EditProfileActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, TextWatcher, View.OnClickListener {
-    private ImageView mBackIv;
+public class EditProfileActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, TextWatcher, View.OnClickListener, IncDecImageButton.OnValueChangeListener {
     private TextView mSaveTv;
     private TextView mUserNameTv;
-
+    private IncDecImageButton number_of_seats;
     //private Typeface mRobotoMedium;
 
     User mUserBean;
@@ -77,9 +72,6 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
     private EditText mAddressEt;
     private EditText mVhmodel_Et;
     private EditText mVhtype_Et;
-    private EditText mMaxpassenger_Et;
-    private CheckBox mReqdriver_Ch;
-    private LinearLayout layout_req_driver;
     private LinearLayout layout_other_op;
 
     private CircularImageView mProfileIv;
@@ -106,7 +98,7 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
         mUserBean = PrefUtils.getUserInfo();
         mProgressDialog = new CustomProgressDialog(this);
 
-        mBackIv = (ImageView) findViewById(R.id.back_iv);
+        ImageView mBackIv = findViewById(R.id.back_iv);
         mBackIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,33 +106,30 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
             }
         });
 
-        mSaveTv = (TextView) findViewById(R.id.save_tv);
+        mSaveTv = findViewById(R.id.save_tv);
         mSaveTv.setVisibility(View.INVISIBLE);
-        mUserNameTv = (TextView) findViewById(R.id.username_tv);
-        mFirstNameEt = (EditText) findViewById(R.id.first_name_et);
-        mLastNameEt = (EditText) findViewById(R.id.last_name_et);
-        mMobileEt = (EditText) findViewById(R.id.mobile_et);
-        mEmailEt = (EditText) findViewById(R.id.email_et);
-        mAddressEt = (EditText) findViewById(R.id.address_name_et);
-        mVhmodel_Et = (EditText) findViewById(R.id.vhmodel_et);
-        mVhtype_Et = (EditText) findViewById(R.id.vhtype_et);
-        mMaxpassenger_Et = (EditText) findViewById(R.id.maxpassenger_et);
-        mReqdriver_Ch = (CheckBox) findViewById(R.id.reqdriver_ch);
-        layout_req_driver = (LinearLayout) findViewById(R.id.layout_req_driver);
-        layout_other_op = (LinearLayout) findViewById(R.id.layout_other_op);
+        mUserNameTv = findViewById(R.id.username_tv);
+        mFirstNameEt = findViewById(R.id.first_name_et);
+        mLastNameEt = findViewById(R.id.last_name_et);
+        mMobileEt = findViewById(R.id.mobile_et);
+        mEmailEt = findViewById(R.id.email_et);
+        mAddressEt = findViewById(R.id.address_name_et);
+        mVhmodel_Et = findViewById(R.id.vhmodel_et);
+        mVhtype_Et = findViewById(R.id.vhtype_et);
+        number_of_seats = findViewById(R.id.number_of_seats);
 
-        if (mUserBean.getMrequested_as_driver() != null) {
-            if (mUserBean.getMrequested_as_driver().equals("1") ) {
-                mReqdriver_Ch.setChecked(true);
-                ch_val = 1;
-                layout_other_op.setVisibility(View.VISIBLE);
-            }
-        }
+        number_of_seats.setConfiguration(LinearLayout.HORIZONTAL, IncDecCircular.TYPE_INTEGER,
+                IncDecCircular.DECREMENT, IncDecCircular.INCREMENT);
+        number_of_seats.enableLongPress(true, true, 500);
+        layout_other_op = findViewById(R.id.layout_other_op);
+
         mSaveTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (checkValidations()) {
                     new AsyncUpdateUserProfile().execute();
+                } else {
+                    MessageUtils.showNoInternetAvailable(context);
                 }
             }
         });
@@ -148,33 +137,20 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
         mProfileIv = findViewById(R.id.circularImageView);
 
         if (!PrefUtils.getUserInfo().getThumb_image().equals("")) {
-            //mProgressDialog.show();
-            Glide.with(activity)
-                    .load(PrefUtils.getUserInfo().getThumb_image())
-                    .crossFade()
-                    .error(R.drawable.user_icon)
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            //mProgressDialog.dismiss();
-                            return false;
-                        }
 
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model,
-                                                       Target<GlideDrawable> target,
-                                                       boolean isFromMemoryCache, boolean isFirstResource) {
-                            //mProgressDialog.dismiss();
-                            return false;
-                        }
-                    })
+
+            Glide.with(this)
+                    .load(PrefUtils.getUserInfo().getThumb_image())
+                    .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.user_icon)
+                    .dontTransform()
                     .into(mProfileIv);
+
         }
 
         SetValues();
-
         mProfileIv.setOnClickListener(this);
-        mReqdriver_Ch.setOnCheckedChangeListener(this);
         mFirstNameEt.addTextChangedListener(this);
         mLastNameEt.addTextChangedListener(this);
         mAddressEt.addTextChangedListener(this);
@@ -182,7 +158,7 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
         mEmailEt.addTextChangedListener(this);
         mVhmodel_Et.addTextChangedListener(this);
         mVhtype_Et.addTextChangedListener(this);
-        mMaxpassenger_Et.addTextChangedListener(this);
+        number_of_seats.setOnValueChangeListener(this);
     }
 
     private void SetValues() {
@@ -192,15 +168,15 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
         mMobileEt.setText(mUserBean.getmMobileNo());
         mEmailEt.setText(mUserBean.getmEmail());
         mAddressEt.setText(mUserBean.getmAddress());
-
-        mVhmodel_Et.setText(mUserBean.getMvehicle_model());
-        mVhtype_Et.setText(mUserBean.getMvehicle_type());
-        mMaxpassenger_Et.setText(mUserBean.getmMax_passengers());
-        /*if (ch_val != 0) {
-            mVhmodel_Et.setText(mUserBean.getMvehicle_model());
-            mVhtype_Et.setText(mUserBean.getMvehicle_type());
-            mMaxpassenger_Et.setText(mUserBean.getmMax_passengers());
-        }*/
+        if (mUserBean.getCar_info() != null) {
+            mVhmodel_Et.setText(mUserBean.getCar_info().getCar_model());
+            mVhtype_Et.setText(mUserBean.getCar_info().getCar_type());
+            number_of_seats.setupValues(1, 4, 1, Float.parseFloat(mUserBean.getCar_info().getSeating_capacity()));
+        } else {
+            mVhmodel_Et.setText("");
+            mVhtype_Et.setText("");
+            number_of_seats.setupValues(1, 4, 1, 1);
+        }
     }
 
     private boolean checkValidations() {
@@ -220,13 +196,13 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
             MessageUtils.showFailureMessage(EditProfileActivity.this, "Please enter valid Email Address");
             return false;
         } else if (ch_val != 0) {
-           if (mVhmodel_Et.getText().toString().isEmpty()) {
+            if (mVhmodel_Et.getText().toString().isEmpty()) {
                 MessageUtils.showFailureMessage(EditProfileActivity.this, "Please enter Vehicle Model");
                 return false;
             } else if (mVhtype_Et.getText().toString().isEmpty()) {
                 MessageUtils.showFailureMessage(EditProfileActivity.this, "Please enter Vehicle Type");
                 return false;
-            } else if (mMaxpassenger_Et.getText().toString().isEmpty()) {
+            } else if (number_of_seats.getValue().isEmpty()) {
                 MessageUtils.showFailureMessage(EditProfileActivity.this, "Please enter Vehicle Max Passenger");
                 return false;
             } else {
@@ -241,12 +217,19 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
     public void onBackPressed() {
         super.onBackPressed();
 
-        RideShareApp.mHomeTabPos = 4;
-
-        Intent i = new Intent(EditProfileActivity.this, HomeNewActivity.class);
-        startActivity(i);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finish();
+        if (RideShareApp.mHomeTabPos != 0) {
+            RideShareApp.mHomeTabPos = 4;
+            Intent i = new Intent(EditProfileActivity.this, HomeNewActivity.class);
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        } else {
+            RideShareApp.mRideTypeTabPos = 4;
+            Intent i = new Intent(EditProfileActivity.this, RideTypeActivity.class);
+            startActivity(i);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }
 
     }
 
@@ -312,15 +295,22 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
 
             imagePath = photos.get(0);
             Uri uri = Uri.fromFile(new File(photos.get(0)));
-            Glide.with(this).load(uri)
+            Glide.with(this)
+                    .load(uri)
+                    .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.user_icon)
+                    .dontTransform()
                     .into(mProfileIv);
 
         } else if (PICK_CAMERA == requestCode && resultCode == Activity.RESULT_OK) {
             imagePath = convertImageUriToFile(imageUri, activity);
             Glide.with(this)
-                    .load("file://" + imagePath)
+                    .load(imagePath)
+                    .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.user_icon)
+                    .dontTransform()
                     .into(mProfileIv);
 
         }
@@ -352,8 +342,13 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
 
             int size = cursor.getCount();
 
-            if (size == 0) {
+            /*if (size == 0) {
             } else {
+                if (cursor.moveToFirst()) {
+                    Path = cursor.getString(file_ColumnIndex);
+                }
+            }*/
+            if (size > 0) {
                 if (cursor.moveToFirst()) {
                     Path = cursor.getString(file_ColumnIndex);
                 }
@@ -366,46 +361,6 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
         return Path;
     }
 
-    private void updateProfile() {
-        mProgressDialog.show();
-        RequestBody mfirstname = RequestBody.create(MultipartBody.FORM, mFirstNameEt.getText().toString());
-        RequestBody mlatname = RequestBody.create(MultipartBody.FORM, mLastNameEt.getText().toString());
-        RequestBody mMobile = RequestBody.create(MultipartBody.FORM, mMobileEt.getText().toString());
-        RequestBody mUserId = RequestBody.create(MultipartBody.FORM, mUserBean.getmUserId());
-        RequestBody mEmail = RequestBody.create(MultipartBody.FORM, mEmailEt.getText().toString());
-        RequestBody mVh_Model = RequestBody.create(MultipartBody.FORM, mVhmodel_Et.getText().toString());
-        RequestBody mVh_Type = RequestBody.create(MultipartBody.FORM, mVhtype_Et.getText().toString());
-        RequestBody mMax_Passengers = RequestBody.create(MultipartBody.FORM, mMaxpassenger_Et.getText().toString());
-        RequestBody mGroupid = RequestBody.create(MultipartBody.FORM, mUserBean.getmGroup_id());
-        RequestBody mReq_driver = RequestBody.create(MultipartBody.FORM, String.valueOf(ch_val));
-
-        RequestBody requestFile = null;
-        MultipartBody.Part body = null;
-
-        /*if (images != null) {
-            requestFile = RequestBody.create(RestApiInterface.MULTIPART, new File(images.get(0).getPath()));
-            body = MultipartBody.Part.createFormData("profile_image", images.get(0).getName(), requestFile);
-        }*/
-
-        ApiServiceModule.createService(RestApiInterface.class, context).updateProfile(mUserId, mfirstname, mlatname, mMobile, body, mEmail, mVh_Model, mVh_Type, mMax_Passengers, mReq_driver, mGroupid).enqueue(new Callback<SignupResponse>() {
-            @Override
-            public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
-                mProgressDialog.cancel();
-                if (response.isSuccessful() && response.body() != null) {
-                    PrefUtils.addUserInfo(response.body().getMlist().get(0));
-                    MessageUtils.showSuccessMessage(EditProfileActivity.this, response.body().getmMessage());
-                    finish();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SignupResponse> call, Throwable t) {
-                t.printStackTrace();
-                Log.d("error", t.toString());
-                mProgressDialog.cancel();
-            }
-        });
-    }
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -436,7 +391,7 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
 
     @Override
     public void onClick(View view) {
-        new TedPermission(EditProfileActivity.this)
+         TedPermission.with(EditProfileActivity.this)
                 .setPermissionListener(permissionlistener)
                 .setDeniedMessage("If you reject permission,you can not use this service" +
                         "\n\nPlease turn on permissions at [Setting] > [Permission]")
@@ -445,29 +400,27 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
                 .check();
     }
 
+    @Override
+    public void onValueChange(IncDecImageButton view, float oldValue, float newValue) {
+        mSaveTv.setVisibility(View.VISIBLE);
+    }
 
+
+    @SuppressLint("StaticFieldLeak")
     private class AsyncUpdateUserProfile extends AsyncTask<Objects, Void, String> {
 
         CustomProgressDialog mProgressDialog;
-        String mVh_Model = "";
-        String mVh_Type = "";
-        String mMax_Passengers = "";
+        String mVh_Model;
+        String mVh_Type;
+        String mMax_Passengers;
 
-        public AsyncUpdateUserProfile() {
+        private AsyncUpdateUserProfile() {
 
             mProgressDialog = new CustomProgressDialog(EditProfileActivity.this);
             mProgressDialog.show();
-
-            /*if (ch_val == 1) {
-                mVh_Model = mVhmodel_Et.getText().toString();
-                mVh_Type = mVhtype_Et.getText().toString();
-                mMax_Passengers = mMaxpassenger_Et.getText().toString();
-                mReq_driver = String.valueOf(ch_val);
-            }*/
-
             mVh_Model = mVhmodel_Et.getText().toString();
             mVh_Type = mVhtype_Et.getText().toString();
-            mMax_Passengers = mMaxpassenger_Et.getText().toString();
+            mMax_Passengers = number_of_seats.getValue().trim();
         }
 
         @Override
@@ -537,6 +490,13 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
                         beanUser.setMvehicle_type(jObjResult.optString("vehicle_type"));
                         beanUser.setmMax_passengers(jObjResult.optString("max_passengers"));
 
+                        JSONObject jObjcarInfo = jObjResult.optJSONObject("car_info");
+                        CarInfo carInfo = new CarInfo();
+                        carInfo.setCar_model(jObjcarInfo.optString("car_model"));
+                        carInfo.setCar_type(jObjcarInfo.optString("car_type"));
+                        carInfo.setSeating_capacity(jObjcarInfo.optString("seating_capacity"));
+                        beanUser.setCar_info(carInfo);
+
                         PrefUtils.addUserInfo(beanUser);
 
                         RideShareApp.mHomeTabPos = 4;
@@ -546,10 +506,9 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         finish();
                         try {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                                finishAffinity();
-                            }
+                            finishAffinity();
                         } catch (Exception e) {
+                            e.printStackTrace();
                         }
 
                     } else {

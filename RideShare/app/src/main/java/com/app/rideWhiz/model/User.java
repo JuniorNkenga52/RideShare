@@ -1,5 +1,6 @@
 package com.app.rideWhiz.model;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -49,6 +50,9 @@ public class User implements Serializable {
     private String profile_image;
     private String thumb_image;
 
+    @SerializedName("car_info")
+    private CarInfo car_info;
+
     @SerializedName("group_id")
     private String mGroup_id;
 
@@ -93,6 +97,29 @@ public class User implements Serializable {
     private String m_is_assigned_group;
 
     private String jabberId;
+
+    private String start_lat;
+    private String start_long;
+
+    private String end_lat;
+    private String end_long;
+
+    private String start_address;
+    private String end_address;
+
+    private String riderID;
+    private String request_share_id;
+
+    private String ride_time;
+    private String ride_distance;
+
+    private String add_ride_time;
+    private String add_ride_distance;
+
+    private boolean is_new_request;
+
+    private LatLng req_source;
+    private LatLng req_des;
 
     public String getThumb_image() {
         return thumb_image;
@@ -373,4 +400,133 @@ public class User implements Serializable {
     public void setM_is_assigned_group(String m_is_assigned_group) {
         this.m_is_assigned_group = m_is_assigned_group;
     }
+
+    public String getStart_lat() {
+        return start_lat;
+    }
+
+    public void setStart_lat(String start_lat) {
+        this.start_lat = start_lat;
+    }
+
+    public String getStart_long() {
+        return start_long;
+    }
+
+    public void setStart_long(String start_long) {
+        this.start_long = start_long;
+    }
+
+    public String getEnd_lat() {
+        return end_lat;
+    }
+
+    public void setEnd_lat(String end_lat) {
+        this.end_lat = end_lat;
+    }
+
+    public String getEnd_long() {
+        return end_long;
+    }
+
+    public void setEnd_long(String end_long) {
+        this.end_long = end_long;
+    }
+
+    public String getEnd_address() {
+        return end_address;
+    }
+
+    public void setEnd_address(String end_address) {
+        this.end_address = end_address;
+    }
+
+    public String getStart_address() {
+        return start_address;
+    }
+
+    public void setStart_address(String start_address) {
+        this.start_address = start_address;
+    }
+
+    public String getRiderID() {
+        return riderID;
+    }
+
+    public void setRiderID(String riderID) {
+        this.riderID = riderID;
+    }
+
+    public String getRequest_share_id() {
+        return request_share_id;
+    }
+
+    public void setRequest_share_id(String request_share_id) {
+        this.request_share_id = request_share_id;
+    }
+
+    public String getRide_time() {
+        return ride_time;
+    }
+
+    public void setRide_time(String ride_time) {
+        this.ride_time = ride_time;
+    }
+
+    public String getRide_distance() {
+        return ride_distance;
+    }
+
+    public void setRide_distance(String ride_distance) {
+        this.ride_distance = ride_distance;
+    }
+
+    public String getAdd_ride_time() {
+        return add_ride_time;
+    }
+
+    public void setAdd_ride_time(String add_ride_time) {
+        this.add_ride_time = add_ride_time;
+    }
+
+    public String getAdd_ride_distance() {
+        return add_ride_distance;
+    }
+
+    public void setAdd_ride_distance(String add_ride_distance) {
+        this.add_ride_distance = add_ride_distance;
+    }
+
+    public boolean getIs_new_request() {
+        return is_new_request;
+    }
+
+    public void setIs_new_request(boolean is_new_request) {
+        this.is_new_request = is_new_request;
+    }
+
+    public LatLng getReq_source() {
+        return req_source;
+    }
+
+    public void setReq_source(LatLng req_source) {
+        this.req_source = req_source;
+    }
+
+    public LatLng getReq_des() {
+        return req_des;
+    }
+
+    public void setReq_des(LatLng req_des) {
+        this.req_des = req_des;
+    }
+
+    public CarInfo getCar_info() {
+        return car_info;
+    }
+
+    public void setCar_info(CarInfo car_info) {
+        this.car_info = car_info;
+    }
 }
+

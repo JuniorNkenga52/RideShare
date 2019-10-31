@@ -1,19 +1,26 @@
 package com.app.rideWhiz.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.cardview.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,6 +32,7 @@ import com.app.rideWhiz.api.RideShareApi;
 import com.app.rideWhiz.model.GroupList;
 import com.app.rideWhiz.model.NotificationList;
 import com.app.rideWhiz.utils.AppUtils;
+import com.app.rideWhiz.utils.MessageUtils;
 import com.app.rideWhiz.utils.PrefUtils;
 import com.app.rideWhiz.view.CustomProgressDialog;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -43,6 +51,7 @@ public class NotificationFragment extends Fragment {
 
     private TextView mNoUserTv;
     SwipeRefreshLayout swipeRefreshRequests;
+    Activity activity;
 
     public static NotificationFragment newInstance() {
         return new NotificationFragment();
@@ -56,12 +65,19 @@ public class NotificationFragment extends Fragment {
         mLvNotification = rootView.findViewById(R.id.mLvGroup);
 
         mNoUserTv = rootView.findViewById(R.id.no_user);
-        swipeRefreshRequests=rootView.findViewById(R.id.swipeRefreshRequests);
+        swipeRefreshRequests = rootView.findViewById(R.id.swipeRefreshRequests);
 
-
+        activity = getActivity();
         mNoUserTv.setVisibility(View.GONE);
 
-        new AsyncNotification().execute();
+
+        //MessageUtils.showNoInternetAvailable(getActivity());
+        if (AppUtils.isInternetAvailable(activity)) {
+            new AsyncNotification().execute();
+        } else {
+            swipeRefreshRequests.setRefreshing(false);
+            MessageUtils.showNoInternetAvailable(activity);
+        }
 
         swipeRefreshRequests.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -70,10 +86,18 @@ public class NotificationFragment extends Fragment {
                     new AsyncNotification().execute();
                 } else {
                     swipeRefreshRequests.setRefreshing(false);
+                    MessageUtils.showNoInternetAvailable(getActivity());
                 }
             }
         });
         swipeRefreshRequests.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+
+        mLvNotification.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
 
         return rootView;
     }
@@ -97,8 +121,8 @@ public class NotificationFragment extends Fragment {
                     new AsyncNotification().execute();
                 } else {
                     swipeRefreshRequests.setRefreshing(false);
+                    MessageUtils.showNoInternetAvailable(activity);
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -131,7 +155,7 @@ public class NotificationFragment extends Fragment {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.groupJoinRequestList(PrefUtils.getUserInfo().getmUserId(),getContext());
+                return RideShareApi.groupJoinRequestList(PrefUtils.getUserInfo().getmUserId(), getContext());
             } catch (Exception e) {
                 return null;
             }
@@ -161,8 +185,9 @@ public class NotificationFragment extends Fragment {
                         bean.setU_firstname(jObjResult.getString("u_firstname"));
                         bean.setU_lastname(jObjResult.getString("u_lastname"));
                         bean.setU_email(jObjResult.getString("u_email"));
-                        bean.setProfile_image(jObjResult.getString("profile_image"));
-                        bean.setThumb_image(jObjResult.getString("thumb_image"));
+                        bean.setU_mo_number(jObjResult.getString("u_mo_number"));
+                        bean.setProfile_image(jObjResult.optString("profile_image"));
+                        bean.setThumb_image(jObjResult.optString("thumb_image"));
 
                         bean.setCategory_id(jObjResult.getString("category_id"));
                         bean.setCategory_name(jObjResult.getString("category_name"));
@@ -170,7 +195,7 @@ public class NotificationFragment extends Fragment {
                         bean.setGroup_id(jObjResult.getString("group_id"));
                         bean.setGroup_name(jObjResult.getString("group_name"));
 
-                        bean.setStatus(jObjResult.getString("status"));
+                        bean.setStatus(jObjResult.optString("status"));
                         bean.setIs_admin_accept(jObjResult.optString("is_admin_accept"));
 
                         mListNotification.add(bean);
@@ -222,6 +247,7 @@ public class NotificationFragment extends Fragment {
             private ImageView imgDecline;
             private ImageView imgAccept;
             private LinearLayout layout_req;
+            private LinearLayout layout_info;
         }
 
         @SuppressLint("InflateParams")
@@ -239,11 +265,12 @@ public class NotificationFragment extends Fragment {
                 holder.circularImageView = vi.findViewById(R.id.circularImageView);
                 holder.mUserName = vi.findViewById(R.id.mUserName);
                 holder.mGroupName = vi.findViewById(R.id.mGroupName);
-                holder.mGroupStatus=vi.findViewById(R.id.mGroupStatus);
+                holder.mGroupStatus = vi.findViewById(R.id.mGroupStatus);
 
                 holder.imgDecline = vi.findViewById(R.id.imgDecline);
                 holder.imgAccept = vi.findViewById(R.id.imgAccept);
-                holder.layout_req=vi.findViewById(R.id.layout_req);
+                holder.layout_req = vi.findViewById(R.id.layout_req);
+                holder.layout_info = vi.findViewById(R.id.layout_info);
 
                 vi.setTag(holder);
             } else {
@@ -255,18 +282,25 @@ public class NotificationFragment extends Fragment {
             holder.mUserName.setText(String.format("%s %s", notifBean.getU_firstname(), notifBean.getU_lastname()));
             holder.mGroupName.setText(notifBean.getGroup_name());
 
-            Picasso.with(getActivity()).load(notifBean.getThumb_image()).resize(300, 300)
+            Picasso.get().load(notifBean.getThumb_image()).resize(300, 300)
                     .centerCrop().error(R.drawable.user_icon).into(holder.circularImageView);
 
-            if(notifBean.getIs_admin_accept().equals("1")){
+            if (notifBean.getIs_admin_accept().equals("1")) {
                 holder.layout_req.setVisibility(View.VISIBLE);
                 holder.mGroupStatus.setText("");
-            }else {
-                if(notifBean.getIs_admin_accept().equals("2")){
-                    holder.mGroupStatus.setText(notifBean.getU_firstname()+"'s Request is Accepted");
+                holder.layout_info.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getUserInfoDialog(notifBean);
+                    }
+                });
+            } else {
+                if (notifBean.getIs_admin_accept().equals("2")) {
+                    holder.mGroupStatus.setText(notifBean.getU_firstname() + "'s Request is Accepted");
                     holder.mGroupStatus.setTextColor(getResources().getColor(R.color.accept_btn_color));
-                }else {
-                    holder.mGroupStatus.setText(notifBean.getU_firstname()+"'s Request is Declined");
+                } else {
+                    holder.mGroupStatus.setText(notifBean.getU_firstname() + "'s Re" +
+                            "quest is Declined");
                     holder.mGroupStatus.setTextColor(getResources().getColor(R.color.reject_btn_color));
                 }
                 holder.layout_req.setVisibility(View.GONE);
@@ -291,6 +325,8 @@ public class NotificationFragment extends Fragment {
                     mListNotification.remove(pos);
                 }
             });
+
+
             return vi;
         }
     }
@@ -322,7 +358,7 @@ public class NotificationFragment extends Fragment {
         @Override
         public Object doInBackground(Object... params) {
             try {
-                return RideShareApi.joinGroup(user_id, group_id, status,getContext());
+                return RideShareApi.joinGroup(user_id, group_id, status, getContext());
             } catch (Exception e) {
                 return null;
             }
@@ -346,5 +382,48 @@ public class NotificationFragment extends Fragment {
 
             }
         }
+    }
+
+    public void getUserInfoDialog(final NotificationList notificationbean) {
+
+        final Dialog dialog = new Dialog(getActivity());
+
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+
+        window.setAttributes(wlp);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.get_user_info_dialog);
+        CardView mllCustomDialogError = (CardView) dialog.findViewById(R.id.card_view_pin);
+
+        mllCustomDialogError.setLayoutParams(new LinearLayout.LayoutParams(
+                (int) (AppUtils.getDeviceWidth(getActivity()) / 1.2),
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+
+        ImageView ic_close = dialog.findViewById(R.id.ic_close);
+        TextView user_name_tv = (TextView) dialog.findViewById(R.id.user_name_tv);
+        TextView ph_no_tv = (TextView) dialog.findViewById(R.id.ph_no_tv);
+        //cancel_driver_tv
+        LinearLayout user_layout = dialog.findViewById(R.id.user_layout);
+
+        ic_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+        user_name_tv.setText(notificationbean.getU_firstname() + " " + notificationbean.getU_lastname());
+        ph_no_tv.setText(notificationbean.getU_mo_number());
+        //user_name_tv.setText();
+        user_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+        dialog.show();
     }
 }

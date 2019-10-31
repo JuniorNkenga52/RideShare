@@ -4,16 +4,16 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -65,10 +65,6 @@ public class GroupSelectionFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_explore, container,
                 false);
-
-
-
-
 
 
         PrefUtils.initPreference(getActivity());
@@ -135,15 +131,9 @@ public class GroupSelectionFragment extends Fragment {
 
             try {
                 if (AppUtils.isInternetAvailable(context)) {
-                    Fragment selectedFragment = null;
                     if (PrefUtils.getString("isBlank").equals("true")) {
-                        selectedFragment = ExploreFragment.newInstance();
-                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                        FragmentTransaction transaction = fragmentManager.beginTransaction();
-                        transaction.replace(R.id.frame_layout_group, selectedFragment);
-                        transaction.commit();
+                        new AsyncAllGroup().execute();
                     }
-                    //new AsyncAllGroup().execute();
                 } else {
                     swipeRefreshRequests.setRefreshing(false);
                 }
@@ -295,7 +285,7 @@ public class GroupSelectionFragment extends Fragment {
             holder.txtGroupName.setText(bean.getGroup_name());
             holder.txtGroupDescription.setText(bean.getGroup_description());
 
-            Picasso.with(context).load(bean.getCategory_image()).error(R.drawable.user_icon).into(holder.imgGroup);
+            Picasso.get().load(bean.getCategory_image()).error(R.drawable.user_icon).into(holder.imgGroup);
 
             /*0 = None (Join)
             1 = Requested
@@ -411,4 +401,5 @@ public class GroupSelectionFragment extends Fragment {
             }
         }
     }
+
 }

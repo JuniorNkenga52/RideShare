@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <solid android:color="#FFFFFF" />
+
+    <stroke
+        android:width="@dimen/_1sdp"
+        android:color="@color/colorPrimary" />
+    <corners android:radius="@dimen/_5sdp" />
+
+
+</shape>
+<!--
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true">
+        <color android:color="#FFFFFF" />
+    </item>
+</layer-list>-->
+<!--
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/darkGreen" android:state_hovered="true" />
+    <item android:drawable="@color/white" android:state_selected="true" />
+</selector>-->

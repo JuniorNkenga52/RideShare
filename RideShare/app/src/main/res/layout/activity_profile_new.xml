@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusableInTouchMode="true"
-    android:background="@color/contentBGnew">
+    android:background="@color/contentBGnew"
+    android:focusableInTouchMode="true">
 
     <ImageView
         android:layout_width="match_parent"
@@ -34,9 +34,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/username_tv"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/username_tv">
+        android:layout_alignParentLeft="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,7 +46,7 @@
             android:orientation="vertical"
             android:padding="@dimen/_8sdp">
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/first_name_tl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -59,16 +59,16 @@
                     android:id="@+id/first_name_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                     android:hint="@string/first_name_new"
                     android:inputType="textCapSentences"
                     android:singleLine="true"
-                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/last_name_tl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -80,16 +80,16 @@
                     android:id="@+id/last_name_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                     android:hint="@string/last_name_new"
                     android:inputType="textCapSentences"
                     android:singleLine="true"
-                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/address_name_tl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -107,10 +107,10 @@
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/email_tl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -128,9 +128,9 @@
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/mobile_tl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -143,19 +143,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/mobile_number"
-                    android:singleLine="true"
                     android:inputType="textEmailAddress"
+                    android:singleLine="true"
                     android:textColor="@color/blacltext"
                     android:textSize="@dimen/_14sdp" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:id="@+id/layout_req_driver"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_8sdp">
+                android:layout_marginTop="@dimen/_8sdp"
+                android:visibility="gone">
 
                 <com.app.rideWhiz.widget.TextViewRegular
                     android:id="@+id/item_dr_ap_req"
@@ -181,9 +182,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/vhmodel_tl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -199,9 +200,9 @@
                         android:textColor="@color/blacltext"
                         android:textSize="@dimen/_14sdp" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/vhtype_tl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -217,35 +218,57 @@
                         android:textColor="@color/blacltext"
                         android:textSize="@dimen/_14sdp" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/maxpassenger_tl"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:theme="@style/TextLabel"
-                    android:layout_marginBottom="@dimen/_12sdp"
-                    app:hintTextAppearance="@style/TextLabelSize">
+                    android:layout_margin="@dimen/_2sdp">
 
-                    <com.app.rideWhiz.widget.EditTextRegular
-                        android:id="@+id/maxpassenger_et"
-                        android:layout_width="match_parent"
+
+                    <com.app.rideWhiz.widget.TextViewRegular
+                        android:id="@+id/max_Seats"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="@string/maxpass"
-                        android:inputType="number"
-                        android:textColor="@color/blacltext"
+                        android:layout_centerVertical="true"
+                        android:text="@string/max_seats"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/_14sdp" />
 
-                </android.support.design.widget.TextInputLayout>
-            </LinearLayout>
+                    <com.hariofspades.incdeclibrary.IncDecImageButton
+                        android:id="@+id/number_of_seats"
+                        android:layout_width="@dimen/_150sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_15sdp"
+                        android:layout_toEndOf="@+id/max_Seats"
+                        app:leftButtonColorTintB="@color/colorPrimaryDark"
+                        app:leftDrawableB="@drawable/ic_remove_black_24dp"
+                        app:leftDrawableTintB="@color/black"
+                        app:rightButtonColorTinitB="@color/black"
+                        app:rightDrawableB="@drawable/ic_add_white_24dp"
+                        app:rightDrawableTintB="@color/black"
+                        app:textColorB="@color/black"
+                        app:textSizeB="24"/>
+                </RelativeLayout>
+                <!-- <android.support.design.widget.TextInputLayout
+                     android:id="@+id/maxpassenger_tl"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:theme="@style/TextLabel"
+                     android:layout_marginBottom="@dimen/_12sdp"
+                     app:hintTextAppearance="@style/TextLabelSize">
 
-           <!-- <Button
-                android:id="@+id/btn_privileges"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/_8sdp"
-                android:background="@color/loginbtn"
-                android:text="@string/vehicle_privileges" />-->
+                     <com.app.rideWhiz.widget.EditTextRegular
+                         android:id="@+id/maxpassenger_et"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:hint="@string/maxpass"
+                         android:inputType="number"
+                         android:textColor="@color/blacltext"
+                         android:textSize="@dimen/_14sdp" />
+
+                 </android.support.design.widget.TextInputLayout>-->
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>
@@ -261,8 +284,8 @@
             android:id="@+id/back_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/_8sdp"

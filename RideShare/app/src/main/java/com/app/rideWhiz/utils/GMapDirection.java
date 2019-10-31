@@ -26,15 +26,15 @@ public class GMapDirection {
     }
 
 
-    public String getUrl(Context context,LatLng start, LatLng end, String mode, boolean isAlternative) {
+    public String getUrl(Context context, LatLng start, LatLng end, String mode, boolean isAlternative) {
 
         //String str_key = "key="+"AIzaSyBtvwSjFgg8VOhn9H7JZLS-jT1SXivcaDU";
-        String str_key = "key="+context.getResources().getString(R.string.google_places_server_key);
+        String str_key = "key=" + context.getResources().getString(R.string.google_places_server_key);
         String url = "https://maps.googleapis.com/maps/api/directions/json?"
                 + "origin=" + start.latitude + "," + start.longitude
                 + "&destination=" + end.latitude + "," + end.longitude
-                + "&sensor=false&units=metric&mode="+mode+ "&" +str_key;
-                //+ "&" +str_key
+                + "&sensor=false&units=metric&mode=" + mode + "&" + str_key;
+        //+ "&" +str_key
         if (isAlternative)
             url += "&alternatives=true";
 
@@ -42,7 +42,40 @@ public class GMapDirection {
         return url;
     }
 
-    public  String getDirectionsUrl(Context context, LatLng origin, LatLng dest, boolean isAlternative) {
+    public String getWayPointsUrl(Context context, LatLng start, LatLng end, ArrayList<LatLng> markerPoints) {
+
+        // Origin of route
+        String str_origin = "origin=" + start.latitude + "," + start.longitude;
+
+        // Destination of route
+        String str_dest = "destination=" + end.latitude + "," + end.longitude;
+
+        // Sensor enabled
+        String sensor = "sensor=false";
+
+        // Waypoints
+        String waypoints = "";
+        for (int i = 1; i < markerPoints.size(); i++) {
+            LatLng point = (LatLng) markerPoints.get(i);
+            if (i == 1)
+                waypoints = "waypoints=";
+            waypoints += point.latitude + "," + point.longitude + "|";
+        }
+        /* LatLng point = (LatLng) markerPoints.get(0);
+         *//*if (i == 2)
+            waypoints = "waypoints=";*//*
+        waypoints += point.latitude + "," + point.longitude + "|";
+        // Building the parameters to the web service */
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + waypoints;
+        // Output format
+        String output = "json";
+        String str_key = "key=" + context.getResources().getString(R.string.google_places_server_key);
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&" + str_key;
+        return url;
+    }
+
+    public String getDirectionsUrl(Context context, LatLng origin, LatLng dest, boolean isAlternative) {
         // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
         // Destination of route
@@ -63,22 +96,22 @@ public class GMapDirection {
         return url;
     }
 
-    public String getUrlVia(String mode, boolean isAlternative, LatLng start, LatLng... end) {
+    public String getUrlVia(Context context, String mode, boolean isAlternative, LatLng start, LatLng... end) {
         String via = "&waypoints=";
-        if(end.length > 1){
-            for(LatLng end_latLng:end){
-                via += "via:"+end_latLng.latitude+"%2C"+end_latLng.longitude+"%7C";
+        if (end.length > 1) {
+            for (LatLng end_latLng : end) {
+                via += "via:" + end_latLng.latitude + "%2C" + end_latLng.longitude + "%7C";
             }
-        }else {
+        } else {
             via = "";
         }
 
-
-        String url = "http://maps.googleapis.com/maps/api/directions/json?"
+        String str_key = "key=" + context.getResources().getString(R.string.google_places_server_key);
+        String url = "https://maps.googleapis.com/maps/api/directions/json?"
                 + "origin=" + start.latitude + "," + start.longitude
-                + "&destination=" + end[end.length-1].latitude + "," + end[end.length-1].longitude
+                + "&destination=" + end[end.length - 1].latitude + "," + end[end.length - 1].longitude
                 + via
-                + "&sensor=false&units=metric&mode="+mode;
+                + "&sensor=false&units=metric&mode=" + mode + "&" + str_key;
 
         if (isAlternative)
             url += "&alternatives=true";

@@ -42,10 +42,12 @@
     <color name="lightGray">#d4d4d4</color>
 
 
+    <color name="black">#000000</color>
     <color name="BlackColor">#000000</color>
     <color name="GrayDarkColor">#7c7c7c</color>
 
     <color name="dialog">#90000000</color>
     <color name="gray_109">#a1a1a3</color>
     <color name="dialog_error_color">#ff554d</color>
+    <color name="Transparent">#00000000</color>
 </resources>

@@ -20,42 +20,111 @@
         android:padding="@dimen/_8sdp"
         android:weightSum="1">
 
-        <com.mikhaellopez.circularimageview.CircularImageView
-            android:id="@+id/user_profile"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_50sdp"
-            android:src="@drawable/user_icon"
-            app:civ_border_color="#EEEEEE"
-            app:civ_border_width="2dp"
-            app:civ_shadow="false"
-            app:civ_shadow_color="@color/colorPrimary"
-            app:civ_shadow_radius="10" />
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <!--Driver Side View -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_users"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <!--USer Side View -->
+            <LinearLayout
+                android:id="@+id/layout_rider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:visibility="gone">
+
+                <com.mikhaellopez.circularimageview.CircularImageView
+                    android:id="@+id/user_profile"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:src="@drawable/user_icon"
+                    app:civ_border_color="#EEEEEE"
+                    app:civ_border_width="2dp"
+                    app:civ_shadow="false"
+                    app:civ_shadow_color="#8BC34A"
+                    app:civ_shadow_radius="10" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <com.app.rideWhiz.widget.TextViewRegular
+                        android:id="@+id/name_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Dhaiyur"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_14sdp" />
+
+                    <com.app.rideWhiz.widget.TextViewRegular
+                        android:id="@+id/email_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Dhaiyur"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_14sdp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/layout_new_notification"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone">
 
-            <com.app.rideWhiz.widget.TextViewRegular
-                android:id="@+id/name_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Dhaiyur"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_14sdp" />
+            <ImageView
+                android:id="@+id/ivNewNotification"
+                android:layout_width="@dimen/_32sdp"
+                android:layout_height="@dimen/_32sdp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@null"
+                android:padding="@dimen/_3sdp"
+                android:src="@drawable/ic_new_request" />
 
-            <com.app.rideWhiz.widget.TextViewRegular
-                android:id="@+id/email_tv"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dhaiyur"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_14sdp" />
+                android:layout_marginBottom="@dimen/_15sdp">
+
+                <ImageView
+                    android:id="@+id/image_notification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/notifiaciton_font"
+                    android:paddingLeft="@dimen/_10sdp"
+                    android:paddingTop="@dimen/_10sdp"
+                    android:paddingRight="@dimen/_10sdp"
+                    android:paddingBottom="@dimen/_10sdp" />
+
+                <com.app.rideWhiz.widget.TextViewSemiBold
+                    android:id="@+id/item_txt_counts_notification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="1"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp" />
+
+            </RelativeLayout>
+
         </LinearLayout>
-
 
         <ImageView
             android:id="@+id/ivStartChat"
@@ -64,7 +133,8 @@
             android:layout_gravity="center_vertical"
             android:contentDescription="@null"
             android:padding="@dimen/_5sdp"
-            android:src="@drawable/ic_chat" />
+            android:src="@drawable/ic_chat"
+            android:visibility="gone"/>
 
         <RelativeLayout
             android:id="@+id/layout_unreadmsgs"
@@ -78,11 +148,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/notifiaciton_font"
-                android:paddingBottom="@dimen/_10sdp"
                 android:paddingLeft="@dimen/_10sdp"
-                android:paddingRight="@dimen/_10sdp"
                 android:paddingTop="@dimen/_10sdp"
-                />
+                android:paddingRight="@dimen/_10sdp"
+                android:paddingBottom="@dimen/_10sdp" />
 
             <com.app.rideWhiz.widget.TextViewSemiBold
                 android:id="@+id/item_txt_counts"
@@ -97,14 +166,13 @@
 
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/li1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
         android:background="#66000000"
         android:orientation="vertical">
 
@@ -116,7 +184,8 @@
             android:background="@color/accept_btn_color"
             android:text="Start Ride"
             android:textColor="@color/blacltext"
-            android:textSize="@dimen/_14sdp" />
+            android:textSize="@dimen/_14sdp"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/finish_ride_btn"

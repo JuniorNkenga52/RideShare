@@ -134,4 +134,5 @@ public class AcceptRider  implements Serializable{
     public void setFromRider(Rider fromRider) {
         this.fromRider = fromRider;
     }
+
 }

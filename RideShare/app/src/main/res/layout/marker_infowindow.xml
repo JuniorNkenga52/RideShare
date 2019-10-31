@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.app.rideWhiz.widget.TextViewRegular
+        android:id="@+id/tv_Title"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="wrap_content"
+        android:maxLines="2"/>
+
+</LinearLayout>
