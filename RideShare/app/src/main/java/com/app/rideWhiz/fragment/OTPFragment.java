@@ -4,15 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.app.rideWhiz.R;
 import com.app.rideWhiz.activity.HomeNewActivity;
@@ -57,7 +57,7 @@ public class OTPFragment extends Fragment {
 
         PrefUtils.initPreference(getActivity());
 
-        imgBack = (ImageView) rootView.findViewById(R.id.imgBack);
+        imgBack = rootView.findViewById(R.id.imgBack);
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,7 +86,7 @@ public class OTPFragment extends Fragment {
             }
         });
 
-        txtNext = (TextView) rootView.findViewById(R.id.txtNext);
+        txtNext = rootView.findViewById(R.id.txtNext);
         txtNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
