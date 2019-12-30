@@ -124,8 +124,8 @@ public class MobileNumberFragment extends Fragment {
                     } else if (!chkIAgree.isChecked()) {
                         MessageUtils.showFailureMessage(getActivity(), "You must agree with the Terms and Conditions");
                     } else {
-                        String numberMo = "+1" + result;
-                        //String numberMo = "+91" + result;
+                        //String numberMo = "+1" + result;
+                        String numberMo = "+91" + result;
                         //String numberMo = "+" + AppUtils.getCountryTelephoneCode(getApplicationContext()) + result;
                         if (AppUtils.isInternetAvailable(getActivity())) {
                             new AsyncSendTextMessage(numberMo.trim().replaceAll(" ", "")).execute();

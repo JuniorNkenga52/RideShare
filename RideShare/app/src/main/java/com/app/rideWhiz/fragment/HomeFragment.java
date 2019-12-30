@@ -106,6 +106,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.maps.android.ui.IconGenerator;
 import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 
+import org.androidannotations.annotations.App;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
@@ -950,7 +951,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
         try {
             mNameTv.setText(rider.getmFirstName());
-            mAddressTv.setText(rider.getmAddress());
+            //mAddressTv.setText(rider.getmAddress());
+            mAddressTv.setText(AppUtils.getAddress(context, Double.parseDouble(rider.getmLatitude()), Double.parseDouble(rider.getmLongitude())));
             txt_maxPerson.setText("0" + rider.getNo_of_seats());
             requestRoute(true);
             driver_distance_tv.setText(duration + " Min");
