@@ -2,6 +2,7 @@ package com.app.rideWhiz.api.response;
 
 
 import com.app.rideWhiz.model.InProgressRide;
+import com.app.rideWhiz.model.MyGroup;
 import com.app.rideWhiz.model.User;
 import com.google.gson.annotations.SerializedName;
 
@@ -14,6 +15,9 @@ public class SignupResponse
 
     @SerializedName("result")
     ArrayList<User> mlist;
+
+    @SerializedName("groups")
+    ArrayList<MyGroup> groups;
 
     @SerializedName("message")
     private String mMessage;
@@ -52,5 +56,13 @@ public class SignupResponse
 
     public void setmProgressRide(ArrayList<InProgressRide> mProgressRide) {
         this.mProgressRide = mProgressRide;
+    }
+
+    public ArrayList<MyGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(ArrayList<MyGroup> groups) {
+        this.groups = groups;
     }
 }

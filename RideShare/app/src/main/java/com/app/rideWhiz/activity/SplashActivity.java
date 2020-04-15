@@ -34,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,7 +67,8 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+        public void onPermissionDenied(List<String> deniedPermissions) {
+
         }
     };
     private BroadcastReceiver mRegistrationBroadcastReceiver;
@@ -102,12 +104,7 @@ public class SplashActivity extends AppCompatActivity {
 
         });
 
-        FirebaseInstanceId.getInstance().getInstanceId().addOnFailureListener(SplashActivity.this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("newToken", e.getMessage());
-            }
-        });
+        FirebaseInstanceId.getInstance().getInstanceId().addOnFailureListener(SplashActivity.this, e -> Log.e("newToken", e.getMessage()));
         /*int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
         if (ConnectionResult.SUCCESS != resultCode) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
@@ -167,6 +164,7 @@ public class SplashActivity extends AppCompatActivity {
                     if (!response.body().getmStatus().equals("error")) {
                         user_id_List = new ArrayList<>();
                         PrefUtils.addUserInfo(response.body().getMlist().get(0));
+                        PrefUtils.addMyGroupInfo(response.body().getGroups());
                         PrefUtils.putBoolean("islogin", true);
                         PrefUtils.putBoolean("isAll", true);
                         PrefUtils.putString("loginwith", "normal");

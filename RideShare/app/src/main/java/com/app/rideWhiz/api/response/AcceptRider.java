@@ -15,6 +15,8 @@ public class AcceptRider  implements Serializable{
     private String start_long;
     private String end_lati;
     private String end_long;
+    private String driver_end_lati;
+    private String driver_end_long;
     private String request_status;
     private String created_datetime;
     private String updated_datetime;
@@ -93,6 +95,22 @@ public class AcceptRider  implements Serializable{
 
     public void setEnd_long(String end_long) {
         this.end_long = end_long;
+    }
+
+    public String getDriver_end_lati() {
+        return driver_end_lati;
+    }
+
+    public void setDriver_end_lati(String driver_end_lati) {
+        this.driver_end_lati = driver_end_lati;
+    }
+
+    public String getDriver_end_long() {
+        return driver_end_long;
+    }
+
+    public void setDriver_end_long(String driver_end_long) {
+        this.driver_end_long = driver_end_long;
     }
 
     public String getRequest_status() {

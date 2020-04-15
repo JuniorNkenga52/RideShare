@@ -27,19 +27,6 @@ public class RideShareApi {
         }
     }
 
-    public static String getApiCall() {
-        try {
-            String URL = SERVER_URL + "";
-
-            LinkedHashMap<String, String> params = new LinkedHashMap<>();
-            params.put("", "");
-
-            return RideShareApiCall.getWebserviceCall(URL, params);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     public static String sendTextMessageNew(String mobile_number, Context context) {
         try {
             String URL = SERVER_URL + "user/sendTextMessageNew";

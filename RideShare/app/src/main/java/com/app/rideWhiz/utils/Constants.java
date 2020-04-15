@@ -34,10 +34,15 @@ public class Constants {
     // public static final String WEBSOCKET_ENDPOINT = "ws://192.168.0.30:8090/websocketnew/php-socket.php";
 
     public static final String WEBSOCKET_ENDPOINT = "wss://www.myridewhiz.com:8090/ride-share-websocket/php-socket.php";
-    public static final String SERVER_URL = "http://ridewhiz.rlogical.com/api/";
+    public static final String SERVER_URL = "http://ridewhiz.rlogical.com/api/";  //LIVE
+    //public static final String SERVER_URL = "http://php.rlogical.com/rideshare/api/";//Local old
+    //public static final String SERVER_URL = "http://php.rlogical.com/rideshare_test/api/";//Local
+    //public static final String SERVER_URL = "https://dev.rlogical.com/rideshare/api/";// Dev local
+
 
     //public static final String DOMAIN = "ec2-18-218-151-202.us-east-2.compute.amazonaws.com";
     public static final String DOMAIN = "ec2-18-218-151-202.us-east-2.compute.amazonaws.com";
+    //public static final String DOMAIN = "https://www.myridewhiz.com";
     //public static final String DOMAIN = "http://180.211.99.75:9090";
     //public static final String DOMAIN = "http://18.218.151.202";
     public static final String RESOURCE_NAME = "RideWhiz";

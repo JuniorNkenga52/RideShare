@@ -4,28 +4,45 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true">
 
-    <com.app.rideWhiz.widget.TextViewBold
-        android:id="@+id/txtHeaderName"
+    <RelativeLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:text="Explore"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_18sdp" />
+        android:layout_height="?attr/actionBarSize">
+
+        <com.app.rideWhiz.widget.TextViewBold
+            android:id="@+id/txtHeaderName"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:text="Explore"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sdp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_ic_admin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:src="@drawable/ic_admin"
+            android:tint="@color/white"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
 
     <FrameLayout
         android:id="@+id/frame_layout_group"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true">
-    </FrameLayout>
+        android:animateLayoutChanges="true" />
 
     <LinearLayout
         android:id="@+id/llSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txtHeaderName"
+        android:layout_below="@+id/layout"
         android:background="@color/white"
         android:orientation="vertical"
         android:padding="@dimen/_5sdp">
@@ -55,10 +72,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/llSearch"
-        android:paddingBottom="@dimen/_5sdp"
         android:paddingLeft="@dimen/_12sdp"
-        android:paddingRight="@dimen/_12sdp"
         android:paddingTop="@dimen/_5sdp"
+        android:paddingRight="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_5sdp"
         android:text="You are not joined any group currently! please select any group to join in."
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/_12sdp" />

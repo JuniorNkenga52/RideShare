@@ -98,6 +98,8 @@ public class RideShareApp extends Application implements LocationProvider.Locati
                                case "1005" : Rider Cancel Ride Request from Rider to Driver
                                case "1006" : Driver Start and Finish Ride Request from Driver to Rider
                                case "1007" : Driver Send Map ReRoute Data to Connected Users/Riders
+                               case "1008" : Socket Notification for User/Driver Cancel AcceptedRide
+                               case "1009" : Ride in not in Current Route
                             */
                             if (token.equals("1002") || token.equals("1003") || token.equals("1004") || token.equals("1005")
                                     || token.equals("1006") || token.equals("1007")|| token.equals("1008")|| token.equals("1009")) {

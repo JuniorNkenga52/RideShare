@@ -61,7 +61,7 @@ public class MyGroupActivity extends AppCompatActivity {
         mUserBean = PrefUtils.getUserInfo();
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("My Groups");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
@@ -86,7 +86,7 @@ public class MyGroupActivity extends AppCompatActivity {
             }
         }
 
-        mLvGroup = (ListView) findViewById(R.id.mLvGroup);
+        mLvGroup = findViewById(R.id.mLvGroup);
 
         mLvGroup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -100,7 +100,7 @@ public class MyGroupActivity extends AppCompatActivity {
             }
         });
 
-        ImageView ivCreateGroup = (ImageView) findViewById(R.id.ivCreateGroup);
+        ImageView ivCreateGroup = findViewById(R.id.ivCreateGroup);
         ivCreateGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,7 +116,7 @@ public class MyGroupActivity extends AppCompatActivity {
         new AsyncAllGroup().execute();
 
 
-        tvSearchGroup = (EditText) findViewById(R.id.tvSearchGroup);
+        tvSearchGroup = findViewById(R.id.tvSearchGroup);
         txt_no_grp = findViewById(R.id.txt_no_grp);
         tvSearchGroup.addTextChangedListener(new TextWatcher() {
 
@@ -299,10 +299,10 @@ public class MyGroupActivity extends AppCompatActivity {
 
                 holder = new ViewHolder();
 
-                holder.imgGroup = (ImageView) vi.findViewById(R.id.imgGroup);
-                holder.txtGroupName = (TextView) vi.findViewById(R.id.txtGroupName);
-                holder.txtGroupDescription = (TextView) vi.findViewById(R.id.txtGroupDescription);
-                holder.txtJoin = (TextView) vi.findViewById(R.id.txtJoin);
+                holder.imgGroup = vi.findViewById(R.id.imgGroup);
+                holder.txtGroupName = vi.findViewById(R.id.txtGroupName);
+                holder.txtGroupDescription = vi.findViewById(R.id.txtGroupDescription);
+                holder.txtJoin = vi.findViewById(R.id.txtJoin);
 
                 vi.setTag(holder);
             } else {
@@ -332,7 +332,7 @@ public class MyGroupActivity extends AppCompatActivity {
         }
 
         // Filter Class
-        public void filter(String charText) {
+        void filter(String charText) {
             try {
                 charText = charText.toLowerCase(Locale.getDefault());
                 mSearchListGroup.clear();

@@ -359,7 +359,7 @@ public class MyXMPP implements PingFailedListener {
 
                     @Override
                     public void run() {
-                        MessageUtils.showFailureMessage(context, "Connection Closed!");
+                       // MessageUtils.showFailureMessage(context, "Connection Closed!");
                     }
                 });
 
@@ -377,7 +377,7 @@ public class MyXMPP implements PingFailedListener {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        MessageUtils.showFailureMessage(context, "ConnectionClosedOn Error!!");
+                        //MessageUtils.showFailureMessage(context, "ConnectionClosedOn Error!!");
                     }
                 });
 
@@ -402,7 +402,7 @@ public class MyXMPP implements PingFailedListener {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        MessageUtils.showFailureMessage(context, "Reconnection Failed!");
+                        //MessageUtils.showFailureMessage(context, "Reconnection Failed!");
                     }
                 });
 
@@ -462,7 +462,7 @@ public class MyXMPP implements PingFailedListener {
 
                     @Override
                     public void run() {
-                        MessageUtils.showSuccessMessage(context, "Connected!");
+                        //MessageUtils.showSuccessMessage(context, "Connected!");
                     }
                 });
         }

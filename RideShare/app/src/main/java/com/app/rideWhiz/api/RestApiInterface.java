@@ -16,6 +16,8 @@ import com.app.rideWhiz.api.response.SendResponse;
 import com.app.rideWhiz.api.response.SignupResponse;
 import com.app.rideWhiz.api.response.StartRideResponse;
 import com.app.rideWhiz.api.response.UpdateDestinationAddress;
+import com.app.rideWhiz.model.DriverReviewResponse;
+import com.app.rideWhiz.model.DriverReviews;
 import com.app.rideWhiz.model.User;
 import com.google.gson.JsonObject;
 
@@ -193,4 +195,8 @@ public interface RestApiInterface {
     @FormUrlEncoded
     @POST("user/updateFriendListType")
     Call<JSONObject> updateFriendListType(@Field("user_id") String mId, @Field("friend_list_type") String mType);
+
+    @FormUrlEncoded
+    @POST("user/getDriverRates")
+    Call<DriverReviews> getDriverRates(@Field("user_id") String user_id);
 }

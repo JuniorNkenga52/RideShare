@@ -4,20 +4,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.app.rideWhiz.widget.TextViewBold
-        android:id="@+id/txtHeaderName"
+
+    <RelativeLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:text="My Profile"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_18sdp" />
+        android:layout_height="?attr/actionBarSize">
+
+        <com.app.rideWhiz.widget.TextViewBold
+            android:id="@+id/txtHeaderName"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:text="My Profile"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sdp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_ic_admin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:src="@drawable/ic_admin"
+            android:tint="@color/white"
+            android:visibility="gone" />
+    </RelativeLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/txtHeaderName"
+        android:layout_below="@+id/layout"
         android:layout_alignParentStart="true"
         android:layout_marginTop="0dp"
         android:orientation="vertical">

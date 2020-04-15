@@ -41,6 +41,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ProfilePhotoFragment extends Fragment {
@@ -254,7 +255,8 @@ public class ProfilePhotoFragment extends Fragment {
         }
 
         @Override
-        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+        public void onPermissionDenied(List<String> deniedPermissions) {
+
         }
     };
 

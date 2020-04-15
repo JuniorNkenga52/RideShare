@@ -101,8 +101,15 @@ public class User implements Serializable {
     private String start_lat;
     private String start_long;
 
+    private String driver_start_lati;
+    private String driver_start_long;
+
+    private String driver_end_lati;
+    private String driver_end_long;
+
     private String end_lat;
     private String end_long;
+
 
     private String start_address;
     private String end_address;
@@ -120,6 +127,16 @@ public class User implements Serializable {
 
     private LatLng req_source;
     private LatLng req_des;
+
+    private String driver_pickup_distance;
+
+    public String getDriver_pickup_distance() {
+        return driver_pickup_distance;
+    }
+
+    public void setDriver_pickup_distance(String driver_pickup_distance) {
+        this.driver_pickup_distance = driver_pickup_distance;
+    }
 
     public String getThumb_image() {
         return thumb_image;
@@ -431,6 +448,38 @@ public class User implements Serializable {
 
     public void setEnd_long(String end_long) {
         this.end_long = end_long;
+    }
+
+    public String getDriver_end_lati() {
+        return driver_end_lati;
+    }
+
+    public void setDriver_end_lati(String driver_end_lati) {
+        this.driver_end_lati = driver_end_lati;
+    }
+
+    public String getDriver_end_long() {
+        return driver_end_long;
+    }
+
+    public void setDriver_end_long(String driver_end_long) {
+        this.driver_end_long = driver_end_long;
+    }
+
+    public String getDriver_start_lati() {
+        return driver_start_lati;
+    }
+
+    public void setDriver_start_lati(String driver_start_lati) {
+        this.driver_start_lati = driver_start_lati;
+    }
+
+    public String getDriver_start_long() {
+        return driver_start_long;
+    }
+
+    public void setDriver_start_long(String driver_start_long) {
+        this.driver_start_long = driver_start_long;
     }
 
     public String getEnd_address() {

@@ -10,16 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_50sdp"
         android:background="@color/colorPrimary"
-        android:gravity="center"
-        >
+        android:gravity="center">
 
         <com.app.rideWhiz.widget.TextViewBold
             android:id="@+id/txtRole2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_10sdp"
-            android:text="Role "
             android:layout_marginTop="@dimen/_4sdp"
+            android:text="Role "
             android:textColor="@color/white"
             android:textSize="@dimen/_14sdp" />
 
@@ -28,18 +27,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtRole2"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/_10sdp"
             android:text="Rider "
             android:textColor="@color/white"
-            android:layout_centerVertical="true"
             android:textSize="@dimen/_14sdp" />
 
         <com.app.rideWhiz.widget.TextViewBold
             android:id="@+id/txtHeaderName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Home"
             android:layout_centerHorizontal="true"
+            android:text="Home"
             android:textColor="@color/white"
             android:textSize="@dimen/_18sdp" />
 
@@ -47,13 +46,25 @@
             android:id="@+id/txt_group_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/txtHeaderName"
             android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:maxLines="2"
             android:text="fdaffd"
-            android:layout_below="@+id/txtHeaderName"
             android:textColor="@color/white"
-            android:layout_centerVertical="true"
             android:textSize="@dimen/_14sdp" />
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_ic_admin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_toStartOf="@+id/popup_iv"
+            android:src="@drawable/ic_admin"
+            android:tint="@color/white"
+            android:visibility="gone"/>
         <ImageView
             android:id="@+id/popup_iv"
             android:layout_width="wrap_content"
@@ -76,8 +87,8 @@
         <com.app.rideWhiz.widget.TextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Home"
             android:layout_centerHorizontal="true"
+            android:text="Home"
             android:textColor="@color/white"
             android:textSize="@dimen/_18sdp" />
 

@@ -3,26 +3,17 @@ package com.app.rideWhiz.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.FragmentManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.provider.Settings;
-import android.telephony.SmsManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +21,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -40,7 +30,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.app.rideWhiz.BuildConfig;
 import com.app.rideWhiz.R;
 import com.app.rideWhiz.api.ApiServiceModule;
 import com.app.rideWhiz.api.RestApiInterface;
@@ -50,12 +39,15 @@ import com.app.rideWhiz.api.response.ContactResponse;
 import com.app.rideWhiz.api.response.RideSelect;
 import com.app.rideWhiz.api.response.StartRideResponse;
 import com.app.rideWhiz.api.response.UpdateDestinationAddress;
+import com.app.rideWhiz.chat.MyService;
+import com.app.rideWhiz.chat.MyXMPP;
 import com.app.rideWhiz.fragment.ExploreFragment;
 import com.app.rideWhiz.fragment.MessagesFragment;
 import com.app.rideWhiz.fragment.NotificationFragment;
 import com.app.rideWhiz.fragment.ProfileFragment;
 import com.app.rideWhiz.model.ContactBean;
 import com.app.rideWhiz.model.InProgressRide;
+import com.app.rideWhiz.model.MyGroup;
 import com.app.rideWhiz.model.User;
 import com.app.rideWhiz.service.LocationProvider;
 import com.app.rideWhiz.utils.AppUtils;
@@ -66,7 +58,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,6 +86,7 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
     TextView mNextTv;
     CustomProgressDialog mProgressDialog;
     User mUserBean;
+    ArrayList<MyGroup> myGroupArrayList;
     RideShareApp application;
     LinearLayout mNeedRideLL;
     LinearLayout mOfferRideLL;
@@ -120,7 +112,7 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
         }
 
         @Override
-        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+        public void onPermissionDenied(List<String> deniedPermissions) {
             MessageUtils.showFailureMessage(RideTypeActivity.this, "Permission Denied\n" + deniedPermissions.toString());
         }
     };
@@ -151,7 +143,6 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
             }
         }
     };
-
 
 
     @Override
@@ -238,8 +229,9 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
 
 
         mUserBean = PrefUtils.getUserInfo();
-
+        myGroupArrayList = PrefUtils.getMyGroupInfo();
         mProgressDialog = new CustomProgressDialog(this);
+
 
         mNeedRideRb = findViewById(R.id.need_ride_rb);
         mOfferRideRb = findViewById(R.id.offer_ride_rb);
@@ -287,69 +279,60 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
         mNeedRideLL = findViewById(R.id.need_ride_ll);
         mOfferRideLL = findViewById(R.id.offer_ride_ll);
 
-        mNeedRideLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mNeedRideLL.setOnClickListener(v -> {
 
-                if (RideShareApp.mLocation != null) {
-                    mNeedRideLL.setSelected(true);
-                    mOfferRideLL.setSelected(false);
-                    rideType = 1;
+            if (RideShareApp.mLocation != null) {
+                mNeedRideLL.setSelected(true);
+                mOfferRideLL.setSelected(false);
+                rideType = 1;
 
-                    mUserBean.setmRideType("1");
-                    PrefUtils.addUserInfo(mUserBean);
+                mUserBean.setmRideType("1");
+                PrefUtils.addUserInfo(mUserBean);
 
-                    application.setmUserType("" + rideType);
+                application.setmUserType("" + rideType);
 
-                    if (AppUtils.isInternetAvailable(activity)) {
-                        selectRide(mUserBean.getmUserId(), "" + rideType, "" +
-                                RideShareApp.mLocation.getLatitude(), "" +
-                                RideShareApp.mLocation.getLongitude());
-                    } else {
-                        MessageUtils.showNoInternetAvailable(activity);
-                    }
-
+                if (AppUtils.isInternetAvailable(activity)) {
+                    selectRide(mUserBean.getmUserId(), "" + rideType, "" +
+                            RideShareApp.mLocation.getLatitude(), "" +
+                            RideShareApp.mLocation.getLongitude());
                 } else {
-                    MessageUtils.showWarningMessage(RideTypeActivity.this, "Getting your location.");
+                    MessageUtils.showNoInternetAvailable(activity);
                 }
 
-
+            } else {
+                MessageUtils.showWarningMessage(RideTypeActivity.this, "Getting your location.");
             }
+
+
         });
-        mOfferRideLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (RideShareApp.mLocation != null) {
-                    mOfferRideLL.setSelected(true);
-                    mNeedRideLL.setSelected(false);
-                    rideType = 2;
+        mOfferRideLL.setOnClickListener(v -> {
+            if (RideShareApp.mLocation != null) {
+                mOfferRideLL.setSelected(true);
+                mNeedRideLL.setSelected(false);
+                rideType = 2;
 
-                    mUserBean.setmRideType("2");
-                    PrefUtils.addUserInfo(mUserBean);
+                mUserBean.setmRideType("2");
+                PrefUtils.addUserInfo(mUserBean);
 
-                    application.setmUserType("" + rideType);
-                    if (AppUtils.isInternetAvailable(activity)) {
-                        selectRide(mUserBean.getmUserId(), "" + rideType, "" +
-                                RideShareApp.mLocation.getLatitude(), "" +
-                                RideShareApp.mLocation.getLongitude());
-                    } else {
-                        MessageUtils.showNoInternetAvailable(activity);
-                    }
+                application.setmUserType("" + rideType);
+                if (AppUtils.isInternetAvailable(activity)) {
+                    selectRide(mUserBean.getmUserId(), "" + rideType, "" +
+                            RideShareApp.mLocation.getLatitude(), "" +
+                            RideShareApp.mLocation.getLongitude());
                 } else {
-                    MessageUtils.showWarningMessage(RideTypeActivity.this, "Getting your location.");
+                    MessageUtils.showNoInternetAvailable(activity);
                 }
-
+            } else {
+                MessageUtils.showWarningMessage(RideTypeActivity.this, "Getting your location.");
             }
+
         });
 
-        mNextTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (rideType == 0) {
-                    MessageUtils.showFailureMessage(RideTypeActivity.this, "Please Select Ride type.");
-                } else {
-                    application.setmUserType("" + rideType);
-                }
+        mNextTv.setOnClickListener(v -> {
+            if (rideType == 0) {
+                MessageUtils.showFailureMessage(RideTypeActivity.this, "Please Select Ride type.");
+            } else {
+                application.setmUserType("" + rideType);
             }
         });
 
@@ -362,28 +345,6 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
                 .check();
 
         updateDestinationAddress(mUserBean.getmUserId(), "");
-    }
-
-    protected boolean isLocationEnabled() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-
-            int locationMode = Settings.Secure.getInt(
-                    getContentResolver(),
-                    Settings.Secure.LOCATION_MODE,
-                    0
-            );
-
-            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-        } else {
-
-            String locationProviders = Settings.Secure.getString(
-                    getContentResolver(),
-                    Settings.Secure.LOCATION_PROVIDERS_ALLOWED
-            );
-
-
-            return !TextUtils.isEmpty(locationProviders);
-        }
     }
 
     private void selectRide(String mId, String mType, String latitude, String longitude) {
@@ -611,5 +572,13 @@ public class RideTypeActivity extends AppCompatActivity implements LocationProvi
                 mProgressDialog.cancel();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MyXMPP.destroy_connect();
+        Intent intent = new Intent(activity, MyService.class);
+        stopService(intent);
     }
 }

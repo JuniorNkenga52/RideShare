@@ -13,6 +13,7 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
 
+
     <permission
         android:name="com.app.rideWhiz.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
@@ -45,8 +46,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:replace="android:allowBackup,android:icon,android:theme">
-        <activity android:name=".activity.PlaceSerachActivity"/>
+        android:requestLegacyExternalStorage="true"
+        tools:replace="android:allowBackup,android:icon,android:theme"
+        tools:targetApi="q">
+        <activity
+            android:name=".activity.ReviewsActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.PlaceSerachActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -130,7 +136,6 @@
                 <category android:name="com.app.rideWhiz" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".service.BatteryInfoReceiver"
             android:enabled="true"
@@ -207,6 +212,7 @@
         <activity
             android:name=".activity.NotificationViewActivity"
             android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

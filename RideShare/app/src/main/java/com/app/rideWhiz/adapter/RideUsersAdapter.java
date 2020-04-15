@@ -17,6 +17,7 @@ import com.app.rideWhiz.listner.OnStartRideListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -42,11 +43,13 @@ public class RideUsersAdapter extends RecyclerView.Adapter<RideUsersAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Glide.with(activity).load(riders.get(position).getFromRider().getThumb_image())
+        /*Glide.with(activity).load(riders.get(position).getFromRider().getThumb_image())
                 .error(R.drawable.user_icon)
                 .transition(new DrawableTransitionOptions()
                         .crossFade())
-                .into(holder.image_user);
+                .into(holder.image_user);*/
+
+        Picasso.get().load(riders.get(position).getFromRider().getThumb_image()).error(R.drawable.user_icon).into(holder.image_user);
         holder.text_user_name.setText(riders.get(position).getFromRider().getmFirstName());
 
         if (riders.get(position).getFromRider().getIs_new_request()) {

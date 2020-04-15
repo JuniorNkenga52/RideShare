@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10sdp"
+        android:orientation="vertical">
+
+        <com.iarcuschin.simpleratingbar.SimpleRatingBar
+            android:id="@+id/ratings_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srb_borderColor="@color/forgot_signup_blue_color"
+            app:srb_fillColor="@color/forgot_signup_blue_color"
+            app:srb_numberOfStars="5"
+            app:srb_rating="3"
+            app:srb_starSize="30dp"
+            app:srb_stepSize="0.5" />
+
+        <com.app.rideWhiz.widget.TextViewRegular
+            android:id="@+id/txt_review_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="dfslkjnvflkjdn vbg"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14sdp" />
+
+        <com.app.rideWhiz.widget.TextViewRegular
+            android:id="@+id/txt_review_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="dfslkjnvflkjdn vbg"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14sdp" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/gray"/>
+
+</LinearLayout>

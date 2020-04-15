@@ -11,9 +11,10 @@
     <string name="PROTOCOL">https</string>
 
     <!-- <string name="google_sign_in_key">237817979464-tr38ehl0emlb8nvvncj4aldp7tb67uho.apps.googleusercontent.com</string>-->
-    <!--<string name="google_sign_in_key">237817979464-8r302nr5euouieoqpvg7vlqhrrspuckj.apps.googleusercontent.com</string>-->
+    <string name="google_sign_in_key">237817979464-8r302nr5euouieoqpvg7vlqhrrspuckj.apps.googleusercontent.com</string>
     <!--<string name="google_places_server_key">AIzaSyCJeXEwLXtoZmRJ6HnyKf6zHC57vtItd0I</string>-->
-   <!-- <string name="google_places_server_key">AIzaSyADxBSnaC9qdGjqHG4s7mtMMI7OQ5oYzsA</string>-->
+    <string name="google_places_server_key">AIzaSyADxBSnaC9qdGjqHG4s7mtMMI7OQ5oYzsA</string>
+
 
     <string name="facebook_app_id">258005881343253</string>
     <string name="fb_login_protocol_scheme">fb258005881343253</string>
@@ -437,4 +438,5 @@
     <string name="distance">Ex Miles</string>
     <string name="name">Name</string>
     <string name="ok">Okay</string>
+    <string name="view_reviews">View Reviews</string>
 </resources>

@@ -28,6 +28,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
@@ -63,7 +64,6 @@ import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.content.Context.VIBRATOR_SERVICE;
 import static com.app.rideWhiz.activity.NotificationViewActivity.BG;
 import static com.app.rideWhiz.activity.NotificationViewActivity.vibration;
 
@@ -146,6 +146,45 @@ public class AppUtils {
             }
         }
         return mlist;
+    }
+
+    public static Bitmap getBitmapFromView(View view) {
+        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(returnedBitmap);
+        Drawable bgDrawable = view.getBackground();
+        if (bgDrawable != null)
+            bgDrawable.draw(canvas);
+        else
+            canvas.drawColor(Color.WHITE);
+        view.draw(canvas);
+        return returnedBitmap;
+    }
+
+    public static Bitmap loadBitmapFromView(View v) {
+        /*Bitmap b = Bitmap.createBitmap( v.getLayoutParams().width, v.getLayoutParams().height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+        v.draw(c);*/
+        if (v.getMeasuredHeight() <= 0) {
+            int specWidth = View.MeasureSpec.makeMeasureSpec(0 /* any */, View.MeasureSpec.UNSPECIFIED);
+            v.measure(specWidth, specWidth);
+            //v.measure(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(b);
+            v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
+            v.draw(c);
+            return b;
+        } else {
+            Bitmap returnedBitmap = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(returnedBitmap);
+            Drawable bgDrawable = v.getBackground();
+            if (bgDrawable != null)
+                bgDrawable.draw(canvas);
+            else
+                canvas.drawColor(Color.WHITE);
+            v.draw(canvas);
+            return returnedBitmap;
+        }
     }
 
     public static Bitmap getMarkerBitmapFromView(Activity activity, Bitmap userPhoto, boolean ride_start, boolean info_icon, String address) {
@@ -626,9 +665,17 @@ public class AppUtils {
 
     public static void playSound(Context context) {
         if (BG == null) {
-            vibration = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+            //vibration = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+            vibration = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
             long[] pattern = {0, 100, 700};
-            vibration.vibrate(pattern, 0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                assert vibration != null;
+                vibration.vibrate(VibrationEffect.createWaveform(pattern, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                assert vibration != null;
+                vibration.vibrate(500);
+            }
+            //vibration.vibrate(pattern, 0);
             try {
                 BG = MediaPlayer.create(context, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
                 if (BG == null) {

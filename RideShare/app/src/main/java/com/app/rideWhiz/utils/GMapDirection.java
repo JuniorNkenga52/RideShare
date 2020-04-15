@@ -19,14 +19,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class GMapDirection {
-    public final static String MODE_DRIVING = "driving";
+    final static String MODE_DRIVING = "driving";
     public final static String MODE_WALKING = "walking";
 
-    public GMapDirection() {
+    GMapDirection() {
     }
 
 
-    public String getUrl(Context context, LatLng start, LatLng end, String mode, boolean isAlternative) {
+    String getUrl(Context context, LatLng start, LatLng end, String mode, boolean isAlternative) {
 
         //String str_key = "key="+"AIzaSyBtvwSjFgg8VOhn9H7JZLS-jT1SXivcaDU";
         String str_key = "key=" + context.getResources().getString(R.string.google_places_server_key);
@@ -42,7 +42,7 @@ public class GMapDirection {
         return url;
     }
 
-    public String getWayPointsUrl(Context context, LatLng start, LatLng end, ArrayList<LatLng> markerPoints) {
+    String getWayPointsUrl(Context context, LatLng start, LatLng end, ArrayList<LatLng> markerPoints) {
 
         // Origin of route
         String str_origin = "origin=" + start.latitude + "," + start.longitude;
@@ -54,12 +54,12 @@ public class GMapDirection {
         String sensor = "sensor=false";
 
         // Waypoints
-        String waypoints = "";
+        StringBuilder waypoints = new StringBuilder();
         for (int i = 1; i < markerPoints.size(); i++) {
             LatLng point = (LatLng) markerPoints.get(i);
             if (i == 1)
-                waypoints = "waypoints=";
-            waypoints += point.latitude + "," + point.longitude + "|";
+                waypoints = new StringBuilder("waypoints=");
+            waypoints.append(point.latitude).append(",").append(point.longitude).append("|");
         }
         /* LatLng point = (LatLng) markerPoints.get(0);
          *//*if (i == 2)
@@ -71,8 +71,7 @@ public class GMapDirection {
         String output = "json";
         String str_key = "key=" + context.getResources().getString(R.string.google_places_server_key);
         // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&" + str_key;
-        return url;
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&" + str_key;
     }
 
     public String getDirectionsUrl(Context context, LatLng origin, LatLng dest, boolean isAlternative) {
@@ -96,14 +95,14 @@ public class GMapDirection {
         return url;
     }
 
-    public String getUrlVia(Context context, String mode, boolean isAlternative, LatLng start, LatLng... end) {
-        String via = "&waypoints=";
+    String getUrlVia(Context context, String mode, boolean isAlternative, LatLng start, LatLng... end) {
+        StringBuilder via = new StringBuilder("&waypoints=");
         if (end.length > 1) {
             for (LatLng end_latLng : end) {
-                via += "via:" + end_latLng.latitude + "%2C" + end_latLng.longitude + "%7C";
+                via.append("via:").append(end_latLng.latitude).append("%2C").append(end_latLng.longitude).append("%7C");
             }
         } else {
-            via = "";
+            via = new StringBuilder();
         }
 
         String str_key = "key=" + context.getResources().getString(R.string.google_places_server_key);
@@ -142,9 +141,8 @@ public class GMapDirection {
             URLConnection connection = ur.openConnection();
 
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document doc = builder.parse(connection.getInputStream());
 
-            return doc;
+            return builder.parse(connection.getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }

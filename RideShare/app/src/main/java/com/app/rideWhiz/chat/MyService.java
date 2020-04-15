@@ -116,9 +116,9 @@ public class MyService extends Service {
 
         }
         Log.w("Service", "Service is destroyed");
-        if (mUserType.equals("2")) {
-            removeDriver(userid);
-        }
+        removeDriver(userid);
+        /*if (mUserType.equals("2")) {
+        }*/
         super.onDestroy();
     }
 

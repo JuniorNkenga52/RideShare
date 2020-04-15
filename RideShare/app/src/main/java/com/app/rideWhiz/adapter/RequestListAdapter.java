@@ -16,6 +16,7 @@ import com.app.rideWhiz.listner.CallbackRequestType;
 import com.app.rideWhiz.listner.ItemClickListener;
 import com.app.rideWhiz.listner.OnFinishViewListener;
 import com.app.rideWhiz.model.User;
+import com.app.rideWhiz.utils.AppUtils;
 import com.app.rideWhiz.utils.DialogUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -47,12 +48,9 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
     public void updateData(User User, int type) {
         if (type == 0) {
             UserInfoArr.add(User);
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    notifyItemInserted(UserInfoArr.size());
-                    //notifyDataSetChanged();
-                }
+            activity.runOnUiThread(() -> {
+                notifyItemInserted(UserInfoArr.size());
+                //notifyDataSetChanged();
             });
         } else {
             for (int i = 0; i < UserInfoArr.size(); i++) {
@@ -152,7 +150,7 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
             public void onCancel() {
                 dialog.dismiss();
             }
-        }, activity.getResources().getString(R.string.accept_reject) + " " + fromUser.getmFirstName(), fromUser.getStart_address(), fromUser.getEnd_address());
+        }, activity.getResources().getString(R.string.accept_reject) + " " + fromUser.getmFirstName(), AppUtils.getAddress(activity,Double.parseDouble(fromUser.getStart_lat()), Double.parseDouble(fromUser.getStart_long())),AppUtils.getAddress(activity,Double.parseDouble(fromUser.getEnd_lat()), Double.parseDouble(fromUser.getEnd_long())));
 
         dialog.show();
     }

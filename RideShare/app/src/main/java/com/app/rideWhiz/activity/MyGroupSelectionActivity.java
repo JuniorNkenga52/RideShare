@@ -3,14 +3,10 @@ package com.app.rideWhiz.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,6 +18,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.app.rideWhiz.R;
 import com.app.rideWhiz.api.RideShareApi;
@@ -37,7 +36,6 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -100,39 +98,40 @@ public class MyGroupSelectionActivity extends AppCompatActivity implements Locat
                                       int arg3) {
             }
         });
-        txtskip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RideShareApp.mRideTypeTabPos = 0;
-                if(mSearchListGroup.size()>0){
-                    PrefUtils.putString("SelectedGroup",mSearchListGroup.get(0).getGroup_name());
-                    PrefUtils.putString("SelectedGroupID",mSearchListGroup.get(0).getId());
-                    Intent i = new Intent(context, RideTypeActivity.class);
-                    if (!InprogressRide.equals("")) {
-                        i.putExtra("inprogress", "busy");
-                        i.putExtra("rideprogress", inProgressRideModel);
-                        i.putExtra("rideUserID", rideUserID);
-                        i.putExtra("Is_driver", Is_driver);
+        txtskip.setOnClickListener(v -> {
+            RideShareApp.mRideTypeTabPos = 0;
+            if (mSearchListGroup != null && mSearchListGroup.size() > 0 && PrefUtils.getMyGroupInfo() != null && PrefUtils.getMyGroupInfo().size() > 0) {
+                PrefUtils.putString("SelectedGroup", mSearchListGroup.get(0).getGroup_name());
+                PrefUtils.putString("SelectedGroupID", mSearchListGroup.get(0).getId());
+                PrefUtils.putBoolean(PrefUtils.PREF_IS_ADMIN, false);
+                for (int i = 0; i < PrefUtils.getMyGroupInfo().size(); i++) {
+                    if (mSearchListGroup.get(0).getId().equals(PrefUtils.getMyGroupInfo().get(i).getId())) {
+                        PrefUtils.putBoolean(PrefUtils.PREF_IS_ADMIN, true);
                     }
-
-                    startActivity(i);
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    finish();
-                }else {
-                    MessageUtils.showFailureMessage(context,"Please Select at least one Group");
                 }
 
+                Intent i = new Intent(context, RideTypeActivity.class);
+                if (!InprogressRide.equals("")) {
+                    i.putExtra("inprogress", "busy");
+                    i.putExtra("rideprogress", inProgressRideModel);
+                    i.putExtra("rideUserID", rideUserID);
+                    i.putExtra("Is_driver", Is_driver);
+                }
+
+                startActivity(i);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+            } else {
+                MessageUtils.showFailureMessage(context, "Please Select at least one Group");
             }
+
         });
 
-        swipeRefreshRequests.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (AppUtils.isInternetAvailable(context)) {
-                    new AsyncMyGroup().execute();
-                } else {
-                    swipeRefreshRequests.setRefreshing(false);
-                }
+        swipeRefreshRequests.setOnRefreshListener(() -> {
+            if (AppUtils.isInternetAvailable(context)) {
+                new AsyncMyGroup().execute();
+            } else {
+                swipeRefreshRequests.setRefreshing(false);
             }
         });
         swipeRefreshRequests.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
@@ -382,9 +381,15 @@ public class MyGroupSelectionActivity extends AppCompatActivity implements Locat
                 if (jsonObject.getString("status").equalsIgnoreCase("success")) {
 
                     RideShareApp.mRideTypeTabPos = 0;
-                    if(mSearchListGroup.size()>0){
-                        PrefUtils.putString("SelectedGroup",mSearchListGroup.get(poss).getGroup_name());
-                        PrefUtils.putString("SelectedGroupID",mSearchListGroup.get(poss).getId());
+                    if (mSearchListGroup.size() > 0) {
+                        PrefUtils.putString("SelectedGroup", mSearchListGroup.get(poss).getGroup_name());
+                        PrefUtils.putString("SelectedGroupID", mSearchListGroup.get(poss).getId());
+                        PrefUtils.putBoolean(PrefUtils.PREF_IS_ADMIN, false);
+                        for (int i = 0; i < PrefUtils.getMyGroupInfo().size(); i++) {
+                            if (mSearchListGroup.get(poss).getId().equals(PrefUtils.getMyGroupInfo().get(i).getId())) {
+                                PrefUtils.putBoolean(PrefUtils.PREF_IS_ADMIN, true);
+                            }
+                        }
                         Intent i = new Intent(context, RideTypeActivity.class);
                         if (!InprogressRide.equals("")) {
                             i.putExtra("inprogress", "busy");
@@ -396,8 +401,8 @@ public class MyGroupSelectionActivity extends AppCompatActivity implements Locat
                         startActivity(i);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         finish();
-                    }else {
-                        MessageUtils.showFailureMessage(context,"Please Select at least one Group");
+                    } else {
+                        MessageUtils.showFailureMessage(context, "Please Select at least one Group");
                     }
                     groupAdapter.notifyDataSetChanged();
 

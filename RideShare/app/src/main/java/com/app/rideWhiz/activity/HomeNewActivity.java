@@ -186,12 +186,11 @@ public class HomeNewActivity extends AppCompatActivity implements LocationProvid
 
     }
 
-
-    @Override
+    /*@Override
     protected void onDestroy() {
         super.onDestroy();
         MyXMPP.destroy_connect();
         Intent intent = new Intent(activity, MyService.class);
         stopService(intent);
-    }
+    }*/
 }

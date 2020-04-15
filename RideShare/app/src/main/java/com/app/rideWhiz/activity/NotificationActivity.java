@@ -199,10 +199,10 @@ public class NotificationActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus().equals("success")) {
                         if (response.body().getMsg().get(0).getRequest_status().equals("1")) {
-                            Intent i = new Intent(NotificationActivity.this, StartRideActivity.class);
+                           /* Intent i = new Intent(NotificationActivity.this, StartRideActivity.class);
                             i.putExtra("rideobj", response.body().getMsg().get(0));
                             startActivity(i);
-                            finish();
+                            finish();*/
                         }
                     }
                 } else {

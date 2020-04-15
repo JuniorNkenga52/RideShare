@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,15 +26,23 @@ import androidx.fragment.app.Fragment;
 
 import com.app.rideWhiz.R;
 import com.app.rideWhiz.activity.SignUpActivity;
+import com.app.rideWhiz.api.ApiServiceModule;
+import com.app.rideWhiz.api.RestApiInterface;
 import com.app.rideWhiz.api.RideShareApi;
+import com.app.rideWhiz.api.response.SignupResponse;
 import com.app.rideWhiz.utils.AppUtils;
 import com.app.rideWhiz.utils.MessageUtils;
+import com.app.rideWhiz.utils.PrefUtils;
 import com.app.rideWhiz.view.CustomProgressDialog;
 import com.github.pinball83.maskededittext.MaskedEditText;
 
 import org.json.JSONObject;
 
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MobileNumberFragment extends Fragment {
 
@@ -71,7 +80,7 @@ public class MobileNumberFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_phonenumber, container,
                 false);
 
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         imgBack = rootView.findViewById(R.id.imgBack);
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,17 +109,15 @@ public class MobileNumberFragment extends Fragment {
                 txtPhoneNumber.setMaskedText(phno);
             }
 
+
         }
 
 
         chkIAgree = rootView.findViewById(R.id.chkIAgree);
 
 
-        txtTermsOfService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        txtTermsOfService.setOnClickListener(v -> {
 
-            }
         });
 
         txtNext = rootView.findViewById(R.id.txtNext);
@@ -257,8 +264,9 @@ public class MobileNumberFragment extends Fragment {
                         JSONObject jsonObjectResult = new JSONObject(jsonObject.getString("result"));
                         SignUpActivity.PhoneNumber = txtPhoneNumber.getUnmaskedText();
                         SignUpActivity.mUserId = jsonObjectResult.getString("user_id");
-                        SignUpActivity.mViewPager.setCurrentItem(1);
-                        OTPFragment.updateTest();
+                        //SignUpActivity.mViewPager.setCurrentItem(1);
+                        //OTPFragment.updateTest();
+                        getUserDetails(jsonObjectResult.getString("user_id"));
                     }
                 }
 
@@ -267,5 +275,28 @@ public class MobileNumberFragment extends Fragment {
 
             }
         }
+    }
+
+    private void getUserDetails(final String userId) {
+        ApiServiceModule.createService(RestApiInterface.class, getActivity()).getUserDetails(userId).enqueue(new Callback<SignupResponse>() {
+            @Override
+            public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (!response.body().getmStatus().equals("error")) {
+                        PrefUtils.addMyGroupInfo(response.body().getGroups());
+                        SignUpActivity.mViewPager.setCurrentItem(1);
+                        OTPFragment.updateTest();
+                    } else {
+                        MessageUtils.showFailureMessage(getActivity(), response.body().getmMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SignupResponse> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("error", t.toString());
+            }
+        });
     }
 }

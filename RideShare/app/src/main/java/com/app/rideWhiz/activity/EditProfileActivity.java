@@ -53,6 +53,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -240,7 +241,8 @@ public class EditProfileActivity extends AppCompatActivity implements CompoundBu
         }
 
         @Override
-        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+        public void onPermissionDenied(List<String> deniedPermissions) {
+
         }
     };
 

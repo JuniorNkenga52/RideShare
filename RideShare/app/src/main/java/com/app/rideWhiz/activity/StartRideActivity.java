@@ -5,9 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -17,10 +18,12 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -32,7 +35,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -62,6 +64,7 @@ import com.app.rideWhiz.utils.DialogUtils;
 import com.app.rideWhiz.utils.MapDirectionAPI;
 import com.app.rideWhiz.utils.MessageUtils;
 import com.app.rideWhiz.utils.PrefUtils;
+import com.app.rideWhiz.utils.ToSort;
 import com.app.rideWhiz.view.CustomProgressDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -95,6 +98,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -175,6 +179,11 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     private ArrayList<User> newReqList;
     private Dialog dialogFinishRide;
     BatteryInfoReceiver batteryInfoReceiver = new BatteryInfoReceiver();
+
+    float driver_duration = 0.0f;
+    float driver_distance = 0.0f;
+
+
     private Runnable runnable = new Runnable() {
 
         @Override
@@ -193,10 +202,32 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                         if (mApp.mWebSocketSendRequest.isClosing() || mApp.mWebSocketSendRequest.isClosed()) {
                             Log.w("Message", "Closed >>> ");
                         }
-                        if (mApp.mWebSocketSendRequest.isOpen()) {
+
+                        if (mWebSocketClient != null) {
+                            if (mWebSocketClient.isClosing() || mWebSocketClient.isClosed()) {
+                                Log.w("Message", "Closed >>> ");
+                                //MessageUtils.showWarningMessage(context, "Please Wait \n Your Socket connection is Lost Try to Reconnect to the Server");
+                                mWebSocketClient.reconnect();
+                                Log.w("Message", "Sent >>> " + jMessage.toString());
+
+                            }
+                            if (mWebSocketClient.isOpen()) {
+                                try {
+                                    mWebSocketClient.send(jMessage.toString());
+                                    Log.w("Message", "Sent >>> " + jMessage.toString());
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                    mWebSocketClient.reconnect();
+                                    Log.w("Message", "Reconnecting >>> " + jMessage.toString());
+                                }
+
+                            }
+                        }
+
+                        /*if (mApp.mWebSocketSendRequest.isOpen()) {
                             mWebSocketClient.send(jMessage.toString());
                             Log.w("Message", "Sent Requests>>> " + jMessage.toString());
-                        }
+                        }*/
                     }
 
                 }
@@ -208,6 +239,46 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             mUpdaterHandler.postDelayed(this, updateinterval);
         }
     };
+
+    private okhttp3.Callback driverRouteTimeCallback = new okhttp3.Callback() {
+
+        @Override
+        public void onFailure(okhttp3.Call call, IOException e) {
+            mProgressDialog.dismiss();
+        }
+
+        @Override
+        public void onResponse(okhttp3.Call call, final okhttp3.Response response) throws IOException {
+            if (response.isSuccessful()) {
+                mProgressDialog.dismiss();
+                final String json = response.body().string();
+                Log.w(">>>>>>>", "json :: >>>>>>>>>>>>>>>>>>" + json);
+                activity.runOnUiThread(() -> {
+                    try {
+                        Directions directions = new Directions(activity);
+                        List<Route> routes = directions.parse(json);
+                        //if (directionLine != null) directionLine.remove();
+                        if (routes.size() > 0) {
+                            driver_duration = Float.parseFloat(routes.get(0).getLegs().get(0).getDuration().getText().split("\\s")[0]);
+                            String distance = routes.get(0).getLegs().get(0).getDistance().getText();
+                            if (distance.split("\\s")[1].equals("m")) {
+                                driver_distance = Float.parseFloat(distance.split("\\s")[0]) / 1000;
+                            } else {
+                                driver_distance = Float.parseFloat(distance.split("\\s")[0]);
+                            }
+                            calculateAdditionalTime_Distance();
+                        } else {
+                            Toast.makeText(activity, json, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
+            }
+        }
+    };
+
     private okhttp3.Callback updateRouteCallback = new okhttp3.Callback() {
         @Override
         public void onFailure(okhttp3.Call call, IOException e) {
@@ -224,55 +295,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             }
         }
     };
-    private okhttp3.Callback updateRouteCallback2 = new okhttp3.Callback() {
-        @Override
-        public void onFailure(okhttp3.Call call, IOException e) {
-            Log.d("Error", e.toString());
-        }
 
-        @Override
-        public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
-            if (response.isSuccessful()) {
-                String json = response.body().string();
-                try {
-                    Directions directions = new Directions(activity);
-                    final List<Route> routes = directions.parse(json);
-                    if (routes.size() > 0) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (directionLine != null) directionLine.remove();
-                                LatLng riderEndLatLon = new LatLng(Double.parseDouble(mRider.getEnd_lati()), Double.parseDouble(mRider.getEnd_long()));
-                                ArrayList<LatLng> routesList = new ArrayList<>();
-                                for (LatLng latLngs : routes.get(0).getOverviewPolyLine()) {
-                                    if (!RideShareApp.getmUserType().equals("2")) {
-                                        if (!AppUtils.checkDistance(riderEndLatLon, latLngs)) {
-                                            routesList.add(latLngs);
-                                        } else {
-                                            routesList.add(riderEndLatLon);
-                                            break;
-                                        }
-                                    } else {
-                                        routesList.add(latLngs);
-                                    }
-                                }
-                                directionLine = mGoogleMap.addPolyline((new PolylineOptions())
-                                        .addAll(routesList)
-                                        .color(ContextCompat.getColor(activity, R.color.blacltext))
-                                        .width(10));
-                                directionLine.setClickable(true);
-                            }
-                        });
-
-                    } else {
-                        Toast.makeText(context, json, Toast.LENGTH_LONG).show();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    };
     private okhttp3.Callback updateRouteCallback3 = new okhttp3.Callback() {
         @Override
         public void onFailure(okhttp3.Call call, IOException e) {
@@ -367,7 +390,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
             list_users.setLayoutManager(mLayoutManager);
             newReqList = new ArrayList<>();
-
+            newReqList.clear();
+            layout_new_notification.setVisibility(View.GONE);
             curLocMarker = new ArrayList<>();
 
             mStartRideBtn.setOnClickListener(this);
@@ -454,7 +478,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void run() {
                 try {
-                    Directions directions = new Directions(StartRideActivity.this);
+                    Directions directions = new Directions(activity);
                     routes = directions.parse(json);
 
                     if (directionLine != null) {
@@ -462,10 +486,10 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     }
                     Log.d("Routes Size", ">>>>>>>>>>>>>>>>>>" + routes.size());
                     if (routes.size() > 0) {
-                        directionLine = mGoogleMap.addPolyline((new PolylineOptions())
+                        /*directionLine = mGoogleMap.addPolyline((new PolylineOptions())
                                 .addAll(routes.get(0).getOverviewPolyLine())
                                 .color(ContextCompat.getColor(StartRideActivity.this, R.color.blacltext))
-                                .width(10));
+                                .width(10));*/
                     } else {
                         Toast.makeText(context, json, Toast.LENGTH_LONG).show();
                     }
@@ -482,7 +506,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void run() {
                 try {
-                    Directions directions = new Directions(StartRideActivity.this);
+                    Directions directions = new Directions(activity);
                     if (newReqList.size() > 0) {
 
                         new_routes = directions.parse(json);
@@ -507,8 +531,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
                             for (int i = 0; i < userRidesList.size(); i++) {
                                 if (dur < Float.parseFloat(userRidesList.get(i).getRide_time())) {
-                                    dur += (Float.parseFloat(userRidesList.get(i).getRide_time()));
-                                    dis += (Float.parseFloat(userRidesList.get(i).getRide_distance()));
+                                    dur += (Float.parseFloat(userRidesList.get(i).getRide_time()) + driver_duration);
+                                    dis += (Float.parseFloat(userRidesList.get(i).getRide_distance()) + driver_distance);
                                     lastdur = Float.parseFloat(userRidesList.get(i).getRide_time());
                                     lastdis = Float.parseFloat(userRidesList.get(i).getRide_distance());
                                 } else {
@@ -521,15 +545,19 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                             float finaldes = distance > lastdis ? distance + dis : 0.0f;
 
                             user.setAdd_ride_time(String.valueOf(finaldur));
+                            //user.setAdd_ride_time(String.valueOf(duration));
                             user.setRide_time(String.valueOf(lastdur));
 
                             user.setAdd_ride_distance(String.valueOf(finaldes));
-                            user.setRide_distance(String.valueOf(lastdis));
-
+                            //user.setAdd_ride_distance(String.valueOf(distance));
+                            //user.setRide_distance(String.valueOf(lastdis));
+                            user.setDriver_pickup_distance(String.valueOf(distance));
                             newReqList.set(newReqList.size() - 1, user);
-                            layout_new_notification.setVisibility(View.VISIBLE);
-                            item_txt_counts_notification.setText(String.valueOf(newReqList.size()));
-                            AppUtils.playSound(getApplicationContext());
+                            runOnUiThread(() -> {
+                                layout_new_notification.setVisibility(View.VISIBLE);
+                                item_txt_counts_notification.setText(String.valueOf(newReqList.size()));
+                                AppUtils.playSound(getApplicationContext());
+                            });
                         }
                     } else {
 
@@ -544,8 +572,13 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
                         routes = directions.parse(strJsonRoutes);
 
-                        LatLng pickuplat = new LatLng(Double.parseDouble(PrefUtils.getString("picklng").split("'")[0]), Double.parseDouble(PrefUtils.getString("picklng").split("'")[1]));
-                        LatLng dropplat = new LatLng(Double.parseDouble(PrefUtils.getString("droplng").split("'")[0]), Double.parseDouble(PrefUtils.getString("droplng").split("'")[1]));
+                        LatLng pickuplat = new LatLng(Double.parseDouble
+                                (PrefUtils.getString("picklng").split("'")[0]),
+                                Double.parseDouble(PrefUtils.getString("picklng").split("'")[1]));
+
+                        LatLng dropplat = new LatLng(Double.parseDouble(
+                                PrefUtils.getString("droplng").split("'")[0]),
+                                Double.parseDouble(PrefUtils.getString("droplng").split("'")[1]));
 
 
                         //PolyUtil.isLocationOnPath(pickuplat, routes.get(0).getOverviewPolyLine() , true)
@@ -556,13 +589,21 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                             LatLng pickup = new LatLng(Double.parseDouble(user.getStart_lat()), Double.parseDouble(user.getStart_long()));
                             LatLng drop = new LatLng(Double.parseDouble(user.getEnd_lat()), Double.parseDouble(user.getEnd_long()));
                             droplngList.add(oldDistance < AppUtils.getDistance(pickup, drop) ? dropplat : drop);
+
+                            markerPoints.add(pickup);
+                            markerPoints.add(drop);
                         }
 
                         LatLng finalDestination;
-                        if (PrefUtils.getString("finalDestination") == null || PrefUtils.getString("finalDestination").equals("")) {
-                            finalDestination = new LatLng(Double.parseDouble(PrefUtils.getString("droplng").split("'")[0]), Double.parseDouble(PrefUtils.getString("droplng").split("'")[1]));
+                        PrefUtils.getString("finalDestination");
+                        if (PrefUtils.getString("finalDestination").equals("")) {
+                            finalDestination = new LatLng(Double.parseDouble(
+                                    PrefUtils.getString("droplng").split("'")[0]),
+                                    Double.parseDouble(PrefUtils.getString("droplng").split("'")[1]));
                         } else {
-                            finalDestination = new LatLng(Double.parseDouble(PrefUtils.getString("finalDestination").split("'")[0]), Double.parseDouble(PrefUtils.getString("finalDestination").split("'")[1]));
+                            finalDestination = new LatLng(
+                                    Double.parseDouble(PrefUtils.getString("finalDestination").split("'")[0]),
+                                    Double.parseDouble(PrefUtils.getString("finalDestination").split("'")[1]));
                         }
 
                         // Update the User Side MAP with New Requested MAP
@@ -576,6 +617,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                         Gson gson2 = new Gson();
                         String pickUpGson = gson2.toJson(pickuplat, pickUp);
 
+
                         Type finalDes = new TypeToken<LatLng>() {
                         }.getType();
                         Gson gson3 = new Gson();
@@ -584,7 +626,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                             sendSocketUserReRouteMap(droplngListJson + "'" + "" + pickUpGson + "'" + finalDesGson);
                         }
 
-                        requestMultipleRoute(pickuplat, droplngList, finalDestination);
+                        //requestMultipleRoute(pickuplat, droplngList);
                     }
 
                 } catch (Exception e) {
@@ -600,11 +642,11 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         super.onResume();
         isDestroy = false;
 
-        newReqList.clear();
-        layout_new_notification.setVisibility(View.GONE);
+        //newReqList.clear();
+        //layout_new_notification.setVisibility(View.GONE);
 
         LocalBroadcastManager.getInstance(context).registerReceiver(mLocationReceiver, new IntentFilter("update-location"));
-        LocalBroadcastManager.getInstance(StartRideActivity.this).registerReceiver(mUpdateMessageReciver, new IntentFilter("update_message"));
+        LocalBroadcastManager.getInstance(activity).registerReceiver(mUpdateMessageReciver, new IntentFilter("update_message"));
         if (!chat_sender_id.equals("")) {
             getMessages(chat_sender_id);
         } else {
@@ -664,28 +706,22 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             mMaterialDialog.show();
         } else {
             AlertDialog.Builder builder;
-            builder = new AlertDialog.Builder(StartRideActivity.this);
+            builder = new AlertDialog.Builder(activity);
             builder.setTitle("Cancel Ride")
                     .setMessage("Are you sure you want to cancel ride?")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            try {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        acceptOrRejectRequest(mRider.getRide_id(), "2", context);
-                                    }
-                                });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        try {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    acceptOrRejectRequest(mRider.getRide_id(), "2", context);
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
+                    .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
                     .show();
 
         }
@@ -693,7 +729,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
     @Override
     public void onPause() {
-        LocalBroadcastManager.getInstance(StartRideActivity.this).unregisterReceiver(mUpdateMessageReciver);
+        LocalBroadcastManager.getInstance(activity).unregisterReceiver(batteryInfoReceiver);
+        LocalBroadcastManager.getInstance(activity).unregisterReceiver(mUpdateMessageReciver);
         super.onPause();
     }
 
@@ -705,8 +742,16 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             mWebSocketClient.close();
             mWebSocketClient = null;
         }
-        MyXMPP.destroy_connect();
-        Log.w("DESTROY", RideShareApp.getmUserType());
+
+        if (mContentReceiver != null && batteryInfoReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(mContentReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(batteryInfoReceiver);
+            mContentReceiver = null;
+            batteryInfoReceiver = null;
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.cancel();
+            }
+        }
     }
 
     @Override
@@ -742,12 +787,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
 
-        mGoogleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-                zoomLevel = mGoogleMap.getCameraPosition().zoom;
-            }
-        });
+        mGoogleMap.setOnCameraIdleListener(() -> zoomLevel = mGoogleMap.getCameraPosition().zoom);
 
         if (RideShareApp.getmUserType().equals("2")) {
             mUpdaterHandler.post(runnable);
@@ -788,7 +828,6 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                                     markerPoints.clear();
                                     markerPoints.add(pickup);
                                     markerPoints.addAll(listLatLng);
-                                    MapDirectionAPI.getWayPointsDirection(pickup, finalLatLng, context, markerPoints).enqueue(updateRouteCallback2);
                                 }
                             }
                         } else if (jsonObject.optString("sender_user").equals("1008")) {
@@ -797,16 +836,30 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                             if (mRider.getRide_id().equals(jsonObject.getString("username"))) {
                                 if (RideShareApp.getmUserType().equals("2")) {
                                     if (commonMethods.fetchRidersList("Riders").size() > 1) {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                mAdapter.updateData(data[1]);
-                                                commonMethods.deleteRideRecord("UserRides", mUserbean.getmUserId());
-                                                commonMethods.deleteRidersRecord("Riders", mUserbean.getmUserId());
-                                                usersRidersList = commonMethods.fetchRidersList("Riders");
-                                                PrefUtils.putString("finalDestination", "");
-                                                commonMethods.deletePolyTable("Ploy");
+                                        runOnUiThread(() -> {
+
+                                            for (int i = 0; i < userRidesList.size(); i++) {
+                                                if (userRidesList.get(i).getmUserId().equals(data[1])) {
+                                                    Marker marker = curLocMarker.get(i);
+                                                    curLocMarker.remove(marker);
+                                                    marker.remove();
+                                                    Marker marker2 = DropoffMarker.get(i);
+                                                    DropoffMarker.remove(marker2);
+                                                    marker2.remove();
+                                                    usersRidersList.remove(usersRidersList.get(i));
+                                                }
                                             }
+
+                                            mAdapter.notifyDataSetChanged();
+                                            commonMethods.deleteRideRecord("UserRides", data[1]);
+                                            commonMethods.deleteRidersRecord("Riders", data[1]);
+                                            /*userRidesList.clear();
+                                            usersRidersList.clear();*/
+                                            userRidesList = commonMethods.fetchRides("UserRides", false);
+                                            usersRidersList = commonMethods.fetchRidersList("Riders");
+                                            PrefUtils.putString("finalDestination", "");
+                                            commonMethods.deletePolyTable("Ploy");
+                                            openMapDirection();
                                         });
                                     } else {
                                         clearRideData();
@@ -845,8 +898,12 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                                         @Override
                                         public void run() {
                                             LatLng pickuplat = new LatLng(RideShareApp.mLocation.getLatitude(), RideShareApp.mLocation.getLongitude());
+                                            LatLng dropplat = new LatLng(Double.parseDouble(fromUser.getStart_lat()), Double.parseDouble(fromUser.getStart_long()));
+                                            /* MapDirectionAPI.getDirection(pickuplat, dropplat, context).enqueue(updateRouteCallback3);*/
+                                            /*LatLng pickuplat = new LatLng(Double.parseDouble(fromUser.getStart_lat()), Double.parseDouble(fromUser.getStart_long()));
                                             LatLng dropplat = new LatLng(Double.parseDouble(fromUser.getEnd_lat()), Double.parseDouble(fromUser.getEnd_long()));
-                                            MapDirectionAPI.getDirection(pickuplat, dropplat, context).enqueue(updateRouteCallback3);
+                                            MapDirectionAPI.getDirection(pickuplat, dropplat, context).enqueue(updateRouteCallback3);*/
+                                            MapDirectionAPI.getDirection(pickuplat, dropplat, activity).enqueue(driverRouteTimeCallback);
                                         }
                                     });
                                 }
@@ -863,8 +920,10 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                                     }
                                 }
                                 if (newReqList.size() > 0) {
-                                    layout_new_notification.setVisibility(View.VISIBLE);
-                                    item_txt_counts_notification.setText(String.valueOf(newReqList.size()));
+                                    runOnUiThread(() -> {
+                                        layout_new_notification.setVisibility(View.VISIBLE);
+                                        item_txt_counts_notification.setText(String.valueOf(newReqList.size()));
+                                    });
                                 } else {
                                     layout_new_notification.setVisibility(View.GONE);
                                 }
@@ -988,6 +1047,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                         mWebSocketClient.reconnect();*/
             }
         };
+
+        mWebSocketClient.setConnectionLostTimeout(0);
         mWebSocketClient.connect();
     }
 
@@ -1077,17 +1138,15 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
             valueAnimator.setDuration(updateinterval); // duration 3 second
             valueAnimator.setInterpolator(new LinearInterpolator());
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    try {
-                        float v = animation.getAnimatedFraction();
-                        LatLng newPosition = latLngInterpolator.interpolate(v, startPosition, endPosition);
-                        marker.setPosition(newPosition);
-                        marker.setRotation(getBearing(startPosition, endPosition));
-                    } catch (Exception ex) {
-                        //I don't care atm..
-                    }
+            valueAnimator.addUpdateListener(animation -> {
+                try {
+                    float v = animation.getAnimatedFraction();
+                    LatLng newPosition = latLngInterpolator.interpolate(v, startPosition, endPosition);
+                    marker.setPosition(newPosition);
+                    marker.setRotation(getBearing(startPosition, endPosition));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    //I don't care atm..
                 }
             });
             valueAnimator.addListener(new AnimatorListenerAdapter() {
@@ -1131,6 +1190,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     startRide(usersRidersList.get(i));
                 }
 
+                //openMapDirection();
                 break;
             case R.id.layout_new_notification:
                 Gson gson = new Gson();
@@ -1138,14 +1198,12 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     commonMethods.insertIntoTableRides("UserRides", users.getmUserId(), gson.toJson(users));
                 }
                 startActivity(new Intent(context, NotificationViewActivity.class));
-
                 break;
             case R.id.ivStartChat:
                 isRejectRide = true;
                 Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
                 intent.putExtra(Constants.intentKey.SelectedChatUser, mRider);
                 startActivity(intent);
-
                 break;
         }
     }
@@ -1391,29 +1449,34 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                             } else {
                                 mFinishRideBtn.setVisibility(View.VISIBLE);
                             }
+
                         }
                     } else {
                         clearRideData();
-
-                        Intent i = new Intent(StartRideActivity.this, HomeNewActivity.class);
+                        Intent i = new Intent(activity, HomeNewActivity.class);
                         startActivity(i);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        MyXMPP.disconnect();
                         activity.finish();
                     }
 
                     Marker marker = curLocMarker.get(pos);
+                    curLocMarker.remove(marker);
                     marker.remove();
-                    curLocMarker.remove(pos);
+                    Marker marker2 = DropoffMarker.get(pos);
+                    DropoffMarker.remove(marker2);
+                    marker2.remove();
                 } else {
                     //User
                     if (mApp.mWebSocketSendRequest != null) {
                         mApp.mWebSocketSendRequest.close();
                         mApp.mWebSocketSendRequest = null;
                     }
-                    Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
+                    Intent rateride = new Intent(activity, RideRateActivity.class);
                     rateride.putExtra("riderate", mRider.getRide_id());
                     rateride.putExtra("driverid", mRider.getFromRider().getnUserId());
                     startActivity(rateride);
+                    MyXMPP.disconnect();
                     activity.finish();
                 }
                 mProgressDialog.cancel();
@@ -1470,7 +1533,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                         ivStartChat.setVisibility(View.GONE);
                         mStartRideLi.setVisibility(View.VISIBLE);
                         mFinishRideBtn.setVisibility(View.VISIBLE);
-                        MessageUtils.showSuccessMessage(StartRideActivity.this, "Ride Started");
+                        MessageUtils.showSuccessMessage(activity, "Ride Started");
                         mRider.setRequest_status("3");
                     }
                 });
@@ -1493,24 +1556,47 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                             usersRidersList = commonMethods.fetchRidersList("Riders");
                             PrefUtils.putString("finalDestination", "");
                             commonMethods.deletePolyTable("Ploy");
+
+                            for (int i = 0; i < userRidesList.size(); i++) {
+                                if (userRidesList.get(i).getmUserId().equals(userid)) {
+                                    Marker marker = curLocMarker.get(i);
+                                    curLocMarker.remove(marker);
+                                    marker.remove();
+                                    Marker marker2 = DropoffMarker.get(i);
+                                    DropoffMarker.remove(marker2);
+                                    marker2.remove();
+                                }
+                            }
                         }
                     });
+
+
                 } else {
-                    clearRideData();
-                    Intent i = new Intent(StartRideActivity.this, HomeNewActivity.class);
-                    startActivity(i);
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    mUpdaterHandler.removeCallbacks(runnable);
-                    mUpdaterHandler.removeCallbacksAndMessages(null);
-                    activity.finish();
+                    try {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                clearRideData();
+                                mUpdaterHandler.removeCallbacks(runnable);
+                                mUpdaterHandler.removeCallbacksAndMessages(null);
+                                Intent i = new Intent(activity, HomeNewActivity.class);
+                                startActivity(i);
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                activity.finish();
+                            }
+                        });
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 /*Marker marker = curLocMarker.get(pos);
                 marker.remove();
                 curLocMarker.remove(pos);*/
             } else {
-                Intent rateride = new Intent(StartRideActivity.this, RideRateActivity.class);
+                Intent rateride = new Intent(activity, RideRateActivity.class);
                 rateride.putExtra("riderate", mRider.getRide_id());
-                rateride.putExtra("driverid", mRider.getFromRider().getnUserId());
+                rateride.putExtra("driverid", mRider.getToRider().getnUserId());
                 startActivity(rateride);
                 activity.finish();
             }
@@ -1578,15 +1664,15 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     // call Google Service To Fetch the New Updated Route using WayPoints
-    private void requestMultipleRoute(LatLng picklng, ArrayList<LatLng> droplng, LatLng finalDestination) {
+    private void requestMultipleRoute(LatLng picklng, ArrayList<LatLng> droplng) {
         if (picklng != null && droplng != null) {
             markerPoints = new ArrayList<>();
             markerPoints.clear();
             if (usersRidersList.size() > 1) {
+                markerPoints.add(currentlthg);
                 markerPoints.add(picklng);
                 markerPoints.addAll(droplng);
             }
-            MapDirectionAPI.getWayPointsDirection(picklng, finalDestination, context, markerPoints).enqueue(updateRouteCallback2);
         }
     }
 
@@ -1626,7 +1712,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 // Drawing polyline in the Google Map for the i-th route
                 if (lineOptions != null) {
                     //directionLine.remove();8
-                    mGoogleMap.addPolyline(lineOptions);
+                    //mGoogleMap.addPolyline(lineOptions);
                 } else {
                     Log.d("onPostExecute", "without Polylines drawn");
                 }
@@ -1645,7 +1731,8 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         String destination2 = fromUser.getEnd_lat() + "'" + fromUser.getEnd_long();//law garden
         String finalDestination = gpsPoints.size() > newRoute.size() ? destination1 : destination2;
 
-        PrefUtils.putString("finalDestination", finalDestination);
+        PrefUtils.putString("finalDestination", AppUtils.getAddress(context, Double.parseDouble(mRider.getDriver_end_lati()),
+                Double.parseDouble(mRider.getDriver_end_long())));
         for (int i = 0; i < size; i++) {
             if (AppUtils.getDistance(gpsPoints.get(i), newRoute.get(i)) > 1000) {
                 exceededTolerance = true;
@@ -1653,8 +1740,9 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             }
         }
         if (exceededTolerance) {
-            sendCancelSocketRideRequest(fromUser.getmUserId());
-            Toast.makeText(context, "Route Not In the Current Ride !!", Toast.LENGTH_LONG).show();
+            sendCancelSocketRideRequest(fromUser);
+            //sendCancelSocketRideRequest(fromUser.getmUserId());
+            //Toast.makeText(context, "Route Not In the Current Ride !!", Toast.LENGTH_LONG).show();
             Log.w("", "User deviated from path");
         } else {
 
@@ -1665,13 +1753,13 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
         return exceededTolerance;
     }
 
-    private void sendCancelSocketRideRequest(String userid) {
+    private void sendCancelSocketRideRequest(/*String userid*/ User user) {
 
         try {
             final JSONObject jMessage = new JSONObject();
             Gson gson = new Gson();
             jMessage.put("chat_message", "Ride in not in Current Route");
-            jMessage.put("chat_user", userid);
+            jMessage.put("chat_user", user.getmUserId());
             jMessage.put("sender_user", "1009");
             jMessage.put("message_type", "chat-box-html");
             jMessage.put("message_new", " ");
@@ -1687,11 +1775,15 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                     @Override
                     public void onConnected() {
                         mApp.mWebSocketSendRequest.send(jMessage.toString());
+                        Toast.makeText(context, "Route Not In the Current Ride !!", Toast.LENGTH_LONG).show();
+                        newReqList.remove(user);
                     }
                 });
             } else {
                 if (mApp.mWebSocketSendRequest.isOpen()) {
                     mApp.mWebSocketSendRequest.send(jMessage.toString());
+                    Toast.makeText(context, "Route Not In the Current Ride !!", Toast.LENGTH_LONG).show();
+                    newReqList.remove(user);
                 }
             }
             Log.w("Message", "Sent Requests>>> " + jMessage.toString());
@@ -1703,7 +1795,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     // Call Finish Ride Selection Dialog
     private void showFinishRidesListDialog(ArrayList<AcceptRider> ridersList, String msg) {
 
-        dialogFinishRide = new DialogUtils(StartRideActivity.this).buildDialogFinishRide(new CallbackFinishRider() {
+        dialogFinishRide = new DialogUtils(activity).buildDialogFinishRide(new CallbackFinishRider() {
             @Override
             public void onCreate(Dialog dialog) {
                 dialog.dismiss();
@@ -1726,7 +1818,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
 
             }
 
-        }, ridersList, msg, StartRideActivity.this);
+        }, ridersList, msg, activity);
 
         if (dialogFinishRide != null && !dialogFinishRide.isShowing()) {
             dialogFinishRide.show();
@@ -1737,7 +1829,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
     // Call Start Ride Selection Dialog
     private void showStartRidesListDialog(final AcceptRider rider) {
 
-        dialogFinishRide = new DialogUtils(StartRideActivity.this).buildDialogStartRide(new CallbackStartRider() {
+        dialogFinishRide = new DialogUtils(activity).buildDialogStartRide(new CallbackStartRider() {
             @Override
             public void onCreate(Dialog dialog) {
                 dialog.dismiss();
@@ -1769,7 +1861,7 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
                 intent.putExtra(Constants.intentKey.SelectedChatUser, rider);
                 startActivity(intent);
             }
-        }, rider.getFromRider().getmFirstName(), time, distance, StartRideActivity.this);
+        }, rider.getFromRider().getmFirstName(), time, distance, activity);
 
         if (dialogFinishRide != null && !dialogFinishRide.isShowing()) {
             dialogFinishRide.show();
@@ -1961,12 +2053,9 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             int level = intent.getIntExtra("level", 0);
             if (level <= 15) {
                 try {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (!mRider.getRequest_status().equals("3")) {
-                                acceptOrRejectRequest(mRider.getRide_id(), "2", context);
-                            }
+                    runOnUiThread(() -> {
+                        if (!mRider.getRequest_status().equals("3")) {
+                            acceptOrRejectRequest(mRider.getRide_id(), "2", context);
                         }
                     });
                 } catch (Exception e) {
@@ -1991,5 +2080,90 @@ public class StartRideActivity extends AppCompatActivity implements OnMapReadyCa
             }
         }
         super.onStop();
+    }
+
+    private void openMapDirection() {
+        if (AppUtils.isInternetAvailable(activity)) {
+            try {
+                String srcAdd;
+                String desAdd;
+                StringBuilder wayPoints = new StringBuilder();
+                if (userRidesList.size() > 0) {
+                    //srcAdd = "&origin=" + markerPoints.get(0).latitude + "," + markerPoints.get(0).longitude;
+                    srcAdd = "&origin=" + currentlthg.latitude + "," + currentlthg.longitude;
+
+                    wayPoints.insert(0, "&waypoints=");
+
+                    ArrayList<ToSort> startPointList = getShortestStartPointDistances();
+                    ArrayList<ToSort> endPointList = getShortestEndPointDistances();
+
+                    for (int i = 0; i < userRidesList.size(); i++) {
+                        int id = Integer.parseInt(startPointList.get(i).getId());
+                        LatLng startPoint = new LatLng(Double.parseDouble(userRidesList.get(id).getStart_lat()), Double.parseDouble(userRidesList.get(id).getStart_long()));
+                        wayPoints.append(startPoint.latitude).append(",").append(startPoint.longitude).append("|");
+                    }
+
+                    for (int i = 0; i < userRidesList.size(); i++) {
+                        int id = Integer.parseInt(endPointList.get(i).getId());
+                        LatLng endPoint = new LatLng(Double.parseDouble(userRidesList.get(id).getEnd_lat()), Double.parseDouble(userRidesList.get(id).getEnd_long()));
+                        wayPoints.append(endPoint.latitude).append(",").append(endPoint.longitude);
+                        if (i != userRidesList.size() - 1) {
+                            wayPoints.append("|");
+                        }
+                    }
+                    int id_dest = Integer.parseInt(endPointList.get(endPointList.size() - 1).getId());
+                    LatLng finalDestination = new LatLng(Double.parseDouble(userRidesList.get(id_dest).getEnd_lat()), Double.parseDouble(userRidesList.get(id_dest).getEnd_long()));
+                    desAdd = "&destination=" + mRider.getDriver_end_lati()+ "," + mRider.getDriver_end_long();
+                } else {
+                    srcAdd = "&origin=" + pickuplocation.latitude + "," + pickuplocation.longitude;
+                    desAdd = "&destination=" + droppfflocation.latitude + "," + droppfflocation.longitude;
+                }
+
+
+                //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate" + srcAdd + desAdd + wayPoints));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/dir/?api=1&travelmode=driving" + srcAdd + desAdd + wayPoints));
+                intent.setComponent(new ComponentName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity"));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
+            } catch (ActivityNotFoundException ex) {
+                ex.printStackTrace();
+            }
+
+
+        } else {
+            MessageUtils.showNoInternetAvailable(activity);
+        }
+    }
+
+    private ArrayList<ToSort> getShortestStartPointDistances() {
+        ArrayList<ToSort> distances = new ArrayList<>();
+        for (int i = 0; i < userRidesList.size(); i++) {
+            distances.add(new ToSort(Double.parseDouble(userRidesList.get(i).getDriver_pickup_distance()), "" + i));
+        }
+        Collections.sort(distances);
+
+        return distances;
+    }
+
+    private ArrayList<ToSort> getShortestEndPointDistances() {
+        ArrayList<ToSort> distances = new ArrayList<>();
+        for (int i = 0; i < userRidesList.size(); i++) {
+            distances.add(new ToSort(Double.parseDouble(userRidesList.get(i).getRide_distance()), "" + i));
+        }
+        Collections.sort(distances);
+
+        return distances;
+    }
+
+    private void calculateAdditionalTime_Distance() {
+        LatLng startLat = null;
+        LatLng endLat = null;
+        if (fromUser != null) {
+            startLat = new LatLng(Double.parseDouble(fromUser.getStart_lat()), Double.parseDouble(fromUser.getStart_long()));
+            endLat = new LatLng(Double.parseDouble(fromUser.getEnd_lat()), Double.parseDouble(fromUser.getEnd_long()));
+            MapDirectionAPI.getDirection(startLat, endLat, activity).enqueue(updateRouteCallback3);
+        }
+
     }
 }

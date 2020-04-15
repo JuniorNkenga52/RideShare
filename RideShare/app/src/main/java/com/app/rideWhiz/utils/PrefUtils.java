@@ -5,8 +5,10 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
 import com.app.rideWhiz.model.GroupusersModel;
+import com.app.rideWhiz.model.MyGroup;
 import com.app.rideWhiz.model.User;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 
@@ -17,6 +19,8 @@ public class PrefUtils {
     private static Editor EDITOR = null;
     public static String PREF_BATTERY_LEVEL="PREF_BATTERY_LEVEL";
     public static final String PREF_USER_INFO = "PREF_USER_INFO";
+    public static final String PREF_MYGROUP_INFO = "PREF_MYGROUP_INFO";
+    public static final String PREF_IS_ADMIN = "PREF_IS_ADMIN";
 
     public static void initPreference(Context context) {
         if (SETTINGS == null && EDITOR == null) {
@@ -77,6 +81,15 @@ public class PrefUtils {
 
     public static User getUserInfo() {
         return new Gson().fromJson(getString(PREF_USER_INFO), User.class);
+    }
+
+    public static void addMyGroupInfo(ArrayList<MyGroup> myGroup) {
+        putString(PREF_MYGROUP_INFO, new Gson().toJson(myGroup));
+    }
+
+    public static ArrayList<MyGroup> getMyGroupInfo() {
+        return new Gson().fromJson(getString(PREF_MYGROUP_INFO),
+                new TypeToken<ArrayList<MyGroup>>(){}.getType());
     }
 
     public static ArrayList<GroupusersModel> listAdminData;

@@ -22,6 +22,8 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -52,11 +54,13 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.app.rideWhiz.R;
 import com.app.rideWhiz.activity.NotificationViewActivity;
 import com.app.rideWhiz.activity.PlaceSerachActivity;
+import com.app.rideWhiz.activity.ReviewsActivity;
 import com.app.rideWhiz.activity.RideShareApp;
 import com.app.rideWhiz.activity.RideTypeActivity;
 import com.app.rideWhiz.activity.WaitingActivity;
@@ -104,9 +108,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.google.maps.android.ui.IconGenerator;
-import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 
-import org.androidannotations.annotations.App;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
@@ -148,19 +150,20 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     public static String userid = "";
     public Context context;
     //RideShareApp application;
-    ArrayList<Rider> mlist = new ArrayList<>();
-    LatLng currentlthg;
-    LatLng startlthg;
-    LatLng destinationLatLang;
-    String destinationAddress = "";
-    LatLng driverLatLang;
-    CustomProgressDialog mProgressDialog;
-    User mUserBean;
-    MaterialDialog mMaterialDialog;
-    TextView driver_distance_tv;
-    TextView txtHeaderName, txtRole, txt_group_name;
-    ProgressBar driver_distance_progress;
-    RelativeLayout layout_spinner_radius, rlToolBar, rlToolBar2;
+    private ArrayList<Rider> mlist = new ArrayList<>();
+    private LatLng currentlthg;
+    private LatLng startlthg;
+    private LatLng destinationLatLang;
+    private String destinationAddress = "";
+    private LatLng driverLatLang;
+    private CustomProgressDialog mProgressDialog;
+    private User mUserBean;
+    private MaterialDialog mMaterialDialog;
+    private TextView driver_distance_tv;
+    private TextView txtHeaderName, txtRole, txt_group_name;
+    private ImageView image_ic_admin;
+    private ProgressBar driver_distance_progress;
+    private RelativeLayout layout_spinner_radius, rlToolBar, rlToolBar2;
     //========================= Socket Connection ====================//
     float zoomLevel = 16f;
     boolean isDestroy = false;
@@ -183,6 +186,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     private List<String> list_miles;
     private List<String> list_seats;
     private boolean isFirstSelected = false;
+
+    //FetchNearByDriver
+    private Handler handlerDriver;
+    private Runnable runnableDriver;
+    private CountDownTimer countDownTimer;
+
+
     private okhttp3.Callback updateRouteCallback = new okhttp3.Callback() {
 
         @Override
@@ -200,6 +210,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             }
         }
     };
+
     private okhttp3.Callback updateRouteCallback2 = new okhttp3.Callback() {
 
         @Override
@@ -237,6 +248,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             }
         }
     };
+
     private AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -277,6 +289,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
         }
     };
+
     private BroadcastReceiver mLocationReceiver = new BroadcastReceiver() {
 
         @Override
@@ -373,9 +386,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         mClearLocationIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mUserType.equals("2") && !mLocationSearchAtv.getText().toString().equals(""))
-                    updateDestinationAddress(userid, "");
+                destinationLatLang = null;
+                updateDestinationAddress(userid, "");
+               /* if (!mUserType.equals("2") && !mLocationSearchAtv.getText().toString().equals(""))
+                    updateDestinationAddress(userid, "");*/
                 if (directionLine != null) directionLine.remove();
+                if (mGoogleMap != null) { //prevent crashing if the map doesn't exist yet (eg. on starting activity)
+                    mGoogleMap.clear();
+                    // add markers from database to the map
+                }
                 if (destinationLocationMarker != null) destinationLocationMarker.remove();
                 mLocationSearchAtv.setText("");
             }
@@ -384,32 +403,28 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         mSearchCabTv = rootview.findViewById(R.id.search_cab_iv);
         linearLayout = rootview.findViewById(R.id.linearLayout);
 
-
         userid = mUserBean.getmUserId();
-        linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (AppUtils.isInternetAvailable(context)) {
-                    if (currentlthg != null) {
-                        //float radius_miles = Float.parseFloat(list_miles.get((int) spinner_radius.getSelectedItemId()));
-                        //float radius_miles = Float.parseFloat(mlist.get((int) spinner_radius.getSelectedItemId()).getra);
-                        if (mUserType.equals("1")) {
-                            if (PrefUtils.getBoolean("isFriends")) {
-                                selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "1");
-                            } else {
-                                selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "1");
-                            }
+        linearLayout.setOnClickListener(v -> {
+            if (AppUtils.isInternetAvailable(context)) {
+                if (currentlthg != null) {
+                    //float radius_miles = Float.parseFloat(list_miles.get((int) spinner_radius.getSelectedItemId()));
+                    //float radius_miles = Float.parseFloat(mlist.get((int) spinner_radius.getSelectedItemId()).getra);
+                    if (mUserType.equals("1")) {
+                        if (PrefUtils.getBoolean("isFriends")) {
+                            selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "1", 1);
                         } else {
-                            if (PrefUtils.getBoolean("isFriends")) {
-                                selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "2");
-                            } else {
-                                selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "2");
-                            }
+                            selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "1", 1);
+                        }
+                    } else {
+                        if (PrefUtils.getBoolean("isFriends")) {
+                            selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "2", 1);
+                        } else {
+                            selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "2", 1);
                         }
                     }
-                } else {
-                    MessageUtils.showNoInternetAvailable(context);
                 }
+            } else {
+                MessageUtils.showNoInternetAvailable(context);
             }
         });
         init(rootview);
@@ -448,6 +463,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     private void init(View view) {
         mApp = new RideShareApp();
         txtHeaderName = view.findViewById(R.id.txtHeaderName);
+        image_ic_admin = view.findViewById(R.id.image_ic_admin);
         txt_group_name = view.findViewById(R.id.txt_group_name);
         spinner_radius = view.findViewById(R.id.spinner_radius);
         layout_spinner_radius = view.findViewById(R.id.layout_spinner_radius);
@@ -469,12 +485,25 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             txt_group_name.setText("Group : " + PrefUtils.getString("SelectedGroup"));
             list_seats = new ArrayList<>();
 
+            if (PrefUtils.getBoolean(PrefUtils.PREF_IS_ADMIN)) {
+                image_ic_admin.setVisibility(View.VISIBLE);
+            } else {
+                image_ic_admin.setVisibility(View.GONE);
+            }
+            /*if (mUserBean.getmUserId().equals(PrefUtils.getUserInfo().getmUserId())) {
+                image_ic_admin.setVisibility(View.VISIBLE);
+            } else {
+                image_ic_admin.setVisibility(View.GONE);
+            }*/
+
+            connectWebSocket();
             if (mUserType.equals("2")) {
                 txtRole.setText("Driver");
                 mSearchCabTv.setText("Find Rider");
-                connectWebSocket();
                 mUpdaterHandler.post(runnable);
-                int maxSeats = Integer.parseInt(mUserBean.getCar_info().getSeating_capacity());
+                int maxSeats = mUserBean.getCar_info().getSeating_capacity() == null ? 1 :
+                        Integer.parseInt(mUserBean.getCar_info().getSeating_capacity());
+
                 for (int i = 0; i <= maxSeats; i++) {
                     list_seats.add(context.getResources().getStringArray(R.array.max_seats)[i]);
                 }
@@ -482,41 +511,69 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             bindSpinner(list_seats);
 
             mPopupIv = view.findViewById(R.id.popup_iv);
-            mPopupIv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (popupWindow != null && popupWindow.isShowing()) {
-                        popupWindow.dismiss();
-                    } else {
-                        showPopup(v);
-                    }
+            mPopupIv.setOnClickListener(v -> {
+                if (popupWindow != null && popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                } else {
+                    showPopup(v);
                 }
             });
         }
+        updateDestinationAddress(userid, "");
     }
 
-    private void updateSpinner() {
-        if (mlist.size() > 0) {
-            if (mUserType.equals("2")) {
-                txtRole.setText("Driver");
-                mSearchCabTv.setText("Find Rider");
-                connectWebSocket();
-                mUpdaterHandler.post(runnable);
-                if (mlist.size() > 0) {
-                    spinner_radius.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mlist.size() > 0) {
-                                spinner_radius.setSelection(mlist.indexOf(mlist.get(0)));
-                            }
-                        }
-                    });
-                    spinner_radius.setAdapter(new SelectRadiusAdapter(mlist, null, context));
+    private void fetchNearByDrivers() {
+        if (getVisibleFragment() instanceof HomeFragment) {
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
+                countDownTimer = null;
+            }
+            if (mUserType.equals("1")) {
+                if (PrefUtils.getBoolean("isFriends")) {
+                    selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "1", 0);
+                } else {
+                    selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "1", 0);
+                }
+            } else {
+                if (PrefUtils.getBoolean("isFriends")) {
+                    selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "2", 0);
+                } else {
+                    selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "2", 0);
                 }
             }
+            countDownTimer = new CountDownTimer(5000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    //Log.d("Time seconds", "seconds remaining: " + millisUntilFinished / 1000);
+                }
+
+                public void onFinish() {
+                    //Log.d("Time seconds", "Done !");
+                    fetchNearByDrivers();
+                }
+
+            }.start();
         } else {
-            layout_spinner_radius.setVisibility(View.GONE);
+            Log.d("Time seconds", "Done !");
+            if (countDownTimer != null) {
+                countDownTimer.cancel();
+                countDownTimer = null;
+            }
+
+            if (handlerDriver != null) {
+                handlerDriver.removeCallbacks(runnableDriver);
+                handlerDriver = null;
+            }
         }
+    }
+
+    private Fragment getVisibleFragment() {
+        FragmentManager fragmentManager = getFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment != null && fragment.isVisible())
+                return fragment;
+        }
+        return null;
     }
 
     private void bindSpinner(final List<String> list_data) {
@@ -543,7 +600,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         }
     }
 
-    public void showDialog(String msg) {
+    private void showDialog(String msg) {
 
         mMaterialDialog = new MaterialDialog(getActivity())
                 .setTitle(getResources().getString(R.string.app_name))
@@ -605,6 +662,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             @Override
             public void onCameraIdle() {
                 zoomLevel = mGoogleMap.getCameraPosition().zoom;
+                if (handlerDriver == null) {
+                    runnableDriver = new Runnable() {
+                        @Override
+                        public void run() {
+                            fetchNearByDrivers();
+                            //moveToDropLoc();
+                        }
+
+                    };
+                    handlerDriver = new Handler();
+                    handlerDriver.postDelayed(runnableDriver, 1000);
+                }
+
             }
         });
 
@@ -612,7 +682,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         initMap();
     }
 
-    public void initMap() {
+    private void initMap() {
         mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
         mGoogleMap.setBuildingsEnabled(false);
         mGoogleMap.getUiSettings().setCompassEnabled(true);
@@ -621,34 +691,31 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mGoogleMap.setIndoorEnabled(false);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(true);
-        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
+        mGoogleMap.setOnMarkerClickListener(marker -> {
 
-                if (marker.getSnippet() != null) {
+            if (marker.getSnippet() != null) {
 
-                    Rider selectedRide = new Gson().fromJson(marker.getSnippet(), Rider.class);
+                Rider selectedRide = new Gson().fromJson(marker.getSnippet(), Rider.class);
 
-                    if (!mUserType.equals("2") && mLocationSearchAtv.getText().toString().isEmpty()) {
-                        MessageUtils.showFailureMessage(getActivity(), "Please select destination location.");
-                    } else {
-                        if (selectedRide != null) {
-                            if (!selectedRide.getnUserId().equals(PrefUtils.getUserInfo().getmUserId())) {
-                                if (selectedRide.getU_ride_type().equals("2")) {
-                                    /*if (Float.parseFloat(selectedRide.getmDistance()) < Float.parseFloat(list_miles.get((int) spinner_radius.getSelectedItemId()))) {
-                                        getRiderInfoDialog(selectedRide);
-                                    }*/
+                if (!mUserType.equals("2") && mLocationSearchAtv.getText().toString().isEmpty()) {
+                    MessageUtils.showFailureMessage(getActivity(), "Please select destination location.");
+                } else {
+                    if (selectedRide != null) {
+                        if (!selectedRide.getnUserId().equals(PrefUtils.getUserInfo().getmUserId())) {
+                            if (selectedRide.getU_ride_type().equals("2")) {
+                                /*if (Float.parseFloat(selectedRide.getmDistance()) < Float.parseFloat(list_miles.get((int) spinner_radius.getSelectedItemId()))) {
                                     getRiderInfoDialog(selectedRide);
-                                } else {
-                                    getRiderInfoDialog(selectedRide);
-                                }
+                                }*/
+                                getRiderInfoDialog(selectedRide);
+                            } else {
+                                getRiderInfoDialog(selectedRide);
                             }
                         }
                     }
-
                 }
-                return false;
+
             }
+            return false;
         });
     }
 
@@ -663,7 +730,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             mlistMarker.clear();
             for (int i = 0; i < mlist.size(); i++) {
 
-                Rider driver = mlist.get(i);
+                final Rider driver = mlist.get(i);
 
                 Location locationCurrent = new Location("Current");
                 locationCurrent.setLatitude(Double.parseDouble(String.format("%.6f", Double.parseDouble(driver.getmLatitude()))));
@@ -702,16 +769,37 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                     }
 
                 }
-                LatLng currentDriverPos = new LatLng(Double.parseDouble(driver.getmLatitude()), Double.parseDouble(driver.getmLongitude()));
+                final LatLng currentDriverPos = new LatLng(Double.parseDouble(driver.getmLatitude()), Double.parseDouble(driver.getmLongitude()));
                 builder.include(currentDriverPos);
-                Marker m;
+
                 if (mType.equals("1")) {
-                    m = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
-                            .position(currentDriverPos).anchor(0.5f, 1f)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car_pin))
-                            .rotation(0f)
-                            .flat(true));
-                    mlistMarker.add(m);
+                    try {
+                        final View customMarkerView = getActivity().getLayoutInflater().inflate(R.layout.item_custom_car_marker, null);
+                        TextView txt_driver_info = customMarkerView.findViewById(R.id.txt_driver_info);
+                        RelativeLayout ic_driver_info = customMarkerView.findViewById(R.id.ic_driver_info);
+                        //String address = driver.getmAddress();
+                        if (driver.getDestination_address().equals("")) {
+                            ic_driver_info.setVisibility(View.GONE);
+                        } else {
+                            ic_driver_info.setVisibility(View.VISIBLE);
+                            String address = driver.getDestination_address();
+                            /*String address = AppUtils.getAddress(context, Double.parseDouble(driver.getmLatitude()), Double.parseDouble(driver.getmLongitude()));*/
+                            if (address != null && !address.equals("")) {
+                                if (address.length() > 25) {
+                                    address = address.substring(0, 25) + "...";
+                                }
+                                txt_driver_info.setText(address);
+                            }
+                        }
+                        Marker m = mGoogleMap.addMarker(new MarkerOptions().snippet(new Gson().toJson(driver))
+                                .position(currentDriverPos).anchor(0.5f, 1f)
+                                .icon(BitmapDescriptorFactory.fromBitmap(AppUtils.loadBitmapFromView(customMarkerView)))
+                                .rotation(0f)
+                                .flat(true));
+                        mlistMarker.add(m);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     getMarkerBitmapFromView(getActivity(), driver, mUserBean, 0, currentDriverPos);
                 }
@@ -721,7 +809,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             LatLngBounds bounds = builder.build();
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             mGoogleMap.animateCamera(cu);
-            connectWebSocket();
+
+           /* if (mUserType.equals("2")) {
+                if (mWebSocketClient != null && !mWebSocketClient.isOpen())
+                    connectWebSocket();
+            }*/
         } else {
             for (Marker m : mlistMarker) {
                 m.remove();
@@ -750,8 +842,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             }
             destinationLocationMarker = mGoogleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker())
                     .position(destinationLatLang).title("destination"));
-            if (!mUserType.equals("2"))
-                updateDestinationAddress(userid, location.getmAddress());
+            updateDestinationAddress(userid, location.getmAddress());
 
         }
     }
@@ -823,6 +914,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                     if (directionLine != null) directionLine.remove();
                     if (routes.size() > 0) {
 
+                        String strdis = routes.get(0).getLegs().get(0).getDistance().getText();
+                        float distance;
+                        if (strdis.split("\\s")[1].equals("m")) {
+                            distance = Float.parseFloat(strdis.split("\\s")[0]) / 1000;
+                        } else {
+                            distance = Float.parseFloat(strdis.split("\\s")[0]);
+                        }
+                        mUserBean.setRide_distance(String.valueOf(distance));
                         directionLine = mGoogleMap.addPolyline((new PolylineOptions())
                                 .addAll(routes.get(0).getOverviewPolyLine())
                                 .color(ContextCompat.getColor(getActivity(), R.color.blacltext))
@@ -838,9 +937,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         });
     }
 
-    private void selectRide(String mId, final String mType, String latitude, String longitude, final String mRideType) {
-        mProgressDialog.show();
-
+    private void selectRide(String mId, final String mType, String latitude, String longitude, final String mRideType, final int search_type) {
+        if (search_type == 1)
+            mProgressDialog.show();
         ApiServiceModule.createService(RestApiInterface.class, context).getUser(mId, mType, latitude, longitude, mRideType, PrefUtils.getString("SelectedGroupID")).enqueue(new Callback<RideSelect>() {
             @Override
             public void onResponse(Call<RideSelect> call, Response<RideSelect> response) {
@@ -855,10 +954,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         builder = new LatLngBounds.Builder();
                         builder.include(currentlthg);
                         createMarker(mRideType, mlist);
-                        String msg = mRideType.equals("1") ? "No drivers are available" : "No riders are available";
-                        showDialog(msg);
+                        if (search_type == 1) {
+                            String msg = mRideType.equals("1") ? "No drivers are available" : "No riders are available";
+                            showDialog(msg);
+                        }
+
                     } else {
-                        layout_spinner_radius.setVisibility(View.VISIBLE);
                         if (mlist == null) {
                             mlist = new ArrayList<>();
                         }
@@ -866,6 +967,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
                         mlist.addAll(response.body().getMlistUser());
                         isFirstSelected = false;
+                        layout_spinner_radius.setVisibility(View.VISIBLE);
                         if (!mUserType.equals("2")) {
                             bindSpinner(null);
                         }
@@ -891,7 +993,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                     }
                     MessageUtils.showFailureMessage(getActivity(), "No drivers are available");
                 }
-                mProgressDialog.cancel();
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.cancel();
+                }
             }
 
             @Override
@@ -905,7 +1009,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
 
     @SuppressLint("ClickableViewAccessibility")
-    public void getRiderInfoDialog(final Rider rider) {
+    private void getRiderInfoDialog(final Rider rider) {
 
         final Dialog dialog = new Dialog(getActivity());
 
@@ -937,7 +1041,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         TextView destination_address_tv = dialog.findViewById(R.id.destination_address_tv);
         RadioGroup radioGroup = dialog.findViewById(R.id.radioGroup);
         RelativeLayout layout_persons = dialog.findViewById(R.id.layout_persons);
-        SimpleRatingBar driver_rate = dialog.findViewById(R.id.driver_rate);
+        //SimpleRatingBar driver_rate = dialog.findViewById(R.id.driver_rate);
+        TextView txt_view_reviews = dialog.findViewById(R.id.txt_view_reviews);
         driver_distance_tv = dialog.findViewById(R.id.driver_distance_tv);
         driver_distance_progress = dialog.findViewById(R.id.driver_distance_progress);
 
@@ -956,36 +1061,30 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             txt_maxPerson.setText("0" + rider.getNo_of_seats());
             requestRoute(true);
             driver_distance_tv.setText(duration + " Min");
+            if (rider.getDestination_address().equals("")) {
+                txt_divider.setVisibility(View.GONE);
+                layout_driver_destination.setVisibility(View.GONE);
+            } else {
+                txt_divider.setVisibility(View.VISIBLE);
+                layout_driver_destination.setVisibility(View.VISIBLE);
+                destination_address_tv.setText(rider.getDestination_address());
+            }
             if (mUserType.equals("2") || !rider.getmType().equals("2")) {
                 mDetails_tv.setText("Rider details");
-                if (rider.getDestination_address().equals("")) {
-                    txt_divider.setVisibility(View.GONE);
-                    layout_driver_destination.setVisibility(View.GONE);
-                } else {
-                    txt_divider.setVisibility(View.VISIBLE);
-                    layout_driver_destination.setVisibility(View.VISIBLE);
-                    destination_address_tv.setText(rider.getDestination_address());
-                }
-                //mGetRideTv.setText("Offer Ride");
                 mVahicalTv.setText(rider.getmLastName());
 
                 driver_layout.setVisibility(View.VISIBLE);
                 rider_layout.setVisibility(View.GONE);
                 layout_persons.setVisibility(View.GONE);
-                driver_rate.setVisibility(View.GONE);
+                txt_view_reviews.setVisibility(View.GONE);
                 // mVahicalTv
             } else {
-                layout_driver_destination.setVisibility(View.GONE);
-                driver_rate.setVisibility(View.VISIBLE);
-                driver_rate.setFocusable(false);
-                driver_rate.setIndicator(true);
-                driver_rate.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        return true;
-                    }
+                txt_view_reviews.setVisibility(View.VISIBLE);
+                txt_view_reviews.setOnClickListener(v -> {
+                    Intent intent = new Intent(context, ReviewsActivity.class);
+                    intent.putExtra("Driver_id", rider.getnUserId());
+                    startActivity(intent);
                 });
-                driver_rate.setRating(Float.parseFloat(rider.getAverage_rate()));
                 layout_persons.setVisibility(View.VISIBLE);
                 driver_layout.setVisibility(View.GONE);
                 rider_layout.setVisibility(View.VISIBLE);
@@ -997,32 +1096,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             e.printStackTrace();
         }
         rider.setNo_of_seats("1");
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                View radioButton = radioGroup.findViewById(i);
-                rider.setNo_of_seats(String.valueOf(radioGroup.indexOfChild(radioButton) + 1));
-            }
+        radioGroup.setOnCheckedChangeListener((radioGroup1, i) -> {
+            View radioButton = radioGroup1.findViewById(i);
+            rider.setNo_of_seats(String.valueOf(radioGroup1.indexOfChild(radioButton) + 1));
         });
 
-        driver_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
+        driver_layout.setOnClickListener(v -> dialog.cancel());
 
-        mCancelTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-        mGetRideTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mCancelTv.setOnClickListener(v -> dialog.cancel());
+        mGetRideTv.setOnClickListener(v -> {
+
+            if (duration != null && !duration.equals("")) {
                 dialog.cancel();
                 GetRideID(rider);
+            } else {
+                MessageUtils.showFailureMessage(context, "Not getting CAB Distance");
             }
         });
 
@@ -1070,7 +1158,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         });
     }
 
-    public void SendRideRequest(String userid, String fromuserid, final Rider rider, final String ride_id) {
+    private void SendRideRequest(String userid, String fromuserid, final Rider rider, final String ride_id) {
         ApiServiceModule.createService(RestApiInterface.class, context).sendRequest(userid, fromuserid, "" + currentlthg.latitude, "" + currentlthg.longitude, "" + destinationLatLang.latitude, "" + destinationLatLang.longitude, mUserType, "", "", "", ride_id, rider.getNo_of_seats()).enqueue(new Callback<SendResponse>() {
             @Override
             public void onResponse(Call<SendResponse> call, final Response<SendResponse> response) {
@@ -1090,8 +1178,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         user.setStart_long(String.valueOf(startlthg.longitude));
                         user.setEnd_long(String.valueOf(destinationLatLang.longitude));
                         user.setEnd_lat(String.valueOf(destinationLatLang.latitude));
-                        user.setStart_address(AppUtils.getAddress(context, startlthg.latitude, startlthg.longitude));
-                        user.setEnd_address(destinationAddress);
+                        //user.setStart_address(AppUtils.getAddress(context, startlthg.latitude, startlthg.longitude));
+                        //user.setEnd_address(destinationAddress);
+                        user.setRide_distance(mUserBean.getRide_distance());
                         user.setRequest_share_id(response.body().getMlist().get(0).getRequest_share_id());
                         Log.w("Request ID :: >>>>>>>> ", response.body().getMlist().get(0).getRequest_share_id());
 
@@ -1125,15 +1214,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                         if (currentlthg != null) {
                             if (mUserType.equals("1")) {
                                 if (PrefUtils.getBoolean("isFriends")) {
-                                    selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "1");
+                                    selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "1", 1);
                                 } else {
-                                    selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "1");
+                                    selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "1", 1);
                                 }
                             } else {
                                 if (PrefUtils.getBoolean("isFriends")) {
-                                    selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "2");
+                                    selectRide(mUserBean.getmUserId(), "1", "" + currentlthg.latitude, "" + currentlthg.longitude, "2", 1);
                                 } else {
-                                    selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "2");
+                                    selectRide(mUserBean.getmUserId(), "2", "" + currentlthg.latitude, "" + currentlthg.longitude, "2", 1);
                                 }
                             }
                         }
@@ -1291,23 +1380,20 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
             }
         });
-        mAllRb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mFriendRb.setChecked(false);
-                    mAllRb.setChecked(true);
-                    PrefUtils.putBoolean("isAll", true);
-                    PrefUtils.putBoolean("isFriends", false);
-                    //updateFriendListType(mUserBean.getmUserId(),"2");
-                } else {
-                    mFriendRb.setChecked(true);
-                    mAllRb.setChecked(false);
-                    PrefUtils.putBoolean("isAll", false);
-                    PrefUtils.putBoolean("isFriends", true);
-                }
-                popupWindow.dismiss();
+        mAllRb.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mFriendRb.setChecked(false);
+                mAllRb.setChecked(true);
+                PrefUtils.putBoolean("isAll", true);
+                PrefUtils.putBoolean("isFriends", false);
+                //updateFriendListType(mUserBean.getmUserId(),"2");
+            } else {
+                mFriendRb.setChecked(true);
+                mAllRb.setChecked(false);
+                PrefUtils.putBoolean("isAll", false);
+                PrefUtils.putBoolean("isFriends", true);
             }
+            popupWindow.dismiss();
         });
 
         popupWindow.showAsDropDown(v);
@@ -1329,6 +1415,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         super.onResume();
         isDestroy = false;
         SocketListener();
+        if (mUserType.equals("2")) {
+            selectRideAsDriver(mUserBean.getmUserId(), "" + 2, "" +
+                    RideShareApp.mLocation.getLatitude(), "" +
+                    RideShareApp.mLocation.getLongitude());
+        }
         try {
             if (popupWindow != null)
                 popupWindow.dismiss();
@@ -1355,24 +1446,31 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                 JSONObject jobj;
                 try {
                     jobj = new JSONObject(response);
-                    if (!jobj.getString("chat_message").equals("null") && jobj.getString("sender_user").equals("1002")) {
+                    if (!jobj.getString("chat_message").equals("null") &&
+                            jobj.getString("sender_user").equals("1002") && destinationLatLang != null) {
                         Gson gson = new Gson();
                         try {
                             Type type = new TypeToken<User>() {
                             }.getType();
                             User fromUser = gson.fromJson(jobj.getString("chat_message"), type);
-                            if (mUserBean.getmUserId().equals(jobj.getString("username"))) {
+                            fromUser.setDriver_start_lati("" + currentlthg.latitude);
+                            fromUser.setDriver_start_long("" + currentlthg.longitude);
+
+                            fromUser.setDriver_end_lati("" + destinationLatLang.latitude);
+                            fromUser.setDriver_end_long("" + destinationLatLang.longitude);
+                            if (mUserBean.getmUserId().equals(jobj.getString("username")) && mUserType.equals("2")) {
                                 mApp.mWebSocketSendRequest.close();
                                 mApp.mWebSocketSendRequest = null;
                                 Intent intent = new Intent(context, NotificationViewActivity.class);
                                 intent.putExtra("fromUSerData", fromUser);
                                 startActivity(intent);
-
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
+                    } else {
+                        MessageUtils.showFailureMessage(context, "Please Enter Destination Address to receive new Request");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1407,38 +1505,36 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
                     final JSONObject jobj = new JSONObject(s);
                     //if (mApp.getmUserType().equals("1")) {
-                    Log.d("Message ", "Received :::>>> " + jobj.toString());
+                    //Log.d("Message ", "Received :::>>> " + jobj.toString());
                     if (!jobj.getString("message_type").equals("chat-connection-ack")) {
-                        if (!jobj.getString("chat_message").equals("null") && jobj.getString("sender_user").equals("1001")) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
+                        if (!jobj.getString("chat_message").equals("null") && jobj.getString("sender_user").equals("1001")
+                                && mUserType.equals("1")) {
+                            getActivity().runOnUiThread(() -> {
+                                try {
 
-                                        // MessageUtils.showSuccessMessage((StartRideActivity.this, "received");
-                                        String[] updatedlocation = jobj.getString("chat_message").split("`");
-                                        double mlet = Double.parseDouble(updatedlocation[0]);
-                                        double mlong = Double.parseDouble(updatedlocation[1]);
+                                    // MessageUtils.showSuccessMessage((StartRideActivity.this, "received");
+                                    String[] updatedlocation = jobj.getString("chat_message").split("`");
+                                    double mlet = Double.parseDouble(updatedlocation[0]);
+                                    double mlong = Double.parseDouble(updatedlocation[1]);
 
-                                        mDriverLocation = new Location("");
-                                        mDriverLocation.setLatitude(mlet);
-                                        mDriverLocation.setLongitude(mlong);
-                                        if (mlist != null) {
-                                            if (mlist.size() > 0) {
-                                                for (int i = 0; i < mlist.size(); i++) {
-                                                    if (jobj.getString("username").equals(mlist.get(i).getnUserId())) {
-                                                        animateMarkerNew(i, mlistMarker.get(i),
-                                                                new LatLng(mDriverLocation.getLatitude(),
-                                                                        mDriverLocation.getLongitude()));
+                                    mDriverLocation = new Location("");
+                                    mDriverLocation.setLatitude(mlet);
+                                    mDriverLocation.setLongitude(mlong);
+                                    if (mlist != null) {
+                                        if (mlist.size() > 0) {
+                                            for (int i = 0; i < mlist.size(); i++) {
+                                                if (jobj.getString("username").equals(mlist.get(i).getnUserId())) {
+                                                    animateMarkerNew(i, mlistMarker.get(i),
+                                                            new LatLng(mDriverLocation.getLatitude(),
+                                                                    mDriverLocation.getLongitude()));
 
-                                                    }
                                                 }
                                             }
                                         }
-
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
                                     }
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             });
                         }
@@ -1451,7 +1547,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
 
             @Override
             public void onClose(int i, String s, boolean b) {
-               Log.i("Websocket", "Closed " + s);
+                Log.i("Websocket", "Closed " + s);
                 /*if (!isDestroy) {
                     if (mWebSocketClient != null) {
                         mWebSocketClient.reconnect();
@@ -1500,23 +1596,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                 marker.setSnippet(jFromRider.toString());
                 mlistMarker.set(pos, marker);
                 //UpdateLocation(rider.getnUserId(),rider.getmLatitude(),rider.getmLongitude());
-                UpdateUserLocation(jFromRider.getString("u_id"), String.valueOf(newlatlng.latitude),
-                        String.valueOf(newlatlng.longitude));
+                if (!mUserType.equals("2"))
+                    UpdateUserLocation(jFromRider.getString("u_id"), String.valueOf(newlatlng.latitude),
+                            String.valueOf(newlatlng.longitude));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
+            valueAnimator.addUpdateListener(animation -> {
 
-                    try {
-                        float v = animation.getAnimatedFraction();
-                        LatLng newPosition = latLngInterpolator.interpolate(v, startPosition, endPosition);
-                        marker.setPosition(newPosition);
-                        marker.setRotation(getBearing(startPosition, endPosition));
-                    } catch (Exception ex) {
-                        //I don't care atm..
-                    }
+                try {
+                    float v = animation.getAnimatedFraction();
+                    LatLng newPosition = latLngInterpolator.interpolate(v, startPosition, endPosition);
+                    marker.setPosition(newPosition);
+                    marker.setRotation(getBearing(startPosition, endPosition));
+                } catch (Exception ex) {
+                    //I don't care atm..
                 }
             });
             valueAnimator.addListener(new AnimatorListenerAdapter() {
@@ -1554,7 +1648,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         return (float) brng;
     }
 
-    public void UpdateUserLocation(String userid, String u_lat, String u_long) {
+    private void UpdateUserLocation(String userid, String u_lat, String u_long) {
         //mProgressDialog.show();
 
         ApiServiceModule.createService(RestApiInterface.class, context).updateUserLocation(userid, u_lat, u_long).enqueue(new Callback<User>() {
@@ -1577,7 +1671,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
         });
     }
 
-    public void sendDriverRequest(Context context, User mUserBean, Rider rider) {
+    private void sendDriverRequest(Context context, User mUserBean, Rider rider) {
         JSONObject jMessage = new JSONObject();
         try {
             Gson gson = new Gson();
@@ -1599,6 +1693,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
                 if (mApp.mWebSocketSendRequest.isOpen()) {
                     mApp.mWebSocketSendRequest.send(jMessage.toString());
                     Log.w("Message", "Sent Requests>>> " + jMessage.toString());
+                    FragmentManager.BackStackEntry first = getFragmentManager().getBackStackEntryAt(0);
+                    getFragmentManager().popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    ((Activity) context).finish();
                     Intent intent = new Intent(context, WaitingActivity.class);
                     intent.putExtra("NotificationData", rider);
                     intent.putExtra("UserData", mUserBean);
@@ -1618,8 +1715,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
     public void onDestroy() {
         super.onDestroy();
         isDestroy = true;
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
 
+        if (handlerDriver != null) {
+            handlerDriver.removeCallbacks(runnableDriver);
+            handlerDriver = null;
+        }
     }
+
 
     private void syncContact() {
 
@@ -1691,4 +1797,27 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, OnBack
             }
         }
     }
+
+
+    private void selectRideAsDriver(String mId, String mType, String latitude, String longitude) {
+
+        mProgressDialog.show();
+        ApiServiceModule.createService(RestApiInterface.class, context).selectRide(mId, mType, latitude, longitude).enqueue(new Callback<RideSelect>() {
+            @Override
+            public void onResponse(Call<RideSelect> call, Response<RideSelect> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                }
+                mProgressDialog.cancel();
+            }
+
+            @Override
+            public void onFailure(Call<RideSelect> call, Throwable t) {
+                t.printStackTrace();
+                Log.d("error", t.toString());
+                mProgressDialog.cancel();
+            }
+        });
+    }
+
 }

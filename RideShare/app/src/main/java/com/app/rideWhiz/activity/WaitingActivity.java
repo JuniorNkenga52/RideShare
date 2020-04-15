@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -22,6 +21,7 @@ import com.app.rideWhiz.model.RideResponse;
 import com.app.rideWhiz.model.Rider;
 import com.app.rideWhiz.model.User;
 import com.app.rideWhiz.notificationservice.ManageNotifications;
+import com.app.rideWhiz.utils.MessageUtils;
 import com.app.rideWhiz.view.CustomProgressDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -75,12 +75,12 @@ public class WaitingActivity extends AppCompatActivity {
         mUserBean = (User) getIntent().getExtras().getSerializable("UserData");
         mRideResponse = (RideResponse) getIntent().getExtras().getSerializable("rider_data");
 
-        mCancelTv = (TextView) findViewById(R.id.btn_cancel_ride);
-        mWaitTv = (TextView) findViewById(R.id.wait_tv);
-        pulsator = (PulsatorLayout) findViewById(R.id.pulsator);
+        mCancelTv = findViewById(R.id.btn_cancel_ride);
+        mWaitTv = findViewById(R.id.wait_tv);
+        pulsator = findViewById(R.id.pulsator);
         pulsator.start();
 
-        mCircleProgress = (DonutProgress) findViewById(R.id.donut_progress);
+        mCircleProgress = findViewById(R.id.donut_progress);
         mCircleProgress.setMax(60);
         mCircleProgress.setSuffixText("");
         mCircleProgress.setStartingDegree(270);
@@ -90,9 +90,9 @@ public class WaitingActivity extends AppCompatActivity {
         mCircleProgress.setFinishedStrokeColor(getResources().getColor(R.color.colorPrimary));
         mCircleProgress.setUnfinishedStrokeColor(getResources().getColor(R.color.gray));
 
-        mNameTv = (TextView) findViewById(R.id.name_tv);
-        mEmailTv = (TextView) findViewById(R.id.email_tv);
-        mProfilePic = (CircularImageView) findViewById(R.id.user_profile);
+        mNameTv = findViewById(R.id.name_tv);
+        mEmailTv = findViewById(R.id.email_tv);
+        mProfilePic = findViewById(R.id.user_profile);
 
         if (currentRider != null) {
             mNameTv.setText(currentRider.getmFirstName());
@@ -112,14 +112,11 @@ public class WaitingActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        mCancelTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Send Cancel Ride Socket Notification to Driver
-                Log.d("Ride ID :::: >>>> ", currentRider.getRideID());
-                CancelRideRequest(currentRider.getRideID());
+        mCancelTv.setOnClickListener(v -> {
+            // Send Cancel Ride Socket Notification to Driver
+            Log.d("Ride ID :::: >>>> ", currentRider.getRideID());
+            CancelRideRequest(currentRider.getRideID());
 
-            }
         });
 
         if (mApp.mWebSocketSendRequest == null) {
@@ -141,7 +138,11 @@ public class WaitingActivity extends AppCompatActivity {
                             //pulsator.stop();
                             mApp.mWebSocketSendRequest.close();
                             mApp.mWebSocketSendRequest = null;
-                            finish();
+                            activity.runOnUiThread(() -> {
+                                MessageUtils.showFailureMessage(context, "Sorry your Route is Not in the Driver's Route!!");
+                                finish();
+                            });
+
 
                         } else {
                             // Get the Accept Ride Notification from Driver.
@@ -253,19 +254,17 @@ public class WaitingActivity extends AppCompatActivity {
             toRider.setIs_driver("0");
             rider.setToRider(toRider);
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (timer != null)
-                        timer.cancel();
-                    pulsator.stop();
-                }
+            runOnUiThread(() -> {
+                if (timer != null)
+                    timer.cancel();
+                pulsator.stop();
             });
 
+            finish();
             Intent i = new Intent(activity, StartRideActivity.class);
             i.putExtra("rideobj", rider);
-            activity.startActivity(i);
-            activity.finish();
+            startActivity(i);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
